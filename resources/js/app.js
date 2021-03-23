@@ -28,6 +28,7 @@ Vue.component(
 );
 Vue.component("chat-messages", require("./components/ChatMessage.vue").default);
 Vue.component("chat-form", require("./components/ChatForm.vue").default);
+Vue.component("notif", require("./components/Notification.vue").default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -39,7 +40,8 @@ const app = new Vue({
     el: "#app",
 
     data: {
-        messages: []
+        messages: [],
+        count: 0
     },
 
     created() {
@@ -50,6 +52,9 @@ const app = new Vue({
                 message: e.message.message,
                 user: e.user
             });
+
+            this.count += 1;
+            console.log(this.count);
         });
     },
 
@@ -67,6 +72,10 @@ const app = new Vue({
             Axios.post("/message", message).then(response => {
                 console.log(response.data);
             });
+        },
+
+        not_zero() {
+            return this.count != 0;
         }
     }
 });

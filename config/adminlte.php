@@ -242,13 +242,24 @@ return [
         ['header' => 'account_settings'],
         [
             'text' => 'profile',
-            'url'  => 'admin/settings',
+            'url'  => '#',
             'icon' => 'fas fa-fw fa-user',
         ],
         [
             'text' => 'change_password',
-            'url'  => 'admin/settings',
+            'url'  => '#',
             'icon' => 'fas fa-fw fa-lock',
+        ],
+        ['header' => 'COMMON'],
+        [
+            'text' => 'Default Form',
+            'url'  => '/default_form',
+            'icon' => 'fas fa-align-justify',
+        ],
+        [
+            'text' => 'Default Table',
+            'url'  => '#',
+            'icon' => 'fas fa-table',
         ],
         ['header' => 'LOGOUT'],
         [

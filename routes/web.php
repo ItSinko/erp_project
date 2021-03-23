@@ -33,3 +33,7 @@ Route::post('/logout', function () {
 Route::get('/chat', 'ChatController@index');
 Route::get('/message', 'ChatController@fetchMessages');
 Route::post('/message', 'ChatController@sendMessage');
+
+Route::get('/default_form', function () {
+    return view('ui.default_form');
+});
