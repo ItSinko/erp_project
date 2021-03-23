@@ -19,7 +19,7 @@
     </a>
 
     @if(isset($item['form']) && $item['form']==true)
-    <form id="logout-form" action="/logout" method="POST" class="d-none">
+    <form id="logout-form" action="{{ $item['href'] }}" method="POST" class="d-none">
         @csrf
     </form>
     @endif

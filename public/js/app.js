@@ -1966,8 +1966,39 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['messages']
+  props: ["messages", "user"],
+  data: function data() {
+    return {
+      image: "/asset/image/user/unknown.png"
+    };
+  },
+  methods: {
+    compare: function compare(user) {
+      return this.user.nama == user;
+    }
+  }
 });
 
 /***/ }),
@@ -43859,20 +43890,41 @@ var render = function() {
     "ul",
     { staticClass: "chat" },
     _vm._l(_vm.messages, function(message) {
-      return _c("li", { staticClass: "left clearfix" }, [
-        _c("div", { staticClass: "header" }, [
-          _c("strong", { staticClass: "primary-font" }, [
-            _vm._v(
-              "\n                " +
-                _vm._s(message.user.nama) +
-                "\n            "
-            )
-          ])
-        ]),
-        _vm._v(" "),
-        _c("p", [
-          _vm._v("\n            " + _vm._s(message.message) + "\n        ")
-        ])
+      return _c("div", { staticClass: "left clearfix" }, [
+        _c(
+          "div",
+          {
+            class: _vm.compare(message.user.nama)
+              ? "direct-chat-msg"
+              : "direct-chat-msg right"
+          },
+          [
+            _c("div", { staticClass: "direct-chat-infos clearfix" }, [
+              _c(
+                "span",
+                {
+                  class: _vm.compare(message.user.nama)
+                    ? "direct-chat-name float-left"
+                    : "direct-chat-name float-right"
+                },
+                [_vm._v(_vm._s(message.user.nama))]
+              )
+            ]),
+            _vm._v(" "),
+            _c("img", {
+              staticClass: "direct-chat-img",
+              attrs: { src: _vm.image, alt: "message user image" }
+            }),
+            _vm._v(" "),
+            _c("div", { staticClass: "direct-chat-text" }, [
+              _vm._v(
+                "\n                " +
+                  _vm._s(message.message) +
+                  "\n            "
+              )
+            ])
+          ]
+        )
       ])
     }),
     0

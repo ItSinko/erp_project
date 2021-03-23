@@ -256,7 +256,7 @@ return [
             'url' => '/logout',
             'icon' => 'fas fa-sign-out-alt',
             'form' => true,
-        ]
+        ],
         // [
         //     'text'    => 'multilevel',
         //     'icon'    => 'fas fa-fw fa-share',
