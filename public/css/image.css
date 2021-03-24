@@ -1,0 +1,33 @@
+.product-img {
+  height: 150px;
+  width: 150px;
+}
+.product-img-small {
+  height: 70px;
+  width: 70px;
+  border-radius: 20%;
+}
+.inline-flex {
+  display: inline-flex;
+}
+.karyawan-img-x-small {
+  height: 25px;
+  width: 25px;
+}
+.karyawan-img-small {
+  height: 40px;
+  width: 40px;
+}
+.karyawan-img-sm-md {
+  height: 55px;
+  width: 55px;
+}
+.karyawan-img-med {
+  height: 70px;
+  width: 70px;
+}
+.logo {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border-bottom: 0px;
+}

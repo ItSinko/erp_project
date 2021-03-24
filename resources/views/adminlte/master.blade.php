@@ -23,7 +23,21 @@
     @yield('adminlte_css_pre')
 
     {{-- Base Stylesheets --}}
+    <link rel="stylesheet" href="{{asset('vendor/select2/css/select2.min.css')}}">
+    <link rel="stylesheet" href="{{asset('vendor/select2-bootstrap4-theme/select2-bootstrap4.min.css')}}">
+    <link rel="stylesheet" href="{{asset('css/table.css')}}">
+
+    <link rel="stylesheet" href="{{asset('css/text.css')}}">
+
+    <link rel="stylesheet" href="{{asset('css/image.css')}}">
+
+    <link rel="stylesheet" href="{{asset('css/button.css')}}">
+
+    <link rel="stylesheet" href="{{asset('css/calendar.css')}}">
+
+    <link rel="stylesheet" href="{{asset('css/background.css')}}">
     @if(!config('adminlte.enabled_laravel_mix'))
+
     <link rel="stylesheet" href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ asset('vendor/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
 
@@ -82,7 +96,7 @@
     @if(!config('adminlte.enabled_laravel_mix'))
     <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('vendor/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
+
 
     {{-- Configured Scripts --}}
     @include('adminlte.plugins', ['type' => 'js'])
@@ -91,6 +105,8 @@
     @else
     <script src="{{ mix(config('adminlte.laravel_mix_js_path', 'js/app.js')) }}"></script>
     @endif
+    <script src="{{ asset('vendor/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
+    <script src="{{ asset('vendor/select2/js/select2.full.min.js')}}"></script>
 
     {{-- Livewire Script --}}
     @if(config('adminlte.livewire'))
