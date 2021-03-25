@@ -1,0 +1,65 @@
+.danger-text
+{
+    background-color:#ffe6e6;
+    color:#cc0000;
+    padding:6px;
+    border-radius:0.3rem;
+}
+.info-text
+{
+    background-color: #e6f9ff;
+    color:#00bfff;
+    padding:6px;
+    border-radius:0.3rem;
+}
+.success-text
+{
+    background-color: #e6ffe6;
+    color:#009900;
+    padding:6px;
+    border-radius:0.3rem;
+}
+.warning-text
+{
+    background-color: #fffae6;
+    color:#ffcc00;
+    padding:6px;
+    border-radius:0.3rem;
+}
+.purple-text
+{
+    background-color: #f2e6ff;
+    color:#6600cc;
+    padding:6px;
+    border-radius:0.3rem;
+}
+.secondary-text
+{
+    background-color: #DCDCDC;
+    color: #696969;
+    padding:6px;
+    border-radius:0.3rem;
+}
+.light-green-text
+{
+    background-color: #f9ffe6;
+    color:#ace600;
+    padding:6px;
+    border-radius:0.3rem;
+}
+.tablular-num
+{
+    font-variant-numeric: tabular-nums;
+}
+
+hgroup
+{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+hgroup .card-subheading
+{
+    /* Visually, put on top, without affecting source order */
+    order: -1;
+}
