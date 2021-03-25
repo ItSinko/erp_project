@@ -28,7 +28,7 @@ Route::get('/home', function () {
 Route::post('/logout', function () {
     Auth::logout();
     return redirect('/login');
-});
+})->name('logout');
 
 Route::get('/chat', 'ChatController@index');
 Route::get('/message', 'ChatController@fetchMessages');
