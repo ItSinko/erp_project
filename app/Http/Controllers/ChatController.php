@@ -16,7 +16,7 @@ class ChatController extends Controller
 
     public function index()
     {
-        return view('ui.chat');
+        return view('page.chat');
     }
 
     public function fetchMessages()
