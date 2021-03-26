@@ -336,12 +336,12 @@ return [
                 [
                     'type' => 'js',
                     'asset' => true,
-                    'location' => 'vendor/datatables/dataTables.bootstrap4.min.js',
+                    'location' => 'vendor/datatables/jquery.dataTables.min.js',
                 ],
                 [
                     'type' => 'js',
                     'asset' => true,
-                    'location' => 'vendor/datatables/jquery.dataTables.min.js',
+                    'location' => 'vendor/datatables/dataTables.bootstrap4.min.js',
                 ],
                 [
                     'type' => 'js',
@@ -356,7 +356,7 @@ return [
                 [
                     'type' => 'css',
                     'asset' => true,
-                    'location' => 'vendor/select2-bootstrap4-theme/select2-bootstrap4.min.css',
+                    'location' => 'vendor/datatables/dataTables.bootstrap4.min.css',
                 ],
             ],
         ],
@@ -372,6 +372,11 @@ return [
                     'type' => 'css',
                     'asset' => true,
                     'location' => 'vendor/select2/css/select2.min.css',
+                ],
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => 'vendor/select2-bootstrap4-theme/select2-bootstrap4.min.css',
                 ],
             ],
         ],
