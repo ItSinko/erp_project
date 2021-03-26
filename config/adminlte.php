@@ -244,7 +244,7 @@ return [
             'header' => 'account_settings'
         ],
         [
-            'auth' => ['Ari Wijaya'],
+            'auth' => [26],
             'text' => 'profile',
             'url'  => '#',
             'icon' => 'fas fa-fw fa-user',
@@ -254,16 +254,37 @@ return [
             'url'  => '#',
             'icon' => 'fas fa-fw fa-lock',
         ],
-        ['header' => 'COMMON'],
         [
-            'text' => 'Default Form',
-            'url'  => '/default_form',
-            'icon' => 'fas fa-align-justify',
+            'header' => 'DATA MASTER',
+            'auth'   => [26]
         ],
         [
-            'text' => 'Default Table',
+            'text' => 'Produk',
             'url'  => '#',
             'icon' => 'fas fa-table',
+            'auth' => [26]
+        ],
+        [
+            'text' => 'Nama & Alamat',
+            'url'  => '/nama_alamat',
+            'icon' => 'fas fa-table',
+            'auth' => [26]
+        ],
+        [
+            'text' => 'Jasa Ekspedisi',
+            'url'  => '/jasa_eks',
+            'icon' => 'fas fa-table',
+            'auth' => [26]
+        ],
+        [
+            'header' => 'TRANSAKSI',
+            'auth'   => [26]
+        ],
+        [
+            'text' => 'SPA (Online)',
+            'url'  => '#',
+            'icon' => 'fas fa-table',
+            'auth' => [26]
         ],
         ['header' => 'LOGOUT'],
         [
@@ -315,17 +336,17 @@ return [
                 [
                     'type' => 'js',
                     'asset' => false,
-                    'location' => '//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js',
+                    'location' => 'vendor/jquery/jquery.min.js',
                 ],
                 [
                     'type' => 'js',
                     'asset' => false,
-                    'location' => '//cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js',
+                    'location' => 'vendor/datatables/jquery.dataTables.min.js',
                 ],
                 [
                     'type' => 'css',
                     'asset' => false,
-                    'location' => '//cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css',
+                    'location' => 'vendor/datatables/jquery.dataTables.min.css',
                 ],
             ],
         ],

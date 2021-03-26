@@ -36,6 +36,7 @@
     <link rel="stylesheet" href="{{asset('css/calendar.css')}}">
 
     <link rel="stylesheet" href="{{asset('css/background.css')}}">
+
     @if(!config('adminlte.enabled_laravel_mix'))
 
     <link rel="stylesheet" href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}">
@@ -44,6 +45,8 @@
     {{-- Configured Stylesheets --}}
     @include('adminlte.plugins', ['type' => 'css'])
 
+    <link rel="stylesheet" href="{{ asset('vendor/datatables/dataTables.bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendor/adminlte/dist/css/adminlte.min.css') }}">
     <link rel="stylesheet" href="{{ asset('vendor/adminlte/dist/css/adminlte.min.css') }}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
     @else
@@ -107,6 +110,15 @@
     @endif
     <script src="{{ asset('vendor/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
     <script src="{{ asset('vendor/select2/js/select2.full.min.js')}}"></script>
+    <script src="{{ asset('vendor/jquery/jquery.min.js')}}"></script>
+    <script src="{{ asset('vendor/datatables/jquery.dataTables.min.js')}}"></script>
+    <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
+    <script src="{{ asset('vendor/datatables/dataTables.responsive.min.js')}}"></script>
+    <script src="{{ asset('vendor/datatables/responsive.bootstrap4.min.js')}}"></script>
+
+
+
+
 
     {{-- Livewire Script --}}
     @if(config('adminlte.livewire'))
