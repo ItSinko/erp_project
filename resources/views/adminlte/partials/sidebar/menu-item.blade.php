@@ -2,7 +2,7 @@
 
 @if (isset($item['auth']))
 @foreach($item['auth'] as $user)
-@if ($user == Auth::user()->nama)
+@if ($user == Auth::user()->divisi_id)
 
 @if ($menuItemHelper->isHeader($item))
 

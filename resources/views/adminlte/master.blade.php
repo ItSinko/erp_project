@@ -23,8 +23,7 @@
     @yield('adminlte_css_pre')
 
     {{-- Base Stylesheets --}}
-    <link rel="stylesheet" href="{{asset('vendor/select2/css/select2.min.css')}}">
-    <link rel="stylesheet" href="{{asset('vendor/select2-bootstrap4-theme/select2-bootstrap4.min.css')}}">
+
     <link rel="stylesheet" href="{{asset('css/table.css')}}">
     <link rel="stylesheet" href="{{asset('css/text.css')}}">
     <link rel="stylesheet" href="{{asset('css/image.css')}}">
@@ -33,6 +32,7 @@
     <link rel="stylesheet" href="{{asset('css/background.css')}}">
 
     @if(!config('adminlte.enabled_laravel_mix'))
+    <link rel="stylesheet" href="{{ asset('vendor/adminlte/dist/css/adminlte.min.css') }}">
     <link rel="stylesheet" href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ asset('vendor/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
     {{-- Configured Stylesheets --}}

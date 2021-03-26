@@ -38,6 +38,19 @@ Route::post('/message', 'ChatController@sendMessage');
 //     return view('page.default_form');
 // });
 
+//JASA EKSPEDISI
+/* Tabel */
+Route::get('/jasa_eks', 'CommonController@jasa_eks')->name('jasa_eks');
+/* Get Data */
+Route::get('/jasa_eks/data', 'CommonController@jasa_eks_data');
+
+//NAMA & ALAMAT
+/* Tabel */
+Route::get('/nama_alamat', 'CommonController@nama_alamat')->name('nama_alamat');
+/* Get Data */
+Route::get('/nama_alamat/data', 'CommonController@nama_alamat_data');
+
+
 
 //PRODUK
 Route::get('/produk', 'ItController@produk')->name('produk');
