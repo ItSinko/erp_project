@@ -158,3 +158,6 @@ Route::put('/perakitan/hasil/update/{id}', 'ProduksiController@update_hasil_pera
 
 /* Delete */
 Route::delete('/perakitan/hasil/delete/{id}', 'ProduksiController@delete_hasil_perakitan')->name('perakitan.hasil.delete');
+
+//GUDANG
+Route::get('/gudang', 'GudangController@index')->name('gudang');

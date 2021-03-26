@@ -12,10 +12,10 @@ class GudangController extends Controller
         $this->middleware('auth');
     }
 
-    public function data_gudang()
+    public function index()
     {
         $data = Part::toBase()->get();
-        return view('gudang.data_gudang', compact('data'));
+        return view('page.gudang.data_gudang', compact('data'));
     }
 
     public function form_gudang()
@@ -24,14 +24,13 @@ class GudangController extends Controller
     }
 
     public function submit_form_gudang(Request $request)
-    {
-        {
+    { {
             $request->validate([
                 'kode'          => 'required',
                 'nama'          => 'required',
                 'jumlah'        => 'required|numeric',
             ]);
-    
+
             Part::create([
                 'part_id'       => $request->kode,
                 'klasifikasi'   => $request->klasifikasi,
@@ -40,7 +39,7 @@ class GudangController extends Controller
                 'satuan'        => $request->satuan,
                 'layout'        => $request->layout,
             ]);
-    
+
             return response()->json(['success' => 'Form is successfully submitted!']);
         }
     }
