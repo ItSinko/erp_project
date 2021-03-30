@@ -12,22 +12,24 @@
     <div class="card">
       <div class="card-body">
         <div class='table-responsive'>
-          <h2>Data Ekspedisi</h2>
+          <h2>Penjualan Produk</h2>
           <table id="tabel" class="table table-hover styled-table table-striped">
             <thead style="text-align: center;">
               <tr>
                 <th colspan="12">
-                  <a href="/jasa_eks/tambah" style="color: white;"><button type="button" class="btn btn-block btn-success btn-sm" style="width: 200px;"><i class="fas fa-plus"></i> &nbsp; Tambah</i></button></a>
+                  <a href="" style="color: white;"><button type="button" class="btn btn-block btn-success btn-sm" style="width: 200px;"><i class="fas fa-plus"></i> &nbsp; Tambah</i></button></a>
                 </th>
               </tr>
               <tr>
                 <th>No</th>
+                <th>Jenis</th>
                 <th>Nama</th>
                 <th>Telpon</th>
                 <th>Alamat</th>
-                <th>Jalur Pengiriman</th>
-                <th>Daerah Pengiriman</th>
-                <th>Catatan</th>
+                <th>Email</th>
+                <th>Diskon Nota</th>
+                <th>Diskon Uji</th>
+                <th>Temp</th>
                 <th></th>
               </tr>
             </thead>
@@ -106,35 +108,53 @@
     $('#tabel').DataTable({
       processing: true,
       serverSide: true,
-      ajax: '/jasa_eks/data',
+      ajax: '/nama_alamat/data',
       columns: [{
           data: 'DT_RowIndex',
           orderable: false,
           searchable: false
         },
         {
+          data: 'jenis'
+        },
+        {
           data: 'nama'
         },
         {
-          data: 'telp'
+          data: 'telp',
+          orderable: false,
+          searchable: false
         },
         {
-          data: 'alamat'
+          data: 'alamat',
+          orderable: false,
+          searchable: false
         },
         {
-          data: 'via'
+          data: 'email',
+          orderable: false,
+          searchable: false
         },
         {
-          data: 'jur'
+          data: 'dis_nota',
+          orderable: false,
+          searchable: false
         },
         {
-          data: 'ket'
+          data: 'dis_uji',
+          orderable: false,
+          searchable: false
+        },
+        {
+          data: 'tempo',
+          orderable: false,
+          searchable: false
         },
         {
           data: 'id',
           name: 'id',
           render: function(data) {
-            $btn = '<div class="inline-flex"><a href="/jasa_eks/ubah"><button type="button" class="btn btn-block btn-warning karyawan-img-small" style="border-radius:50%;"><i class="fas fa-edit"></i></button></a>';
+            $btn = '<div class="inline-flex"><a href="/nama_alamat/ubah/' + data + '"><button type="button" class="btn btn-block btn-warning karyawan-img-small" style="border-radius:50%;"><i class="fas fa-edit"></i></button></a>';
             $btn_edit = ' <button type="button" class="btn btn-block btn-danger karyawan-img-small" style="border-radius:50%;" data-toggle="modal" data-target="#delete" ><i class="fas fa-trash"></i></button></div>';
             return $btn + $btn_edit;
           },

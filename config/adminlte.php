@@ -259,8 +259,8 @@ return [
             'auth'   => [26]
         ],
         [
-            'text' => 'Produk',
-            'url'  => '#',
+            'text' => 'Penjualan Produk',
+            'url'  => '/pejualan_produk',
             'icon' => 'fas fa-table',
             'auth' => [26]
         ],

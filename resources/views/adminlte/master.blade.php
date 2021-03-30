@@ -37,7 +37,6 @@
 
     {{-- Configured Stylesheets --}}
     @include('adminlte.plugins', ['type' => 'css'])
-
     <link rel="stylesheet" href="{{ asset('vendor/adminlte/dist/css/adminlte.min.css') }}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
     @else
@@ -78,7 +77,6 @@
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="{{ asset('favicon/ms-icon-144x144.png') }}">
     @endif
-
 </head>
 
 <body class="@yield('classes_body')" @yield('body_data')>
