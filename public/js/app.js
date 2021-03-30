@@ -1991,7 +1991,7 @@ __webpack_require__.r(__webpack_exports__);
   props: ["messages", "user"],
   data: function data() {
     return {
-      image: "/asset/image/user/unknown.png"
+      image: "/assets/image/user/unknown.png"
     };
   },
   methods: {

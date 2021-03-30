@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 use App\Part;
 
 class GudangController extends Controller
@@ -14,8 +15,15 @@ class GudangController extends Controller
 
     public function index()
     {
-        $data = Part::toBase()->get();
-        return view('page.gudang.data_gudang', compact('data'));
+        return view('page.gudang.data_gudang');
+    }
+
+    public function get_data()
+    {
+        $data = Part::all();
+        return datatables::of($data)
+            ->addIndexColumn()
+            ->make(true);
     }
 
     public function form_gudang()
