@@ -157,3 +157,6 @@ Route::delete('/perakitan/hasil/delete/{id}', 'ProduksiController@delete_hasil_p
 //GUDANG
 Route::get('/gudang', 'GudangController@index')->name('gudang');
 Route::get('/gudang/data', 'GudangController@get_data')->name('gudang.data');
+
+//PPIC
+Route::get('/ppic', 'PpicController@index');
