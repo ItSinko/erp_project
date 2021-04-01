@@ -106,8 +106,9 @@
     <script src="{{ mix(config('adminlte.laravel_mix_js_path', 'js/app.js')) }}"></script>
     @endif
     <script src="{{ asset('vendor/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
-    <script src="{{ asset('vendor/select2/js/select2.full.min.js')}}"></script>
+
     <script src="{{ asset('vendor/jquery/jquery.min.js')}}"></script>
+    <script src="{{ asset('vendor/select2/js/select2.full.min.js')}}"></script>
     <script src="{{ asset('vendor/datatables/jquery.dataTables.min.js')}}"></script>
     <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
     <script src="{{ asset('vendor/datatables/dataTables.responsive.min.js')}}"></script>
@@ -124,6 +125,15 @@
 
     {{-- Custom Scripts --}}
     @yield('adminlte_js')
+    <script>
+        $(function() {
+            $('.select2').select2({
+                placeholder: "Pilih Data",
+                allowClear: true
+            });
+        })
+    </script>
+
 
 </body>
 

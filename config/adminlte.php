@@ -281,18 +281,42 @@ return [
             'auth'   => [26]
         ],
         [
-            'text' => 'SPA (Online)',
-            'url'  => '#',
-            'icon' => 'fas fa-table',
-            'auth' => [26]
+            'text'    => 'Online',
+            'icon'    => 'fas fa-table',
+            'auth' => [26],
+            'submenu' => [
+                [
+                    'text' => 'E-Katalog',
+                    'url'  => '/penjualan_online',
+                ],
+                [
+                    'text' => 'E-Commerce',
+                    'url'  => '#',
+                ],
+            ],
         ],
-        ['header' => 'LOGOUT'],
         [
-            'text' => 'Logout',
-            'url' => '/logout',
-            'icon' => 'fas fa-sign-out-alt',
-            'form' => true,
+            'text'    => 'PO / DO',
+            'icon'    => 'fas fa-table',
+            'auth' => [26],
+            'submenu' => [
+                [
+                    'text' => 'E-Katalog',
+                    'url'  => '/penjualan_online',
+                ],
+                [
+                    'text' => 'E-Commerce',
+                    'url'  => '#',
+                ],
+            ],
         ],
+        // ['header' => 'LOGOUT'],
+        // [
+        //     'text' => 'Logout',
+        //     'url' => '/logout',
+        //     'icon' => 'fas fa-sign-out-alt',
+        //     'form' => true,
+        // ],
     ],
 
     /*

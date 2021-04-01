@@ -8,7 +8,7 @@ class Distributor extends Model
 {
     protected $table = 'distributors';
     protected $primaryKey = 'id';
-    protected $fillable = ['jenis', 'pabrik', 'alamat', 'email', 'telp', 'dis_nota', 'dis_uji', 'tempo'];
+    protected $fillable = ['jenis', 'nama', 'alamat', 'email', 'telp', 'dis_nota', 'dis_uji', 'tempo', 'ket'];
 
     //public function spaon(){
     // return $this->hasMany('App\Spaon');
