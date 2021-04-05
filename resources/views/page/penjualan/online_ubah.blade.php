@@ -24,7 +24,7 @@
                     <div class="form-group row">
                       <label for="no_pemeriksaan" class="col-sm-4 col-form-label " style="text-align:right;">LKPP</label>
                       <div class="col-sm-8">
-                        <input type="text" class="form-control @error('lkpp') is-invalid @enderror" name="lkpp" id="lkpp" value="" style="width:35%;" value="{{ old('lkpp') }}">
+                        <input type="text" class="form-control @error('lkpp') is-invalid @enderror" name="lkpp" id="lkpp" style="width:35%;" value="{{ $ekatjual->lkpp }}" readonly>
                         @if($errors->has('lkpp'))
                         <div class="text-danger">
                           {{ $errors->first('lkpp')}}
@@ -40,7 +40,7 @@
                           <div class="input-group-prepend">
                             <span class="input-group-text">AK1-P</span>
                           </div>
-                          <input type="text" class="form-control" placeholder="No AK1 Katalog" name="ak1" value="{{ old('ak1') }}">
+                          <input type="text" class="form-control" placeholder="No AK1 Katalog" name="ak1" value="{{ substr($ekatjual->ak1,5) }}">
                         </div>
                         @if($errors->has('ak1'))
                         <div class="text-danger">
@@ -53,7 +53,7 @@
                       <label for="keterangan" class="col-sm-4 col-form-label" style="text-align:right;">Distributor</label>
                       <div class="col-sm-4">
                         <select class="form-control select2 @error('distributor_id') is-invalid @enderror" name="distributor_id">
-                          <option value="">Pilih Distributor</option>
+                          <option value="{{$ekatjual->distributor_id}}">{{$ekatjual->distributor->nama}}</option>
                           @foreach ($distributor as $d)
                           <option value="{{$d->id}}">{{$d->nama}}</option>
                           @endforeach
@@ -68,7 +68,7 @@
                     <div class="form-group row">
                       <label for="keterangan" class="col-sm-4 col-form-label" style="text-align:right;">Deskripsi Paket</label>
                       <div class="col-sm-8">
-                        <textarea class="form-control @error('despaket') is-invalid @enderror" name="despaket" id="despaket" style="width:50%;">{{ old('despaket') }}</textarea>
+                        <textarea class="form-control @error('despaket') is-invalid @enderror" name="despaket" id="despaket" style="width:50%;">{{ $ekatjual->despaket }}</textarea>
                         @if($errors->has('despaket'))
                         <div class="text-danger">
                           {{ $errors->first('despaket')}}
@@ -79,7 +79,7 @@
                     <div class="form-group row">
                       <label for="no_pemeriksaan" class="col-sm-4 col-form-label " style="text-align:right;">Instansi</label>
                       <div class="col-sm-8">
-                        <input type="text" class="form-control @error('instansi') is-invalid @enderror" name="instansi" id="instansi" value="{{ old('instansi') }}" style="width:50%;">
+                        <input type="text" class="form-control @error('instansi') is-invalid @enderror" name="instansi" id="instansi" value="{{ $ekatjual->instansi }}" style="width:50%;">
                         @if($errors->has('instansi'))
                         <div class="text-danger">
                           {{ $errors->first('instansi')}}
@@ -90,7 +90,7 @@
                     <div class="form-group row">
                       <label for="no_pemeriksaan" class="col-sm-4 col-form-label " style="text-align:right;">Satuan Kerja</label>
                       <div class="col-sm-8">
-                        <input type="text" class="form-control @error('satuankerja') is-invalid @enderror" name="satuankerja" id="satuankerja" value="{{ old('satuankerja') }}" style="width:50%;">
+                        <input type="text" class="form-control @error('satuankerja') is-invalid @enderror" name="satuankerja" id="satuankerja" value="{{ $ekatjual->satuankerja }}" style="width:50%;">
                         @if($errors->has('satuankerja'))
                         <div class="text-danger">
                           {{ $errors->first('satuankerja')}}
@@ -102,7 +102,7 @@
                       <label for="keterangan" class="col-sm-4 col-form-label" style="text-align:right;">Status</label>
                       <div class="col-sm-4">
                         <select class="form-control @error('status') is-invalid @enderror select2" name="status">
-                          <option value="">Pilih Status</option>
+                          <option value="{{$ekatjual->status }}">{{$ekatjual->status}}</option>
                           <option value="Sepakat">Sepakat</option>
                           <option value="Masih Negoisasi">Masih Negoisasi</option>
                           <option value="Batal">Batal</option>
@@ -117,7 +117,7 @@
                     <div class="form-group row">
                       <label for="no_pemeriksaan" class="col-sm-4 col-form-label " style="text-align:right;">Tgl Buat</label>
                       <div class="col-sm-8">
-                        <input type="date" class="form-control @error('tglbuat') is-invalid @enderror" name="tglbuat" id="tglbuat" value="{{ old('tglbuat') }}" style="width:35%;">
+                        <input type="date" class="form-control @error('tglbuat') is-invalid @enderror" name="tglbuat" id="tglbuat" value="{{ $ekatjual->tglbuat }}" style="width:35%;">
                         @if($errors->has('tglbuat'))
                         <div class="text-danger">
                           {{ $errors->first('tglbuat')}}
@@ -128,7 +128,7 @@
                     <div class="form-group row">
                       <label for="no_pemeriksaan" class="col-sm-4 col-form-label " style="text-align:right;">Tgl Edit</label>
                       <div class="col-sm-8">
-                        <input type="date" class="form-control @error('tgledit') is-invalid @enderror" name="tgledit" id="tgledit" value="{{ old('tgledit') }}" style="width:35%;">
+                        <input type="date" class="form-control @error('tgledit') is-invalid @enderror" name="tgledit" id="tgledit" value="{{ $ekatjual->tgledit }}" style="width:35%;">
                       </div>
                     </div>
 

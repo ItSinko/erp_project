@@ -12,7 +12,6 @@ use Yajra\DataTables\Facades\DataTables;
 
 use App\Jasa_eks;
 use App\Distributor;
-use App\Paket_produk;
 use App\Produk;
 
 class CommonController extends Controller
@@ -172,17 +171,24 @@ class CommonController extends Controller
         }
     }
 
+    public function penjualan_produk()
+    {
+        return view('page.common.penjualan_produk');
+    }
+
+
+    public function penjualan_produk_data()
+    {
+        $data = Produk::all();
+        return datatables::of($data)
+            ->addIndexColumn()
+            ->make(true);
+    }
+
+    // Get Data
     public function produk_get_select($id)
     {
         $data = Produk::where('id', $id)->get();
         echo json_encode($data);
-    }
-
-    public function penjualan_produk()
-    {
-        $data = Paket_produk::all();
-        return datatables::of($data)
-            ->addIndexColumn()
-            ->make(true);
     }
 }

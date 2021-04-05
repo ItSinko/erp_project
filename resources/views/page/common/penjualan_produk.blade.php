@@ -22,14 +22,12 @@
               </tr>
               <tr>
                 <th>No</th>
-                <th>Jenis</th>
+                <th>Merk</th>
+                <th>Tipe</th>
                 <th>Nama</th>
-                <th>Telpon</th>
-                <th>Alamat</th>
-                <th>Email</th>
-                <th>Diskon Nota</th>
-                <th>Diskon Uji</th>
-                <th>Temp</th>
+                <th>Satuan</th>
+                <th>No AKD</th>
+                <th>Catatan</th>
                 <th></th>
               </tr>
             </thead>
@@ -108,48 +106,34 @@
     $('#tabel').DataTable({
       processing: true,
       serverSide: true,
-      ajax: '/nama_alamat/data',
+      language: {
+        processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
+      },
+      ajax: '/penjualan_produk/data',
       columns: [{
           data: 'DT_RowIndex',
           orderable: false,
           searchable: false
         },
         {
-          data: 'jenis'
+          data: 'merk'
+        },
+        {
+          data: 'tipe'
         },
         {
           data: 'nama'
         },
         {
-          data: 'telp',
-          orderable: false,
-          searchable: false
+          data: 'satuan'
         },
         {
-          data: 'alamat',
-          orderable: false,
-          searchable: false
+          data: 'no_akd'
         },
         {
-          data: 'email',
-          orderable: false,
-          searchable: false
+          data: 'keterangan'
         },
-        {
-          data: 'dis_nota',
-          orderable: false,
-          searchable: false
-        },
-        {
-          data: 'dis_uji',
-          orderable: false,
-          searchable: false
-        },
-        {
-          data: 'tempo',
-          orderable: false,
-          searchable: false
-        },
+
         {
           data: 'id',
           name: 'id',

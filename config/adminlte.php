@@ -260,7 +260,7 @@ return [
         ],
         [
             'text' => 'Penjualan Produk',
-            'url'  => '/pejualan_produk',
+            'url'  => '/penjualan_produk',
             'icon' => 'fas fa-table',
             'auth' => [26]
         ],
@@ -302,7 +302,7 @@ return [
             'submenu' => [
                 [
                     'text' => 'E-Katalog',
-                    'url'  => '/penjualan_online',
+                    'url'  => '#',
                 ],
                 [
                     'text' => 'E-Commerce',

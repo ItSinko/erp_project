@@ -24,8 +24,20 @@ class PenjualanController extends Controller
     }
     public function penjualan_online_data()
     {
-        $data = Ekatjual::all();
+        $data = Ekatjual::with('distributor');
         return datatables::of($data)
+            ->addIndexColumn()
+            ->make(true);
+    }
+    public function detail_penjualan_online_data($id)
+    {
+
+        $data = Detail_ekatjual::with('produk')
+            ->where('ekatjuals_id', $id);
+        return datatables::of($data)
+            ->editColumn('total', function ($data) {
+                return $data->harga * $data->jumlah;
+            })
             ->addIndexColumn()
             ->make(true);
     }
@@ -34,6 +46,13 @@ class PenjualanController extends Controller
         $distributor = Distributor::all();
         $produk = Produk::all();
         return view('page.penjualan.online_tambah', ['distributor' => $distributor, 'produk' => $produk]);
+    }
+    public function penjualan_online_ubah($id)
+    {
+        $ekatjual = Ekatjual::find($id);
+        $distributor = Distributor::all();
+        $produk = Produk::all();
+        return view('page.penjualan.online_ubah', ['distributor' => $distributor, 'produk' => $produk, 'ekatjual' => $ekatjual]);
     }
     public function penjualan_online_cek_data($lkpp)
     {
@@ -46,14 +65,14 @@ class PenjualanController extends Controller
         $this->validate(
             $request,
             [
-                'lkpp' => 'required|unique:spaons',
+                'lkpp' => 'required|unique:ekatjuals',
                 'distributor_id' => 'required',
                 'ak1' => 'required',
                 'instansi' => 'required',
                 'satuankerja' => 'required',
                 'status' => 'required',
                 'tglbuat' => 'required',
-                'despaket' => 'required'
+                'despaket' => 'required',
             ],
             [
                 'lkpp.required' => "LKPP harus diisi",
@@ -64,22 +83,16 @@ class PenjualanController extends Controller
                 'instansi.required' => 'Instansi harus diisi',
                 'satuankerja.required' => 'Satuan Kerja harus diisi',
                 'status.required' => 'Status harus dipilih',
-                'tglbuat.required' => 'Tgl Buat harus diisi'
+                'tglbuat.required' => 'Tgl Buat harus diisi',
+                'produk_id.required' => 'Produk harus dipilih'
             ]
         );
 
-        for ($i = 0; $i < count($request->produk_id); $i++) {
-            $yeye = Detail_ekatjual::create([
-                'ekatjual' => 2,
-                'produk_id' => $request->type_produk[$i],
-                'harga' => $request->harga_produk[$i],
-                'jumlah' => $request->jumlah[$i]
-            ]);
-        }
+        $ak = 'AK1-P';
         $ekatjual = Ekatjual::create([
             'lkpp' =>  $request->lkpp,
             'distributor_id' => $request->distributor_id,
-            'ak1' => $request->ak1,
+            'ak1' => $ak . $request->ak1,
             'despaket' => $request->despaket,
             'instansi' => $request->instansi,
             'satuankerja' => $request->satuankerja,
@@ -87,6 +100,15 @@ class PenjualanController extends Controller
             'tglbuat' => $request->tglbuat,
             'tgledit' => $request->tgledit,
         ]);
+
+        for ($i = 0; $i < count($request->produk_id); $i++) {
+            $yeye = Detail_ekatjual::create([
+                'ekatjuals_id' => $ekatjual->id,
+                'produk_id' => $request->produk_id[$i],
+                'harga' => $request->harga[$i],
+                'jumlah' => $request->jumlah[$i]
+            ]);
+        }
 
         if ($ekatjual) {
             return redirect()->back()->with('success', "Berhasil menambahkan data");

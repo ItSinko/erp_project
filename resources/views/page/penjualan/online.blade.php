@@ -25,7 +25,6 @@
                 <th>Status</th>
                 <th>LKPP</th>
                 <th>Distributor</th>
-                <th>Paket Produk</th>
                 <th>AK1</th>
                 <th>Deskripsi</th>
                 <th>Instansi</th>
@@ -101,13 +100,61 @@
     </div>
   </div>
 </div>
+<!-- Modal Detail -->
+<div class="modal fade  bd-example-modal-lg" id="detail_mod" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">
+          <div class="data_detail_head"></div>
+        </h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <div class="data_detail">
+          <table class="table table-hover styled-table table-striped" width="100%" id="tabel_detail">
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Tipe</th>
+                <th>Nama Produk</th>
+                <th>Harga</th>
+                <th>Jumlah</th>
+                <th>Sub Total</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+              <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Modal Detail -->
 @stop
 @section('adminlte_js')
 <script>
   $(function() {
-    $('#tabel').DataTable({
+    var tabel = $('#tabel').DataTable({
       processing: true,
       serverSide: true,
+      language: {
+        processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
+      },
       ajax: '/penjualan_online/data',
       columns: [{
           data: 'DT_RowIndex',
@@ -115,19 +162,26 @@
           searchable: false
         },
         {
-          data: 'lkpp'
+          data: 'status',
+          render: function(data) {
+            if (data == 'Sepakat') {
+              return '<i class="fas fa-check-circle " title = "' + data + '"></i>';
+            } else if (data == 'Masih Negoisasi') {
+              return '<i class="fas fa-exclamation-triangle  " title = "' + data + '"></i>';
+            } else {
+              return '<i class="fas fa-times-circle " title = "' + data + '"></i>';
+            }
+          },
+          orderable: false,
         },
         {
           data: 'lkpp'
         },
         {
-          data: 'despaket'
+          data: 'distributor.nama'
         },
         {
-          data: 'lkpp'
-        },
-        {
-          data: 'lkpp'
+          data: 'ak1'
         },
         {
           data: 'despaket'
@@ -147,10 +201,9 @@
 
         {
           data: 'id',
-          name: 'id',
           render: function(data) {
-            $btn_view = '<div class="inline-flex"><a href="/nama_alamat/detail/' + data + '"><button type="button" class="btn btn-block btn-warning karyawan-img-small" style="border-radius:50%;"><i class="fas fa-edit"></i></button></a>';
-            $btn_edit = '<a href="/nama_alamat/ubah/' + data + '"><button type="button" class="btn btn-block btn-warning karyawan-img-small" style="border-radius:50%;"><i class="fas fa-edit"></i></button></a>';
+            $btn_view = '<div class="inline-flex"><button type="button" id="detail" class="btn btn-block btn-primary karyawan-img-small" style="border-radius:50%;"> <i class="fa fa-eye" aria-hidden="true"></i></button>';
+            $btn_edit = '<a href="/penjualan_online/ubah/' + data + '"><button type="button" class="btn btn-block btn-warning karyawan-img-small" style="border-radius:50%;"><i class="fas fa-edit"></i></button></a>';
             $btn_hapus = ' <button type="button" class="btn btn-block btn-danger karyawan-img-small" style="border-radius:50%;" data-toggle="modal" data-target="#delete" ><i class="fas fa-trash"></i></button></div>';
             return $btn_view + $btn_edit + $btn_hapus;
           },
@@ -159,6 +212,111 @@
         },
       ]
     });
+
+
+    $('#tabel tbody').on('click', '#detail', function() {
+
+      var rows = tabel.rows($(this).parents('tr')).data();
+      $('.data_detail_head').html(
+        'Detail Paket : ' + rows[0]['ak1']
+      );
+
+
+      $('#tabel_detail').DataTable({
+        processing: true,
+        destroy: true,
+        serverSide: true,
+        language: {
+          processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
+        },
+        ajax: '/penjualan_online/detail/data/' + rows[0]['id'],
+        columns: [{
+            data: 'DT_RowIndex',
+            orderable: false,
+            searchable: false
+          },
+          {
+            data: 'produk.tipe'
+          },
+          {
+            data: 'produk.nama'
+          },
+          {
+            data: 'harga',
+            render: $.fn.dataTable.render.number(',', '.', 2),
+            orderable: false,
+            searchable: false
+          },
+          {
+            data: 'jumlah',
+            orderable: false,
+            searchable: false
+          },
+          {
+            data: 'total',
+            render: $.fn.dataTable.render.number(',', '.', 2),
+            orderable: false,
+            searchable: false
+          },
+        ],
+        footerCallback: function(row, data, start, end, display) {
+          var api = this.api(),
+            data;
+
+          // converting to interger to find total
+          var intVal = function(i) {
+            return typeof i === 'string' ?
+              i.replace(/[\$,]/g, '') * 1 :
+              typeof i === 'number' ?
+              i : 0;
+          };
+
+          // computing column Total of the complete result 
+          var jumlah_pesanan = api
+            .column(4)
+            .data()
+            .reduce(function(a, b) {
+              return intVal(a) + intVal(b);
+            }, 0);
+
+
+
+          // computing column Total of the complete result 
+          var total_pesanan = api
+            .column(5)
+            .data()
+            .reduce(function(a, b) {
+              return intVal(a) + intVal(b);
+            }, 0);
+
+          var num_for = $.fn.dataTable.render.number(',', '.', 2).display;
+          $(api.column(0).footer()).html('Total');
+          $(api.column(4).footer()).html(jumlah_pesanan);
+          $(api.column(5).footer()).html(num_for(total_pesanan));
+        },
+
+      });
+
+
+      $('#detail_mod').modal('show');
+    });
+
+
+
+
+    // $.ajax({
+    //   url: '/penjualan_online/detail/data/' + rows[0]['id'],
+    //   type: 'get',
+    //   dataType: 'JSON',
+    //   success: function(data) {
+
+    //     jQuery('#tabel_detail > tbody >tr').empty();
+    //     $.each(data, function(key, value) {
+    //       $('#tabel_detail').append('<tr><td>' + value['id'] + '</td></tr>');
+    //     });
+    //   }
+    // });
   });
 </script>
+
 @endsection

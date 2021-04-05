@@ -108,6 +108,9 @@
     $('#tabel').DataTable({
       processing: true,
       serverSide: true,
+      language: {
+        processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
+      },
       ajax: '/nama_alamat/data',
       columns: [{
           data: 'DT_RowIndex',

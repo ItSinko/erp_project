@@ -10,9 +10,10 @@ class Distributor extends Model
     protected $primaryKey = 'id';
     protected $fillable = ['jenis', 'nama', 'alamat', 'email', 'telp', 'dis_nota', 'dis_uji', 'tempo', 'ket'];
 
-    //public function spaon(){
-    // return $this->hasMany('App\Spaon');
-    // }
+    public function ekatjual()
+    {
+        return $this->hasMany('App\Ekatjual');
+    }
     //public function podo_on(){
     //  return $this->hasMany('App\podo_on');
     //}

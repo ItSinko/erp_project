@@ -66,9 +66,10 @@ Route::get('/nama_alamat/ubah/{id}', 'CommonController@nama_alamat_ubah');
 Route::post('/nama_alamat/aksi_tambah', 'CommonController@nama_alamat_aksi_tambah');
 Route::put('/nama_alamat/aksi_ubah/{id}', 'CommonController@nama_alamat_aksi_ubah');
 
-//PAKET PRODUK
+//PENJUALAN PRODUK
 /*Tabel*/
 Route::get('/penjualan_produk', 'CommonController@penjualan_produk')->name('penjualan_produk');
+Route::get('/penjualan_produk/data', 'CommonController@penjualan_produk_data');
 
 
 //PENJUALAN (ONLINE)
@@ -76,8 +77,11 @@ Route::get('/penjualan_produk', 'CommonController@penjualan_produk')->name('penj
 Route::get('/penjualan_online', 'PenjualanController@penjualan_online');
 /* Get Data */
 Route::get('/penjualan_online/data', 'PenjualanController@penjualan_online_data');
+Route::get('/penjualan_online/detail/data/{id}', 'PenjualanController@detail_penjualan_online_data');
 /* Tambah */
 Route::get('/penjualan_online/tambah', 'PenjualanController@penjualan_online_tambah');
+/* Ubah */
+Route::get('/penjualan_online/ubah/{id}', 'PenjualanController@penjualan_online_ubah');
 /* Cek Data */
 Route::get('/penjualan_online/cek_data/{lkpp}', 'PenjualanController@penjualan_online_cek_data');
 /* Action */
@@ -89,8 +93,6 @@ Route::get('/penjualan_online/detail/{id},');
 //GET DATA SELECT
 /* Get Data */
 Route::get('/produk/get_select/{id}', 'CommonController@produk_get_select');
-
-
 
 
 
