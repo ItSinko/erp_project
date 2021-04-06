@@ -1,7 +1,5 @@
 @extends('adminlte.page')
-
 @section('title', 'Beta Version')
-
 @section('content_header')
 <h1 class="m-0 text-dark">Dashboard</h1>
 @stop
@@ -9,7 +7,7 @@
 <div class="row">
   <div class="col-lg-12">
     <div class="col-lg-12">
-      <form method="post" action="">
+      <form method="post" action="/nama_alamat/aksi_tambah">
         {{ csrf_field() }}
         <div class="card">
           <div class="card-header bg-success">
@@ -103,7 +101,6 @@
                   </div>
                 </div>
               </div>
-
             </div>
           </div>
           <div class="card-footer">

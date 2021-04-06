@@ -10,7 +10,7 @@
 <div class="row">
   <div class="col-lg-12">
     <div class="col-lg-12">
-      <form method="post" action="">
+      <form method="post" action="/jasa_eks/aksi_tambah">
         {{ csrf_field() }}
         <div class="card">
           <div class="card-header bg-success">
@@ -31,7 +31,7 @@
                     <div class="form-group row">
                       <label for="keterangan" class="col-sm-4 col-form-label" style="text-align:right;">Pilih Pengiriman</label>
                       <div class="col-sm-4">
-                        <select class="form-control @error('alamat') is-invalid @enderror">
+                        <select class="form-control @error('via') is-invalid @enderror" name="via">
                           <option value="">Pilih Pengiriman</option>
                           <option value="Darat">Darat</option>
                           <option value="Laut">Laut</option>
@@ -48,7 +48,7 @@
                     <div class="form-group row">
                       <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Daerah</label>
                       <div class="col-sm-8">
-                        <input type="text" class="form-control @error('email') is-invalid @enderror" name="email" id="email" value="" style="width:45%;">
+                        <input type="text" class="form-control @error('email') is-invalid @enderror" name="jur" id="jur" value="" style="width:45%;">
                       </div>
                       <span role="alert" id="no_pemeriksaan-msg"></span>
                     </div>
@@ -68,11 +68,10 @@
                   </div>
                 </div>
               </div>
-
             </div>
           </div>
           <div class="card-footer">
-            <span class="float-left"><button class="btn btn-danger rounded-pill" id="button_tambah"><i class="fas fa-times"></i>&nbsp;Batal</button></span>
+            <span class="float-left"><button class="btn btn-danger rounded-pill"><i class="fas fa-times"></i>&nbsp;Batal</button></span>
             <span class="float-right"><button class="btn btn-success rounded-pill" id="button_tambah"><i class="fas fa-plus"></i>&nbsp;Tambah Data</button></span>
           </div>
         </div>

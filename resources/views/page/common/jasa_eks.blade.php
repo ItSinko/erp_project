@@ -107,6 +107,9 @@
       processing: true,
       serverSide: true,
       ajax: '/jasa_eks/data',
+      language: {
+        processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
+      },
       columns: [{
           data: 'DT_RowIndex',
           orderable: false,
@@ -134,7 +137,7 @@
           data: 'id',
           name: 'id',
           render: function(data) {
-            $btn = '<div class="inline-flex"><a href="/jasa_eks/ubah"><button type="button" class="btn btn-block btn-warning karyawan-img-small" style="border-radius:50%;"><i class="fas fa-edit"></i></button></a>';
+            $btn = '<div class="inline-flex"><a href="/jasa_eks/ubah/' + data + '"><button type="button" class="btn btn-block btn-warning karyawan-img-small" style="border-radius:50%;"><i class="fas fa-edit"></i></button></a>';
             $btn_edit = ' <button type="button" class="btn btn-block btn-danger karyawan-img-small" style="border-radius:50%;" data-toggle="modal" data-target="#delete" ><i class="fas fa-trash"></i></button></div>';
             return $btn + $btn_edit;
           },

@@ -32,4 +32,8 @@ class Produk extends Model
     {
         return $this->hasMany('App\Detail_paket_produk');
     }
+    public function detail_ekatjual()
+    {
+        return $this->hasMany('App\Produk');
+    }
 }

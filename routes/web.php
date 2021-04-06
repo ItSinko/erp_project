@@ -47,9 +47,10 @@ Route::get('/jasa_eks/data', 'CommonController@jasa_eks_data');
 /* Tambah */
 Route::get('/jasa_eks/tambah', 'CommonController@jasa_eks_tambah');
 /* Ubah */
-Route::get('/jasa_eks/ubah', 'CommonController@jasa_eks_ubah');
+Route::get('/jasa_eks/ubah/{id}', 'CommonController@jasa_eks_ubah');
 /* Action */
-Route::get('/jasa_eks/aksi_tambah', 'CommonController@jasa_eks_aksi_tambah');
+Route::post('/jasa_eks/aksi_tambah', 'CommonController@jasa_eks_aksi_tambah');
+Route::put('/jasa_eks/aksi_ubah/{id}', 'CommonController@jasa_eks_aksi_ubah');
 
 
 //NAMA & ALAMAT
@@ -60,11 +61,39 @@ Route::get('/nama_alamat/data', 'CommonController@nama_alamat_data');
 /* Tambah */
 Route::get('/nama_alamat/tambah', 'CommonController@nama_alamat_tambah');
 /* Ubah */
-Route::get('/nama_alamat/ubah', 'CommonController@nama_alamat_ubah');
+Route::get('/nama_alamat/ubah/{id}', 'CommonController@nama_alamat_ubah');
+/* Action */
+Route::post('/nama_alamat/aksi_tambah', 'CommonController@nama_alamat_aksi_tambah');
+Route::put('/nama_alamat/aksi_ubah/{id}', 'CommonController@nama_alamat_aksi_ubah');
 
-//PAKET PRODUK
+//PENJUALAN PRODUK
 /*Tabel*/
 Route::get('/penjualan_produk', 'CommonController@penjualan_produk')->name('penjualan_produk');
+Route::get('/penjualan_produk/data', 'CommonController@penjualan_produk_data');
+
+
+//PENJUALAN (ONLINE)
+/*Tabel*/
+Route::get('/penjualan_online', 'PenjualanController@penjualan_online');
+/* Get Data */
+Route::get('/penjualan_online/data', 'PenjualanController@penjualan_online_data');
+Route::get('/penjualan_online/detail/data/{id}', 'PenjualanController@detail_penjualan_online_data');
+/* Tambah */
+Route::get('/penjualan_online/tambah', 'PenjualanController@penjualan_online_tambah');
+/* Ubah */
+Route::get('/penjualan_online/ubah/{id}', 'PenjualanController@penjualan_online_ubah');
+/* Cek Data */
+Route::get('/penjualan_online/cek_data/{lkpp}', 'PenjualanController@penjualan_online_cek_data');
+/* Action */
+Route::post('/penjualan_online/aksi_tambah', 'PenjualanController@penjualan_online_aksi_tambah');
+/* Detail */
+Route::get('/penjualan_online/detail/{id},');
+
+
+//GET DATA SELECT
+/* Get Data */
+Route::get('/produk/get_select/{id}', 'CommonController@produk_get_select');
+
 
 
 //PRODUK

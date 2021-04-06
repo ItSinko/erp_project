@@ -5,13 +5,13 @@
 @section('content_header')
 <h1 class="m-0 text-dark">Dashboard</h1>
 @stop
-
 @section('content')
 <div class="row">
   <div class="col-lg-12">
     <div class="col-lg-12">
-      <form method="post" action="">
+      <form method="post" action="/nama_alamat/aksi_ubah/{{$nama_alamat->id}}">
         {{ csrf_field() }}
+        {{method_field('PUT')}}
         <div class="card">
           <div class="card-header bg-success">
             <div class="card-title"><i class="fas fa-plus-circle"></i>&nbsp;Ubah</div>
@@ -24,7 +24,7 @@
                     <div class="form-group row">
                       <label for="no_pemeriksaan" class="col-sm-4 col-form-label " style="text-align:right;">Nama</label>
                       <div class="col-sm-8">
-                        <input type="text" class="form-control @error('nama') is-invalid @enderror" name="nama" id="nama" value="{{old('nama')}}" style="width:45%;">
+                        <input type="text" class="form-control @error('nama') is-invalid @enderror" name="nama" id="nama" value="{{$nama_alamat->nama}}" style="width:45%;">
                       </div>
                       <span role="alert" id="no_pemeriksaan-msg"></span>
                     </div>
@@ -32,7 +32,7 @@
                       <label for="no_seri" class="col-sm-4 col-form-label" style="text-align:right;">Jenis</label>
                       <div class="col-sm-8">
                         <select class="form-control select2 select2-info @error('jenis') custom-select is-invalid @enderror" data-dropdown-css-class="s-2" style="width: 50%;" name="jenis">
-                          <option value="">Pilih Jenis</option>
+                          <option value="{{$nama_alamat->jenis}}">{{$nama_alamat->jenis}}</option>
                           <option value="Pelanggan">Pelanggan</option>
                           <option value="Distributor">Distributor</option>
                         </select>
@@ -42,13 +42,13 @@
                     <div class="form-group row">
                       <label for="keterangan" class="col-sm-4 col-form-label" style="text-align:right;">Alamat</label>
                       <div class="col-sm-8">
-                        <textarea class="form-control @error('alamat') is-invalid @enderror" name="alamat" id="alamat" style="width:70%;">{{old('alamat')}}</textarea>
+                        <textarea class="form-control @error('alamat') is-invalid @enderror" name="alamat" id="alamat" style="width:70%;">{{$nama_alamat->alamat}}</textarea>
                       </div>
                     </div>
                     <div class="form-group row">
                       <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Email</label>
                       <div class="col-sm-8">
-                        <input type="text" class="form-control @error('email') is-invalid @enderror" name="email" id="email" value="{{old('email')}}" style="width:45%;">
+                        <input type="text" class="form-control @error('email') is-invalid @enderror" name="email" id="email" value="{{$nama_alamat->email}}" style="width:45%;">
                       </div>
                       <span role="alert" id="no_pemeriksaan-msg"></span>
                     </div>
@@ -56,7 +56,7 @@
                   <div class="form-group row">
                     <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Telpon</label>
                     <div class="col-sm-8">
-                      <input type="text" class="form-control @error('telp') is-invalid @enderror" name="telp" id="telp" value="{{old('telp')}}" style="width:45%;">
+                      <input type="text" class="form-control @error('telp') is-invalid @enderror" name="telp" id="telp" value="{{$nama_alamat->telp}}" style="width:45%;">
                     </div>
                     <span role="alert" id="no_pemeriksaan-msg"></span>
                   </div>
@@ -64,7 +64,7 @@
                     <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Diskon Nota</label>
                     <div class="col-sm-1">
                       <div class="input-group mb-3">
-                        <input type="text" class="form-control @error('dis_nota') is-invalid @enderror" placeholder="123" name="dis_nota" value="{{ old('dis_nota') }}">
+                        <input type="text" class="form-control @error('dis_nota') is-invalid @enderror" placeholder="123" name="dis_nota" value="{{$nama_alamat->dis_nota}}">
                         <div class="input-group-prepend">
                           <span class="input-group-text">%</span>
                         </div>
@@ -76,7 +76,7 @@
                     <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Diskon Uji</label>
                     <div class="col-sm-1">
                       <div class="input-group mb-3">
-                        <input type="text" class="form-control @error('dis_uji') is-invalid @enderror" placeholder="123" name="dis_uji" value="{{ old('dis_uji') }}">
+                        <input type="text" class="form-control @error('dis_uji') is-invalid @enderror" placeholder="123" name="dis_uji" value="{{$nama_alamat->dis_uji}}">
                         <div class="input-group-prepend">
                           <span class="input-group-text">%</span>
                         </div>
@@ -88,7 +88,7 @@
                     <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Tempo Bayar</label>
                     <div class="col-sm-1">
                       <div class="input-group mb-3">
-                        <input type="text" class="form-control @error('tempo') is-invalid @enderror" placeholder="123" name="tempo" value="{{ old('tempo') }}">
+                        <input type="text" class="form-control @error('tempo') is-invalid @enderror" placeholder="123" name="tempo" value="{{$nama_alamat->tempo}}">
                         <div class="input-group-prepend">
                           <span class="input-group-text">Hari</span>
                         </div>
@@ -99,7 +99,7 @@
                   <div class="form-group row">
                     <label for="keterangan" class="col-sm-4 col-form-label" style="text-align:right;">Keterangan</label>
                     <div class="col-sm-8">
-                      <textarea class="form-control @error('ket') is-invalid @enderror" name="ket" id="ket" style="width:70%;">{{old('ket')}}</textarea>
+                      <textarea class="form-control @error('ket') is-invalid @enderror" name="ket" id="ket" style="width:70%;">{{$nama_alamat->ket}}</textarea>
                     </div>
                   </div>
                 </div>
