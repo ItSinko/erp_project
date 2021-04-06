@@ -116,7 +116,11 @@
     <livewire:scripts />
     @endif
     @endif
-
+    <script>
+        $(function() {
+            $('select2').select2();
+        });
+    </script>
     {{-- Custom Scripts --}}
     @yield('adminlte_js')
 
