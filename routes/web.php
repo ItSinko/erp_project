@@ -69,8 +69,14 @@ Route::put('/nama_alamat/aksi_ubah/{id}', 'CommonController@nama_alamat_aksi_uba
 //PENJUALAN PRODUK
 /*Tabel*/
 Route::get('/penjualan_produk', 'CommonController@penjualan_produk')->name('penjualan_produk');
+/* Get Data */
 Route::get('/penjualan_produk/data', 'CommonController@penjualan_produk_data');
-
+/* Tambah */
+Route::get('/penjualan_produk/tambah', 'CommonController@penjualan_produk_tambah');
+/* Action */
+Route::post('/penjualan_produk/aksi_tambah', 'CommonController@penjualan_produk_aksi_tambah');
+/* Cek Data */
+Route::get('/penjualan_produk/cek_data/{tipe}', 'CommonController@penjualan_produk_cek_data');
 
 //PENJUALAN (ONLINE)
 /*Tabel*/

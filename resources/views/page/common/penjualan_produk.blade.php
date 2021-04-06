@@ -17,7 +17,7 @@
             <thead style="text-align: center;">
               <tr>
                 <th colspan="12">
-                  <a href="" style="color: white;"><button type="button" class="btn btn-block btn-success btn-sm" style="width: 200px;"><i class="fas fa-plus"></i> &nbsp; Tambah</i></button></a>
+                  <a href="/penjualan_produk/tambah" style="color: white;"><button type="button" class="btn btn-block btn-success btn-sm" style="width: 200px;"><i class="fas fa-plus"></i> &nbsp; Tambah</i></button></a>
                 </th>
               </tr>
               <tr>
@@ -25,6 +25,7 @@
                 <th>Merk</th>
                 <th>Tipe</th>
                 <th>Nama</th>
+                <th>Harga</th>
                 <th>Satuan</th>
                 <th>No AKD</th>
                 <th>Catatan</th>
@@ -123,6 +124,9 @@
         },
         {
           data: 'nama'
+        },
+        {
+          data: 'harga'
         },
         {
           data: 'satuan'

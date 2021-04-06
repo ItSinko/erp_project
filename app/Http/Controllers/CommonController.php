@@ -13,6 +13,7 @@ use Yajra\DataTables\Facades\DataTables;
 use App\Jasa_eks;
 use App\Distributor;
 use App\Produk;
+use App\Penjualan_produk;
 
 class CommonController extends Controller
 {
@@ -175,14 +176,53 @@ class CommonController extends Controller
     {
         return view('page.common.penjualan_produk');
     }
-
-
+    public function penjualan_produk_tambah()
+    {
+        return view('page.common.penjualan_produk_tambah');
+    }
     public function penjualan_produk_data()
     {
         $data = Produk::all();
         return datatables::of($data)
             ->addIndexColumn()
             ->make(true);
+    }
+
+    public function penjualan_produk_aksi_tambah(Request $request)
+    {
+        $this->validate($request, [
+            'merk' => 'required',
+            'tipe' => 'required|unique:produks',
+            'nama' => 'required',
+            'harga' => 'required',
+            'satuan' => 'required'
+        ], [
+            'merk.required' => "Merk Produk harus diisi",
+            'tipe.required' => "Tipe Produk harus diisi",
+            'nama.required' => "Nama Produk harus diisi",
+            'harga.required' => "Harga Produk harus diisi",
+            'satuan.required' => "Satuan Produk harus diisi",
+        ]);
+        $penjualan_produk = Penjualan_produk::create([
+            'merk' => $request->merk,
+            'tipe' => $request->tipe,
+            'nama' => $request->nama,
+            'harga' => $request->harga,
+            'satuan' => $request->satuan,
+            'noakd' => $request->noakd,
+            'keterangan' => $request->keterangan
+        ]);
+        if ($penjualan_produk) {
+            return redirect()->back()->with('success', "Berhasil menambahkan data");
+        } else {
+            return redirect()->back()->with('error', "Gagal menambahkan data");
+        }
+    }
+
+    public function penjualan_produk_cek_data($tipe)
+    {
+        $data = Penjualan_produk::where('tipe', $tipe)->get();
+        echo json_encode($data);
     }
 
     // Get Data
