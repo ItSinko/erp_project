@@ -20,7 +20,8 @@ class PenjualanController extends Controller
 {
     public function penjualan_online()
     {
-        return view('page.penjualan.online');
+        $produk = Produk::all();
+        return view('page.penjualan.online', ['produk' => $produk]);
     }
     public function penjualan_online_data()
     {
@@ -114,6 +115,18 @@ class PenjualanController extends Controller
             return redirect()->back()->with('success', "Berhasil menambahkan data");
         } else {
             return redirect()->back()->with('error', "Gagal menambahkan data");
+        }
+    }
+
+    public function  penjualan_online_detail_aksi_tambah(Request $request)
+    {
+        for ($i = 0; $i < count($request->produk_id); $i++) {
+            $yeye = Detail_ekatjual::create([
+                'ekatjuals_id' => $request->fk_paket_produk,
+                'produk_id' => $request->produk_id[$i],
+                'harga' => $request->harga[$i],
+                'jumlah' => $request->jumlah[$i]
+            ]);
         }
     }
 }

@@ -180,6 +180,44 @@ class CommonController extends Controller
     {
         return view('page.common.penjualan_produk_tambah');
     }
+    public function penjualan_produk_ubah($id)
+    {
+        $penjualan_produk = Penjualan_produk::find($id);
+        return view('page.common.penjualan_produk_ubah', ['penjualan_produk' => $penjualan_produk]);
+    }
+    public function penjualan_produk_aksi_ubah($id, Request $request)
+    {
+        $this->validate($request, [
+            'merk' => 'required',
+            'tipe' => 'required',
+            'nama' => 'required',
+            'harga' => 'required',
+            'satuan' => 'required'
+        ], [
+            'merk.required' => "Merk Produk harus diisi",
+            'tipe.required' => "Tipe Produk harus diisi",
+            'nama.required' => "Nama Produk harus diisi",
+            'harga.required' => "Harga Produk harus diisi",
+            'satuan.required' => "Satuan Produk harus diisi",
+        ]);
+
+        $penjualan_produk = Penjualan_produk::find($id);
+        $penjualan_produk->merk = $request->merk;
+        $penjualan_produk->tipe = $request->tipe;
+        $penjualan_produk->nama = $request->nama;
+        $penjualan_produk->harga = $request->harga;
+        $penjualan_produk->satuan = $request->satuan;
+        $penjualan_produk->no_akd = $request->no_akd;
+        $penjualan_produk->keterangan = $request->keterangan;
+        $penjualan_produk->save();
+
+        if ($penjualan_produk) {
+            return redirect()->back()->with('success', "Berhasil menambahkan data");
+        } else {
+            return redirect()->back()->with('error', "Gagal menambahkan data");
+        }
+        return view('page.common.penjualan_produk_ubah', ['penjualan_produk' => $penjualan_produk]);
+    }
     public function penjualan_produk_data()
     {
         $data = Produk::all();
@@ -187,7 +225,6 @@ class CommonController extends Controller
             ->addIndexColumn()
             ->make(true);
     }
-
     public function penjualan_produk_aksi_tambah(Request $request)
     {
         $this->validate($request, [
@@ -209,7 +246,7 @@ class CommonController extends Controller
             'nama' => $request->nama,
             'harga' => $request->harga,
             'satuan' => $request->satuan,
-            'noakd' => $request->noakd,
+            'no_akd' => $request->no_akd,
             'keterangan' => $request->keterangan
         ]);
         if ($penjualan_produk) {
@@ -218,13 +255,11 @@ class CommonController extends Controller
             return redirect()->back()->with('error', "Gagal menambahkan data");
         }
     }
-
     public function penjualan_produk_cek_data($tipe)
     {
         $data = Penjualan_produk::where('tipe', $tipe)->get();
         echo json_encode($data);
     }
-
     // Get Data
     public function produk_get_select($id)
     {
