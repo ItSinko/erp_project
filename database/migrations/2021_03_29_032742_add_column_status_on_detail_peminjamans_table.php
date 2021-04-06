@@ -14,7 +14,7 @@ class AddColumnStatusOnDetailPeminjamansTable extends Migration
     public function up()
     {
         Schema::table('detail_peminjamans', function (Blueprint $table) {
-            $table->enum('status', ['terima', 'tolak', 'terima_perpanjangan', 'tolak_perpanjangan', 'kembali'])->nullable()->after('keterangan');
+            $table->enum('status', ['menunggu', 'terima', 'tolak', 'dipinjam', 'permintaan_perpanjangan', 'terima_perpanjangan', 'tolak_perpanjangan', 'kembali'])->nullable()->after('keterangan');
         });
     }
 
