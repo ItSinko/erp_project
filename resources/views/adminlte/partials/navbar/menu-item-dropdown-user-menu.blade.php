@@ -21,7 +21,7 @@
         <img src="{{ Auth::user()->adminlte_image() }}" class="user-image img-circle elevation-2" alt="{{ Auth::user()->name }}">
         @endif
         <span @if(config('adminlte.usermenu_image')) class="d-none d-md-inline" @endif>
-            {{ Auth::user()->name }}
+            {{ Auth::user()->nama }}
         </span>
     </a>
 
@@ -61,12 +61,12 @@
             @if($profile_url)
             <a href="{{ $profile_url }}" class="btn btn-default btn-flat">
                 <i class="fa fa-fw fa-user"></i>
-                {{ __('adminlte.menu.profile') }}
+                {{ __('adminlte::menu.profile') }}
             </a>
             @endif
             <a class="btn btn-default btn-flat float-right @if(!$profile_url) btn-block @endif" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                 <i class="fa fa-fw fa-power-off"></i>
-                {{ __('adminlte.adminlte.log_out') }}
+                {{ __('adminlte::adminlte.log_out') }}
             </a>
             <form id="logout-form" action="{{ $logout_url }}" method="POST" style="display: none;">
                 @if(config('adminlte.logout_method'))

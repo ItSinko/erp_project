@@ -13,11 +13,9 @@
             <h3 class="card-title">Direct Chat</h3>
 
             <div class="card-tools">
+                <notif></notif>
                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
                     <i class="fas fa-minus"></i>
-                </button>
-                <notif></notif>
-                <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i>
                 </button>
             </div>
         </div>
@@ -34,8 +32,10 @@
 @stop
 
 @section('adminlte_js')
-<script src="{{ asset('js/app.js') }}"></script>
+<script src="{{ asset('js/chat.js') }}"></script>
 <script>
-    console.log(app);
+    // $(".card-body").animate({
+    //     scrollTop: "300px"
+    // });
 </script>
 @endsection

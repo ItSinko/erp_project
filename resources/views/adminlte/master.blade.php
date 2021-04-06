@@ -23,18 +23,11 @@
     @yield('adminlte_css_pre')
 
     {{-- Base Stylesheets --}}
-    <link rel="stylesheet" href="{{asset('vendor/select2/css/select2.min.css')}}">
-    <link rel="stylesheet" href="{{asset('vendor/select2-bootstrap4-theme/select2-bootstrap4.min.css')}}">
     <link rel="stylesheet" href="{{asset('css/table.css')}}">
-
     <link rel="stylesheet" href="{{asset('css/text.css')}}">
-
     <link rel="stylesheet" href="{{asset('css/image.css')}}">
-
     <link rel="stylesheet" href="{{asset('css/button.css')}}">
-
     <link rel="stylesheet" href="{{asset('css/calendar.css')}}">
-
     <link rel="stylesheet" href="{{asset('css/background.css')}}">
 
     @if(!config('adminlte.enabled_laravel_mix'))
@@ -44,7 +37,6 @@
 
     {{-- Configured Stylesheets --}}
     @include('adminlte.plugins', ['type' => 'css'])
-    <link rel="stylesheet" href="{{ asset('vendor/datatables/dataTables.bootstrap4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('vendor/adminlte/dist/css/adminlte.min.css') }}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
     @else
@@ -96,7 +88,7 @@
     @if(!config('adminlte.enabled_laravel_mix'))
     <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-
+    <script src="{{ asset('vendor/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
 
     {{-- Configured Scripts --}}
     @include('adminlte.plugins', ['type' => 'js'])
@@ -105,13 +97,6 @@
     @else
     <script src="{{ mix(config('adminlte.laravel_mix_js_path', 'js/app.js')) }}"></script>
     @endif
-    <script src="{{ asset('vendor/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
-
-    <script src="{{ asset('vendor/select2/js/select2.full.min.js')}}"></script>
-    <script src="{{ asset('vendor/datatables/jquery.dataTables.min.js')}}"></script>
-    <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
-    <script src="{{ asset('vendor/datatables/dataTables.responsive.min.js')}}"></script>
-    <script src="{{ asset('vendor/datatables/responsive.bootstrap4.min.js')}}"></script>
 
     {{-- Livewire Script --}}
     @if(config('adminlte.livewire'))
@@ -121,7 +106,11 @@
     <livewire:scripts />
     @endif
     @endif
-
+    <script>
+        $(function() {
+            $('select2').select2();
+        });
+    </script>
     {{-- Custom Scripts --}}
     @yield('adminlte_js')
     <script>

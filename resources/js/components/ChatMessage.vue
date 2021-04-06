@@ -40,7 +40,7 @@ export default {
 
     data: function() {
         return {
-            image: "/asset/image/user/unknown.png"
+            image: "/assets/image/user/index.png"
         };
     },
 

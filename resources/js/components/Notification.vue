@@ -3,27 +3,25 @@
         type="button"
         class="btn btn-tool"
         data-toggle="tooltip"
-        title="Contacts"
+        title="Messages"
         data-widget="chat-pane-toggle"
         @click="reset()"
     >
         <i class="fas fa-comments"></i>
-
         <span class="badge badge-danger navbar-badge">{{ count }}</span>
     </button>
 </template>
 
 <script>
 export default {
-    data() {
-        return {
-            count: 0
-        };
-    },
+    props: ["count"],
 
     methods: {
         reset() {
             this.count = 0;
+        },
+        test() {
+            alert("success");
         }
     }
 };

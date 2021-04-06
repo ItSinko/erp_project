@@ -15,11 +15,10 @@ class PPICController extends Controller
     {
         $this->middleware('auth');
     }
-    
+
     public function index()
     {
-        $list = Produk::toBase()->get();
-        return view("ppic.bom", compact('list'));
+        return view('page.ppic.jadwal_produksi');
     }
     public function get_bom(Request $request)
     {
@@ -27,7 +26,7 @@ class PPICController extends Controller
         // $list = DB::select("select * from bill_of_materials where produk_id=$index");
         $list = Bill_of_material::where('produk_id', $index)->get();
 
-        
+
         $table =
             "
         <table id='bom_table'>
@@ -128,12 +127,5 @@ class PPICController extends Controller
         ";
 
         return $table;
-    }
-
-    public function fire_notif()
-    {
-        $user = auth()->user()->nama;
-        event(new Notification($user, "test message"));
-        return "success";
     }
 }

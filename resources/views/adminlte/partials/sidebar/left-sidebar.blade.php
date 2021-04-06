@@ -11,18 +11,6 @@
     <div class="sidebar">
 
         {{--User Profile--}}
-        <!-- <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-            <div class="image">
-                @if(Auth::user()->foto != NULL)
-                <img src="{{url('asset/image/user')}}/{{Auth::user()->foto}}" class="img-circle elevation-2" alt="User Image">
-                @else
-                <img src="{{url('asset/image/user')}}/unknown.png" class="img-circle elevation-2" alt="User Image">
-                @endif
-            </div>
-            <div class="info" style="color:white;">
-                <a href="#" class="d-block">{{Auth::user()->nama}}</a>
-            </div>
-        </div> -->
         <a href="#">
             <div class="card mb-3 user-panel-bg" id="user-panel-profil" style="max-width: 540px; margin-top:20px;">
                 <div class="row no-gutters">
