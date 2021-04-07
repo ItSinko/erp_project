@@ -5,10 +5,9 @@
         <i class="{{ $item['icon'] ?? 'far fa-fw fa-circle' }} {{
             isset($item['icon_color']) ? 'text-'.$item['icon_color'] : ''
         }}"></i>
-
+        <p></p>
         <p>
             {{ $item['text'] }}
-
             @if(isset($item['label']))
             <span class="badge badge-{{ $item['label_color'] ?? 'primary' }} right">
                 {{ $item['label'] }}

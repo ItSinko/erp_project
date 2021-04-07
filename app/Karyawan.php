@@ -24,4 +24,14 @@ class Karyawan extends Model
     {
         return $this->hasOne(DivisiInventory::class);
     }
+
+    public function PeminjamanKaryawan()
+    {
+        return $this->hasMany(PeminjamanKaryawan::class, 'penanggung_jawab_id');
+    }
+
+    public function DetailPeminjamanKaryawan()
+    {
+        return $this->hasMany(DetailPeminjamanKaryawan::class);
+    }
 }
