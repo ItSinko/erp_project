@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Detail_ecommerces;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -9,12 +10,14 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Collection;
 use Yajra\DataTables\Facades\DataTables;
+use Carbon\Carbon;
 
 use App\Spaon;
 use App\Distributor;
 use App\Produk;
 use App\Ekatjual;
 use App\Detail_ekatjual;
+use App\Ecommerces;
 
 class PenjualanController extends Controller
 {
@@ -22,6 +25,10 @@ class PenjualanController extends Controller
     {
         $produk = Produk::all();
         return view('page.penjualan.online', ['produk' => $produk]);
+    }
+    public function penjualan_online_ecom()
+    {
+        return view('page.penjualan.ecom');
     }
     public function penjualan_online_data()
     {
@@ -60,7 +67,6 @@ class PenjualanController extends Controller
         $data = Ekatjual::where('lkpp', $lkpp)->get();
         echo json_encode($data);
     }
-
     public function penjualan_online_aksi_tambah(Request $request)
     {
         $this->validate(
@@ -88,7 +94,6 @@ class PenjualanController extends Controller
                 'produk_id.required' => 'Produk harus dipilih'
             ]
         );
-
         $ak = 'AK1-P';
         $ekatjual = Ekatjual::create([
             'lkpp' =>  $request->lkpp,
@@ -101,7 +106,6 @@ class PenjualanController extends Controller
             'tglbuat' => $request->tglbuat,
             'tgledit' => $request->tgledit,
         ]);
-
         for ($i = 0; $i < count($request->produk_id); $i++) {
             $yeye = Detail_ekatjual::create([
                 'ekatjuals_id' => $ekatjual->id,
@@ -110,23 +114,89 @@ class PenjualanController extends Controller
                 'jumlah' => $request->jumlah[$i]
             ]);
         }
-
         if ($ekatjual) {
-            return redirect()->back()->with('success', "Berhasil menambahkan data");
+            return redirect()->back()->with(["succes" => "Berhasil menambahkan data"]);
         } else {
             return redirect()->back()->with('error', "Gagal menambahkan data");
         }
     }
-
     public function  penjualan_online_detail_aksi_tambah(Request $request)
     {
+        $this->validate(
+            $request,
+            [
+                'produk_id' => 'required',
+            ],
+            [
+                'produk_id.required' => "Tipe Produk harus diisi",
+            ]
+        );
         for ($i = 0; $i < count($request->produk_id); $i++) {
-            $yeye = Detail_ekatjual::create([
+            $a = Detail_ekatjual::create([
                 'ekatjuals_id' => $request->fk_paket_produk,
                 'produk_id' => $request->produk_id[$i],
                 'harga' => $request->harga[$i],
                 'jumlah' => $request->jumlah[$i]
             ]);
+        }
+        if ($a) {
+            return redirect()->back()->with('success', "");
+        } else {
+            return redirect()->back()->with('error', "");
+        }
+    }
+    public function penjualan_online_ecom_tambah()
+    {
+        $distributor = Distributor::all();
+        $produk = Produk::all();
+        return view('page.penjualan.online_ecom_tambah', ['distributor' => $distributor, 'produk' => $produk]);
+    }
+
+    public function penjualan_online_ecom_aksi_tambah(Request $request)
+    {
+        $this->validate(
+            $request,
+            [
+                'market' => 'required',
+                'customer_id' => 'required',
+                'status' => 'required',
+                'bayar' => 'required',
+
+            ],
+            [
+                'market.required' => "Market Asal harus diisi",
+                'customer_id.required' => "Customer harus dipilih",
+                'status.required' => "Status pesanan harus diisi",
+                'bayar.required' => "Jenis pembayaran harus diisi",
+
+
+            ]
+        );
+
+        $x = Ecommerces::max('id');
+        $y = Carbon::now();
+
+        $ecommerces = Ecommerces::create([
+            'order_id' =>  'a',
+            'market' =>  $request->market,
+            'customer_id' =>  $request->customer_id,
+            'status' =>  $request->status,
+            'bayar' =>  $request->bayar,
+        ]);
+
+        for ($i = 0; $i < count($request->produk_id); $i++) {
+            $yeye = Detail_ecommerces::create([
+                'ecommerces_id' => $ecommerces->id,
+                'produk_id' => $request->produk_id[$i],
+                'harga' => $request->harga[$i],
+                'jumlah' => $request->jumlah[$i],
+                'keterangan' => $request->keterangan[$i]
+            ]);
+        }
+        if ($ecommerces) {
+            return redirect()->back()->with(["succes" => "Berhasil menambahkan data"]);
+        } else {
+            return redirect()->back()->with('error', "Gagal menambahkan data");
         }
     }
 }

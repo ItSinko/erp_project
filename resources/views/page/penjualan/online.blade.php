@@ -1,14 +1,26 @@
 @extends('adminlte.page')
-
 @section('title', 'Beta Version')
-
 @section('content_header')
 <h1 class="m-0 text-dark">Dashboard</h1>
 @stop
-
 @section('content')
 <div class="row">
   <div class="col-lg-12">
+    @if(session()->has('success'))
+    <div class="alert alert-success alert-dismissible">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      Data berhasil ditambahkan
+    </div>
+    @elseif(session()->has('error') || count($errors) > 0)
+    <div class="alert alert-danger alert-dismissible">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      Data gagal ditambahkan
+    </div>
+    @endif
     <div class="card">
       <div class="card-body">
         <div class='table-responsive'>
@@ -50,7 +62,6 @@
                       <h6>Kenapa anda ingin menghapus Laporan ini?</h6>
                     </div>
                     <form id="delete-form" action="" method="POST">
-
                       <div class="form-group row">
                         <div class="col-sm-1"></div>
                         <div class="col-sm-3">
@@ -61,7 +72,6 @@
                             </label>
                           </div>
                         </div>
-
                         <div class="col-sm-4">
                           <div class="icheck-danger d-inline">
                             <input type="radio" id="salah_input_perakitan" name="keterangan_log" value="salah_input">
@@ -70,7 +80,6 @@
                             </label>
                           </div>
                         </div>
-
                         <div class="col-sm-3">
                           <div class="icheck-danger d-inline">
                             <input type="radio" id="pembatalan_perakitan" name="keterangan_log" value="pembatalan">
@@ -115,7 +124,7 @@
             <thead>
               <tr>
                 <th colspan="12">
-                  <button type="button" class="btn btn-block btn-success btn-sm" style="width: 200px;" data-target="#tambah_mod" data-toggle="modal"><i class="fas fa-plus"></i> &nbsp;Tambah Produk</i></button>
+                  <button type="button" class="btn btn-block btn-success btn-sm" style="width: 200px;" data-target="#tambah_mod" data-toggle="modal" data-dismiss="modal"><i class="fas fa-plus"></i> &nbsp;Tambah Produk</i></button>
                 </th>
               </tr>
               <tr>
@@ -151,8 +160,6 @@
   </div>
 </div>
 <!-- End Modal Detail -->
-
-
 <!-- Modal Detail -->
 <div class="modal fade  bd-example-modal-lg" id="tambah_mod" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog modal-lg" role="document">
@@ -179,7 +186,7 @@
                         <div class="row">
                           <div class="col-lg-12">
                             <div class="form-horizontal">
-                              <input type="text" name="fk_paket_produk" " class=" form-control" id="fk_paket_produk" readonly>
+                              <input type="text" name="fk_paket_produk" " class=" d-none form-control" id="fk_paket_produk" readonly>
 
                               <table class="table table-bordered table-striped" id="user_table">
                                 <thead>
@@ -211,6 +218,92 @@
                                     <td><input type="text" name="jumlah[0]" placeholder="Jumlah" class="form-control" id="jumlah"></td>
                                     <td><input type="text" name="subtotal[0]" placeholder="Sub Total" class="form-control" id="subtotal" readonly></td>
                                     <td><button type="button" name="add" id="add" class="btn btn-success"><i class="nav-icon fas fa-plus-circle"></i></button></td>
+                                  </tr>
+                                </tbody>
+                                <tfoot>
+                                  <tr>
+                                    <th width="15%" colspan="4">Total</th>
+                                    <th width="15%" colspan="2"><input type="text" name="subtotal[0]" placeholder="Sub Total" class="form-control" id="subtotal" readonly></th>
+                                  </tr>
+                                </tfoot>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card-footer">
+                      <span class="float-right"><button class="btn btn-success rounded-pill" id="button_tambah"><i class="fas fa-plus"></i>&nbsp;Tambah Data</button></span>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Modal Detail -->
+<!-- Modal Detail -->
+<div class="modal fade  bd-example-modal-lg" id="edit_mod" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">
+          <div class="data_detail_head"></div>
+        </h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <div class="data_detail">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="col-lg-12">
+                <form method="post" action="/penjualan_online/detail/aksi_tambah">
+                  {{ csrf_field() }}
+                  <div class="card">
+                    <div class="card-header bg-success">
+                      <div class="card-title"><i class="fas fa-plus-circle"></i>&nbsp;Tambah</div>
+                    </div>
+                    <div class="card-body">
+                      <div class="col-lg-12">
+                        <div class="row">
+                          <div class="col-lg-12">
+                            <div class="form-horizontal">
+                              <input type="text" name="fk_paket_produk" " class=" d-none form-control" id="fk_paket_produk" readonly>
+                              <table class="table table-bordered table-striped" id="user_table">
+                                <thead>
+                                  <tr>
+                                    <th width="15%">Tipe</th>
+                                    <th width="20%">Nama</th>
+                                    <th width="15%">Harga</th>
+                                    <th width="5%">Jumlah</th>
+                                    <th width="15%">Sub Total</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    <td><select style="width: 100%;" type="text" name="produk_id[0]" placeholder="Enter your Name" class="form-control select2" id="tipe">
+                                        <option value="">Pilih Tipe Produk</option>
+                                        @foreach ($produk as $p)
+                                        <option value="{{$p->id}}">{{$p->tipe}}</option>
+                                        @endforeach
+                                      </select>
+                                      @if($errors->has('produk_id'))
+                                      <div class="text-danger">
+                                        {{ $errors->first('produk_id')}}
+                                      </div>
+                                      @endif
+                                    </td>
+                                    <td><input type="text" name="produk_nama[0]" placeholder="Nama Produk" class="form-control" id="nama" readonly></td>
+                                    <td><input type="text" name="harga[0]" placeholder="Harga" class="form-control" id="harga"></td>
+                                    <td><input type="text" name="jumlah[0]" placeholder="Jumlah" class="form-control" id="jumlah"></td>
+                                    <td><input type="text" name="subtotal[0]" placeholder="Sub Total" class="form-control" id="subtotal" readonly></td>
                                   </tr>
                                 </tbody>
                                 <tfoot>
@@ -299,8 +392,8 @@
         {
           data: 'id',
           render: function(data) {
-            $btn_view = '<div class="inline-flex"><button type="button" id="detail" class="btn btn-block btn-primary karyawan-img-small" style="border-radius:50%;"> <i class="fa fa-eye" aria-hidden="true"></i></button>';
-            $btn_edit = '<a href="/penjualan_online/ubah/' + data + '"><button type="button" class="btn btn-block btn-warning karyawan-img-small" style="border-radius:50%;"><i class="fas fa-edit"></i></button></a>';
+            $btn_view = '<div class="inline-flex"><button type="button" id="detail" class="btn btn-block btn-primary karyawan-img-small" style="border-radius:50%;"><i class="fa fa-eye" aria-hidden="true"></i></button>';
+            $btn_edit = '<a href="/penjualan_online/ubah/' + data + '"><button type="button" class="btn btn-block btn-warning karyawan-img-small" style="border-radius:50%;"  data-target="#edit_mod"><i class="fas fa-edit"></i></button></a>';
             $btn_hapus = ' <button type="button" class="btn btn-block btn-danger karyawan-img-small" style="border-radius:50%;" data-toggle="modal" data-target="#delete" ><i class="fas fa-trash"></i></button></div>';
             return $btn_view + $btn_edit + $btn_hapus;
           },
@@ -357,9 +450,9 @@
             searchable: false
           },
           {
-            data: 'jumlah',
+            data: 'id',
             render: function(data) {
-              $btn_edit = '<div class="inline-flex"><a href="/penjualan_online/ubah/' + data + '"><button type="button" class="btn btn-block btn-warning karyawan-img-small" style="border-radius:50%;"><i class="fas fa-edit"></i></button></a>';
+              $btn_edit = '<div class="inline-flex"><button type="button" class="btn btn-block btn-warning karyawan-img-small" style="border-radius:50%;" data-toggle="modal" data-target="#edit_mod"  data-dismiss="modal" ><i class="fas fa-edit"></i></button>';
               $btn_hapus = ' <button type="button" class="btn btn-block btn-danger karyawan-img-small" style="border-radius:50%;" data-toggle="modal" data-target="#delete" ><i class="fas fa-trash"></i></button></div>';
               return $btn_edit + $btn_hapus;
             },
@@ -387,9 +480,6 @@
             .reduce(function(a, b) {
               return intVal(a) + intVal(b);
             }, 0);
-
-
-
           // computing column Total of the complete result 
           var total_pesanan = api
             .column(5)
@@ -408,6 +498,9 @@
 
 
       $('#detail_mod').modal('show');
+      $('#tambah_mod').on('hidden.bs.modal', function() {
+        $('#tambah_mod form')[0].reset();
+      });
     });
 
   });

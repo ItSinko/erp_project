@@ -100,12 +100,16 @@ Route::post('/penjualan_online/aksi_tambah', 'PenjualanController@penjualan_onli
 Route::get('/penjualan_online/detail/{id},');
 Route::post('/penjualan_online/detail/aksi_tambah', 'PenjualanController@penjualan_online_detail_aksi_tambah');
 
+//PENJUALAN ECOM (ONLINE)
+/*Tabel*/
+Route::get('/penjualan_online_ecom', 'PenjualanController@penjualan_online_ecom');
+Route::get('/penjualan_online_ecom/tambah', 'PenjualanController@penjualan_online_ecom_tambah');
+// Action
+Route::post('/penjualan_online_ecom/aksi_tambah', 'PenjualanController@penjualan_online_ecom_aksi_tambah');
 
 //GET DATA SELECT
 /* Get Data */
 Route::get('/produk/get_select/{id}', 'CommonController@produk_get_select');
-
-
 
 //PRODUK
 Route::get('/produk', 'ItController@produk')->name('produk');

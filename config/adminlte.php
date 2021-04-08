@@ -291,7 +291,7 @@ return [
                 ],
                 [
                     'text' => 'E-Commerce',
-                    'url'  => '#',
+                    'url'  => '/penjualan_online_ecom',
                 ],
             ],
         ],
