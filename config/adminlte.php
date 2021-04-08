@@ -244,7 +244,6 @@ return [
             'header' => 'account_settings'
         ],
         [
-            'auth' => [26],
             'text' => 'profile',
             'url'  => '#',
             'icon' => 'fas fa-fw fa-user',
@@ -256,7 +255,7 @@ return [
         ],
         [
             'header' => 'DATA MASTER',
-            'auth'   => [26]
+            'auth'   => [26, 14]
         ],
         [
             'text' => 'Penjualan Produk',
@@ -309,10 +308,6 @@ return [
                     'url'  => '#',
                 ],
             ],
-        ],
-        [
-            'header' => 'MASTER DATA',
-            'auth' => [14]
         ],
         [
             'text' => 'Produk',
