@@ -149,13 +149,14 @@ Route::get('/peminjaman/karyawan/show', 'ItController@peminjaman_karyawan_show')
 Route::get('/peminjaman/karyawan/create', 'ItController@peminjaman_karyawan_create')->name('peminjaman.karyawan.create');
 Route::put('/peminjaman/karyawan/store/{id}', 'ItController@peminjaman_karyawan_store')->name('peminjaman.karyawan.store');
 /*Edit*/
-Route::get('/peminjaman/karyawan/edit', 'ItController@peminjaman_karyawan_edit')->name('peminjaman.karyawan.edit');
+Route::get('/peminjaman/karyawan/edit/{id}', 'ItController@peminjaman_karyawan_edit')->name('peminjaman.karyawan.edit');
 Route::put('/peminjaman/karyawan/update/{id}', 'ItController@peminjaman_karyawan_update')->name('peminjaman.karyawan.update');
 /*Delete*/
 Route::delete('/peminjaman/karyawan/delete/{id}', 'ItController@peminjaman_karyawan_delete')->name('peminjaman.karyawan.delete');
 /*Status*/
 Route::get('/peminjaman/karyawan/status/{id}/{status}', 'ItController@peminjaman_karyawan_status')->name('peminjaman.karyawan.status');
-
+Route::get('/peminjaman/karyawan/detail/{id}', 'ItController@peminjaman_karyawan_detail')->name('peminjaman.karyawan.detail');
+Route::get('/peminjaman/karyawan/detail/show/{id}', 'ItController@peminjaman_karyawan_detail_show')->name('peminjaman.karyawan.detail.show');
 
 //BPPB
 Route::get('/bppb', 'PpicController@bppb')->name('bppb');

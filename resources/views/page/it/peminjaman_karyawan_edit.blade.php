@@ -25,7 +25,7 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="col-lg-12">
-                <form id="create-inventory" method="POST" action="{{route('peminjaman.karyawan.store', ['id' => Auth::user()->id])}}">
+                <form id="create-inventory" method="POST" action="{{route('peminjaman.karyawan.update', ['id' => $id])}}">
                     {{ csrf_field() }}
                     {{ method_field('PUT') }}
                     @if(session()->has('success'))
@@ -46,8 +46,8 @@
 
 
                     <div class="card">
-                        <div class="card-header bg-success">
-                            <div class="card-title"><i class="fas fa-plus-circle"></i>&nbsp;Tambah Penugasan</div>
+                        <div class="card-header bg-warning">
+                            <div class="card-title"><i class="fas fa-edit"></i>&nbsp;Ubah Penugasan</div>
                         </div>
                         <div class="card-body">
                             <div class="col-lg-12">
@@ -60,7 +60,7 @@
                                                 <div class="col-sm-8">
                                                     <select class="select2 form-control penanggung_jawab_id" name="penanggung_jawab_id" id="penanggung_jawab_id" data-placeholder="Pilih Penanggung Jawab" data-dropdown-css-class="select2-info" style="width: 80%;">
                                                         @foreach($p as $i)
-                                                        <option value="{{$i->id}}">{{$i->nama}}</option>
+                                                        <option value="{{$i->id}}" @if($i->id == $s->penanggung_jawab_id) selected @endif>{{$i->nama}}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>
@@ -68,7 +68,7 @@
                                             <div class="form-group row">
                                                 <label for="nama_user" class="col-sm-4 col-form-label" style="text-align:right;">Nama Penugasan</label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" class="form-control @error('nama_penugasan') is-invalid @enderror" name="nama_penugasan" id="nama_penugasan" placeholder="Masukkan Nama Pekerjaan" value="{{old('nama_penugasan')}}" style="width:80%;">
+                                                    <input type="text" class="form-control @error('nama_penugasan') is-invalid @enderror" name="nama_penugasan" id="nama_penugasan" placeholder="Masukkan Nama Pekerjaan" value="{{old('nama_penugasan', $s->nama_penugasan)}}" style="width:80%;">
                                                     <span id="nama_penugasan-message" role="alert"></span>
                                                     @if ($errors->has('nama_penugasan'))
                                                     <span class="invalid-feedback" role="alert">{{$errors->first('nama_penugasan')}}</span>
@@ -78,7 +78,7 @@
                                             <div class="form-group row">
                                                 <label for="lokasi_penugasan" class="col-sm-4 col-form-label" style="text-align:right;">Lokasi Penugasan</label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" class="form-control @error('lokasi_penugasan') is-invalid @enderror" name="lokasi_penugasan" id="lokasi_penugasan" placeholder="Masukkan Tanggal Pengajuan" value="{{old('lokasi_penugasan')}}">
+                                                    <input type="text" class="form-control @error('lokasi_penugasan') is-invalid @enderror" name="lokasi_penugasan" id="lokasi_penugasan" placeholder="Masukkan Tanggal Pengajuan" value="{{old('lokasi_penugasan', $s->lokasi_penugasan)}}">
                                                     <span id="lokasi_penugasan-message" role="alert"></span>
                                                     @if ($errors->has('lokasi_penugasan'))
                                                     <span class="invalid-feedback" role="alert">{{$errors->first('lokasi_penugasan')}}</span>
@@ -88,7 +88,7 @@
                                             <div class="form-group row">
                                                 <label for="lokasi_penugasan" class="col-sm-4 col-form-label" style="text-align:right;">Keterangan</label>
                                                 <div class="col-sm-8">
-                                                    <textarea class="form-control @error('keterangan') is-invalid @enderror" name="keterangan" id="keterangan">{{old('keterangan')}}</textarea>
+                                                    <textarea class="form-control @error('keterangan') is-invalid @enderror" name="keterangan" id="keterangan">{{old('keterangan', $s->keterangan)}}</textarea>
                                                     <span id="keterangan-message" role="alert"></span>
                                                     @if ($errors->has('keterangan'))
                                                     <span class="invalid-feedback" role="alert">{{$errors->first('keterangan')}}</span>
@@ -106,7 +106,7 @@
                                             <div class="form-group row">
                                                 <label for="tanggal_penugasan" class="col-sm-4 col-form-label" style="text-align:right;">Mulai Penugasan</label>
                                                 <div class="col-sm-8">
-                                                    <input type="date" class="form-control @error('tanggal_penugasan') is-invalid @enderror" name="tanggal_penugasan" id="tanggal_penugasan" placeholder="Masukkan Nama Pekerjaan" value="{{old('tanggal_penugasan')}}" style="width:80%;">
+                                                    <input type="date" class="form-control @error('tanggal_penugasan') is-invalid @enderror" name="tanggal_penugasan" id="tanggal_penugasan" placeholder="Masukkan Nama Pekerjaan" value="{{old('tanggal_penugasan', $s->tanggal_penugasan)}}" style="width:80%;">
                                                     <span id="tanggal_penugasan-message" role="alert"></span>
                                                     @if ($errors->has('tanggal_penugasan'))
                                                     <span class="invalid-feedback" role="alert">{{$errors->first('tanggal_penugasan')}}</span>
@@ -116,7 +116,7 @@
                                             <div class="form-group row">
                                                 <label for="tanggal_estimasi_selesai" class="col-sm-4 col-form-label" style="text-align:right;">Estimasi Selesai</label>
                                                 <div class="col-sm-8">
-                                                    <input type="date" class="form-control @error('tanggal_estimasi_selesai') is-invalid @enderror" name="tanggal_estimasi_selesai" id="tanggal_estimasi_selesai" placeholder="Masukkan Nama Pekerjaan" value="{{old('tanggal_estimasi_selesai')}}" style="width:80%;">
+                                                    <input type="date" class="form-control @error('tanggal_estimasi_selesai') is-invalid @enderror" name="tanggal_estimasi_selesai" id="tanggal_estimasi_selesai" placeholder="Masukkan Nama Pekerjaan" value="{{old('tanggal_estimasi_selesai', $s->tanggal_estimasi_selesai)}}" style="width:80%;">
                                                     <span id="tanggal_estimasi_selesai-message" role="alert"></span>
                                                     @if ($errors->has('tanggal_estimasi_selesai'))
                                                     <span class="invalid-feedback" role="alert">{{$errors->first('tanggal_estimasi_selesai')}}</span>
@@ -134,22 +134,26 @@
                                             <thead>
                                                 <tr>
                                                     <th>No</th>
+                                                    <th hidden>ID</th>
                                                     <th>Nama Karyawan</th>
                                                     <th>Keterangan</th>
-                                                    <th>Aksi</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
+                                                @php $l = 0; @endphp
+                                                @foreach($s->DetailPeminjamanKaryawan as $i)
                                                 <tr>
-                                                    <td>1</td>
-                                                    <td><select class="select2 form-control karyawan_id" name="karyawan_id[]" id="karyawan_id" data-placeholder="Pilih Inventory Divisi" data-dropdown-css-class="select2-info" style="width: 80%;">
-                                                            @foreach($p as $i)
-                                                            <option value="{{$i->id}}">{{$i->nama}}</option>
+                                                    <td>{{$loop->iteration}}</td>
+                                                    <td hidden><input type="text" id="dpk_id[{{$l}}]" name="dpk_id[{{$l}}]" value="{{old('dpk_id', $i->id)}}"></td>
+                                                    <td><select class="select2 form-control karyawan_id" name="karyawan_id[{{$l}}]" id="karyawan_id{{$l}}" data-placeholder="Pilih Karyawan" data-dropdown-css-class="select2-info" style="width: 80%;">
+                                                            @foreach($p as $k)
+                                                            <option value="{{$k->id}}" @if($k->id == $i->karyawan_id) selected @endif>{{$k->nama}}</option>
                                                             @endforeach
                                                         </select></td>
-                                                    <td><textarea class="form-control" name="keterangan_detail[]" id="keterangan_detail" placeholder="Masukkan Keterangan"></textarea></td>
-                                                    <td><button type="button" class="btn btn-block btn-success btn-sm circle-button karyawan-img-small" id="tambahitem"><i class="fas fa-plus"></i></button></td>
+                                                    <td><textarea class="form-control" name="keterangan_detail[{{$l}}]" id="keterangan_detail" placeholder="Masukkan Keterangan">{{old('keterangan_detail', $i->keterangan)}}</textarea></td>
                                                 </tr>
+                                                @php $l++; @endphp
+                                                @endforeach
                                             </tbody>
                                         </table>
                                     </div>
@@ -159,7 +163,7 @@
                         </div>
                         <div class="card-footer">
                             <span class="float-left"><button class="btn btn-danger rounded-pill" id=""><i class="fas fa-times"></i>&nbsp;Batal</button></span>
-                            <span class="float-right"><button type="submit" class="btn btn-success rounded-pill" id="button_tambah"><i class="fas fa-plus"></i>&nbsp;Tambah Data</button></span>
+                            <span class="float-right"><button type="submit" class="btn btn-warning rounded-pill" id="button_ubah"><i class="fas fa-edit"></i>&nbsp;Simpan Perubahan</button></span>
                         </div>
                     </div>
                 </form>

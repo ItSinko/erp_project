@@ -37,6 +37,7 @@
                             </tr>
                             <tr>
                                 <th>No</th>
+                                <th>PIC</th>
                                 <th>Nama Penugasan</th>
                                 <th>Tanggal Pembuatan</th>
                                 <th>Tanggal Penugasan</th>
@@ -50,6 +51,20 @@
 
                         </tbody>
                     </table>
+
+                    <div class="modal fade" id="detailmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header" style="background-color:	#006400;">
+                                    <h4 class="modal-title" id="myModalLabel" style="color:white;">Penugasan Karyawan</h4>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                </div>
+                                <div class="modal-body" id="detail">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="modal fade" id="deletemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                         <div class="modal-dialog modal-md" role="document">
@@ -131,6 +146,10 @@
                     orderable: false,
                     searchable: false
                 }, {
+                    data: 'penanggung_jawab',
+                    name: 'penanggung_jawab'
+                },
+                {
                     data: 'nama_penugasan',
                     name: 'nama_penugasan'
                 },
@@ -161,6 +180,37 @@
                     searchable: false
                 },
             ]
+        });
+
+        $(document).on('click', '.deletemodal', function() {
+            var url = $(this).attr('data-url');
+            $("#deleteform").attr("action", url);
+        });
+
+        $(document).on('click', '.detailmodal', function(event) {
+            event.preventDefault();
+            var href = $(this).attr('data-attr');
+            $.ajax({
+                url: href,
+                beforeSend: function() {
+                    $('#loader').show();
+                },
+                // return the result
+                success: function(result) {
+                    $('#detailmodal').modal("show");
+                    $('#detail').html(result).show();
+
+                },
+                complete: function() {
+                    $('#loader').hide();
+                },
+                error: function(jqXHR, testStatus, error) {
+                    console.log(error);
+                    alert("Page " + href + " cannot open. Error:" + error);
+                    $('#loader').hide();
+                },
+                timeout: 8000
+            })
         });
     });
 </script>

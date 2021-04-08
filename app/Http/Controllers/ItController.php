@@ -647,7 +647,6 @@ class ItController extends Controller
     {
         $user_id = Auth::user()->id;
         $s = PeminjamanKaryawan::where('user_id', $user_id)->get();
-
         return DataTables::of($s)
             ->addIndexColumn()
             ->editColumn('nama_penugasan', function ($s) {
@@ -674,6 +673,9 @@ class ItController extends Controller
             ->editColumn('tanggal_selesai', function ($s) {
                 if (!empty($s->tanggal_selesai)) {
                     return Carbon::createFromFormat('Y-m-d', $s->tanggal_selesai)->format('d/m/Y');
+                } else {
+                    $btn = '<a href = "/peminjaman/karyawan/status/' . $s->id . '/selesai"><button class="btn btn-success btn-sm m-1"><i class="fas fa-check"></i>&nbsp;Selesai</button></a>';
+                    return $btn;
                 }
             })
             ->editColumn('keterangan', function ($s) {
@@ -681,66 +683,210 @@ class ItController extends Controller
                 return $btn;
             })
             ->addColumn('aksi', function ($s) {
-                $btn = '<a href = "/peminjaman/karyawan/edit/' . $s->id . '"><button class="btn btn-warning  btn-circle btn-circle-sm m-1"><i class="fas fa-edit"></i></button></a>';
+                $btn = '<a class="detailmodal" data-toggle="modal" data-target="#detailmodal" data-attr="/peminjaman/karyawan/detail/' . $s->id . '"><button class="btn btn-info  btn-circle btn-circle-sm m-1"><i class="fas fa-eye"></i></button></a>';
+                $btn .= '<a href = "/peminjaman/karyawan/edit/' . $s->id . '"><button class="btn btn-warning  btn-circle btn-circle-sm m-1"><i class="fas fa-edit"></i></button></a>';
                 $btn .= '<a class="deletemodal" data-toggle="modal" data-target="#deletemodal" data-url="/peminjaman/karyawan/delete/' . $s->id . '"><button class="btn btn-danger  btn-circle btn-circle-sm m-1"><i class="fas fa-trash"></i></button></a>';
                 return $btn;
             })
-            ->rawColumns(['aksi'])
+            ->rawColumns(['aksi', 'tanggal_selesai'])
             ->make(true);
     }
 
     public function peminjaman_karyawan_create()
     {
-        $s = Karyawan::whereNotIn('divisi_id', [Auth::user()->divisi_id])->get();
-        return view('page.it.peminjaman_karyawan_create', ['s' => $s]);
+        // $p = Karyawan::whereNotIn('divisi_id', [Auth::user()->divisi_id])->get();
+        $p = Karyawan::all();
+        return view('page.it.peminjaman_karyawan_create', ['p' => $p]);
     }
 
-    public function peminjaman_karyawan_store(Request $request)
+    public function peminjaman_karyawan_store(Request $request, $id)
     {
-        $c = PeminjamanKaryawan::create([
-            'nama_penugasan' => $request->nama_penugasan,
-            'penanggung_jawab_id' => $request->penanggung_jawab_id,
-            'tanggal_pembuatan' => $request->tanggal_pembuatan,
-            'tanggal_penugasan' => $request->tanggal_penugasan,
-            'tanggal_estimasi_selesai' => $request->tanggal_estimasi_selesai,
-            'keterangan' => $request->keterangan,
-            'user_id' => Auth::user()->id
-        ]);
+        $v = Validator::make(
+            $request->all(),
+            [
+                'nama_penugasan' => 'required',
+                'lokasi_penugasan' => 'required',
+                'penanggung_jawab_id' => 'required',
+                'tanggal_penugasan' => 'required',
+                'tanggal_estimasi_selesai' => 'required',
+                'karyawan_id' => 'required'
+            ],
+            [
 
-        if ($c) {
-            $bool = true;
-            for ($i = 0; $i < count($request->karyawan_id); $i++) {
-                $cs = DetailPeminjamanKaryawan::create([
-                    'peminjaman_karyawan_id' => $c->id,
-                    'karyawan_id' => $request->karyawan_id[$i],
-                    'status' => 'draft',
-                    'keterangan' => $request->keterangan[$i]
-                ]);
+                'nama_penugasan.required' => "Nama Pekerjaan harus diisi",
+                'lokasi_penugasan.required' => "Lokasi Penugasan harus diisi",
+                'penanggung_jawab_id.required' => "Pilih Penanggung Jawab",
+                'tanggal_penugasan.required' => "Tanggal Penugasan harus diisi",
+                'tanggal_estimasi_selesai.required' => "Estimasi Selesai harus diisi",
+                'karyawan_id' => 'Karyawan harus diisi'
+            ]
+        );
 
-                if (!$cs) {
-                    $bool = false;
+        if ($v->fails()) {
+            return redirect()->back()->withErrors($v);
+        } else {
+            $c = PeminjamanKaryawan::create([
+                'nama_penugasan' => $request->nama_penugasan,
+                'lokasi_penugasan' => $request->lokasi_penugasan,
+                'penanggung_jawab_id' => $request->penanggung_jawab_id,
+                'tanggal_pembuatan' => Carbon::now(),
+                'tanggal_penugasan' => $request->tanggal_penugasan,
+                'tanggal_estimasi_selesai' => $request->tanggal_estimasi_selesai,
+                'keterangan' => $request->keterangan,
+                'user_id' => $id
+            ]);
+
+            if ($c) {
+                $bool = true;
+                for ($i = 0; $i < count($request->karyawan_id); $i++) {
+                    $cs = DetailPeminjamanKaryawan::create([
+                        'peminjaman_karyawan_id' => $c->id,
+                        'karyawan_id' => $request->karyawan_id[$i],
+                        'status' => 'draft',
+                        'keterangan_detail' => $request->keterangan_detail[$i]
+                    ]);
+
+                    if (!$cs) {
+                        $bool = false;
+                    }
+                }
+
+                if ($bool = true) {
+                    return redirect()->back()->with('success', 'Sukses menambah Data');
+                } else if ($bool = false) {
+                    return redirect()->back()->with('error', 'Gagal menambah Data');
                 }
             }
         }
-        return redirect()->back();
     }
 
-    public function peminjaman_karyawan_edit()
+    public function peminjaman_karyawan_edit($id)
     {
-        return view('page.it.peminjaman_karyawan_edit');
+        $s = PeminjamanKaryawan::find($id);
+        $p = Karyawan::all();
+        return view('page.it.peminjaman_karyawan_edit', ['s' => $s, 'id' => $id, 'p' => $p]);
     }
 
-    public function peminjaman_karyawan_update()
+    public function peminjaman_karyawan_update(Request $request, $id)
     {
-        return redirect()->back();
+        $v = Validator::make(
+            $request->all(),
+            [
+                'nama_penugasan' => 'required',
+                'lokasi_penugasan' => 'required',
+                'penanggung_jawab_id' => 'required',
+                'tanggal_penugasan' => 'required',
+                'tanggal_estimasi_selesai' => 'required',
+                'karyawan_id' => 'required'
+            ],
+            [
+                'nama_penugasan.required' => "Nama Pekerjaan harus diisi",
+                'lokasi_penugasan.required' => "Lokasi Penugasan harus diisi",
+                'penanggung_jawab_id.required' => "Pilih Penanggung Jawab",
+                'tanggal_penugasan.required' => "Tanggal Penugasan harus diisi",
+                'tanggal_estimasi_selesai.required' => "Estimasi Selesai harus diisi",
+                'karyawan_id' => 'Karyawan harus diisi'
+            ]
+        );
+
+        if ($v->fails()) {
+            return redirect()->back()->withErrors($v);
+        } else {
+            $u = PeminjamanKaryawan::find($id);
+            $u->nama_penugasan = $request->nama_penugasan;
+            $u->lokasi_penugasan = $request->lokasi_penugasan;
+            $u->penanggung_jawab_id = $request->penanggung_jawab_id;
+            $u->tanggal_penugasan = $request->tanggal_penugasan;
+            $u->tanggal_estimasi_selesai = $request->tanggal_estimasi_selesai;
+            $u->keterangan = $request->keterangan;
+            $up = $u->save();
+
+            if ($up) {
+                $bool = true;
+                for ($i = 0; $i < count($request->karyawan_id); $i++) {
+                    $us = DetailPeminjamanKaryawan::find($request->dpk_id[$i]);
+                    $us->karyawan_id =  $request->karyawan_id[$i];
+                    $us->keterangan =  $request->keterangan_detail[$i];
+                    $ups = $us->save();
+
+                    if (!$ups) {
+                        $bool = false;
+                    }
+                }
+
+                if ($bool = true) {
+                    return redirect()->back()->with('success', 'Sukses mengubah Data');
+                } else if ($bool = false) {
+                    return redirect()->back()->with('error', 'Gagal mengubah Data');
+                }
+            }
+        }
     }
 
-    public function peminjaman_karyawan_delete()
+    public function peminjaman_karyawan_delete(Request $request, $id)
     {
+        $p = PeminjamanKaryawan::find($id);
+        $this->UserLogController->create(Auth::user()->id, $p->nama_penugasan . " tanggal" . $p->tanggal_penugasan . ", dengan Penanggung Jawab " . $p->penanggungjawab->nama, 'Peminjaman Karyawan', 'Hapus', $request->keterangan_log);
+        $d = $p->delete();
+        if ($bool = true) {
+            return redirect()->back()->with('success', 'Sukses menghapus Data');
+        } else if ($bool = false) {
+            return redirect()->back()->with('error', 'Gagal menghapus Data');
+        }
     }
 
-    public function peminjaman_karyawan_status()
+    public function peminjaman_karyawan_status($id, $status)
     {
+        if ($status == "selesai") {
+            $p = PeminjamanKaryawan::find($id);
+            $p->tanggal_pemberhentian = Carbon::now();
+            $u = $p->save();
+            if ($u) {
+                return redirect()->back()->with('success', 'Sukses menghapus Data');
+            } else if (!$u) {
+                return redirect()->back()->with('error', 'Gagal menghapus Data');
+            }
+        }
+    }
+
+    public function peminjaman_karyawan_detail($id)
+    {
+        return view('page.it.peminjaman_karyawan_detail_show', ['id' => $id]);
+    }
+
+    public function peminjaman_karyawan_detail_show($id)
+    {
+        $s = DetailPeminjamanKaryawan::where('peminjaman_karyawan_id', $id)->get();
+        return DataTables::of($s)
+            ->addIndexColumn()
+            ->editColumn('karyawan_id', function ($s) {
+                return $s->Karyawan->nama;
+            })
+            ->editColumn('keterangan', function ($s) {
+                return $s->keterangan;
+            })
+            ->editColumn('status', function ($s) {
+                $btn = "";
+                if ($s->status == "Draft") {
+                    $btn = '<a href = "/peminjaman/karyawan/detail/status/' . $s->id . '/menunggu"><button class="btn btn-info btn-sm m-1"><i class="far fa-paper-plane"></i>&nbsp;Meminta Persetujuan</button></a>';
+                } else if ($s->status == 'Menunggu') {
+                    $btn = '<span class="warning-text">Menunggu</span>';
+                } else if ($s->status == "Terima") {
+                    $btn = '<span class="warning-text">Diterima</span>';
+                } else if ($s->status == "Tolak") {
+                    $btn = '<span class="warning-text">Ditolak</span>';
+                } else if ($s->status == "Berhenti") {
+                    $btn = '<span class="warning-text">Berhenti</span>';
+                }
+                return $btn;
+            })
+            ->addColumn('aksi', function ($s) {
+                $btn = '<a href = "/peminjaman/karyawan/detail/edit/' . $s->id . '"><button class="btn btn-warning  btn-circle btn-circle-sm m-1"><i class="fas fa-edit"></i></button></a>';
+                $btn .= '<a class="deletemodal" data-toggle="modal" data-target="#deletemodal" data-url="/peminjaman/karyawan/delete/' . $s->id . '"><button class="btn btn-danger  btn-circle btn-circle-sm m-1"><i class="fas fa-trash"></i></button></a>';
+                return $btn;
+            })
+            ->rawColumns(['aksi', 'status'])
+            ->make(true);
     }
 
     public function inventory_peminjaman()

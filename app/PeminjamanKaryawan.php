@@ -8,7 +8,7 @@ use App\DetailPeminjamanKaryawan;
 
 class PeminjamanKaryawan extends Model
 {
-    protected $fillable = ['penanggung_jawab_id', 'nama_penugasan', 'tanggal_pembuatan', 'tanggal_penugasan', 'tanggal_estimasi_selesai', 'tanggal_selesai', 'keterangan'];
+    protected $fillable = ['penanggung_jawab_id', 'nama_penugasan', 'lokasi_penugasan', 'tanggal_pembuatan', 'tanggal_penugasan', 'tanggal_estimasi_selesai', 'tanggal_selesai', 'keterangan'];
 
     public function PenanggungJawab()
     {
