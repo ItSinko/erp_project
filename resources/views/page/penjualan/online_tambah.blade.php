@@ -136,9 +136,10 @@
                       <thead>
                         <tr>
                           <th width="15%">Tipe</th>
-                          <th width="25%">Nama</th>
+                          <th width="20%">Nama</th>
                           <th width="15%">Harga</th>
                           <th width="5%">Jumlah</th>
+                          <th width="15%">Sub Total</th>
                           <th width="1%"></th>
                         </tr>
                       </thead>
@@ -159,9 +160,16 @@
                           <td><input type="text" name="produk_nama[0]" placeholder="Nama Produk" class="form-control" id="nama" readonly></td>
                           <td><input type="text" name="harga[0]" placeholder="Harga" class="form-control" id="harga"></td>
                           <td><input type="text" name="jumlah[0]" placeholder="Jumlah" class="form-control" id="jumlah"></td>
+                          <td><input type="text" name="subtotal[0]" placeholder="Sub Total" class="form-control" id="subtotal" readonly></td>
                           <td><button type="button" name="add" id="add" class="btn btn-success"><i class="nav-icon fas fa-plus-circle"></i></button></td>
                         </tr>
                       </tbody>
+                      <tfoot>
+                        <tr>
+                          <th width="15%" colspan="4">Total</th>
+                          <th width="15%" colspan="2"><input type="text" name="subtotal[0]" placeholder="Sub Total" class="form-control" id="subtotal" readonly></th>
+                        </tr>
+                      </tfoot>
                     </table>
                   </div>
                 </div>
@@ -184,7 +192,7 @@
   $("#add").click(function() {
     ++i;
 
-    $("#user_table ").append('<tr><td><select style="width: 100%;" type="text" name="produk_id[' + i + ']" placeholder="Enter your Name" class="form-control" id="tipe' + i + '"><option value="">Pilih Tipe Produk</option>@foreach ($produk as $p)<option value="{{$p->id}}">{{$p->tipe}}</option>@endforeach</select></td><td><input type="text" name="produk_nama[' + i + ']"  placeholder="Nama Produk" class="form-control" id="nama_produk' + i + '" readonly></td><td><input type="text" name="harga[' + i + ']" placeholder="Harga" class="form-control" id="harga' + i + '"></td><td><input type="text" name="jumlah[' + i + ']" placeholder="Jumlah" class="form-control" id="jumlah' + i + '"></td><td><button type="button" class="btn btn-danger remove-tr"><i class="fas fa-trash"></i></button></td></tr>');
+    $("#user_table ").append('<tr><td><select style="width: 100%;" type="text" name="produk_id[' + i + ']" placeholder="Enter your Name" class="form-control" id="tipe' + i + '"><option value="">Pilih Tipe Produk</option>@foreach ($produk as $p)<option value="{{$p->id}}">{{$p->tipe}}</option>@endforeach</select></td><td><input type="text" name="produk_nama[' + i + ']"  placeholder="Nama Produk" class="form-control" id="nama_produk' + i + '" readonly></td><td><input type="text" name="harga[' + i + ']" placeholder="Harga" class="form-control" id="harga' + i + '"></td><td><input type="text" name="jumlah[' + i + ']" placeholder="Jumlah" class="form-control" id="jumlah' + i + '"></td><td><input type="text" name="subtotal[' + i + ']" placeholder="Subtotal" class="form-control" id="subtotal' + i + '" readonly></td><td><button type="button" class="btn btn-danger remove-tr"><i class="fas fa-trash"></i></button></td></tr>');
 
     $('#tipe' + i + '').select2({
       placeholder: "Pilih Data",
@@ -211,10 +219,6 @@
         });
       });
     });
-
-
-
-
   });
 
 

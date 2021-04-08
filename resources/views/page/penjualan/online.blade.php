@@ -79,14 +79,13 @@
                             </label>
                           </div>
                         </div>
-
                       </div>
                       <div class="card-footer col-12" style="margin-bottom: 2%;">
                         <span>
-                          <button type="button" class="btn btn-block btn-info batalsk" data-dismiss="modal" id="batalhapussk" style="width:30%;float:left;">Batal</button>
+                          <button type="button" class="btn btn-block btn-info batalsk" data-dismiss="modal" id="batalhapus" style="width:30%;float:left;">Batal</button>
                         </span>
                         <span>
-                          <button type="submit" class="btn btn-block btn-danger hapussk" id="hapussk" style="width:30%;float:right;">Hapus</button>
+                          <button type="submit" class="btn btn-block btn-danger hapus" id="hapus" style="width:30%;float:right;">Hapus</button>
                         </span>
                       </div>
                     </form>
@@ -115,12 +114,18 @@
           <table class="table table-hover styled-table table-striped" width="100%" id="tabel_detail">
             <thead>
               <tr>
+                <th colspan="12">
+                  <button type="button" class="btn btn-block btn-success btn-sm" style="width: 200px;" data-target="#tambah_mod" data-toggle="modal"><i class="fas fa-plus"></i> &nbsp;Tambah Produk</i></button>
+                </th>
+              </tr>
+              <tr>
                 <th>No</th>
                 <th>Tipe</th>
                 <th>Nama Produk</th>
                 <th>Harga</th>
                 <th>Jumlah</th>
                 <th>Sub Total</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -133,9 +138,101 @@
                 <th></th>
                 <th></th>
                 <th></th>
+                <th></th>
               </tr>
             </tfoot>
           </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Modal Detail -->
+
+
+<!-- Modal Detail -->
+<div class="modal fade  bd-example-modal-lg" id="tambah_mod" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">
+          <div class="data_detail_head"></div>
+        </h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <div class="data_detail">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="col-lg-12">
+                <form method="post" action="/penjualan_online/detail/aksi_tambah">
+                  {{ csrf_field() }}
+                  <div class="card">
+                    <div class="card-header bg-success">
+                      <div class="card-title"><i class="fas fa-plus-circle"></i>&nbsp;Tambah</div>
+                    </div>
+                    <div class="card-body">
+                      <div class="col-lg-12">
+                        <div class="row">
+                          <div class="col-lg-12">
+                            <div class="form-horizontal">
+                              <input type="text" name="fk_paket_produk" " class=" form-control" id="fk_paket_produk" readonly>
+
+                              <table class="table table-bordered table-striped" id="user_table">
+                                <thead>
+                                  <tr>
+                                    <th width="15%">Tipe</th>
+                                    <th width="20%">Nama</th>
+                                    <th width="15%">Harga</th>
+                                    <th width="5%">Jumlah</th>
+                                    <th width="15%">Sub Total</th>
+                                    <th width="1%"></th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    <td><select style="width: 100%;" type="text" name="produk_id[0]" placeholder="Enter your Name" class="form-control select2" id="tipe">
+                                        <option value="">Pilih Tipe Produk</option>
+                                        @foreach ($produk as $p)
+                                        <option value="{{$p->id}}">{{$p->tipe}}</option>
+                                        @endforeach
+                                      </select>
+                                      @if($errors->has('produk_id'))
+                                      <div class="text-danger">
+                                        {{ $errors->first('produk_id')}}
+                                      </div>
+                                      @endif
+                                    </td>
+                                    <td><input type="text" name="produk_nama[0]" placeholder="Nama Produk" class="form-control" id="nama" readonly></td>
+                                    <td><input type="text" name="harga[0]" placeholder="Harga" class="form-control" id="harga"></td>
+                                    <td><input type="text" name="jumlah[0]" placeholder="Jumlah" class="form-control" id="jumlah"></td>
+                                    <td><input type="text" name="subtotal[0]" placeholder="Sub Total" class="form-control" id="subtotal" readonly></td>
+                                    <td><button type="button" name="add" id="add" class="btn btn-success"><i class="nav-icon fas fa-plus-circle"></i></button></td>
+                                  </tr>
+                                </tbody>
+                                <tfoot>
+                                  <tr>
+                                    <th width="15%" colspan="4">Total</th>
+                                    <th width="15%" colspan="2"><input type="text" name="subtotal[0]" placeholder="Sub Total" class="form-control" id="subtotal" readonly></th>
+                                  </tr>
+                                </tfoot>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card-footer">
+                      <span class="float-right"><button class="btn btn-success rounded-pill" id="button_tambah"><i class="fas fa-plus"></i>&nbsp;Tambah Data</button></span>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="modal-footer">
@@ -221,6 +318,7 @@
         'Detail Paket : ' + rows[0]['ak1']
       );
 
+      $('input[id="fk_paket_produk"]').val(rows[0]['id']);
 
       $('#tabel_detail').DataTable({
         processing: true,
@@ -258,6 +356,17 @@
             orderable: false,
             searchable: false
           },
+          {
+            data: 'jumlah',
+            render: function(data) {
+              $btn_edit = '<div class="inline-flex"><a href="/penjualan_online/ubah/' + data + '"><button type="button" class="btn btn-block btn-warning karyawan-img-small" style="border-radius:50%;"><i class="fas fa-edit"></i></button></a>';
+              $btn_hapus = ' <button type="button" class="btn btn-block btn-danger karyawan-img-small" style="border-radius:50%;" data-toggle="modal" data-target="#delete" ><i class="fas fa-trash"></i></button></div>';
+              return $btn_edit + $btn_hapus;
+            },
+            orderable: false,
+            searchable: false
+          },
+
         ],
         footerCallback: function(row, data, start, end, display) {
           var api = this.api(),
@@ -301,21 +410,67 @@
       $('#detail_mod').modal('show');
     });
 
+  });
+</script>
+
+<script type="text/javascript">
+  var i = 0;
+  $("#add").click(function() {
+    ++i;
+
+    $("#user_table ").append('<tr><td><select style="width: 100%;" type="text" name="produk_id[' + i + ']" placeholder="Enter your Name" class="form-control" id="tipe' + i + '"><option value="">Pilih Tipe Produk</option>@foreach ($produk as $p)<option value="{{$p->id}}">{{$p->tipe}}</option>@endforeach</select></td><td><input type="text" name="produk_nama[' + i + ']"  placeholder="Nama Produk" class="form-control" id="nama_produk' + i + '" readonly></td><td><input type="text" name="harga[' + i + ']" placeholder="Harga" class="form-control" id="harga' + i + '"></td><td><input type="text" name="jumlah[' + i + ']" placeholder="Jumlah" class="form-control" id="jumlah' + i + '"></td><td><input type="text" name="subtotal[' + i + ']" placeholder="Subtotal" class="form-control" id="subtotal' + i + '" readonly></td><td><button type="button" class="btn btn-danger remove-tr"><i class="fas fa-trash"></i></button></td></tr>');
+
+    $('#tipe' + i + '').select2({
+      placeholder: "Pilih Data",
+      allowClear: true,
+      theme: 'bootstrap4',
+    })
 
 
+    $(document).ready(function() {
+      $('select[id="tipe' + i + '"]').on('change', function() {
+        var id = jQuery(this).val();
+        $.ajax({
+          url: '/produk/get_select/' + id,
+          type: "GET",
+          dataType: "json",
+          success: function(data) {
+            $('input[id="nama_produk' + i + '"]').val(data[0].nama);
+            $('input[id="harga' + i + '"]').val('3500000');
+            $('input[id="jumlah' + i + '"]').val('1');
+          },
+          error: function(error) {
+            console.log(error);
+          }
+        });
+      });
+    });
+  });
 
-    // $.ajax({
-    //   url: '/penjualan_online/detail/data/' + rows[0]['id'],
-    //   type: 'get',
-    //   dataType: 'JSON',
-    //   success: function(data) {
 
-    //     jQuery('#tabel_detail > tbody >tr').empty();
-    //     $.each(data, function(key, value) {
-    //       $('#tabel_detail').append('<tr><td>' + value['id'] + '</td></tr>');
-    //     });
-    //   }
-    // });
+  $(document).on('click', '.remove-tr', function() {
+    $(this).parents('tr').remove();
+  });
+</script>
+
+<script>
+  $(document).ready(function() {
+    $('select[id="tipe"]').on('change', function() {
+      var id = jQuery(this).val();
+      $.ajax({
+        url: '/produk/get_select/' + id,
+        type: "GET",
+        dataType: "json",
+        success: function(data) {
+          $('input[id="nama"]').val(data[0].nama);
+          $('input[id="harga"]').val('3500000');
+          $('input[id="jumlah"]').val('1');
+        },
+        error: function(error) {
+          console.log(error);
+        }
+      });
+    });
   });
 </script>
 

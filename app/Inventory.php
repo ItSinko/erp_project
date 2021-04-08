@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\DivisiInventory;
 use Carbon\Carbon;
+use App\PeminjamanAlat;
 
 class Inventory extends Model
 {
@@ -12,6 +13,11 @@ class Inventory extends Model
     public function DivisiInventory()
     {
         return $this->belongsTo(DivisiInventory::class);
+    }
+
+    public function PeminjamanAlat()
+    {
+        return $this->hasMany(PeminjamanAlat::class);
     }
 
     public function nilai_penyusutan()

@@ -1,82 +1,95 @@
-.styled-table .styled-table-input
-{
-    font-size:14px;
-    align-items: center; 
-    
+.styled-table .styled-table-input {
+  font-size: 14px;
+  align-items: center;
 }
-.styled-table .styled-table-input thead
-{
-    font-weight:14px;
+.styled-table .styled-table-input thead {
+  font-weight: 14px;
 }
-.styled-table .styled-table-input th
-{
-    width:auto;
-    height:auto;
-    padding-top: 16px;
-    padding-bottom: 16px;
+.styled-table .styled-table-input th {
+  width: auto;
+  height: auto;
+  padding-top: 16px;
+  padding-bottom: 16px;
 }
-.styled-table td
-{
-    width:auto;
-    height:auto;
-    padding:12px 12px 12px 12px;
-    max-width:10%;
-    vertical-align: middle;
+.styled-table td {
+  width: auto;
+  height: auto;
+  padding: 12px 12px 12px 12px;
+  max-width: 10%;
+  vertical-align: middle;
 }
 
-.styled-table-input td
-{
-    width:auto;
-    height:auto;
-    padding:12px 12px 12px 12px;
-    max-width:10%;
+.styled-table-input td {
+  width: auto;
+  height: auto;
+  padding: 12px 12px 12px 12px;
+  max-width: 10%;
 }
 
-.styled-table .styled-table-input .subtext
-{
-    font-size: 12px;
+.styled-table .styled-table-input .subtext {
+  font-size: 12px;
 }
 
-
-
-
-
-
-.styled-table-small .styled-table-input
-{
-    font-size:10px;
-    align-items: center; 
-    
+.styled-table-small .styled-table-input {
+  font-size: 10px;
+  align-items: center;
 }
-.styled-table-small .styled-table-input thead
-{
-    font-weight:10px;
+.styled-table-small .styled-table-input thead {
+  font-weight: 10px;
 }
-.styled-table-small .styled-table-input th
-{
-    width:auto;
-    height:auto;
-    padding-top: 12px;
-    padding-bottom: 12px;
+.styled-table-small .styled-table-input th {
+  width: auto;
+  height: auto;
+  padding-top: 12px;
+  padding-bottom: 12px;
 }
-.styled-table-small td
-{
-    width:auto;
-    height:auto;
-    padding:8px 8px 8px 8px;
-    max-width:10%;
-    vertical-align: middle;
+.styled-table-small td {
+  width: auto;
+  height: auto;
+  padding: 8px 8px 8px 8px;
+  max-width: 10%;
+  vertical-align: middle;
 }
 
-.styled-table-small .styled-table-input td
-{
-    width:auto;
-    height:auto;
-    padding:8px 8px 8px 8px;
-    max-width:10%;
+.styled-table-small .styled-table-input td {
+  width: auto;
+  height: auto;
+  padding: 8px 8px 8px 8px;
+  max-width: 10%;
 }
 
-.styled-table-small .styled-table-input .subtext
-{
-    font-size: 8px;
+.styled-table-small .styled-table-input .subtext {
+  font-size: 8px;
+}
+
+.styled-table-ss .styled-table-input {
+  font-size: 6px;
+  align-items: center;
+}
+.styled-table-ss .styled-table-input thead {
+  font-weight: 6px;
+}
+.styled-table-ss .styled-table-input th {
+  width: auto;
+  height: auto;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+.styled-table-ss td {
+  width: auto;
+  height: auto;
+  padding: 4px 4px 4px 4px;
+  max-width: 10%;
+  vertical-align: middle;
+}
+
+.styled-table-ss .styled-table-input td {
+  width: auto;
+  height: auto;
+  padding: 4px 4px 4px 4px;
+  max-width: 10%;
+}
+
+.styled-table-ss .styled-table-input .subtext {
+  font-size: 4px;
 }

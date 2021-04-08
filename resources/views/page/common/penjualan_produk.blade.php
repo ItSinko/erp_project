@@ -17,7 +17,7 @@
             <thead style="text-align: center;">
               <tr>
                 <th colspan="12">
-                  <a href="" style="color: white;"><button type="button" class="btn btn-block btn-success btn-sm" style="width: 200px;"><i class="fas fa-plus"></i> &nbsp; Tambah</i></button></a>
+                  <a href="/penjualan_produk/tambah" style="color: white;"><button type="button" class="btn btn-block btn-success btn-sm" style="width: 200px;"><i class="fas fa-plus"></i> &nbsp; Tambah</i></button></a>
                 </th>
               </tr>
               <tr>
@@ -25,6 +25,7 @@
                 <th>Merk</th>
                 <th>Tipe</th>
                 <th>Nama</th>
+                <th>Harga</th>
                 <th>Satuan</th>
                 <th>No AKD</th>
                 <th>Catatan</th>
@@ -47,7 +48,6 @@
                       <h6>Kenapa anda ingin menghapus Laporan ini?</h6>
                     </div>
                     <form id="delete-form" action="" method="POST">
-
                       <div class="form-group row">
                         <div class="col-sm-1"></div>
                         <div class="col-sm-3">
@@ -125,6 +125,9 @@
           data: 'nama'
         },
         {
+          data: 'harga'
+        },
+        {
           data: 'satuan'
         },
         {
@@ -138,7 +141,7 @@
           data: 'id',
           name: 'id',
           render: function(data) {
-            $btn = '<div class="inline-flex"><a href="/nama_alamat/ubah/' + data + '"><button type="button" class="btn btn-block btn-warning karyawan-img-small" style="border-radius:50%;"><i class="fas fa-edit"></i></button></a>';
+            $btn = '<div class="inline-flex"><a href="/penjualan_produk/ubah/' + data + '"><button type="button" class="btn btn-block btn-warning karyawan-img-small" style="border-radius:50%;"><i class="fas fa-edit"></i></button></a>';
             $btn_edit = ' <button type="button" class="btn btn-block btn-danger karyawan-img-small" style="border-radius:50%;" data-toggle="modal" data-target="#delete" ><i class="fas fa-trash"></i></button></div>';
             return $btn + $btn_edit;
           },

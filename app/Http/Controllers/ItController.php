@@ -16,9 +16,12 @@ use App\Karyawan;
 use App\Produk;
 use App\KelompokProduk;
 use App\KategoriProduk;
+use App\PeminjamanAlat;
+use App\DetailPeminjamanKaryawan;
 use Carbon\Carbon;
 use App\Http\Controllers\GetController;
 use App\Http\Controllers\UserLogController;
+use App\PeminjamanKaryawan;
 use Yajra\DataTables\Facades\DataTables;
 
 class ItController extends Controller
@@ -322,6 +325,15 @@ class ItController extends Controller
 
         return DataTables::of($s)
             ->addIndexColumn()
+            ->editColumn('nama_barang', function ($s) {
+                $sum = PeminjamanAlat::where([['inventory_id', '=', $s->id], ['status', '=', 'wishlist']])->sum('jumlah');
+                $btn = '<hgroup><h6 class="heading">' . $s->kode_barang . ' - ' . $s->nama_barang . '</h6>';
+                if ($sum > 0) {
+                    $btn .= '<div class="subheading"><small class="purple-text">Wishlist Peminjaman : ' . $sum . '</small></div>';
+                }
+                $btn .= '</hgroup>';
+                return $btn;
+            })
             ->editColumn('tanggal_perolehan', function ($s) {
                 return Carbon::createFromFormat('Y-m-d', $s->tanggal_perolehan)->format('d/m/Y');
             })
@@ -329,19 +341,19 @@ class ItController extends Controller
                 return ucfirst($s->status);
             })
             ->editColumn('harga_perolehan', function ($s) {
-                return 'Rp. ' . number_format($s->harga_perolehan);
+                return $s->harga_perolehan;
             })
             ->addColumn('nilai_penyusutan', function ($s) {
                 // return round($this->GetController->inventory_nilai_penyusutan($s->harga_perolehan, $s->jumlah, $s->masa_manfaat));
-                return 'Rp. ' . number_format(round($s->nilai_penyusutan()));
+                return $s->nilai_penyusutan();
             })
             ->addColumn('akum_nilai_penyusutan', function ($s) {
                 // return round($this->GetController->inventory_akum_nilai_penyusutan($s->harga_perolehan, $s->jumlah, $s->masa_manfaat, $s->tanggal_perolehan));
-                return 'Rp. ' . number_format(round($s->akum_nilai_penyusutan()));
+                return $s->akum_nilai_penyusutan();
             })
             ->addColumn('nilai_sisa_buku', function ($s) {
                 // return round($this->GetController->inventory_nilai_sisa_buku($s->harga_perolehan, $s->jumlah, $s->masa_manfaat, $s->tanggal_perolehan));
-                $btn = 'Rp. ' . number_format(round($s->nilai_sisa_buku()));
+                $btn = $s->nilai_sisa_buku();
                 return $btn;
             })
             ->addColumn('aksi', function ($s) {
@@ -350,7 +362,7 @@ class ItController extends Controller
                 $btnaksi = $btnedit . $btndelete;
                 return $btnaksi;
             })
-            ->rawColumns(['aksi'])
+            ->rawColumns(['aksi', 'nilai_sisa_buku', 'akum_nilai_penyusutan', 'harga_perolehan', 'nama_barang'])
             ->make(true);
     }
 
@@ -360,5 +372,462 @@ class ItController extends Controller
         $this->UserLogController->create(Auth::user()->id, $p->kode_barang . " " . $p->nama_barang, 'Inventory', 'Hapus', $request->keterangan_log);
         $p->delete();
         return redirect()->back();
+    }
+
+
+    //PEMINJAMAN
+    public function peminjaman_alat()
+    {
+        return view('page.it.peminjaman_alat_show');
+    }
+
+    public function peminjaman_alat_show()
+    {
+        $user_divisi = Auth::user()->divisi_id;
+        $s = PeminjamanAlat::whereHas('User', function ($q) use ($user_divisi) {
+            $q->where('divisi_id', $user_divisi);
+        })->get();
+
+        return DataTables::of($s)
+            ->addIndexColumn()
+            ->editColumn('tanggal_pengajuan', function ($s) {
+                return Carbon::createFromFormat('Y-m-d', $s->tanggal_pengajuan)->format('d/m/Y');
+            })
+            ->editColumn('tanggal_perpanjangan', function ($s) {
+                if (!empty($s->tanggal_perpanjangan)) {
+                    return Carbon::createFromFormat('Y-m-d', $s->tanggal_perpanjangan)->format('d/m/Y');
+                }
+            })
+            ->editColumn('tanggal_pengembalian', function ($s) {
+                if (!empty($s->tanggal_pengembalian)) {
+                    return Carbon::createFromFormat('Y-m-d', $s->tanggal_pengembalian)->format('d/m/Y');
+                }
+            })
+            ->editColumn('tanggal_peminjaman', function ($s) {
+                if (!empty($s->tanggal_peminjaman)) {
+                    return Carbon::createFromFormat('Y-m-d', $s->tanggal_peminjaman)->format('d/m/Y');
+                }
+            })
+            ->editColumn('tanggal_batas_pengembalian', function ($s) {
+                if (!empty($s->tanggal_batas_pengembalian)) {
+                    return Carbon::createFromFormat('Y-m-d', $s->tanggal_batas_pengembalian)->format('d/m/Y');
+                }
+            })
+            ->editColumn('status', function ($s) {
+                $btn = "";
+                $due = "";
+
+                if (!empty($s->tanggal_batas_pengembalian)) {
+                    $due_date = Carbon::parse($s->tanggal_batas_pengembalian);
+                    $today_date = Carbon::now();
+                    $res =  $today_date->diffInDays($due_date, false);
+
+                    if ($res <= 3) {
+                        $due .= '<p><a href = "/peminjaman/alat/status/' . $s->id . '/permintaan_perpanjangan"><button class="btn btn-primary btn-round btn-sm"><i class="fa fa-paper-plane"></i>&nbsp;Wishlist</button></a></p>';
+                    }
+                }
+
+                if ($s->status == "draft") {
+                    if ($s->inventory->jumlah_tersedia >= $s->jumlah) {
+                        $btn = '<a href = "/peminjaman/alat/status/' . $s->id . '/menunggu"><button class="btn btn-info btn-round btn-sm"><i class="fa fa-paper-plane"></i>&nbsp;Pinjam</button></a>';
+                    } else {
+                        $btn = '<a href = "/peminjaman/alat/status/' . $s->id . '/wishlist" title="Barang tidak tersedia, Masukkan wishlist untuk info ketersediaan barang"><button class="btn btn-primary btn-round btn-sm"><i class="fas fa-heart"></i>&nbsp;Wishlist</button></a>';
+                    }
+                } else if ($s->status == "wishlist") {
+                    $btn = '<span class="purple-text">Wishlist</span>';
+                    if ($s->inventory->jumlah_tersedia >= $s->jumlah) {
+                        $btn .= '<a href = "/peminjaman/alat/status/' . $s->id . '/menunggu" title="Barang sudah tersedia, Silahkan melakukan peminjaman"><button class="btn btn-info btn-round btn-sm"><i class="fa fa-paper-plane"></i>&nbsp;Pinjam</button></a>';
+                    }
+                } else if ($s->status == "menunggu") {
+                    $btn = '<span class="warning-text">Menunggu</span>';
+                } else if ($s->status == "dipinjam") {
+                    $btn = '<span class="success-text">Dipinjam</span>';
+                    $btn .= $due;
+                } else if ($s->status == "tolak") {
+                    $btn = '<span class="danger-text">Tolak</span>';
+                } else if ($s->status == "permintaan_perpanjangan") {
+                    $btn = '<span class="danger-text">Permintaan Perpanjangan</span>';
+                } else if ($s->status == "perpanjangan") {
+                    $btn = '<span class="success-text">Dipinjam</span>';
+                    $btn .= $due;
+                } else if ($s->status == "tolak_perpanjangan") {
+                    $btn = `<span class="success-text">Dipinjam</span>
+                            <p><span class="danger-text">Tolak Perpanjangan</span></p>`;
+                } else if ($s->status == "kembali") {
+                    $btn = '<span class="secondary-text">Kembali</span>';
+                }
+                return $btn;
+            })
+            ->addColumn('divisi', function ($s) {
+                $btn = $s->DivisiInventory->Divisi->nama;
+                return $btn;
+            })
+            ->editColumn('inventory', function ($s) {
+                $btn = $s->Inventory->nama_barang;
+                return $btn;
+            })
+            ->addColumn('aksi', function ($s) {
+                $btn = "";
+                if (Auth::user()->id === $s->peminjam_id) {
+                    if ($s->status == "draft" || $s->status == "wishlist") {
+                        $btn = '<a href = "/peminjaman/alat/edit/' . $s->id . '"><button class="btn btn-warning  btn-circle btn-circle-sm m-1"><i class="fas fa-edit"></i></button></a>';
+                        $btn .= '<a class="deletemodal" data-toggle="modal" data-target="#deletemodal" data-url="/peminjaman/alat/delete/' . $s->id . '"><button class="btn btn-danger  btn-circle btn-circle-sm m-1"><i class="fas fa-trash"></i></button></a>';
+                    }
+                }
+                return $btn;
+            })
+            ->editColumn('keterangan', function ($s) {
+                $btn = $s->keterangan;
+                if (!empty($s->tanggal_batas_pengembalian)) {
+                    $due_date = Carbon::parse($s->tanggal_batas_pengembalian);
+                    $today_date = Carbon::now();
+                    $res =  $today_date->diffInDays($due_date, false);
+                    if ($res >= 1 && $res <= 3) {
+                        $btn .= '<p><span class="warning-text">Batas Pengembalian ' . $res . ' hari lagi</span></p>';
+                    } else if ($res < 1) {
+                        $btn .= '<p><span class="danger-text">Waktu telah habis, Silahkan lakukan pengembalian barang</span></p>';
+                    }
+                }
+                return $btn;
+            })
+            ->rawColumns(['aksi', 'status', 'keterangan'])
+            ->make(true);
+    }
+
+    public function peminjaman_alat_create()
+    {
+        $d = DivisiInventory::all();
+        return view('page.it.peminjaman_alat_create', ['d' => $d]);
+    }
+
+    public function peminjaman_alat_store(Request $request, $user_id)
+    {
+        $v = Validator::make(
+            $request->all(),
+            [
+                'tanggal_pengajuan' => 'required',
+                'divisi_inventory_id' => 'required',
+                'inventory_id' => 'required',
+                'jumlah' => 'required',
+            ],
+            [
+
+                'tanggal_pengajuan.required' => "Tanggal pengajuan harus diisi",
+                'divisi_inventory_id.required' => "Pilih Inventory milik Divisi",
+                'inventory_id.required' => "Pilih Kode Barang",
+                'jumlah.required' => "Jumlah harus diisi",
+            ]
+        );
+
+        if ($v->fails()) {
+            return redirect()->back()->withErrors($v);
+        } else {
+
+            $bool = true;
+            for ($i = 0; $i < count($request->divisi_inventory_id); $i++) {
+                $cs = PeminjamanAlat::create([
+                    'divisi_inventory_id' => $request->divisi_inventory_id[$i],
+                    'inventory_id' => $request->inventory_id[$i],
+                    'jumlah' => $request->jumlah[$i],
+                    'keterangan' => $request->keteranganinv[$i],
+                    'tanggal_pengajuan' => $request->tanggal_pengajuan,
+                    'peminjam_id' => $user_id,
+                    'status' => "draft"
+                ]);
+                if (!$cs) {
+                    $bool = false;
+                }
+            }
+            if ($bool == true) {
+                return redirect()->back()->with('success', 'Sukses menambahkan Data');
+            } else {
+                return redirect()->back()->with('error', 'Gagal menambahkan Data');
+            }
+        }
+    }
+
+    public function peminjaman_alat_edit($id)
+    {
+        $d = DivisiInventory::all();
+        $s = PeminjamanAlat::find($id);
+        return view('page.it.peminjaman_alat_edit', ['id' => $id, 'd' => $d, 's' => $s]);
+    }
+
+    public function peminjaman_alat_update(Request $request, $id)
+    {
+        $v = Validator::make(
+            $request->all(),
+            [
+                'divisi_inventory_id' => 'required',
+                'inventory_id' => 'required',
+                'jumlah' => 'required',
+            ],
+            [
+                'divisi_inventory_id.required' => "Pilih Inventory milik Divisi",
+                'inventory_id.required' => "Pilih Kode Barang",
+                'jumlah.required' => "Jumlah harus diisi",
+            ]
+        );
+
+        if ($v->fails()) {
+            return redirect()->back()->withErrors($v);
+        } else {
+            $i = PeminjamanAlat::find($id);
+            $i->divisi_inventory_id = $request->divisi_inventory_id;
+            $i->inventory_id = $request->inventory_id;
+            $i->jumlah = $request->jumlah;
+            $i->keterangan = $request->keteranganinv;
+            $s = $i->save();
+
+            if ($s) {
+                return redirect()->back()->with('success', 'Sukses mengubah Data');
+            } else {
+                return redirect()->back()->with('error', 'Gagal mengubah Data');
+            }
+        }
+    }
+
+    public function peminjaman_alat_delete(Request $request, $id)
+    {
+        $p = PeminjamanAlat::find($id);
+        $this->UserLogController->create(Auth::user()->id,  "Peminjaman oleh " . $p->User->nama . " ke Inventory milik " . $p->DivisiInventory->Divisi->nama . " tanggal " . $p->tanggal_peminjaman, 'Peminjaman', 'Hapus', $request->keterangan_log);
+        $p->delete();
+        return redirect()->back();
+    }
+
+    public function peminjaman_alat_status($id, $status)
+    {
+        $date = Carbon::now();
+        $p = PeminjamanAlat::find($id);
+
+        if ($status == "dipinjam") {
+            $p->status = $status;
+            $p->tanggal_peminjaman = $date->toDateString();
+            $date->addDays(9);
+            $p->tanggal_batas_pengembalian = $date;
+            $u = $p->save();
+            if ($u) {
+                $i = Inventory::find($p->inventory_id);
+                $i->jumlah_tersedia = $i->jumlah_tersedia - $p->jumlah;
+                $i->save();
+
+                return redirect()->back();
+            }
+        } else if ($status == "perpanjangan") {
+            $p->status = $status;
+            $p->tanggal_perpanjangan = $date->toDateString();
+            $date->addDays(9);
+            $p->tanggal_batas_pengembalian = $date;
+            $u = $p->save();
+
+            return redirect()->back();
+        } else if ($status == "kembali") {
+            $p->status = $status;
+            $p->tanggal_pengembalian = $date;
+            $u = $p->save();
+            if ($u) {
+                $i = Inventory::find($p->inventory_id);
+                $i->jumlah_tersedia = $i->jumlah_tersedia + $p->jumlah;
+                $i->save();
+                return redirect()->back();
+            }
+        } else {
+            $p->status = $status;
+            $u = $p->save();
+            return redirect()->back();
+        }
+    }
+
+    public function peminjaman_karyawan()
+    {
+        return view('page.it.peminjaman_karyawan_show');
+    }
+
+    public function peminjaman_karyawan_show()
+    {
+        $user_id = Auth::user()->id;
+        $s = PeminjamanKaryawan::where('user_id', $user_id)->get();
+
+        return DataTables::of($s)
+            ->addIndexColumn()
+            ->editColumn('nama_penugasan', function ($s) {
+                return $s->nama_penugasan;
+            })
+            ->addColumn('penanggung_jawab', function ($s) {
+                return $s->PenanggungJawab->nama;
+            })
+            ->editColumn('tanggal_pembuatan', function ($s) {
+                if (!empty($s->tanggal_pembuatan)) {
+                    return Carbon::createFromFormat('Y-m-d', $s->tanggal_pembuatan)->format('d/m/Y');
+                }
+            })
+            ->editColumn('tanggal_penugasan', function ($s) {
+                if (!empty($s->tanggal_penugasan)) {
+                    return Carbon::createFromFormat('Y-m-d', $s->tanggal_penugasan)->format('d/m/Y');
+                }
+            })
+            ->editColumn('tanggal_estimasi_selesai', function ($s) {
+                if (!empty($s->tanggal_estimasi_selesai)) {
+                    return Carbon::createFromFormat('Y-m-d', $s->tanggal_estimasi_selesai)->format('d/m/Y');
+                }
+            })
+            ->editColumn('tanggal_selesai', function ($s) {
+                if (!empty($s->tanggal_selesai)) {
+                    return Carbon::createFromFormat('Y-m-d', $s->tanggal_selesai)->format('d/m/Y');
+                }
+            })
+            ->editColumn('keterangan', function ($s) {
+                $btn = $s->keterangan;
+                return $btn;
+            })
+            ->addColumn('aksi', function ($s) {
+                $btn = '<a href = "/peminjaman/karyawan/edit/' . $s->id . '"><button class="btn btn-warning  btn-circle btn-circle-sm m-1"><i class="fas fa-edit"></i></button></a>';
+                $btn .= '<a class="deletemodal" data-toggle="modal" data-target="#deletemodal" data-url="/peminjaman/karyawan/delete/' . $s->id . '"><button class="btn btn-danger  btn-circle btn-circle-sm m-1"><i class="fas fa-trash"></i></button></a>';
+                return $btn;
+            })
+            ->rawColumns(['aksi'])
+            ->make(true);
+    }
+
+    public function peminjaman_karyawan_create()
+    {
+        $s = Karyawan::whereNotIn('divisi_id', [Auth::user()->divisi_id])->get();
+        return view('page.it.peminjaman_karyawan_create', ['s' => $s]);
+    }
+
+    public function peminjaman_karyawan_store(Request $request)
+    {
+        $c = PeminjamanKaryawan::create([
+            'nama_penugasan' => $request->nama_penugasan,
+            'penanggung_jawab_id' => $request->penanggung_jawab_id,
+            'tanggal_pembuatan' => $request->tanggal_pembuatan,
+            'tanggal_penugasan' => $request->tanggal_penugasan,
+            'tanggal_estimasi_selesai' => $request->tanggal_estimasi_selesai,
+            'keterangan' => $request->keterangan,
+            'user_id' => Auth::user()->id
+        ]);
+
+        if ($c) {
+            $bool = true;
+            for ($i = 0; $i < count($request->karyawan_id); $i++) {
+                $cs = DetailPeminjamanKaryawan::create([
+                    'peminjaman_karyawan_id' => $c->id,
+                    'karyawan_id' => $request->karyawan_id[$i],
+                    'status' => 'draft',
+                    'keterangan' => $request->keterangan[$i]
+                ]);
+
+                if (!$cs) {
+                    $bool = false;
+                }
+            }
+        }
+        return redirect()->back();
+    }
+
+    public function peminjaman_karyawan_edit()
+    {
+        return view('page.it.peminjaman_karyawan_edit');
+    }
+
+    public function peminjaman_karyawan_update()
+    {
+        return redirect()->back();
+    }
+
+    public function peminjaman_karyawan_delete()
+    {
+    }
+
+    public function peminjaman_karyawan_status()
+    {
+    }
+
+    public function inventory_peminjaman()
+    {
+        return view('page.it.inventory_peminjaman_show');
+    }
+
+    public function inventory_peminjaman_show()
+    {
+        $divisi = Auth::user()->Divisi->id;
+        $s = PeminjamanAlat::whereHas('DivisiInventory', function ($q) use ($divisi) {
+            $q->where('divisi_id', $divisi);
+        })->whereNotIn('status', ['draft', 'wishlist'])->get();
+
+        return DataTables::of($s)
+            ->addIndexColumn()
+            ->editColumn('tanggal_pengajuan', function ($s) {
+                return Carbon::createFromFormat('Y-m-d', $s->tanggal_pengajuan)->format('d/m/Y');
+            })
+            ->editColumn('tanggal_perpanjangan', function ($s) {
+                if (!empty($s->tanggal_perpanjangan)) {
+                    return Carbon::createFromFormat('Y-m-d', $s->tanggal_perpanjangan)->format('d/m/Y');
+                }
+            })
+            ->editColumn('tanggal_pengembalian', function ($s) {
+                if (!empty($s->tanggal_pengembalian)) {
+                    return Carbon::createFromFormat('Y-m-d', $s->tanggal_pengembalian)->format('d/m/Y');
+                }
+            })
+            ->editColumn('tanggal_peminjaman', function ($s) {
+                if (!empty($s->tanggal_peminjaman)) {
+                    return Carbon::createFromFormat('Y-m-d', $s->tanggal_peminjaman)->format('d/m/Y');
+                }
+            })
+            ->editColumn('tanggal_batas_pengembalian', function ($s) {
+                if (!empty($s->tanggal_batas_pengembalian)) {
+                    return Carbon::createFromFormat('Y-m-d', $s->tanggal_batas_pengembalian)->format('d/m/Y');
+                }
+            })
+            ->editColumn('status', function ($s) {
+                $btn = "";
+                if ($s->status == "menunggu") {
+                    $btn = '<a href = "/peminjaman/alat/status/' . $s->id . '/dipinjam"><button class="btn btn-success btn-round btn-sm"><i class="fas fa-check"></i>&nbsp;Terima</button></a>&nbsp;';
+                    $btn .= '<a href = "/peminjaman/alat/status/' . $s->id . '/tolak"><button class="btn btn-danger btn-round btn-sm"><i class="fas fa-times"></i>&nbsp;Tolak</button></a>';
+                } else if ($s->status == "dipinjam") {
+                    $btn = '<p><a href = "/peminjaman/alat/status/' . $s->id . '/kembali"><button class="btn btn-secondary btn-round btn-sm"><i class="fas fa-exchange-alt"></i>&nbsp;Kembali</button></a></p>';
+                    $btn .= '<p><span class="success-text">Dipinjam</span></p>';
+                } else if ($s->status == "tolak") {
+                    $btn = '<span class="danger-text">Tolak</span>';
+                } else if ($s->status == "permintaan_perpanjangan") {
+                    $btn = '<a href = "/peminjaman/alat/status/' . $s->id . '/permintaan_perpanjangan"><button class="btn btn-success btn-round btn-sm"><i class="fas fa-times"></i>&nbsp;Terima Perpanjangan</button></a>&nbsp;';
+                    $btn .= '<a href = "/peminjaman/alat/status/' . $s->id . '/tolak_perpanjangan"><button class="btn btn-success btn-round btn-sm"><i class="fas fa-times"></i>&nbsp;Tolak Perpanjangan</button></a>';
+                } else if ($s->status == "perpanjangan") {
+                    $btn = '<span class="success-text">Dipinjam</span>';
+                    $btn .= '<p><span><a href = "/peminjaman/alat/status/' . $s->id . '/kembali"><button class="btn btn-secondary btn-round btn-sm"><i class="fas fa-times"></i>&nbsp;Kembali</button></a></span></p>';
+                } else if ($s->status == "tolak_perpanjangan") {
+                    $btn = '<p><span class="success-text">Dipinjam</span></p>';
+                    $btn .= '<p><span class="danger-text">Tolak Perpanjangan</span></p>';
+                    $btn .= '<p><a href = "/peminjaman/alat/status/' . $s->id . '/kembali"><button class="btn btn-secondary btn-round btn-sm"><i class="fas fa-exchange-alt"></i>&nbsp;Kembali</button></a></p>';
+                } else if ($s->status == "kembali") {
+                    $btn = '<span class="secondary-text">Kembali</span>';
+                }
+                return $btn;
+            })
+            ->addColumn('peminjam', function ($s) {
+                $btn = $s->User->nama;
+                return $btn;
+            })
+            ->editColumn('inventory', function ($s) {
+                $btn = $s->Inventory->nama_barang;
+                return $btn;
+            })
+            ->editColumn('keterangan', function ($s) {
+                $btn = $s->keterangan;
+                if (!empty($s->tanggal_batas_pengembalian)) {
+                    $due_date = Carbon::parse($s->tanggal_batas_pengembalian);
+                    $today_date = Carbon::now();
+                    $res =  $today_date->diffInDays($due_date, false);
+                    if ($res >= 1 && $res <= 3) {
+                        $btn .= '<p><span class="warning-text">Batas Pengembalian ' . $res . ' hari lagi</span></p>';
+                    } else if ($res < 1) {
+                        $btn .= '<p><span class="danger-text">Waktu telah habis, Silahkan lakukan pengembalian barang</span></p>';
+                    }
+                }
+                return $btn;
+            })
+            ->rawColumns(['status', 'keterangan'])
+            ->make(true);
     }
 }

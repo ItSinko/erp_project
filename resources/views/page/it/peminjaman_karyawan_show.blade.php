@@ -3,51 +3,46 @@
 @section('title', 'Beta Version')
 
 @section('content_header')
-<h1 class="m-0 text-dark">Dashboard</h1>
-@stop
-
-@section('content')
 <section class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>Inventory</h1>
+                <h1>Peminjaman Karyawan</h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="#">Beranda</a></li>
-                    <li class="breadcrumb-item active">Inventory</li>
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">Advanced Form</li>
                 </ol>
             </div>
         </div>
-    </div><!-- /.container-fluid -->
+    </div>
 </section>
+@stop
 
+
+@section('content')
 <section class="content">
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
-                    <h2>Inventory Divisi</h2>
-                    <table id="example" class="table table-hover styled-table-ss table-striped table-item" style="width:100%;">
+                    <h2>Peminjaman</h2>
+                    <table id="example" class="table table-hover styled-table-small table-striped table-item" style="width:100%;">
                         <thead style="text-align: center;">
                             <tr>
                                 <th colspan="20">
-                                    <a href="{{route('inventory.create', ['divisi_id' => Auth::user()->divisi_id])}}" style="color: white;"><button type="button" class="btn btn-block btn-success btn-sm" style="width: 200px;"><i class="fas fa-plus"></i> &nbsp; Tambah</i></button></a>
+                                    <a href="{{route('peminjaman.karyawan.create')}}" style="color: white;"><button type="button" class="btn btn-block btn-success btn-sm" style="width: 200px;"><i class="fas fa-plus"></i> &nbsp; Tambah</i></button></a>
                                 </th>
                             </tr>
                             <tr>
                                 <th>No</th>
-                                <th>Nama Barang</th>
-                                <th>Jumlah</th>
-                                <th>Tanggal Perolehan</th>
-                                <th>Harga Perolehan</th>
-                                <th>Lokasi</th>
-                                <th>Nilai Penyusutan</th>
-                                <th>Akum Nilai Penyusutan</th>
-                                <th>Nilai Sisa Buku</th>
+                                <th>Nama Penugasan</th>
+                                <th>Tanggal Pembuatan</th>
+                                <th>Tanggal Penugasan</th>
+                                <th>Tanggal Estimasi Selesai</th>
+                                <th>Tanggal Selesai</th>
                                 <th>Keterangan</th>
-                                <th>Status</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -129,56 +124,35 @@
         $('#example').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('inventory.show', ['divisi_id' => $divisi_id]) }}",
+            ajax: "{{ route('peminjaman.karyawan.show') }}",
             columns: [{
                     data: 'DT_RowIndex',
                     name: 'DT_RowIndex',
                     orderable: false,
                     searchable: false
+                }, {
+                    data: 'nama_penugasan',
+                    name: 'nama_penugasan'
                 },
                 {
-                    data: 'nama_barang',
-                    name: 'nama_barang'
+                    data: 'tanggal_pembuatan',
+                    name: 'tanggal_pembuatan'
                 },
                 {
-                    data: 'jumlah',
-                    name: 'jumlah'
+                    data: 'tanggal_penugasan',
+                    name: 'tanggal_penugasan'
                 },
                 {
-                    data: 'tanggal_perolehan',
-                    name: 'tanggal_perolehan'
+                    data: 'tanggal_estimasi_selesai',
+                    name: 'tanggal_estimasi_selesai'
                 },
                 {
-                    data: 'harga_perolehan',
-                    name: 'harga_perolehan',
-                    render: $.fn.dataTable.render.number('.', ',', 2, 'Rp. ')
-                },
-                {
-                    data: 'lokasi',
-                    name: 'lokasi'
-                },
-                {
-                    data: 'nilai_penyusutan',
-                    name: 'nilai_penyusutan',
-                    render: $.fn.dataTable.render.number('.', ',', 2, 'Rp. ')
-                },
-                {
-                    data: 'akum_nilai_penyusutan',
-                    name: 'akum_nilai_penyusutan',
-                    render: $.fn.dataTable.render.number('.', ',', 2, 'Rp. ')
-                },
-                {
-                    data: 'nilai_sisa_buku',
-                    name: 'nilai_sisa_buku',
-                    render: $.fn.dataTable.render.number('.', ',', 2, 'Rp. ')
+                    data: 'tanggal_selesai',
+                    name: 'tanggal_selesai'
                 },
                 {
                     data: 'keterangan',
                     name: 'keterangan'
-                },
-                {
-                    data: 'status',
-                    name: 'status'
                 },
                 {
                     data: 'aksi',
@@ -187,11 +161,6 @@
                     searchable: false
                 },
             ]
-        });
-
-        $(document).on('click', '.deletemodal', function() {
-            var url = $(this).attr('data-url');
-            $("#deleteform").attr("action", url);
         });
     });
 </script>

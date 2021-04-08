@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Divisi;
 use App\Karyawan;
 use App\Inventory;
+use App\PeminjamanAlat;
 
 class DivisiInventory extends Model
 {
@@ -24,5 +25,10 @@ class DivisiInventory extends Model
     public function Karyawan()
     {
         return $this->belongsTo(Karyawan::class, 'pic_id');
+    }
+
+    public function PeminjamanAlat()
+    {
+        return $this->hasMany(PeminjamanAlat::class);
     }
 }
