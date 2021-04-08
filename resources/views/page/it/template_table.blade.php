@@ -1,4 +1,11 @@
-@extends('layouts.app')
+@extends('adminlte.page')
+
+@section('title', 'Beta Version')
+
+@section('content_header')
+<h1 class="m-0 text-dark">Dashboard</h1>
+@stop
+
 @section('content')
 <section class="content-header">
   <div class="container-fluid">
@@ -528,7 +535,7 @@
 </section>
 @endsection
 
-@section('footer_script')
+@section('adminlte_js')
 <script>
 
 </script>
