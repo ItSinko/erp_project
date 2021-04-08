@@ -244,7 +244,6 @@ return [
             'header' => 'account_settings'
         ],
         [
-            'auth' => [26],
             'text' => 'profile',
             'url'  => '#',
             'icon' => 'fas fa-fw fa-user',
@@ -256,7 +255,7 @@ return [
         ],
         [
             'header' => 'DATA MASTER',
-            'auth'   => [26]
+            'auth'   => [26, 14]
         ],
         [
             'text' => 'Penjualan Produk',
@@ -310,6 +309,53 @@ return [
                 ],
             ],
         ],
+        [
+            'text' => 'Produk',
+            'url'  => '/produk',
+            'icon' => 'fas fa-table',
+            'auth' => [14]
+        ],
+        [
+            'text'    => 'Inventory',
+            'icon'    => 'fas fa-boxes',
+            'auth' => [14],
+            'submenu' => [
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Master Inventory',
+                    'url'  => '/inventory/divisi',
+                ],
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Inventory',
+                    'url'  => '/inventory/14',
+                ],
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Permintaan Peminjaman',
+                    'url'  => '/inventory/peminjaman',
+                ],
+            ],
+        ],
+        [
+            'text'    => 'Peminjaman',
+            'icon'    => 'fas fa-boxes',
+            'auth' => [14],
+            'submenu' => [
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Alat',
+                    'url'  => '/peminjaman/alat',
+                ],
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Karyawan',
+                    'url'  => '/peminjaman/karyawan',
+                ],
+
+            ],
+        ],
+
         // ['header' => 'LOGOUT'],
         // [
         //     'text' => 'Logout',
