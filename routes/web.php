@@ -106,6 +106,24 @@ Route::get('/penjualan_online_ecom', 'PenjualanController@penjualan_online_ecom'
 Route::get('/penjualan_online_ecom/tambah', 'PenjualanController@penjualan_online_ecom_tambah');
 // Action
 Route::post('/penjualan_online_ecom/aksi_tambah', 'PenjualanController@penjualan_online_ecom_aksi_tambah');
+/* Get Data */
+Route::get('/penjualan_online_ecom/data', 'PenjualanController@penjualan_online_ecom_Data');
+Route::get('/penjualan_online_ecom/detail/data/{id}', 'PenjualanController@detail_penjualan_online_ecom_data');
+
+// PENJUALAN OFFLINE
+/* Get Data */
+Route::get('/penjualan_offline/data', 'PenjualanController@penjualan_offline_data');
+Route::get('/penjualan_offline/detail/data/{id}', 'PenjualanController@detail_penjualan_offline_data');
+
+/*Tabel*/
+Route::get('/penjualan_offline', 'PenjualanController@penjualan_offline');
+/* Action */
+Route::post('/penjualan_offline/aksi_tambah', 'PenjualanController@penjualan_offline_aksi_tambah');
+/* Tambah */
+Route::get('/penjualan_offline/tambah', 'PenjualanController@penjualan_offline_tambah');
+
+
+
 
 //GET DATA SELECT
 /* Get Data */

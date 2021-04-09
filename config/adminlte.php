@@ -296,6 +296,12 @@ return [
             ],
         ],
         [
+            'text' => 'Offline',
+            'url'  => '/penjualan_offline',
+            'icon' => 'fas fa-table',
+            'auth' => [26]
+        ],
+        [
             'text'    => 'PO / DO',
             'icon'    => 'fas fa-table',
             'auth' => [26],

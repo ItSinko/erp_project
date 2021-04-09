@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDetailEcommerces extends Migration
+class CreateOfflines extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,12 @@ class CreateDetailEcommerces extends Migration
      */
     public function up()
     {
-        Schema::create('detail_ecommerces', function (Blueprint $table) {
+        Schema::create('offlines', function (Blueprint $table) {
             $table->id();
-            $table->integer('ecommerces_id');
-            $table->integer('produk_id');
-            $table->double('harga');
-            $table->integer('jumlah');
-            $table->string('keterangan')->nullable();
+            $table->string('order_id');
+            $table->integer('customer_id');
+            $table->string('status');
+            $table->string('bayar');
             $table->timestamps();
         });
     }
@@ -31,6 +30,6 @@ class CreateDetailEcommerces extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('detail_ecommerces');
+        Schema::dropIfExists('offlines');
     }
 }

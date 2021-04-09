@@ -24,19 +24,18 @@
     <div class="card">
       <div class="card-body">
         <div class='table-responsive'>
-          <h2>E-Commerce</h2>
+          <h2>Offline</h2>
           <table id="tabel" class="table table-hover styled-table table-striped">
             <thead style="text-align: center;">
               <tr>
                 <th colspan="12">
-                  <a href="/penjualan_online_ecom/tambah" style="color: white;"><button type="button" class="btn btn-block btn-success btn-sm" style="width: 200px;"><i class="fas fa-plus"></i> &nbsp; Tambah</i></button></a>
+                  <a href="/penjualan_offline/tambah" style="color: white;"><button type="button" class="btn btn-block btn-success btn-sm" style="width: 200px;"><i class="fas fa-plus"></i> &nbsp; Tambah</i></button></a>
                 </th>
               </tr>
               <tr>
                 <th>No</th>
                 <th>Status</th>
                 <th>ID Order</th>
-                <th>Marketplace</th>
                 <th>Customer</th>
                 <th>Metode Bayar</th>
                 <th></th>
@@ -106,6 +105,7 @@
 <!-- End Modal Detail -->
 @stop
 @section('adminlte_js')
+
 <script>
   $(function() {
     var tabel = $('#tabel').DataTable({
@@ -114,7 +114,7 @@
       language: {
         processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
       },
-      ajax: '/penjualan_online_ecom/data',
+      ajax: '/penjualan_offline/data',
       columns: [{
           data: 'DT_RowIndex',
           orderable: false,
@@ -125,9 +125,6 @@
         },
         {
           data: 'order_id'
-        },
-        {
-          data: 'market'
         },
         {
           data: 'distributor.nama'
@@ -149,7 +146,6 @@
       ]
     });
 
-
     $('#tabel tbody').on('click', '#detail', function() {
       var rows = tabel.rows($(this).parents('tr')).data();
       $('.data_detail_head').html(
@@ -164,7 +160,7 @@
         language: {
           processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
         },
-        ajax: '/penjualan_online_ecom/detail/data/' + rows[0]['id'],
+        ajax: '/penjualan_offline/detail/data/' + rows[0]['id'],
         columns: [{
             data: 'DT_RowIndex',
             orderable: false,
@@ -247,8 +243,6 @@
 
 
     });
-
-
   });
 </script>
 @endsection

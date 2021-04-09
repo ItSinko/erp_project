@@ -11,13 +11,16 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Collection;
 use Yajra\DataTables\Facades\DataTables;
 use Carbon\Carbon;
+use Romans\Filter\InttoRoman;
 
 use App\Spaon;
 use App\Distributor;
 use App\Produk;
 use App\Ekatjual;
 use App\Detail_ekatjual;
+use App\Detail_offline;
 use App\Ecommerces;
+use App\Offline;
 
 class PenjualanController extends Controller
 {
@@ -29,6 +32,13 @@ class PenjualanController extends Controller
     public function penjualan_online_ecom()
     {
         return view('page.penjualan.ecom');
+    }
+    public function penjualan_online_ecom_data()
+    {
+        $data = Ecommerces::with('distributor');
+        return datatables::of($data)
+            ->addIndexColumn()
+            ->make(true);
     }
     public function penjualan_online_data()
     {
@@ -42,6 +52,30 @@ class PenjualanController extends Controller
 
         $data = Detail_ekatjual::with('produk')
             ->where('ekatjuals_id', $id);
+        return datatables::of($data)
+            ->editColumn('total', function ($data) {
+                return $data->harga * $data->jumlah;
+            })
+            ->addIndexColumn()
+            ->make(true);
+    }
+    public function detail_penjualan_online_ecom_data($id)
+    {
+
+        $data = Detail_ecommerces::with('produk')
+            ->where('ecommerces_id', $id);
+        return datatables::of($data)
+            ->editColumn('total', function ($data) {
+                return $data->harga * $data->jumlah;
+            })
+            ->addIndexColumn()
+            ->make(true);
+    }
+    public function detail_penjualan_offline_data($id)
+    {
+
+        $data = Detail_offline::with('produk')
+            ->where('offline_id', $id);
         return datatables::of($data)
             ->editColumn('total', function ($data) {
                 return $data->harga * $data->jumlah;
@@ -173,11 +207,22 @@ class PenjualanController extends Controller
             ]
         );
 
-        $x = Ecommerces::max('id');
-        $y = Carbon::now();
+        $x = Ecommerces::max('id') + 1;
+        $y = Carbon::now()->format('Y');
+        $m = Carbon::now()->format('m');
+        $filter = new IntToRoman();
+
+        if ($request->market == 'Tokopedia') {
+            $c = 'TKPD';
+        } else if ($request->market == 'Bli Bli') {
+            $c = 'BLI';
+        } else {
+            $c = 'INDO';
+        }
+        $a = 'ECOM/' . $c . '/' . $filter->filter($m) . '/' . $y . '/' . $x;
 
         $ecommerces = Ecommerces::create([
-            'order_id' =>  'a',
+            'order_id' =>  $a,
             'market' =>  $request->market,
             'customer_id' =>  $request->customer_id,
             'status' =>  $request->status,
@@ -194,6 +239,71 @@ class PenjualanController extends Controller
             ]);
         }
         if ($ecommerces) {
+            return redirect()->back()->with(["succes" => "Berhasil menambahkan data"]);
+        } else {
+            return redirect()->back()->with('error', "Gagal menambahkan data");
+        }
+    }
+
+    public function penjualan_offline()
+    {
+        $produk = Produk::all();
+        return view('page.penjualan.offline', ['produk' => $produk]);
+    }
+    public function penjualan_offline_data()
+    {
+        $data = Offline::with('distributor');
+        return datatables::of($data)
+            ->addIndexColumn()
+            ->make(true);
+    }
+    public function penjualan_offline_tambah()
+    {
+        $distributor = Distributor::all();
+        $produk = Produk::all();
+        return view('page.penjualan.offline_tambah', ['distributor' => $distributor, 'produk' => $produk]);
+    }
+    public function penjualan_offline_aksi_tambah(Request $request)
+    {
+        $this->validate(
+            $request,
+            [
+                'customer_id' => 'required',
+                'status' => 'required',
+                'bayar' => 'required',
+            ],
+            [
+                'customer_id.required' => "Customer harus dipilih",
+                'status.required' => "Status pesanan harus diisi",
+                'bayar.required' => "Jenis pembayaran harus diisi",
+            ]
+        );
+
+        $x = Offline::max('id') + 1;
+        $y = Carbon::now()->format('Y');
+        $m = Carbon::now()->format('m');
+        $filter = new IntToRoman();
+
+
+        $a = 'OFF/' . $filter->filter($m) . '/' . $y . '/' . $x;
+
+        $offline = Offline::create([
+            'order_id' =>  $a,
+            'customer_id' =>  $request->customer_id,
+            'status' =>  $request->status,
+            'bayar' =>  $request->bayar,
+        ]);
+
+        for ($i = 0; $i < count($request->produk_id); $i++) {
+            $yeye = Detail_offline::create([
+                'offline_id' => $offline->id,
+                'produk_id' => $request->produk_id[$i],
+                'harga' => $request->harga[$i],
+                'jumlah' => $request->jumlah[$i],
+                'keterangan' => $request->keterangan[$i]
+            ]);
+        }
+        if ($offline) {
             return redirect()->back()->with(["succes" => "Berhasil menambahkan data"]);
         } else {
             return redirect()->back()->with('error', "Gagal menambahkan data");

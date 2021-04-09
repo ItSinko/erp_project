@@ -4,11 +4,11 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Detail_ecommerces extends Model
+class Detail_offline extends Model
 {
-    protected $table = 'detail_ecommerces';
+    protected $table = 'detail_offlines';
     protected $primaryKey = 'id';
-    protected $fillable = ['ecommerces_id', 'produk_id', 'harga', 'jumlah', 'keterangan'];
+    protected $fillable = ['offline_id', 'produk_id', 'harga', 'jumlah', 'keterangan'];
 
     public function produk()
     {
