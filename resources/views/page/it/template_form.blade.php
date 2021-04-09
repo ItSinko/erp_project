@@ -205,7 +205,7 @@
                                                 </select>
                                                 @if ($errors->has('data'))
                                                 <span role="alert" id="karyawan_id-msg"></span>
-                                                @end
+                                                @endif
                                             </div>
                                         </div>
                                     </div>

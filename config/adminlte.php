@@ -321,6 +321,27 @@ return [
             'auth' => [14]
         ],
         [
+            'header' => 'MASTER DATA',
+            'auth' => [14]
+        ],
+        [
+            'text' => 'Divisi',
+            'icon' => 'fas fa-user',
+            'auth' => [14],
+            'submenu' => [
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Daftar Staff',
+                    'url'  => '/karyawan',
+                ],
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Permohonan Penugasan',
+                    'url'  => '/karyawan/peminjaman',
+                ],
+            ],
+        ],
+        [
             'text'    => 'Inventory',
             'icon'    => 'fas fa-boxes',
             'auth' => [14],

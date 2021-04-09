@@ -15,8 +15,13 @@ class PeminjamanKaryawan extends Model
         return $this->belongsTo(Karyawan::class, 'penanggung_jawab_id');
     }
 
-    public function DetailPeminjamanKaryawan()
+    public function Karyawan()
     {
-        return $this->hasMany(DetailPeminjamanKaryawan::class);
+        return $this->belongsToMany(Karyawan::class, 'detail_peminjaman_karyawans')->withPivot('id', 'keterangan', 'status')->withTimestamps();
     }
+
+    // public function DetailPeminjamanKaryawan()
+    // {
+    //     return $this->hasMany(DetailPeminjamanKaryawan::class);
+    // }
 }

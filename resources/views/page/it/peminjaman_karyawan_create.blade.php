@@ -25,9 +25,8 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="col-lg-12">
-                <form id="create-inventory" method="POST" action="{{route('peminjaman.karyawan.store', ['id' => Auth::user()->id])}}">
+                <form id="create-peminjaman-karyawan" method="POST" action="{{route('peminjaman.karyawan.store')}}">
                     {{ csrf_field() }}
-                    {{ method_field('PUT') }}
                     @if(session()->has('success'))
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
                         <strong><i class="fas fa-check"></i></strong> {{session()->get('success')}}
@@ -78,7 +77,7 @@
                                             <div class="form-group row">
                                                 <label for="lokasi_penugasan" class="col-sm-4 col-form-label" style="text-align:right;">Lokasi Penugasan</label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" class="form-control @error('lokasi_penugasan') is-invalid @enderror" name="lokasi_penugasan" id="lokasi_penugasan" placeholder="Masukkan Tanggal Pengajuan" value="{{old('lokasi_penugasan')}}">
+                                                    <input type="text" class="form-control @error('lokasi_penugasan') is-invalid @enderror" name="lokasi_penugasan" id="lokasi_penugasan" placeholder="Masukkan Lokasi Penugasan" value="{{old('lokasi_penugasan')}}">
                                                     <span id="lokasi_penugasan-message" role="alert"></span>
                                                     @if ($errors->has('lokasi_penugasan'))
                                                     <span class="invalid-feedback" role="alert">{{$errors->first('lokasi_penugasan')}}</span>
@@ -106,7 +105,7 @@
                                             <div class="form-group row">
                                                 <label for="tanggal_penugasan" class="col-sm-4 col-form-label" style="text-align:right;">Mulai Penugasan</label>
                                                 <div class="col-sm-8">
-                                                    <input type="date" class="form-control @error('tanggal_penugasan') is-invalid @enderror" name="tanggal_penugasan" id="tanggal_penugasan" placeholder="Masukkan Nama Pekerjaan" value="{{old('tanggal_penugasan')}}" style="width:80%;">
+                                                    <input type="date" class="form-control @error('tanggal_penugasan') is-invalid @enderror" name="tanggal_penugasan" id="tanggal_penugasan" placeholder="Masukkan Tanggal Penugasan" value="{{old('tanggal_penugasan')}}" style="width:80%;">
                                                     <span id="tanggal_penugasan-message" role="alert"></span>
                                                     @if ($errors->has('tanggal_penugasan'))
                                                     <span class="invalid-feedback" role="alert">{{$errors->first('tanggal_penugasan')}}</span>
@@ -116,7 +115,7 @@
                                             <div class="form-group row">
                                                 <label for="tanggal_estimasi_selesai" class="col-sm-4 col-form-label" style="text-align:right;">Estimasi Selesai</label>
                                                 <div class="col-sm-8">
-                                                    <input type="date" class="form-control @error('tanggal_estimasi_selesai') is-invalid @enderror" name="tanggal_estimasi_selesai" id="tanggal_estimasi_selesai" placeholder="Masukkan Nama Pekerjaan" value="{{old('tanggal_estimasi_selesai')}}" style="width:80%;">
+                                                    <input type="date" class="form-control @error('tanggal_estimasi_selesai') is-invalid @enderror" name="tanggal_estimasi_selesai" id="tanggal_estimasi_selesai" placeholder="Masukkan Tanggal Estimasi Selesai" value="{{old('tanggal_estimasi_selesai')}}" style="width:80%;">
                                                     <span id="tanggal_estimasi_selesai-message" role="alert"></span>
                                                     @if ($errors->has('tanggal_estimasi_selesai'))
                                                     <span class="invalid-feedback" role="alert">{{$errors->first('tanggal_estimasi_selesai')}}</span>
@@ -135,7 +134,7 @@
                                                 <tr>
                                                     <th>No</th>
                                                     <th>Nama Karyawan</th>
-                                                    <th>Keterangan</th>
+                                                    <th>Rincian Pekerjaan</th>
                                                     <th>Aksi</th>
                                                 </tr>
                                             </thead>
@@ -147,7 +146,7 @@
                                                             <option value="{{$i->id}}">{{$i->nama}}</option>
                                                             @endforeach
                                                         </select></td>
-                                                    <td><textarea class="form-control" name="keterangan_detail[]" id="keterangan_detail" placeholder="Masukkan Keterangan"></textarea></td>
+                                                    <td><textarea class="form-control" name="keterangan_detail[]" id="keterangan_detail" placeholder="Masukkan Rincian Pekerjaan"></textarea></td>
                                                     <td><button type="button" class="btn btn-block btn-success btn-sm circle-button karyawan-img-small" id="tambahitem"><i class="fas fa-plus"></i></button></td>
                                                 </tr>
                                             </tbody>
@@ -173,6 +172,7 @@
 @section('adminlte_js')
 <script>
     $(function() {
+
         function numberRows($t) {
             var c = 0 - 1;
             $t.find("tr").each(function(ind, el) {
@@ -183,8 +183,8 @@
                 $(el).find('.karyawan_id').select2();
             });
         }
-        $('#tambahitem').click(function(e) {
 
+        $('#tambahitem').click(function(e) {
             $('#tableitem tr:last').after(`<tr>
                                                     <td></td>
                                                     <td><select class="select2 form-control karyawan_id" name="karyawan_id[]" id="karyawan_id" data-placeholder="Pilih Inventory Divisi" data-dropdown-css-class="select2-info" style="width: 80%;">
@@ -195,16 +195,14 @@
                                                     <td><textarea class="form-control" name="keterangan_detail[]" id="keterangan_detail" placeholder="Masukkan Keterangan"></textarea></td>
                                                     <td><button type="button" class="btn btn-block btn-danger btn-sm circle-button karyawan-img-small" id="closetable"><i class="fas fa-times"></i></button></td>
                                                 </tr>`);
-
             numberRows($("#tableitem"));
         });
 
         $('#tableitem').on('click', '#closetable', function(e) {
             $(this).closest('tr').remove();
             numberRows($("#tableitem"));
+            console.log("not trigger");
         });
-
-
     });
 </script>
 @stop
