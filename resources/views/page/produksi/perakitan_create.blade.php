@@ -1,6 +1,8 @@
-@extends('layouts.app')
+@extends('adminlte.page')
 
-@section('content')
+@section('title', 'Beta Version')
+
+@section('content_header')
 <section class="content-header">
   <div class="container-fluid">
     <div class="row mb-2">
@@ -16,7 +18,9 @@
     </div>
   </div>
 </section>
+@stop
 
+@section('content')
 <section class="content">
   <div class="container-fluid">
     <div class="row">
@@ -217,7 +221,7 @@
   </div><!-- /.container-fluid -->
 </section>
 @endsection
-@section('footer_script')
+@section('adminlte_js')
 <script>
   $(function() {
     $('.select2').select2();

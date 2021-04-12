@@ -20,52 +20,20 @@ use App\HasilPerakitanKaryawan;
 use App\KelompokProduk;
 use App\KategoriProduk;
 
-use App\Http\Controllers\BppbController;
-use App\Http\Controllers\KategoriProdukController;
-use App\Http\Controllers\KelompokProdukController;
-use App\Http\Controllers\ProdukController;
-use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\NotifikasiController;
-use App\Http\Controllers\PerakitanController;
-use App\Http\Controllers\HasilPerakitanController;
-use App\Http\Controllers\HasilPerakitanKaryawanController;
 use App\Http\Controllers\UserLogController;
 
 
 class ProduksiController extends Controller
 {
-    protected $BppbController;
-    protected $KategoriProdukController;
-    protected $KelompokProdukController;
-    protected $ProdukController;
     protected $NotifikasiController;
-    protected $PerakitanController;
-    protected $HasilPerakitanController;
-    protected $HasilPerakitanKaryawanController;
-    protected $KaryawanController;
     protected $UserLogController;
 
     public function __construct(
-        BppbController $BppbController,
-        KategoriProdukController $KategoriProdukController,
-        KelompokProdukController $KelompokProdukController,
-        ProdukController $ProdukController,
         NotifikasiController $NotifikasiController,
-        PerakitanController $PerakitanController,
-        HasilPerakitanController $HasilPerakitanController,
-        HasilPerakitanKaryawanController $HasilPerakitanKaryawanController,
-        KaryawanController $KaryawanController,
         UserLogController $UserLogController
     ) {
-        $this->BppbController = $BppbController;
-        $this->KategoriProdukController = $KategoriProdukController;
-        $this->KelompokProdukController = $KelompokProdukController;
-        $this->ProdukController = $ProdukController;
         $this->NotifikasiController = $NotifikasiController;
-        $this->PerakitanController = $PerakitanController;
-        $this->HasilPerakitanController = $HasilPerakitanController;
-        $this->HasilPerakitanKaryawanController = $HasilPerakitanKaryawanController;
-        $this->KaryawanController = $KaryawanController;
         $this->UserLogController = $UserLogController;
     }
 
@@ -84,27 +52,31 @@ class ProduksiController extends Controller
                 $query->whereNotIn('status', ['0']);
             })->get();
         }
-        return view('produksi.perakitan_show', ['r' => $r, 'p' => $p]);
+        return view('page.produksi.perakitan_show', ['p' => $p]);
     }
 
-    public function tambah_perakitan()
+    public function perakitan_show()
+    {
+    }
+
+    public function perakitan_create()
     {
         $b = [];
         $i = 0;
 
-        $be = $this->PerakitanController->show_all();
+        $be = Perakitan::all();
 
         foreach ($be as $bes) {
             $b[$i] = $bes->bppb_id;
             $i++;
         }
 
-        $s = $this->BppbController->show_not_in($b, Auth::user()->divisi_id);
-        $kry = $this->KaryawanController->show_all();
-        return view('produksi.perakitan_create', ['s' => $s, 'kry' => $kry]);
+        $s = Bppb::where('divisi_id', '=', Auth::user()->divisi_id)->whereNotIn('id', $b)->get();
+        $kry = Karyawan::all();
+        return view('page.produksi.perakitan_create', ['s' => $s, 'kry' => $kry]);
     }
 
-    public function store_perakitan(Request $request)
+    public function perakitan_store(Request $request)
     {
         $v = "";
         if ((!empty($request->tanggal) || !empty($request->karyawan_id) || !empty($request->warna)) && !empty($request->file)) {
@@ -196,8 +168,14 @@ class ProduksiController extends Controller
                         }
                     } else if (empty($request->file) && !empty($request->no_seri)) {
                         for ($i = 0; $i < count($request->no_seri); $i++) {
-                            $s = $this->HasilPerakitanController->create($c->id, $request->tanggals[$i], $request->no_seri[$i], $request->warna[$i], NULL, NULL);
-
+                            $s = HasilPerakitan::create([
+                                'perakitan_id' => $c->id,
+                                'tanggal' => $request->tanggals[$i],
+                                'no_seri' => $request->no_seri[$i],
+                                'warna' => $request->warna[$i],
+                                'kondisi' => NULL,
+                                'keterangan' => NULL
+                            ]);
                             if (!$s) {
                                 $bool = false;
                             } else {
@@ -217,7 +195,14 @@ class ProduksiController extends Controller
                     }
                 } else if (!empty($request->file) && !empty($request->no_seri)) {
                     for ($i = 0; $i < count($request->no_seri); $i++) {
-                        $s = $this->HasilPerakitanController->create($c->id, $request->tanggals[$i], $request->no_seri[$i], $request->warna[$i], NULL, NULL);
+                        $s = HasilPerakitan::create([
+                            'perakitan_id' => $c->id,
+                            'tanggal' => $request->tanggals[$i],
+                            'no_seri' => $request->no_seri[$i],
+                            'warna' => $request->warna[$i],
+                            'kondisi' => NULL,
+                            'keterangan' => NULL
+                        ]);
 
                         if (!$s) {
                             $bool = false;
@@ -255,14 +240,14 @@ class ProduksiController extends Controller
         }
     }
 
-    public function tambah_laporan_perakitan($id)
+    public function perakitan_laporan_create($id)
     {
         $b = Bppb::find($id);
         $kry = Karyawan::all();
-        return view('produksi.perakitan_create_laporan', ['b' => $b, 'id' => $id, 'kry' => $kry]);
+        return view('page.produksi.perakitan_create_laporan', ['b' => $b, 'id' => $id, 'kry' => $kry]);
     }
 
-    public function store_laporan_perakitan($id, Request $request)
+    public function perakitan_laporan_store($id, Request $request)
     {
         $v = [];
         if (!empty($request->no_seri) && !empty($request->file)) {
@@ -336,7 +321,14 @@ class ProduksiController extends Controller
                         }
                     } else if (empty($request->file) && !empty($request->no_seri)) {
                         for ($i = 0; $i < count($request->no_seri); $i++) {
-                            $s = $this->HasilPerakitanController->create($c->id, $request->tanggals[$i], $request->no_seri[$i], $request->warna[$i], NULL, NULL);
+                            $s = HasilPerakitan::create([
+                                'perakitan_id' => $c->id,
+                                'tanggal' => $request->tanggals[$i],
+                                'no_seri' => $request->no_seri[$i],
+                                'warna' => $request->warna[$i],
+                                'kondisi' => NULL,
+                                'keterangan' => NULL
+                            ]);
                             if (!$s) {
                                 $bool = false;
                             } else {
@@ -356,7 +348,14 @@ class ProduksiController extends Controller
                     }
                 } else if (!empty($request->file) && !empty($request->no_seri)) {
                     for ($i = 0; $i < count($request->no_seri); $i++) {
-                        $s = $this->HasilPerakitanController->create($c->id, $request->tanggals[$i], $request->no_seri[$i], $request->warna[$i], NULL, NULL);
+                        $s = HasilPerakitan::create([
+                            'perakitan_id' => $c->id,
+                            'tanggal' => $request->tanggals[$i],
+                            'no_seri' => $request->no_seri[$i],
+                            'warna' => $request->warna[$i],
+                            'kondisi' => NULL,
+                            'keterangan' => NULL
+                        ]);
                         if (!$s) {
                             $bool = false;
                         } else {
@@ -393,14 +392,14 @@ class ProduksiController extends Controller
         }
     }
 
-    public function edit_laporan_perakitan($id)
+    public function perakitan_laporan_edit($id)
     {
         $sh = Perakitan::find($id);
         $kry = Karyawan::all();
-        return view('produksi.perakitan_edit_laporan', ['id' => $id, 'sh' => $sh, 'kry' => $kry]);
+        return view('page.produksi.perakitan_edit_laporan', ['id' => $id, 'sh' => $sh, 'kry' => $kry]);
     }
 
-    public function update_laporan_perakitan($id, Request $request)
+    public function perakitan_laporan_update($id, Request $request)
     {
         $v = Validator::make(
             $request->all(),
@@ -450,7 +449,7 @@ class ProduksiController extends Controller
         return redirect()->back()->with('success', "Berhasil mengupdate Data");
     }
 
-    public function delete_perakitan($id, Request $request)
+    public function perakitan_delete($id, Request $request)
     {
         $p = Perakitan::find($id);
         $this->UserLogController->create(Auth::user()->id, "Perakitan " . $p->no_bppb, 'Perakitan', 'Hapus', $request->keterangan_log);
@@ -464,13 +463,13 @@ class ProduksiController extends Controller
     }
 
 
-    public function hasil_perakitan($id)
+    public function perakitan_hasil($id)
     {
         $sh = Perakitan::find($id);
-        return view('produksi.perakitan_hasil_show', ['id' => $id, 'sh' => $sh]);
+        return view('page.produksi.perakitan_hasil_show', ['id' => $id, 'sh' => $sh]);
     }
 
-    public function store_hasil_perakitan_import($id, Request $request)
+    public function perakitan_hasil_import_store($id, Request $request)
     {
         $v = Validator::make(
             $request->all(),
@@ -496,15 +495,15 @@ class ProduksiController extends Controller
         }
     }
 
-    public function tambah_hasil_perakitan($id)
+    public function perakitan_hasil_create($id)
     {
         $sh = Perakitan::find($id);
         $k = Karyawan::all();
 
-        return view('produksi.perakitan_hasil_create', ['id' => $id, 'sh' => $sh, 'k' => $k]);
+        return view('page.produksi.perakitan_hasil_create', ['id' => $id, 'sh' => $sh, 'k' => $k]);
     }
 
-    public function store_hasil_perakitan($id, Request $request)
+    public function perakitan_hasil_store($id, Request $request)
     {
         $s = true;
         $v = Validator::make(
@@ -522,7 +521,14 @@ class ProduksiController extends Controller
             return redirect()->back()->withErrors($v);
         } else {
             for ($i = 0; $i < count($request->no_seri); $i++) {
-                $s = $this->HasilPerakitanController->create($request->id, $request->tanggals[$i], $request->no_seri[$i], $request->warna[$i], NULL, NULL);
+                $s = HasilPerakitan::create([
+                    'perakitan_id' => $id,
+                    'tanggal' => $request->tanggals[$i],
+                    'no_seri' => $request->no_seri[$i],
+                    'warna' => $request->warna[$i],
+                    'kondisi' => NULL,
+                    'keterangan' => NULL
+                ]);
                 if (!$s) {
                     $s = false;
                 }
@@ -535,14 +541,14 @@ class ProduksiController extends Controller
         }
     }
 
-    public function edit_hasil_perakitan($id)
+    public function perakitan_hasil_edit($id)
     {
         $s = HasilPerakitan::find($id);
         $kry = Karyawan::all();
-        return view('produksi.perakitan_hasil_edit', ['id' => $id, 's' => $s, 'kry' => $kry]);
+        return view('page.produksi.perakitan_hasil_edit', ['id' => $id, 's' => $s, 'kry' => $kry]);
     }
 
-    public function update_hasil_perakitan($id, Request $request)
+    public function perakitan_hasil_update($id, Request $request)
     {
         $v = Validator::make(
             $request->all(),
@@ -565,9 +571,7 @@ class ProduksiController extends Controller
             $hp->tanggal = $request->tanggal;
             $hp->no_seri = $request->no_seri;
             $hp->warna = $request->warna;
-
             $hp->Karyawan()->sync($request->karyawan_id);
-
             $hp->save();
 
             if (!$hp) {
@@ -582,7 +586,7 @@ class ProduksiController extends Controller
         }
     }
 
-    public function delete_hasil_perakitan($id, Request $request)
+    public function perakitan_hasil_delete($id, Request $request)
     {
         $p = HasilPerakitan::where('id', $id)->first();
         $this->UserLogController->create(Auth::user()->id, "Hasil Perakitan " . $p->no_seri, 'Hasil Perakitan', 'Hapus', $request->keterangan_log);

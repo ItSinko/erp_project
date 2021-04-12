@@ -301,7 +301,6 @@ class ItController extends Controller
             return redirect()->back()->withErrors($v);
         } else {
             $i = Inventory::find($id);
-
             $i->kode_barang = $request->kode_barang;
             $i->merk = $request->merk;
             $i->nama_barang = $request->nama_barang;
@@ -312,7 +311,6 @@ class ItController extends Controller
             $i->kondisi = $request->kondisi;
             $i->harga_perolehan = $request->harga_perolehan;
             $i->keterangan = $request->keterangan;
-
             $i->save();
 
             if ($i) {
@@ -323,8 +321,9 @@ class ItController extends Controller
         }
     }
 
-    public function inventory($divisi_id)
+    public function inventory()
     {
+        $divisi_id = Auth::user()->divisi_id;
         return view('page.it.inventory_show', ['divisi_id' => $divisi_id]);
     }
 
@@ -1009,64 +1008,63 @@ class ItController extends Controller
     public function karyawan_peminjaman_show()
     {
         $divisi = Auth::user()->Divisi->id;
-        $s = PeminjamanKaryawan::whereHas('Karyawan', function ($q) use ($divisi) {
-            $q->where('divisi_id', $divisi);
-        })->get();
+        $s = Karyawan::has('PeminjamanKaryawan')->where('divisi_id', $divisi)->get();
 
-        echo json_encode($s->pivot);
+        echo json_encode($s);
         return DataTables::of($s)
             ->addIndexColumn()
             ->editColumn('karyawan_id', function ($s) {
                 return $s->nama;
             })
             ->editColumn('nama_penugasan', function ($s) {
-                return $s->nama_penugasan;
+                return $s->peminjaman_karyawan->nama_penugasan;
             })
             ->addColumn('penanggung_jawab', function ($s) {
-                return $s->PenanggungJawab->nama;
+                // return $s->PeminjamanKaryawan->PenanggungJawab->nama;
             })
             ->editColumn('tanggal_pembuatan', function ($s) {
-                if (!empty($s->tanggal_pembuatan)) {
-                    return Carbon::createFromFormat('Y-m-d', $s->tanggal_pembuatan)->format('d/m/Y');
+                if (!empty($s->PeminjamanKaryawan->tanggal_pembuatan)) {
+                    return Carbon::createFromFormat('Y-m-d', $s->PeminjamanKaryawan->tanggal_pembuatan)->format('d/m/Y');
                 }
             })
             ->editColumn('tanggal_penugasan', function ($s) {
-                if (!empty($s->tanggal_penugasan)) {
-                    return Carbon::createFromFormat('Y-m-d', $s->tanggal_penugasan)->format('d/m/Y');
+                if (!empty($s->PeminjamanKaryawan->tanggal_penugasan)) {
+                    return Carbon::createFromFormat('Y-m-d', $s->PeminjamanKaryawan->tanggal_penugasan)->format('d/m/Y');
                 }
             })
             ->editColumn('tanggal_selesai', function ($s) {
-                if (!empty($s->tanggal_selesai)) {
-                    return Carbon::createFromFormat('Y-m-d', $s->tanggal_selesai)->format('d/m/Y');
+                if (!empty($s->PeminjamanKaryawan->tanggal_selesai)) {
+                    return Carbon::createFromFormat('Y-m-d', $s->PeminjamanKaryawan->tanggal_selesai)->format('d/m/Y');
                 } else {
-                    $btn = '<a href = "/peminjaman/karyawan/status/' . $s->id . '/selesai"><button class="btn btn-success btn-sm m-1"><i class="fas fa-check"></i>&nbsp;Selesai</button></a>';
-                    $btn .= '<p><small class="purple-text">Estimasi Selesai: ' . Carbon::createFromFormat('Y-m-d', $s->tanggal_estimasi_selesai)->format('d/m/Y') . '</small></p>';
+                    $btn = '<a href = "/peminjaman/karyawan/status/' . $s->PeminjamanKaryawan->id . '/selesai"><button class="btn btn-success btn-sm m-1"><i class="fas fa-check"></i>&nbsp;Selesai</button></a>';
+                    $btn .= '<p><small class="purple-text">Estimasi Selesai: ' . Carbon::createFromFormat('Y-m-d', $s->PeminjamanKaryawan->tanggal_estimasi_selesai)->format('d/m/Y') . '</small></p>';
                     return $btn;
                 }
             })
             ->editColumn('keterangan', function ($s) {
-                $btn = $s->Karyawan()->pivot->keterangan;
+                // $btn = $s->Karyawan()->pivot->keterangan;
+                $btn = "";
                 return $btn;
             })
             ->editColumn('status', function ($s) {
                 $btn = "";
-                if ($s->pivot->status == "draft") {
-                    $btn = '<a href = "/peminjaman/karyawan/detail/status/' . $s->id . '/' . $s->Karyawan->id . '/menunggu"><button class="btn btn-info btn-sm m-1"><i class="far fa-paper-plane"></i>&nbsp;Meminta Persetujuan</button></a>';
-                } else if ($s->pivot->status == 'menunggu') {
-                    $btn = '<span class="warning-text">Menunggu</span>';
-                } else if ($s->pivot->status == 'terima') {
-                    $btn = '<span class="warning-text">Diterima</span>';
-                } else if ($s->pivot->status == 'tolak') {
-                    $btn = '<span class="warning-text">Ditolak</span>';
-                } else if ($s->pivot->status == 'berhenti') {
-                    $btn = '<span class="warning-text">Berhenti</span>';
-                }
+                // if ($s->pivot->status == "draft") {
+                //     $btn = '<a href = "/peminjaman/karyawan/detail/status/' . $s->id . '/' . $s->Karyawan->id . '/menunggu"><button class="btn btn-info btn-sm m-1"><i class="far fa-paper-plane"></i>&nbsp;Meminta Persetujuan</button></a>';
+                // } else if ($s->pivot->status == 'menunggu') {
+                //     $btn = '<span class="warning-text">Menunggu</span>';
+                // } else if ($s->pivot->status == 'terima') {
+                //     $btn = '<span class="warning-text">Diterima</span>';
+                // } else if ($s->pivot->status == 'tolak') {
+                //     $btn = '<span class="warning-text">Ditolak</span>';
+                // } else if ($s->pivot->status == 'berhenti') {
+                //     $btn = '<span class="warning-text">Berhenti</span>';
+                // }
                 return $btn;
             })
             ->addColumn('aksi', function ($s) {
-                $btn = '<a class="detailmodal" data-toggle="modal" data-target="#detailmodal" data-attr="/peminjaman/karyawan/detail/' . $s->id . '" data-id="' . $s->id . '"><button class="btn btn-info  btn-circle btn-circle-sm m-1"><i class="fas fa-eye"></i></button></a>';
-                $btn .= '<a href = "/peminjaman/karyawan/edit/' . $s->id . '"><button class="btn btn-warning  btn-circle btn-circle-sm m-1"><i class="fas fa-edit"></i></button></a>';
-                $btn .= '<a class="deletemodal" data-toggle="modal" data-target="#deletemodal" data-attr="/peminjaman/karyawan/delete/' . $s->id . '"><button class="btn btn-danger  btn-circle btn-circle-sm m-1"><i class="fas fa-trash"></i></button></a>';
+                $btn = '<a class="detailmodal" data-toggle="modal" data-target="#detailmodal" data-attr="/peminjaman/karyawan/detail/' . $s->PeminjamanKaryawan->id . '" data-id="' . $s->PeminjamanKaryawan->id . '"><button class="btn btn-info  btn-circle btn-circle-sm m-1"><i class="fas fa-eye"></i></button></a>';
+                $btn .= '<a href = "/peminjaman/karyawan/edit/' . $s->PeminjamanKaryawan->id . '"><button class="btn btn-warning  btn-circle btn-circle-sm m-1"><i class="fas fa-edit"></i></button></a>';
+                $btn .= '<a class="deletemodal" data-toggle="modal" data-target="#deletemodal" data-attr="/peminjaman/karyawan/delete/' . $s->PeminjamanKaryawan->id . '"><button class="btn btn-danger  btn-circle btn-circle-sm m-1"><i class="fas fa-trash"></i></button></a>';
                 return $btn;
             })
             ->rawColumns(['aksi', 'tanggal_selesai'])

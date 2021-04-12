@@ -3,11 +3,6 @@
 @section('title', 'Beta Version')
 
 @section('content_header')
-<h1 class="m-0 text-dark">Dashboard</h1>
-@stop
-
-
-@section('content')
 <section class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
@@ -23,6 +18,11 @@
         </div>
     </div>
 </section>
+@stop
+
+
+@section('content')
+
 <section class="content">
     <div class="row">
         <div class="col-lg-12">

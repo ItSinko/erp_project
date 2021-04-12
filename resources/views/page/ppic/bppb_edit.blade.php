@@ -1,6 +1,8 @@
-@extends('layouts.app')
+@extends('adminlte.page')
 
-@section('content')
+@section('title', 'Beta Version')
+
+@section('content_header')
 <section class="content-header">
   <div class="container-fluid">
     <div class="row mb-2">
@@ -16,6 +18,11 @@
     </div>
   </div>
 </section>
+@stop
+
+
+@section('content')
+
 
 <section class="content">
   <div class="container-fluid">
@@ -111,7 +118,7 @@
                       <div class="form-group row">
                         <label for="divisi_id" class="col-sm-3 col-form-label" style="text-align:right;">Divisi</label>
 
-                        <div class="col-sm-2">
+                        <div class="col-sm-2 col-form-label">
                           <div class="icheck-primary d-inline">
                             <input type="radio" id="17" name="divisi_id" value="17" @if($i->divisi_id == "17")
                             checked
@@ -122,8 +129,8 @@
                           </div>
                         </div>
 
-                        <div class="col-sm-2">
-                          <div class="icheck-primary d-inline">
+                        <div class="col-sm-2 col-form-label">
+                          <div class="icheck-primary d-inline ">
                             <input type="radio" id="12" name="divisi_id" value="12" @if($i->divisi_id == "12")
                             checked
                             @endif>
