@@ -96,9 +96,12 @@ Route::get('/penjualan_online/ubah/{id}', 'PenjualanController@penjualan_online_
 Route::get('/penjualan_online/cek_data/{lkpp}', 'PenjualanController@penjualan_online_cek_data');
 /* Action */
 Route::post('/penjualan_online/aksi_tambah', 'PenjualanController@penjualan_online_aksi_tambah');
+Route::put('/penjualan_online/aksi_ubah/{id}', 'PenjualanController@penjualan_online_aksi_ubah');
+Route::put('/penjualan_online/detail/aksi_ubah', 'PenjualanController@penjualan_online_detail_aksi_ubah');
 /* Detail */
-Route::get('/penjualan_online/detail/{id},');
 Route::post('/penjualan_online/detail/aksi_tambah', 'PenjualanController@penjualan_online_detail_aksi_tambah');
+Route::get('/penjualan_online/detail/data/edit/{id}', 'PenjualanController@penjualan_online_detail_edit');
+
 
 //PENJUALAN ECOM (ONLINE)
 /*Tabel*/
@@ -110,6 +113,9 @@ Route::post('/penjualan_online_ecom/aksi_tambah', 'PenjualanController@penjualan
 Route::get('/penjualan_online_ecom/data', 'PenjualanController@penjualan_online_ecom_Data');
 Route::get('/penjualan_online_ecom/detail/data/{id}', 'PenjualanController@detail_penjualan_online_ecom_data');
 
+
+
+
 // PENJUALAN OFFLINE
 /* Get Data */
 Route::get('/penjualan_offline/data', 'PenjualanController@penjualan_offline_data');
@@ -119,9 +125,11 @@ Route::get('/penjualan_offline/detail/data/{id}', 'PenjualanController@detail_pe
 Route::get('/penjualan_offline', 'PenjualanController@penjualan_offline');
 /* Action */
 Route::post('/penjualan_offline/aksi_tambah', 'PenjualanController@penjualan_offline_aksi_tambah');
+Route::put('/penjualan_offline/detail/aksi_ubah', 'PenjualanController@penjualan_offline_detail_aksi_ubah');
 /* Tambah */
 Route::get('/penjualan_offline/tambah', 'PenjualanController@penjualan_offline_tambah');
-
+/*Detail*/
+Route::get('/penjualan_offline/detail/data/edit/{id}', 'PenjualanController@penjualan_offline_detail_edit');
 
 
 

@@ -179,6 +179,121 @@ class PenjualanController extends Controller
             return redirect()->back()->with('error', "");
         }
     }
+
+    public function penjualan_online_aksi_ubah($id, Request $request)
+    {
+        $this->validate(
+            $request,
+            [
+                'distributor_id' => 'required',
+                'ak1' => 'required',
+                'instansi' => 'required',
+                'satuankerja' => 'required',
+                'status' => 'required',
+                'tglbuat' => 'required',
+                'despaket' => 'required',
+            ],
+            [
+                'distributor_id.required' => "Distributor harus dipilih",
+                'ak1.required' => 'No AK1 harus diisi',
+                'despaket.required' => 'Deskripsi pemesanan paket harus diisi',
+                'instansi.required' => 'Instansi harus diisi',
+                'satuankerja.required' => 'Satuan Kerja harus diisi',
+                'status.required' => 'Status harus dipilih',
+                'tglbuat.required' => 'Tgl Buat harus diisi',
+                'produk_id.required' => 'Produk harus dipilih'
+            ]
+        );
+
+        $ekatjual                 = Ekatjual::find($id);
+        $ekatjual->lkpp           = $request->lkpp;
+        $ekatjual->distributor_id = $request->distributor_id;
+        $ekatjual->ak1            = $request->ak1;
+        $ekatjual->despaket       = $request->despaket;
+        $ekatjual->instansi       = $request->instansi;
+        $ekatjual->satuankerja    = $request->satuankerja;
+        $ekatjual->status         = $request->status;
+        $ekatjual->tglbuat        = $request->tglbuat;
+        $ekatjual->tgledit        = $request->tgledit;
+        $ekatjual->save();
+
+        if ($ekatjual) {
+            return redirect()->back()->with('success', "");
+        } else {
+            return redirect()->back()->with('error', "");
+        }
+    }
+    public function penjualan_online_detail_aksi_ubah(Request $request)
+    {
+        $this->validate(
+            $request,
+            [
+                'harga' => 'required',
+                'jumlah' => 'required',
+            ],
+            [
+                'harga.required' => "Harga Produk harus diisi",
+                'jumlah.required' => "Jumlah Produk harus diisi",
+            ]
+        );
+        $id = $request->id;
+        $detail_ekatjual = Detail_ekatjual::find($id);
+        $detail_ekatjual->jumlah = $request->jumlah;
+        $detail_ekatjual->harga = $request->harga;
+        $detail_ekatjual->produk_id = $request->produk_id;
+        $detail_ekatjual->ekatjuals_id = $request->ekatjuals_id;
+        $detail_ekatjual->save();
+
+        if ($detail_ekatjual) {
+            return redirect()->back()->with('success', "");
+        } else {
+            return redirect()->back()->with('error', "");
+        }
+    }
+
+    public function penjualan_offline_detail_aksi_ubah(Request $request)
+    {
+        $this->validate(
+            $request,
+            [
+                'harga' => 'required',
+                'jumlah' => 'required',
+            ],
+            [
+                'harga.required' => "Harga Produk harus diisi",
+                'jumlah.required' => "Jumlah Produk harus diisi",
+            ]
+        );
+        $id = $request->id;
+        $Detail_offline = Detail_offline::find($id);
+        $Detail_offline->jumlah = $request->jumlah;
+        $Detail_offline->harga = $request->harga;
+        $Detail_offline->produk_id = $request->produk_id;
+        $Detail_offline->offline_id = $request->offline_id;
+        $Detail_offline->keterangan = $request->keterangan;
+        $Detail_offline->save();
+
+        if ($Detail_offline) {
+            return redirect()->back()->with('success', "");
+        } else {
+            return redirect()->back()->with('error', "");
+        }
+    }
+
+    public function penjualan_online_detail_edit($id)
+    {
+        $data = Detail_ekatjual::with('produk')
+            ->where('id', $id)
+            ->get();
+        echo json_encode($data);
+    }
+    public function penjualan_offline_detail_edit($id)
+    {
+        $data = Detail_offline::with('produk')
+            ->where('id', $id)
+            ->get();
+        echo json_encode($data);
+    }
     public function penjualan_online_ecom_tambah()
     {
         $distributor = Distributor::all();
@@ -244,6 +359,7 @@ class PenjualanController extends Controller
             return redirect()->back()->with('error', "Gagal menambahkan data");
         }
     }
+
 
     public function penjualan_offline()
     {
