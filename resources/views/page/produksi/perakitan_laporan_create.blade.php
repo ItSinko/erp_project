@@ -87,7 +87,7 @@
             {{ implode('', $errors->all(':message')) }}
           </div>
           @endif
-          <form action="{{route('perakitan.store_laporan', ['bppb_id' => $b->id])}}" method="post">
+          <form action="{{route('perakitan.laporan.store', ['bppb_id' => $b->id])}}" method="post">
             {{ csrf_field() }}
             {{ method_field('PUT') }}
             <div class="form-group row">

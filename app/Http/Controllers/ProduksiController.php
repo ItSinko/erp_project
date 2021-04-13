@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Collection;
 use App\Imports\HasilPerakitanImport;
 use Maatwebsite\Excel\Facades\Excel;
+use Yajra\DataTables\Facades\DataTables;
 use App\Karyawan;
 use App\User;
 use App\Bppb;
@@ -41,10 +42,12 @@ class ProduksiController extends Controller
     //PERAKITAN
     public function perakitan()
     {
-        $p = array();
-        $r = array();
-        $i = 0;
+        return view('page.produksi.perakitan_show');
+    }
 
+    public function perakitan_show()
+    {
+        $p = array();
         if (Auth::user()->Divisi->nama == "Produksi") {
             $p = Bppb::has('perakitan')->get();
         } else if (Auth::user()->Divisi->nama == "Quality Control") {
@@ -52,11 +55,47 @@ class ProduksiController extends Controller
                 $query->whereNotIn('status', ['0']);
             })->get();
         }
-        return view('page.produksi.perakitan_show', ['p' => $p]);
-    }
-
-    public function perakitan_show()
-    {
+        return DataTables::of($p)
+            ->addIndexColumn()
+            ->addColumn('gambar', function ($s) {
+                $gambar = '<img class="product-img-small img-fluid"';
+                if (empty($s->Produk->foto)) {
+                    $gambar .= 'src="{{url(\'assets/image/produk\')}}/noimage.png"';
+                } else if (!empty($s->Produk->foto)) {
+                    $gambar .= 'src="{{asset(\'image/produk/\')}}/' . $s->Produk->foto . '"';
+                }
+                $gambar .= 'title="' . $s->Produk->nama . '">';
+                return $gambar;
+            })
+            ->addColumn('produk', function ($s) {
+                $btn = '<hgroup><h6 class="heading">' . $s->produk->tipe . ' - ' . $s->produk->nama . '</h6><div class="subheading text-muted">' . $s->produk->kelompokproduk->nama . '</div></hgroup>';
+                return $btn;
+            })
+            ->editColumn('jumlah', function ($s) {
+                $btn = '<hgroup><h6 class="heading">' . $s->jumlah . " " . $s->Produk->satuan . '</h6><div class="subheading "><small class="purple-text">Produksi saat ini: ' . $s->countHasilPerakitan() . ' ' . $s->Produk->satuan . '</small></div></hgroup>';
+                return $btn;
+            })
+            ->addColumn('laporan', function ($s) {
+                $btn = '<a class="detailmodal" data-toggle="modal" data-target="#detailmodal" data-attr="/perakitan/laporan/' . $s->id . '" data-id="' . $s->id . '">';
+                $btn .= '<button type="button" class="rounded-pill btn btn-sm btn-info">';
+                $btn .= '<span style="color:white;"><i class="fa fa-search" aria-hidden="true"></i>&nbsp;Detail Laporan</span></button></a>';
+                return $btn;
+            })
+            ->addColumn('aksi', function ($s) {
+                $btn = "";
+                if ($s->jumlah > $s->countHasilPerakitan()) {
+                    $btn = '<a href="/perakitan/laporan/create/' . $s->id . '">';
+                    $btn .= '<button type="button" class="rounded-pill btn btn-sm btn-primary">';
+                    $btn .= '<span style="color:white;"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Tambah Laporan</a></span></button></a>';
+                } else if ($s->jumlah <= $s->countHasilPerakitan()) {
+                    $btn = '<button type="button" class="rounded-pill btn btn-sm btn-secondary" disabled>
+                      <span style="color:white;"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Tambah Laporan</a></span>
+                    </button>';
+                }
+                return $btn;
+            })
+            ->rawColumns(['gambar', 'produk', 'jumlah', 'laporan', 'aksi'])
+            ->make(true);
     }
 
     public function perakitan_create()
@@ -240,11 +279,52 @@ class ProduksiController extends Controller
         }
     }
 
+    public function perakitan_laporan($id)
+    {
+        return view('page.produksi.perakitan_laporan_show', ['id' => $id]);
+    }
+
+    public function perakitan_laporan_show($id)
+    {
+        $s = Perakitan::whereHas('Bppb', function ($query) use ($id) {
+            $query->where('id', '=', $id);
+        })->get();
+
+        return DataTables::of($s)
+            ->addIndexColumn()
+            ->addColumn('operator', function ($s) {
+                $btn = "";
+
+                return $btn;
+            })
+            ->addColumn('status', function ($s) {
+                $btn = "";
+                if ($s->status == '0') {
+                    $btn = '<div class="inline-flex">
+                        <a href = "">
+                            <button type="button" class="btn btn-block btn-outline-info karyawan-img-small" style="border-radius:50%;" title="Kirim Laporan ke Quality Control"><i class="far fa-paper-plane"></i></button>
+                        </a>
+                    </div>';
+                } else if ($s->status == '12') {
+                    $btn = '<span class="label info-text">Dibuat</span>';
+                }
+                return $btn;
+            })
+            ->addColumn('aksi', function ($s) {
+                $btn = '<a href = "/perakitan/hasil/' . $s->id . '"><button class="btn btn-info  btn-circle btn-circle-sm m-1 karyawan-img-small"><i class="fas fa-eye"></i></button></a>';
+                $btn .= '<a href = "/perakitan/laporan/edit/' . $s->id . '"><button class="btn btn-warning  btn-circle btn-circle-sm m-1 karyawan-img-small"><i class="fas fa-edit"></i></button></a>';
+                $btn .= '<a class="deletemodal" data-toggle="modal" data-target="#deletemodal" data-attr="/perakitan/laporan/delete/' . $s->id . '"><button class="btn btn-danger karyawan-img-small btn-circle btn-circle-sm m-1"><i class="fas fa-trash"></i></button></a>';
+                return $btn;
+            })
+            ->rawColumns(['status', 'aksi'])
+            ->make(true);
+    }
+
     public function perakitan_laporan_create($id)
     {
         $b = Bppb::find($id);
         $kry = Karyawan::all();
-        return view('page.produksi.perakitan_create_laporan', ['b' => $b, 'id' => $id, 'kry' => $kry]);
+        return view('page.produksi.perakitan_laporan_create', ['b' => $b, 'id' => $id, 'kry' => $kry]);
     }
 
     public function perakitan_laporan_store($id, Request $request)
@@ -396,7 +476,7 @@ class ProduksiController extends Controller
     {
         $sh = Perakitan::find($id);
         $kry = Karyawan::all();
-        return view('page.produksi.perakitan_edit_laporan', ['id' => $id, 'sh' => $sh, 'kry' => $kry]);
+        return view('page.produksi.perakitan_laporan_edit', ['id' => $id, 'sh' => $sh, 'kry' => $kry]);
     }
 
     public function perakitan_laporan_update($id, Request $request)

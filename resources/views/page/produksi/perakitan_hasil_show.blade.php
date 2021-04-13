@@ -49,12 +49,12 @@
           <div class="row" style="padding-bottom:10%;">
             @if($sh->status == 0)
             <div class="inline-flex col-lg-6">
-              <a href="{{route('perakitan.edit_laporan', ['id' => $sh->id])}}" class="col-lg-12">
+              <a href="{{route('perakitan.laporan.edit', ['id' => $sh->id])}}" class="col-lg-12">
                 <button type="button" class="btn btn-block btn-warning rounded-pill"><i class="fas fa-edit"></i> Edit</button>
               </a>
             </div>
             <div class="inline-flex col-lg-6">
-              <a class="delete-perakitan col-lg-12" data-toggle="modal" data-target="#delete-perakitan" data-url="{{route('perakitan.delete_laporan', ['id' => $sh->id])}}">
+              <a class="delete-perakitan col-lg-12" data-toggle="modal" data-target="#delete-perakitan" data-url="{{route('perakitan.laporan.delete', ['id' => $sh->id])}}">
                 <button type="button" class="btn btn-block btn-danger rounded-pill"><i class="fas fa-trash"></i> Delete</button>
               </a>
             </div>

@@ -85,7 +85,7 @@
             Gagal mengubah Laporan Perakitan
           </div>
           @endif
-          <form action="{{route('perakitan.update_laporan',['id' => $sh->id])}}" method="post">
+          <form action="{{route('perakitan.laporan.update',['id' => $sh->id])}}" method="post">
             {{ csrf_field() }}
             {{ method_field('PUT') }}
             <div class="form-group row">

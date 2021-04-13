@@ -189,7 +189,7 @@
   <!-- /.row -->
 </section>
 @endsection
-@section('footer_script')
+@section('adminlte_js')
 <script>
   $(function() {
     $('#tambahitem').click(function(e) {
