@@ -25,8 +25,8 @@
   <div class="row">
     <div class="col-3">
       <div class="card">
-        <div class="card-header">
-          <div class="card-title">Info BPPB</div>
+        <div class="card-header bg-info">
+          <div class="card-title"><i class="fas fa-info-circle"></i>&nbsp;Info BPPB</div>
         </div>
         <div class="card-body">
 
@@ -68,31 +68,40 @@
       </div>
     </div>
     <div class="col-9">
+      @if(session()->has('success'))
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong><i class="fas fa-check"></i></strong> {{session()->get('success')}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      @elseif(session()->has('error'))
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong><i class="fas fa-times"></i></strong> {{session()->get('error')}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      @elseif(count($errors) > 0)
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong><i class="fas fa-times"></i></strong> Lengkapi data terlebih dahulu
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      @endif
       <div class="card">
-        <div class="card-header">
-          <div class="card-title">Laporan Perakitan</div>
+        <div class="card-header bg-success">
+          <div class="card-title"><i class="fas fa-plus-circle"></i>&nbsp;Tambah Laporan</div>
         </div>
         <!-- /.card-header -->
         <div class="card-body">
-          @if(session()->has('success'))
-          <div class="alert alert-success" role="alert">
-            {{session()->get('success')}}
-          </div>
-          @elseif(session()->has('error'))
-          <div class="alert alert-danger" role="alert">
-            {{session()->get('error')}}
-          </div>
-          @elseif(count($errors) > 0)
-          <div class="alert alert-danger" role="alert">
-            {{ implode('', $errors->all(':message')) }}
-          </div>
-          @endif
           <form action="{{route('perakitan.laporan.store', ['bppb_id' => $b->id])}}" method="post">
             {{ csrf_field() }}
             {{ method_field('PUT') }}
             <div class="form-group row">
-              <label for="tanggal_laporan" class="col-sm-3 col-form-label" style="text-align:right;">Tanggal Laporan</label>
-              <div class="col-sm-9">
+              <label for="tanggal_laporan" class="col-sm-4 col-form-label" style="text-align:right;">Tanggal Laporan</label>
+              <div class="col-sm-8">
                 <input type="date" class="form-control" name="tanggal_laporan" id="tanggal_laporan" value="{{old('tanggal_laporan')}}" style="width: 20%;">
                 @if ($errors->has('tanggal_laporan'))
                 <span class="invalid-feedback" role="alert">{{$errors->first('tanggal_laporan')}}</span>
@@ -101,8 +110,8 @@
             </div>
 
             <div class="form-group row">
-              <label for="import_file" class="col-sm-3 col-form-label" style="text-align:right;">Import No Seri (Excel)</label>
-              <div class="col-sm-9">
+              <label for="import_file" class="col-sm-4 col-form-label" style="text-align:right;">Import No Seri (Excel)</label>
+              <div class="col-sm-8">
                 <input type="file" class="form-control" name="file">
               </div>
             </div>
@@ -110,11 +119,6 @@
             <div class="form-group row">
               <table id="tableitem" class="table table-hover">
                 <thead style="text-align: center;">
-                  <tr style="text-align: left;">
-                    <th colspan="12">
-                      <button type="button" id="tambahitem" class="btn btn-block btn-success btn-sm" style="width: 200px;"><i class="fas fa-plus"></i> &nbsp; Tambah No Seri Perakitan</i></button></a>
-                    </th>
-                  </tr>
                   <tr>
                     <th>No</th>
                     <th>Tanggal</th>
@@ -163,7 +167,7 @@
                       </div>
                     </td>
                     <td>
-                      <button type="button" class="btn btn-block btn-danger btn-sm" id="closetable"><i class="fas fa-times-circle"></i></button>
+                      <button type="button" class="btn btn-block btn-success btn-sm" style="border-radius:50%;" id="tambahitem"><i class="fas fa-plus-circle"></i></button>
                     </td>
                   </tr>
                 </tbody>
@@ -179,7 +183,7 @@
             <button type="button" class="btn btn-block btn-danger" style="width:200px;float:left;">Batal</button>
           </span>
           <span>
-            <button type="submit" class="btn btn-block btn-success" style="width:200px;float:right;">Tambahkan</button>
+            <button type="submit" class="btn btn-block btn-success" style="width:200px;float:right;">Tambah Data</button>
           </span>
         </div>
         </form>
@@ -201,7 +205,7 @@
 <script>
   $(function() {
     function numberRows($t) {
-      var c = 0 - 2;
+      var c = 0 - 1;
       $t.find("tr").each(function(ind, el) {
         $(el).find("td:eq(0)").html(++c);
         var j = c - 1;
@@ -254,7 +258,7 @@
         </div>
       </td>
       <td>
-        <button type="button" class="btn btn-block btn-danger btn-sm" id="closetable" ><i class="fas fa-times-circle"></i></button>
+        <button type="button" class="btn btn-block btn-danger btn-sm"  style="border-radius:50%;" id="closetable" ><i class="fas fa-times-circle"></i></button>
       </td>
       </tr>`);
       numberRows($("#tableitem"));

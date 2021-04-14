@@ -190,7 +190,7 @@
                   </div>
                   <div class="inline-flex">
 
-                    <button type="button" class="btn btn-block btn-danger karyawan-img-small delete-hasil-perakitan" style="border-radius:50%;" data-toggle="modal" data-target="#delete-hasil-perakitan" data-url="{{route('perakitan.hasil.delete', ['id' => $i->id])}}"><i class="fas fa-trash"></i></button>
+                    <button type="button" class="btn btn-block btn-danger karyawan-img-small deletenoserimodal" style="border-radius:50%;" data-toggle="modal" data-target="#deletenoserimodal" data-attr="{{route('perakitan.hasil.delete', ['id' => $i->id])}}"><i class="fas fa-trash"></i></button>
 
                   </div>
                   @else
@@ -242,62 +242,29 @@
       </div>
     </div>
 
-    <div class="modal fade" id="delete-hasil-perakitan" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal fade" id="deletemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+          <div class="modal-header" style="background-color:#cc0000;">
+            <h4 class="modal-title" id="myModalLabel" style="color:white;">Hapus Data</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          </div>
+          <div class="modal-body" id="delete">
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="deletenoserimodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
       <div class="modal-dialog modal-md" role="document">
         <div class="modal-content">
           <div class="modal-header" style="background-color:#cc0000;">
             <h4 class="modal-title" id="myModalLabel" style="color:white;">Hapus No Seri</h4>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           </div>
-          <div class="modal-body" id="delete">
-            <div class="card">
-              <div class="card-body" style="text-align:center;">
-                <input id="labelid" name="labelid" hidden>
-                <h6>Kenapa anda ingin menghapus No Seri ini?</h6>
-              </div>
-              <form id="delete-hasil-perakitan-form" action="" method="POST">
-                @csrf
-                @method('DELETE')
-                <div class="form-group row">
-                  <div class="col-sm-1"></div>
-                  <div class="col-sm-3">
-                    <div class="icheck-danger d-inline">
-                      <input type="radio" id="revisi1" name="keterangan_log" value="revisi" checked>
-                      <label for="revisi1">
-                        Revisi
-                      </label>
-                    </div>
-                  </div>
+          <div class="modal-body" id="deletenoseri">
 
-                  <div class="col-sm-4">
-                    <div class="icheck-danger d-inline">
-                      <input type="radio" id="salah_input1" name="keterangan_log" value="salah_input">
-                      <label for="salah_input1">
-                        Salah Input
-                      </label>
-                    </div>
-                  </div>
-
-                  <div class="col-sm-3">
-                    <div class="icheck-danger d-inline">
-                      <input type="radio" id="pembatalan1" name="keterangan_log" value="pembatalan">
-                      <label for="pembatalan1">
-                        Pembatalan
-                      </label>
-                    </div>
-                  </div>
-
-                </div>
-                <div class="card-footer col-12" style="margin-bottom: 2%;">
-                  <span>
-                    <button type="button" class="btn btn-block btn-info batalsk" data-dismiss="modal" id="batalhapussk" style="width:30%;float:left;">Batal</button>
-                  </span>
-                  <span>
-                    <button type="submit" class="btn btn-block btn-danger hapussk" id="hapussk" style="width:30%;float:right;">Hapus</button>
-                  </span>
-                </div>
-              </form>
-            </div>
           </div>
         </div>
       </div>
@@ -371,6 +338,59 @@
 @section('adminlte_js')
 <script>
   $(function() {
+    $(document).on('click', '.deletemodal', function(event) {
+      event.preventDefault();
+      var href = $(this).attr('data-attr');
+      $.ajax({
+        url: '/template_form_delete',
+        beforeSend: function() {
+          $('#loader').show();
+        },
+        // return the result
+        success: function(result) {
+          $('#deletemodal').modal("show");
+          $('#delete').html(result).show();
+          $("#deleteform").attr("action", href);
+        },
+        complete: function() {
+          $('#loader').hide();
+        },
+        error: function(jqXHR, testStatus, error) {
+          console.log(error);
+          alert("Page " + href + " cannot open. Error:" + error);
+          $('#loader').hide();
+        },
+        timeout: 8000
+      })
+    });
+
+    $(document).on('click', '.deletenoserimodal', function(event) {
+      event.preventDefault();
+      var href = $(this).attr('data-attr');
+      $.ajax({
+        url: '/template_form_delete',
+        beforeSend: function() {
+          $('#loader').show();
+        },
+        // return the result
+        success: function(result) {
+          $('#deletenoserimodal').modal("show");
+          $('#deletenoseri').html(result).show();
+          $("#deletenoseriform").attr("action", href);
+        },
+        complete: function() {
+          $('#loader').hide();
+        },
+        error: function(jqXHR, testStatus, error) {
+          console.log(error);
+          alert("Page " + href + " cannot open. Error:" + error);
+          $('#loader').hide();
+        },
+        timeout: 8000
+      })
+    });
+
+
     $(document).on('click', '.delete-perakitan', function() {
       var url = $(this).attr('data-url');
       $("#delete-perakitan-form").attr("action", url);

@@ -29,8 +29,8 @@
       <!-- left column -->
       <div class="col-3">
         <div class="card">
-          <div class="card-header">
-            <div class="card-title">Info Perakitan</div>
+          <div class="card-header bg-info">
+            <div class="card-title"><i class="fas fa-info-circle"></i>&nbsp;Info Perakitan</div>
           </div>
           <div class="card-body">
 
@@ -78,102 +78,108 @@
       </div>
 
       <div class="col-md-9">
+        @if(session()->has('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <strong><i class="fas fa-check"></i></strong> {{session()->get('success')}}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        @elseif(session()->has('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <strong><i class="fas fa-times"></i></strong> {{session()->get('error')}}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        @elseif(count($errors) > 0)
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <strong><i class="fas fa-times"></i></strong> Lengkapi data terlebih dahulu
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        @endif
         <div class="card">
-          <div class="card-header" style="background-color:#e6b800;">
-            <h3 class="card-title" style="color:white;"><i class="fa fa-edit" aria-hidden="true"></i>&nbsp;Ubah Hasil Perakitan</h3>
+          <div class="card-header bg-warning">
+            <h3 class="card-title"><i class="fa fa-edit" aria-hidden="true"></i>&nbsp;Ubah Hasil Perakitan</h3>
           </div>
           <div class="card-body">
 
             <div class="col-md-12">
-
-              @if(session()->has('success'))
-              <div class="alert alert-success" role="alert">
-                Berhasil mengubah produk
-              </div>
-              @elseif(session()->has('error') || count($errors) > 0)
-              <div class="alert alert-danger" role="alert">
-                Gagal menambahkan produk
-              </div>
-              @endif
               <form id="form-tambah-produk" action="{{route('perakitan.hasil.update', ['id' => $id])}}" method="post">
                 {{ csrf_field() }}
                 {{ method_field('PUT') }}
 
-                <div class="card">
-                  <div class="card-header">
-                    <h3 class="card-title"><i class="fa fa-info-circle"></i>&nbsp;Data Hasil Perakitan</h3>
-                  </div>
-                  <!-- /.card-header -->
-                  <!-- form start -->
-                  <div class="form-horizontal">
-                    <div class="card-body">
-
-                      <div class="form-group row">
-                        <label for="tanggal" class="col-sm-3 col-form-label" style="text-align:right;">Tanggal</label>
-                        <div class="col-sm-9">
-                          <input type="date" class="form-control @error('tanggal') is-invalid @enderror" name="tanggal" id="tanggal" value="{{$s->tanggal}}" style="width: 30%;">
-                          @if ($errors->has('tanggal'))
-                          <span class="invalid-feedback" role="alert">{{$errors->first('tanggal')}}</span>
-                          @endif
-                        </div>
-                      </div>
-
-                      <div class="form-group row">
-                        <label for="produk" class="col-sm-3 col-form-label" style="text-align:right;">Karyawan</label>
-                        <div class="col-sm-6">
-                          <select class="select2 form-control @error('karyawan_id') is-invalid @enderror" multiple="multiple" name="karyawan_id[]" id="karyawan_id[]" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;">
-                            @foreach($kry as $i)
-                            <option value="{{$i->id}}" @if($s->Karyawan->contains('id', $i->id))
-                              selected
-                              @endif
-                              >{{$i->nama}} </option>
-                            @endforeach
-                          </select>
-                          @if ($errors->has('karyawan_id'))
-                          <span class="invalid-feedback" role="alert">{{$errors->first('karyawan_id')}}</span>
-                          @endif
-                        </div>
-                      </div>
-
-
-                      <div class="form-group row">
-                        <label for="produk" class="col-sm-3 col-form-label" style="text-align:right;">No Seri</label>
-                        <div class="col-sm-5">
-                          <input type="text" class="form-control @error('no_seri') is-invalid @enderror" name="no_seri" id="no_seri" value="{{$s->no_seri}}">
-                          @if ($errors->has('no_seri'))
-                          <span class="invalid-feedback" role="alert">{{$errors->first('no_seri')}}</span>
-                          @endif
-                          <span id="no_seri-message" role="alert"></span>
-                        </div>
-                      </div>
-
-                      <div class="form-group row">
-                        <label for="warna" class="col-sm-3 col-form-label" style="text-align:right;">Warna</label>
-                        <div class="col-sm-9">
-                          <input type="text" class="form-control @error('warna') is-invalid @enderror" name="warna" id="warna" value="{{$s->warna}}" style="width: 30%;">
-                          @if ($errors->has('warna'))
-                          <span class="invalid-feedback" role="alert">{{$errors->first('warna')}}</span>
-                          @endif
-                        </div>
-                      </div>
-
+                <!-- /.card-header -->
+                <!-- form start -->
+                <div class="form-horizontal">
+                  <div class="form-group row">
+                    <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;">Tanggal</label>
+                    <div class="col-sm-8">
+                      <input type="date" class="form-control @error('tanggal') is-invalid @enderror" name="tanggal" id="tanggal" value="{{$s->tanggal}}" style="width: 30%;">
+                      @if ($errors->has('tanggal'))
+                      <span class="invalid-feedback" role="alert">{{$errors->first('tanggal')}}</span>
+                      @endif
                     </div>
+                  </div>
 
+                  <div class="form-group row">
+                    <label for="produk" class="col-sm-4 col-form-label" style="text-align:right;">Karyawan</label>
+                    <div class="col-sm-6">
+                      <select class="select2 form-control @error('karyawan_id') is-invalid @enderror" multiple="multiple" name="karyawan_id[]" id="karyawan_id[]" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;">
+                        @foreach($kry as $i)
+                        <option value="{{$i->id}}" @if($s->Karyawan->contains('id', $i->id))
+                          selected
+                          @endif
+                          >{{$i->nama}} </option>
+                        @endforeach
+                      </select>
+                      @if ($errors->has('karyawan_id'))
+                      <span class="invalid-feedback" role="alert">{{$errors->first('karyawan_id')}}</span>
+                      @endif
+                    </div>
+                  </div>
+
+
+                  <div class="form-group row">
+                    <label for="produk" class="col-sm-4 col-form-label" style="text-align:right;">No Seri</label>
+                    <div class="col-sm-5">
+                      <input type="text" class="form-control @error('no_seri') is-invalid @enderror" name="no_seri" id="no_seri" value="{{$s->no_seri}}">
+                      @if ($errors->has('no_seri'))
+                      <span class="invalid-feedback" role="alert">{{$errors->first('no_seri')}}</span>
+                      @endif
+                      <span id="no_seri-message" role="alert"></span>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="warna" class="col-sm-4 col-form-label" style="text-align:right;">Warna</label>
+                    <div class="col-sm-6">
+                      <input type="text" class="form-control @error('warna') is-invalid @enderror" name="warna" id="warna" value="{{$s->warna}}" style="width: 30%;">
+                      @if ($errors->has('warna'))
+                      <span class="invalid-feedback" role="alert">{{$errors->first('warna')}}</span>
+                      @endif
+                    </div>
                   </div>
                 </div>
 
-                <span>
-                  <button type="button" class="btn btn-block btn-danger" style="width:200px;float:left;">Batal</button>
-                </span>
-                <span>
-                  <button type="submit" class="btn btn-block btn-success" style="width:200px;float:right;">Ubah</button>
-                </span>
-              </form>
+
+
             </div>
             <!-- /.card -->
 
           </div>
+          <div class="card-footer">
+            <span>
+              <button type="button" class="btn btn-block btn-danger btn-rounded" style="width:200px;float:left;"><i class="fas fa-times"></i>&nbsp;Batal</button>
+            </span>
+            <span>
+              <button type="submit" class="btn btn-block btn-warning btn-rounded" style="width:200px;float:right;"><i class="fas fa-edit"></i>&nbsp;Simpan Perubahan</button>
+            </span>
+          </div>
         </div>
+        </form>
       </div>
 
     </div>
@@ -212,11 +218,8 @@
 @endsection
 @section('adminlte_js')
 <script>
-  var ids = {
-    {
-      $id
-    }
-  };
+  var ids = "{{$id}}";
+  var bppb = "{{$s->Perakitan->Bppb->id}}"
   $(function() {
     $('#no_seri').on("change keyup", function() {
       var id = ids;
@@ -225,7 +228,7 @@
       var message = $('span[id="no_seri-message"]');
       if (no_seri_val) {
         $.ajax({
-          url: '/perakitan/hasil_perakitan/edit/get_no_seri_exist_not_in/' + no_seri_val + '/' + id,
+          url: '/perakitan/hasil/edit/get_kode_perakitan_exist_not_in_id/' + bppb + '/' + id + '/' + no_seri_val,
           type: "GET",
           dataType: "json",
           success: function(data) {

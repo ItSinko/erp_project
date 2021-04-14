@@ -27,8 +27,8 @@
   <div class="row">
     <div class="col-3">
       <div class="card">
-        <div class="card-header">
-          <div class="card-title">Info BPPB</div>
+        <div class="card-header bg-info">
+          <div class="card-title"><i class="fas fa-info-circle"></i>&nbsp;Info BPPB</div>
         </div>
         <div class="card-body">
 
@@ -70,28 +70,41 @@
       </div>
     </div>
     <div class="col-9">
+      @if(session()->has('success'))
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong><i class="fas fa-check"></i></strong> {{session()->get('success')}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      @elseif(session()->has('error'))
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong><i class="fas fa-times"></i></strong> {{session()->get('error')}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      @elseif(count($errors) > 0)
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong><i class="fas fa-times"></i></strong> Lengkapi data terlebih dahulu
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      @endif
       <div class="card">
-        <div class="card-header">
-          <div class="card-title">Ubah Laporan Perakitan</div>
+        <div class="card-header bg-warning">
+          <div class="card-title"><i class="fas fa-edit"></i>&nbsp;Ubah Laporan Perakitan</div>
         </div>
         <!-- /.card-header -->
         <div class="card-body">
-          @if(session()->has('success'))
-          <div class="alert alert-success" role="alert">
-            Berhasil mengubah Laporan Perakitan
-          </div>
-          @elseif(session()->has('error') || count($errors) > 0)
-          <div class="alert alert-danger" role="alert">
-            Gagal mengubah Laporan Perakitan
-          </div>
-          @endif
           <form action="{{route('perakitan.laporan.update',['id' => $sh->id])}}" method="post">
             {{ csrf_field() }}
             {{ method_field('PUT') }}
             <div class="form-group row">
-              <label for="tanggal_laporan" class="col-sm-3 col-form-label" style="text-align:right;">Tanggal Laporan</label>
-              <div class="col-sm-9">
-                <input type="date" class="form-control" name="tanggal_laporan" id="tanggal_laporan" value="{{$sh->tanggal}}" style="width: 20%;">
+              <label for="tanggal_laporan" class="col-sm-4 col-form-label" style="text-align:right;">Tanggal Laporan</label>
+              <div class="col-sm-8">
+                <input type="date" class="form-control" name="tanggal_laporan" id="tanggal_laporan" value="{{$sh->tanggal}}" style="width: 25%;">
                 @if ($errors->has('tanggal_laporan'))
                 <span class="invalid-feedback" role="alert">{{$errors->first('tanggal_laporan')}}</span>
                 @endif
@@ -108,22 +121,24 @@
                     <th>No Seri</th>
                     <th>Operator</th>
                     <th>Warna</th>
+                    <th>Aksi</th>
                   </tr>
                 </thead>
                 <tbody style="text-align:center;">
+                  @php ($first = true) @endphp
                   @foreach($sh->HasilPerakitan as $i)
                   <tr>
-                    <td class="counterCell"></td>
-                    <td hidden><input type="text" id="id[]" name="id[{{$loop->iteration - 1}}]" value="{{$i->id}}"></td>
+                    <td>{{$loop->iteration}}</td>
+                    <td hidden><input type="text" id="id" name="id[]" value="{{$i->id}}"></td>
                     <td>
                       <div class="input-group">
-                        <input type="date" class="form-control" name="tanggals[{{$loop->iteration - 1}}]" id="tanggals[]" value="{{$i->tanggal}}">
+                        <input type="date" class="form-control" name="tanggals[]" id="tanggals" value="{{$i->tanggal}}">
                       </div>
                     </td>
                     <td>
                       <div class="form-group">
                         <div class="input-group">
-                          <input type="text" class="form-control @error('hasil_perakitans.*.no_seri') is-invalid @enderror" name="no_seri[{{$loop->iteration - 1}}]" id="no_seri[]" value="{{$i->no_seri}}">
+                          <input type="text" class="form-control @error('hasil_perakitans.*.no_seri') is-invalid @enderror" name="no_seri[]" id="no_seri" value="{{$i->no_seri}}">
                         </div>
                         @if ($errors->has('hasil_perakitans.*.no_seri'))
                         <span class="invalid-feedback" role="alert">{{$errors->first('hasil_perakitans.*.no_seri')}}</span>
@@ -134,7 +149,7 @@
                     <td>
                       <div class="form-group">
                         <div class="select2-info">
-                          <select class="select2 form-control @error('karyawan_id') is-invalid @enderror" multiple="multiple" name="karyawan_id[{{$loop->iteration - 1}}][]" id="karyawan_id[{{$loop->iteration - 1}}][]" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;">
+                          <select class="select2 form-control @error('karyawan_id') is-invalid @enderror karyawan_id" multiple="multiple" name="karyawan_id[][]" id="karyawan_id{{$loop->iteration-1}}" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;">
                             @foreach($kry as $j)
                             <option value="{{$j->id}}" @if($i->Karyawan->contains('id', $j->id))
                               selected
@@ -150,10 +165,18 @@
                     </td>
                     <td>
                       <div class="input-group">
-                        <input type="text" class="form-control" name="warna[{{$loop->iteration - 1}}]" id="warna[]" value="{{$i->warna}}">
+                        <input type="text" class="form-control" name="warna[]" id="warna[]" value="{{$i->warna}}">
                       </div>
                     </td>
+                    <td>@if($first == false)
+                      <button type="button" class="btn btn-block btn-danger btn-sm" style="border-radius:50%;" id="closetable"><i class="fas fa-times-circle"></i></button>
+                      @elseif($first == true)
+                      @php ($first = false) @endphp
+                      <button type="button" class="btn btn-block btn-success btn-sm" style="border-radius:50%;" id="tambahitem"><i class="fas fa-plus-circle"></i></button>
+                      @endif
+                    </td>
                   </tr>
+
                   @endforeach
                 </tbody>
 
@@ -162,10 +185,10 @@
         </div>
         <div class="card-footer">
           <span>
-            <button type="button" class="btn btn-block btn-danger" style="width:200px;float:left;">Batal</button>
+            <button type="button" class="btn btn-block btn-danger btn-rounded" style="width:200px;float:left;"><i class="fas fa-times"></i>&nbsp;Batal</button>
           </span>
           <span>
-            <button type="submit" class="btn btn-block btn-success" style="width:200px;float:right;">Ubah</button>
+            <button type="submit" class="btn btn-block btn-warning btn-rounded" style="width:200px;float:right;"><i class="fas fa-edit"></i>&nbsp;Simpan Perubahan</button>
           </span>
         </div>
         </form>
@@ -185,16 +208,100 @@
 @section('adminlte_js')
 <script>
   $(function() {
+    var bppb = "{{$sh->Bppb->id}}";
+    $('.karyawan_id').select2();
 
+    function numberRows($t) {
+      var c = 0 - 1;
+      $t.find("tr").each(function(ind, el) {
+        $(el).find("td:eq(0)").html(++c);
+        var j = c - 1;
+        $(el).find('input[id="tanggals"]').attr('name', 'tanggals[' + j + ']');
+        $(el).find('.karyawan_id').attr('name', 'karyawan_id[' + j + '][]');
+        $(el).find('.karyawan_id').attr('id', 'karyawan_id' + j);
+        $(el).find('input[id="no_seri"]').attr('name', 'no_seri[' + j + ']');
+        $(el).find('input[id="warna"]').attr('name', 'warna[' + j + ']');
+        $('select[name="karyawan_id[' + j + '][]"]').select2();
+      });
+    }
 
-    $('#tableitem').on("change keyup", 'input[id="no_seri[]"]', function() {
-      var id = $(this).closest('tr').find('input[id="id[]"').val();
-      var no_seri_val = $(this).closest('tr').find('input[id="no_seri[]"').val();
-      var no_seri = $(this).closest('tr').find('input[id="no_seri[]"');
+    $('#tambahitem').click(function(e) {
+      $('#tableitem tr:last').after(`<tr>
+          <td></td>
+          <td hidden><input type="text" id="id" name="id[]"></td>
+          <td>
+            <div class="input-group">
+              <input type="date" class="form-control" name="tanggals[]" id="tanggals" value="">
+            </div>
+          </td>
+          <td>
+            <div class="form-group">
+              <div class="input-group">
+                <input type="text" class="form-control @error('hasil_perakitans.*.no_seri') is-invalid @enderror" name="no_seri[]" id="no_seri" value="">
+              </div>
+              @if ($errors->has('hasil_perakitans.*.no_seri'))
+              <span class="invalid-feedback" role="alert">{{$errors->first('hasil_perakitans.*.no_seri')}}</span>
+              @endif
+              <span id="no_seri-message[]" role="alert"></span>
+            </div>
+          </td>
+          <td>
+            <div class="form-group">
+              <div class="select2-info">
+                <select class="select2 form-control @error('karyawan_id') is-invalid @enderror karyawan_id" multiple="multiple" name="karyawan_id[][]" id="karyawan_id" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;">
+                  @foreach($kry as $j)
+                  <option value="{{$j->id}}")>{{$j->nama}}</option>
+                  @endforeach
+                </select>
+                @if ($errors->has('karyawan_id'))
+                <span class="invalid-feedback" role="alert">{{$errors->first('karyawan_id.*')}}</span>
+                @endif
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="input-group">
+              <input type="text" class="form-control" name="warna[]" id="warna[]" value="">
+            </div>
+          </td>
+          <td>
+            <button type="button" class="btn btn-block btn-danger btn-sm" style="border-radius:50%;" id="closetable"><i class="fas fa-times-circle"></i></button>
+          </td>
+        </tr>`);
+      numberRows($("#tableitem"));
+    });
+
+    $('#tableitem').on('click', '#closetable', function(e) {
+      $(this).closest('tr').remove();
+      numberRows($("#tableitem"));
+    });
+
+    $('#tableitem').on("change keyup", 'input[id="no_seri"]', function() {
+      var id = $(this).closest('tr').find('input[id="id"]').val();
+      var no_seri_val = $(this).closest('tr').find('input[id="no_seri"]').val();
+      var no_seri = $(this).closest('tr').find('input[id="no_seri"]');
       var message = $(this).closest('tr').find('span[id="no_seri-message[]"]');
-      if (no_seri_val) {
+      if (no_seri_val && id) {
         $.ajax({
-          url: '/perakitan/edit_laporan/get_no_seri_exist_not_in/' + no_seri_val + '/' + id,
+          url: '/perakitan/laporan/edit/get_kode_perakitan_exist_not_in_id/' + bppb + '/' + id + '/' + no_seri_val,
+          type: "GET",
+          dataType: "json",
+          success: function(data) {
+            if (data > 0) {
+              message.addClass("invalid-feedback");
+              no_seri.addClass("is-invalid");
+              message.html("No Seri Sudah Terpakai");
+              console.log(message.val());
+            } else {
+              message.removeClass("invalid-feedback");
+              no_seri.removeClass("is-invalid");
+              message.empty();
+            }
+          }
+        });
+      } else if (no_seri_val && !(id)) {
+        $.ajax({
+          url: '/perakitan/laporan/edit/get_kode_perakitan_exist_not_in/' + bppb + '/' + no_seri_val,
           type: "GET",
           dataType: "json",
           success: function(data) {

@@ -206,6 +206,8 @@ Route::get('/perakitan/laporan/create/get_no_seri_exist/{no_seri}', 'GetControll
 Route::put('/perakitan/laporan/store/{bppb_id}', 'ProduksiController@perakitan_laporan_store')->name('perakitan.laporan.store');
 /* Edit */
 Route::get('/perakitan/laporan/edit/{id}', 'ProduksiController@perakitan_laporan_edit')->name('perakitan.laporan.edit');
+Route::get('/perakitan/laporan/edit/get_kode_perakitan_exist_not_in/{bppb}/{no_seri}', 'GetController@get_kode_perakitan_exist_not_in');
+Route::get('/perakitan/laporan/edit/get_kode_perakitan_exist_not_in_id/{bppb}/{id}/{no_seri}', 'GetController@get_kode_perakitan_exist_not_in_id');
 Route::put('/perakitan/laporan/update/{id}', 'ProduksiController@perakitan_laporan_update')->name('perakitan.laporan.update');
 /* Delete */
 Route::delete('/perakitan/laporan/delete/{id}', 'ProduksiController@perakitan_laporan_delete')->name('perakitan.laporan.delete');
@@ -219,6 +221,7 @@ Route::put('/perakitan/hasil/store/{id}', 'ProduksiController@perakitan_hasil_st
 Route::put('/perakitan/hasil/import/{id}', 'ProduksiController@perakitan_hasil_import_store')->name('perakitan.hasil.import');
 /* Edit */
 Route::get('/perakitan/hasil/edit/{id}', 'ProduksiController@perakitan_hasil_edit')->name('perakitan.hasil.edit');
+Route::get('/perakitan/hasil/edit/get_kode_perakitan_exist_not_in_id/{bppb}/{id}/{no_seri}', 'GetController@get_kode_perakitan_exist_not_in_id');
 Route::put('/perakitan/hasil/update/{id}', 'ProduksiController@perakitan_hasil_update')->name('perakitan.hasil.update');
 /* Delete */
 Route::delete('/perakitan/hasil/delete/{id}', 'ProduksiController@perakitan_hasil_delete')->name('perakitan.hasil.delete');

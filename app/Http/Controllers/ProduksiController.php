@@ -20,6 +20,7 @@ use App\HasilPerakitan;
 use App\HasilPerakitanKaryawan;
 use App\KelompokProduk;
 use App\KategoriProduk;
+use Carbon\Carbon;
 
 use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\UserLogController;
@@ -292,10 +293,12 @@ class ProduksiController extends Controller
 
         return DataTables::of($s)
             ->addIndexColumn()
-            ->addColumn('operator', function ($s) {
-                $btn = "";
-
-                return $btn;
+            ->editColumn('tanggal', function ($s) {
+                return Carbon::createFromFormat('Y-m-d', $s->tanggal)->format('d-m-Y');
+            })
+            ->addColumn('jumlah', function ($s) {
+                $btn = HasilPerakitan::where('perakitan_id', $s->id)->count();
+                return $btn . " " . $s->Bppb->Produk->satuan;
             })
             ->addColumn('status', function ($s) {
                 $btn = "";
@@ -311,7 +314,7 @@ class ProduksiController extends Controller
                 return $btn;
             })
             ->addColumn('aksi', function ($s) {
-                $btn = '<a href = "/perakitan/hasil/' . $s->id . '"><button class="btn btn-info  btn-circle btn-circle-sm m-1 karyawan-img-small"><i class="fas fa-eye"></i></button></a>';
+                $btn = '<a href = "/perakitan/hasil/' . $s->id . '"><button class="btn btn-info circle-button btn-circle-sm m-1 karyawan-img-small"><i class="fas fa-eye"></i></button></a>';
                 $btn .= '<a href = "/perakitan/laporan/edit/' . $s->id . '"><button class="btn btn-warning  btn-circle btn-circle-sm m-1 karyawan-img-small"><i class="fas fa-edit"></i></button></a>';
                 $btn .= '<a class="deletemodal" data-toggle="modal" data-target="#deletemodal" data-attr="/perakitan/laporan/delete/' . $s->id . '"><button class="btn btn-danger karyawan-img-small btn-circle btn-circle-sm m-1"><i class="fas fa-trash"></i></button></a>';
                 return $btn;
@@ -485,7 +488,11 @@ class ProduksiController extends Controller
             $request->all(),
             [
                 'tanggal_laporan' => 'required',
-                'no_seri' => 'required|unique:hasil_perakitans',
+                'no_seri' => 'required',
+            ],
+            [
+                'tanggal_laporan.required' => 'Tanggal wajib diisi',
+                'no_seri.required' => 'No Seri harus diisi',
             ]
         );
 
@@ -498,25 +505,51 @@ class ProduksiController extends Controller
             $bool = true;
 
             if ($p) {
+                $hpid = array();
                 if (!empty($request->no_seri)) {
                     for ($i = 0; $i < count($request->no_seri); $i++) {
-                        $hp = HasilPerakitan::find($request->id[$i]);
-                        $hp->tanggal = $request->tanggals[$i];
-                        $hp->no_seri = $request->no_seri[$i];
-                        $hp->warna = $request->warna[$i];
-                        $hp->Karyawan()->sync($request->karyawan_id[$i]);
-                        $hp->save();
-                        if (!$hp) {
-                            $bool = false;
+                        if (!empty($request->id[$i])) {
+                            $hp = HasilPerakitan::find($request->id[$i]);
+                            $hp->tanggal = $request->tanggals[$i];
+                            $hp->no_seri = $request->no_seri[$i];
+                            $hp->warna = $request->warna[$i];
+                            $hp->Karyawan()->sync($request->karyawan_id[$i]);
+                            $hp->save();
+                            $hpid[$i] = $request->id[$i];
+                            if (!$hp) {
+                                $bool = false;
+                            }
+                        } else if (empty($request->id[$i])) {
+                            $c = HasilPerakitan::create([
+                                'perakitan_id' => $id,
+                                'tanggal' => $request->tanggals[$i],
+                                'no_seri' => $request->no_seri[$i],
+                                'warna' => $request->warna[$i]
+                            ]);
+
+                            if ($c) {
+                                $hpid[$i] = $c->id;
+                                $hp = HasilPerakitan::find($c->id);
+                                $hp->Karyawan()->sync($request->karyawan_id[$i]);
+                                $hp->save();
+
+                                echo $c->id;
+                                if (!$hp) {
+                                    $bool = false;
+                                }
+                            }
                         }
                     }
-                    if ($bool = true) {
+                    if (!empty($hpid)) {
+                        HasilPerakitan::where('perakitan_id', $id)->whereNotIn('id', $hpid)->delete();
+                    }
+                    if ($bool == true) {
                         return redirect()->back()->with('success', "Berhasil mengubah Data");
-                    } else if ($bool = false) {
+                    } else if ($bool == false) {
                         return redirect()->back()->with('error', "Gagal mengubah Data");
                     }
                 } else {
-                    if ($bool = true) {
+                    if ($bool == true) {
                         return redirect()->back()->with('success', "Berhasil mengubah Data");
                     }
                 }
@@ -524,12 +557,9 @@ class ProduksiController extends Controller
                 return redirect()->back()->with('error', "Gagal mengubah Data");
             }
         }
-
-
-        return redirect()->back()->with('success', "Berhasil mengupdate Data");
     }
 
-    public function perakitan_delete($id, Request $request)
+    public function perakitan_laporan_delete($id, Request $request)
     {
         $p = Perakitan::find($id);
         $this->UserLogController->create(Auth::user()->id, "Perakitan " . $p->no_bppb, 'Perakitan', 'Hapus', $request->keterangan_log);
@@ -589,10 +619,9 @@ class ProduksiController extends Controller
         $v = Validator::make(
             $request->all(),
             [
-                'no_seri' => 'required|unique:hasil_perakitans',
+                'no_seri' => 'required',
             ],
             [
-                'no_seri.unique' => 'No Seri sudah terpakai',
                 'no_seri.required' => 'No Seri harus diisi'
             ]
         );
@@ -600,6 +629,7 @@ class ProduksiController extends Controller
         if ($v->fails()) {
             return redirect()->back()->withErrors($v);
         } else {
+            $bool = true;
             for ($i = 0; $i < count($request->no_seri); $i++) {
                 $s = HasilPerakitan::create([
                     'perakitan_id' => $id,
@@ -610,10 +640,10 @@ class ProduksiController extends Controller
                     'keterangan' => NULL
                 ]);
                 if (!$s) {
-                    $s = false;
+                    $bool = false;
                 }
             }
-            if ($s = true) {
+            if ($bool == true) {
                 return redirect()->back()->with('success', "Berhasil menambahkan Data");
             } else {
                 return redirect()->back()->with('error', "Gagal menambahkan Data");
@@ -634,12 +664,11 @@ class ProduksiController extends Controller
             $request->all(),
             [
                 'tanggal' => 'required',
-                'no_seri' => 'required|unique:hasil_perakitans,id,' . $id,
+                'no_seri' => 'required',
             ],
             [
                 'tanggal.required' => 'Tanggal harus diisi',
                 'no_seri.required' => 'No Seri harus diisi',
-                'no_seri.unique' => 'No Seri sudah terpakai',
             ]
         );
 
@@ -652,15 +681,15 @@ class ProduksiController extends Controller
             $hp->no_seri = $request->no_seri;
             $hp->warna = $request->warna;
             $hp->Karyawan()->sync($request->karyawan_id);
-            $hp->save();
+            $u = $hp->save();
 
-            if (!$hp) {
+            if (!$u) {
                 $bool = false;
             }
 
-            if ($bool = true) {
+            if ($bool == true) {
                 return redirect()->back()->with('success', "Berhasil mengubah Data");
-            } else if ($bool = false) {
+            } else if ($bool == false) {
                 return redirect()->back()->with('error', "Gagal mengubah Data");
             }
         }
