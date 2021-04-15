@@ -24,16 +24,12 @@ use PDF;
 
 class PenjualanController extends Controller
 {
-    public function tes()
+    public function cetak_penawaran()
     {
-        $pdf = PDF::loadView('page.penjualan.penawaran_offline');
-        return $pdf->download('laporan-pegawai-pdf');
+        $pdf = PDF::loadView('page.penjualan.surat_penawaran_offline')->setPaper('A4');
+        return $pdf->stream('');
     }
-    public function penjualan_online()
-    {
-        $produk = Produk::all();
-        return view('page.penjualan.online', ['produk' => $produk]);
-    }
+
     public function penjualan_online_ecom()
     {
         return view('page.penjualan.ecom');

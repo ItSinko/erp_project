@@ -106,6 +106,7 @@ Route::post('/penjualan_online/detail/aksi_tambah', 'PenjualanController@penjual
 Route::get('/penjualan_online/detail/data/edit/{id}', 'PenjualanController@penjualan_online_detail_edit');
 
 
+
 //PENJUALAN ECOM (ONLINE)
 /*Tabel*/
 Route::get('/penjualan_online_ecom', 'PenjualanController@penjualan_online_ecom');
@@ -139,6 +140,8 @@ Route::get('/penjualan_offline/tambah', 'PenjualanController@penjualan_offline_t
 Route::get('/penjualan_offline/ubah/{id}', 'PenjualanController@penjualan_offline_ubah');
 /*Detail*/
 Route::get('/penjualan_offline/detail/data/edit/{id}', 'PenjualanController@penjualan_offline_detail_edit');
+/*Print*/
+Route::get('/penjualan_offline/cetak_penawaran', 'PenjualanController@cetak_penawaran');
 
 
 

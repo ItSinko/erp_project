@@ -227,10 +227,10 @@
           data: 'id',
           render: function(data) {
             $btn_view = '<div class="inline-flex"><button type="button" id="detail" class="btn btn-block btn-primary karyawan-img-small" style="border-radius:50%;"><i class="fa fa-eye" aria-hidden="true"></i></button>';
-            $btn_print = '<a href="/penjualan_offline/ubah/' + data + '"><button type="button" class="btn btn-block btn-warning karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-edit"></i></button></a>';
-            $btn_edit = '<a href="/penjualan_offline/ubah/' + data + '"><button type="button" class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-print"></i></button></a>';
+            $btn_print = '<a href="/penjualan_offline/cetak_penawaran" target="_break"><button type="button" class="btn btn-block btn-warning karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-print"></i></button></a>';
+            $btn_edit = '<a href="/penjualan_offline/ubah/' + data + '"><button type="button" class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-edit"></i></button></a>';
             $btn_hapus = ' <button type="button" class="btn btn-block btn-danger karyawan-img-small" style="border-radius:50%;" data-toggle="modal" data-target="#delete" ><i class="fas fa-trash"></i></button></div>';
-            return $btn_view + $btn_edit + $btn_print + $btn_hapus;
+            return $btn_view + $btn_print + $btn_edit + $btn_hapus;
           },
           orderable: false,
           searchable: false
