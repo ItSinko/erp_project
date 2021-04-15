@@ -1,14 +1,26 @@
 @extends('adminlte.page')
-
 @section('title', 'Beta Version')
-
 @section('content_header')
 <h1 class="m-0 text-dark">Dashboard</h1>
 @stop
-
 @section('content')
 <div class="row">
   <div class="col-lg-12">
+    @if(session()->has('success'))
+    <div class="alert alert-success alert-dismissible">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      Data berhasil ditambahkan
+    </div>
+    @elseif(session()->has('error') || count($errors) > 0)
+    <div class="alert alert-danger alert-dismissible">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      Data gagal ditambahkan
+    </div>
+    @endif
     <div class="card">
       <div class="card-body">
         <div class='table-responsive'>
@@ -50,7 +62,6 @@
                       <h6>Kenapa anda ingin menghapus Laporan ini?</h6>
                     </div>
                     <form id="delete-form" action="" method="POST">
-
                       <div class="form-group row">
                         <div class="col-sm-1"></div>
                         <div class="col-sm-3">
@@ -61,7 +72,6 @@
                             </label>
                           </div>
                         </div>
-
                         <div class="col-sm-4">
                           <div class="icheck-danger d-inline">
                             <input type="radio" id="salah_input_perakitan" name="keterangan_log" value="salah_input">
@@ -70,7 +80,6 @@
                             </label>
                           </div>
                         </div>
-
                         <div class="col-sm-3">
                           <div class="icheck-danger d-inline">
                             <input type="radio" id="pembatalan_perakitan" name="keterangan_log" value="pembatalan">
@@ -115,7 +124,7 @@
             <thead>
               <tr>
                 <th colspan="12">
-                  <button type="button" class="btn btn-block btn-success btn-sm" style="width: 200px;" data-target="#tambah_mod" data-toggle="modal"><i class="fas fa-plus"></i> &nbsp;Tambah Produk</i></button>
+                  <button type="button" class="btn btn-block btn-success btn-sm" style="width: 200px;" data-target="#tambah_mod" data-toggle="modal" data-dismiss="modal"><i class="fas fa-plus"></i> &nbsp;Tambah Produk</i></button>
                 </th>
               </tr>
               <tr>
@@ -151,8 +160,6 @@
   </div>
 </div>
 <!-- End Modal Detail -->
-
-
 <!-- Modal Detail -->
 <div class="modal fade  bd-example-modal-lg" id="tambah_mod" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog modal-lg" role="document">
@@ -179,7 +186,7 @@
                         <div class="row">
                           <div class="col-lg-12">
                             <div class="form-horizontal">
-                              <input type="text" name="fk_paket_produk" " class=" form-control" id="fk_paket_produk" readonly>
+                              <input type="text" name="fk_paket_produk" " class=" d-none form-control" id="fk_paket_produk" readonly>
 
                               <table class="table table-bordered table-striped" id="user_table">
                                 <thead>
@@ -227,6 +234,84 @@
                     </div>
                     <div class="card-footer">
                       <span class="float-right"><button class="btn btn-success rounded-pill" id="button_tambah"><i class="fas fa-plus"></i>&nbsp;Tambah Data</button></span>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Modal Detail -->
+<!-- Modal Detail -->
+<div class="modal fade  bd-example-modal-lg" id="edit_mod" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">
+          <div class="data_detail_head"></div>
+        </h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <div class="data_detail">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="col-lg-12">
+                <form method="post" action="/penjualan_online/detail/aksi_ubah">
+                  {{ csrf_field() }}
+                  {{method_field('PUT')}}
+                  <div class="card">
+                    <div class="card-header bg-success">
+                      <div class="card-title"><i class="fas fa-plus-circle"></i>&nbsp;Ubah</div>
+                    </div>
+                    <div class="card-body">
+                      <div class="col-lg-12">
+                        <div class="row">
+                          <div class="col-lg-12">
+                            <div class="form-horizontal">
+                              <input type="text" name="id" " class=" d-none form-control" id="fk" readonly>
+                              <input type="text" name="ekatjuals_id" " class=" d-none form-control" id="ekatjuals_id" readonly>
+                              <input type="text" name="produk_id" " class=" d-none form-control" id="produk_id" readonly>
+                              <table class="table table-bordered table-striped" id="xxx">
+                                <thead>
+                                  <tr>
+                                    <th width="15%">Tipe</th>
+                                    <th width="20%">Nama</th>
+                                    <th width="15%">Harga</th>
+                                    <th width="5%">Jumlah</th>
+                                    <th width="15%">Sub Total</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    <td><input type="text" name="produk_tipe" placeholder="Tipe Produk" class="form-control" id="tipe" readonly></td>
+                                    <td><input type="text" name="produk_nama" placeholder="Nama Produk" class="form-control" id="nama" readonly></td>
+                                    <td><input type="text" name="harga" placeholder="Harga" class="form-control" id="harga"></td>
+                                    <td><input type="text" name="jumlah" placeholder="Jumlah" class="form-control" id="jumlah"></td>
+                                    <td><input type="text" name="subtotal" placeholder="Sub Total" class="form-control" id="subtotal" readonly></td>
+                                  </tr>
+                                </tbody>
+                                <tfoot>
+                                  <tr>
+                                    <th width="15%" colspan="4">Total</th>
+                                    <th width="15%" colspan="2"><input type="text" name="subtotal[0]" placeholder="Sub Total" class="form-control" id="subtotal" readonly></th>
+                                  </tr>
+                                </tfoot>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card-footer">
+                      <span class="float-right"><button class="btn btn-success rounded-pill" id="button_tambah"><i class="fas fa-plus"></i>&nbsp;Ubah Data</button></span>
                     </div>
                   </div>
                 </form>
@@ -299,8 +384,8 @@
         {
           data: 'id',
           render: function(data) {
-            $btn_view = '<div class="inline-flex"><button type="button" id="detail" class="btn btn-block btn-primary karyawan-img-small" style="border-radius:50%;"> <i class="fa fa-eye" aria-hidden="true"></i></button>';
-            $btn_edit = '<a href="/penjualan_online/ubah/' + data + '"><button type="button" class="btn btn-block btn-warning karyawan-img-small" style="border-radius:50%;"><i class="fas fa-edit"></i></button></a>';
+            $btn_view = '<div class="inline-flex"><button type="button" id="detail" class="btn btn-block btn-primary karyawan-img-small" style="border-radius:50%;"><i class="fa fa-eye" aria-hidden="true"></i></button>';
+            $btn_edit = '<a href="/penjualan_online/ubah/' + data + '"><button type="button" class="btn btn-block btn-warning karyawan-img-small" style="border-radius:50%;"  data-target="#edit_mod"><i class="fas fa-edit"></i></button></a>';
             $btn_hapus = ' <button type="button" class="btn btn-block btn-danger karyawan-img-small" style="border-radius:50%;" data-toggle="modal" data-target="#delete" ><i class="fas fa-trash"></i></button></div>';
             return $btn_view + $btn_edit + $btn_hapus;
           },
@@ -310,9 +395,7 @@
       ]
     });
 
-
-    $('#tabel tbody').on('click', '#detail', function() {
-
+    $('#tabel > tbody').on('click', '#detail', function() {
       var rows = tabel.rows($(this).parents('tr')).data();
       $('.data_detail_head').html(
         'Detail Paket : ' + rows[0]['ak1']
@@ -320,7 +403,7 @@
 
       $('input[id="fk_paket_produk"]').val(rows[0]['id']);
 
-      $('#tabel_detail').DataTable({
+      var y = $('#tabel_detail').DataTable({
         processing: true,
         destroy: true,
         serverSide: true,
@@ -357,21 +440,19 @@
             searchable: false
           },
           {
-            data: 'jumlah',
+            data: 'id',
             render: function(data) {
-              $btn_edit = '<div class="inline-flex"><a href="/penjualan_online/ubah/' + data + '"><button type="button" class="btn btn-block btn-warning karyawan-img-small" style="border-radius:50%;"><i class="fas fa-edit"></i></button></a>';
-              $btn_hapus = ' <button type="button" class="btn btn-block btn-danger karyawan-img-small" style="border-radius:50%;" data-toggle="modal" data-target="#delete" ><i class="fas fa-trash"></i></button></div>';
+              $btn_edit = '<div class="inline-flex"><button id="edit" data-id="' + data + '"  type="button" class="btn btn-block btn-warning karyawan-img-small" style="border-radius:50%; data-dismiss="modal" ><i class="fas fa-edit"></i></button></div>';
+              $btn_hapus = '<div class="inline-flex"><button type="button" class="btn btn-block btn-danger karyawan-img-small" style="border-radius:50%;" data-toggle="modal" data-target="#delete" ><i class="fas fa-trash"></i></button></div>';
               return $btn_edit + $btn_hapus;
             },
             orderable: false,
             searchable: false
           },
-
         ],
         footerCallback: function(row, data, start, end, display) {
           var api = this.api(),
             data;
-
           // converting to interger to find total
           var intVal = function(i) {
             return typeof i === 'string' ?
@@ -387,9 +468,6 @@
             .reduce(function(a, b) {
               return intVal(a) + intVal(b);
             }, 0);
-
-
-
           // computing column Total of the complete result 
           var total_pesanan = api
             .column(5)
@@ -403,13 +481,40 @@
           $(api.column(4).footer()).html(jumlah_pesanan);
           $(api.column(5).footer()).html(num_for(total_pesanan));
         },
-
       });
-
-
       $('#detail_mod').modal('show');
+      $('#tambah_mod').on('hidden.bs.modal', function() {
+        $('#tambah_mod form')[0].reset();
+      });
     });
 
+
+    $('#tabel_detail > tbody').on('click', '#edit', function() {
+      var rows = $(this).data('id');
+
+      $.ajax({
+
+        url: '/penjualan_online/detail/data/edit/' + rows,
+        type: "GET",
+        dataType: "json",
+        success: function(data) {
+          console.log(data);
+          $('#edit_mod').modal('show');
+          $('#detail_mod').modal('hide');
+          $('input[id="ekatjuals_id"]').val(data[0]['ekatjuals_id']);
+          $('input[id="produk_id"]').val(data[0]['produk_id']);
+          $('input[id="fk"]').val(data[0]['id']);
+          $('input[id="tipe"]').val(data[0]['produk']['tipe']);
+          $('input[id="nama"]').val(data[0]['produk']['nama']);
+          $('input[id="harga"]').val(data[0]['harga']);
+          $('input[id="jumlah"]').val(data[0]['jumlah']);
+          $('input[id="subtotal"]').val(data[0]['jumlah'] * data[0]['harga']);
+        },
+        error: function(error) {
+          console.log(error);
+        }
+      });
+    });
   });
 </script>
 
@@ -417,7 +522,6 @@
   var i = 0;
   $("#add").click(function() {
     ++i;
-
     $("#user_table ").append('<tr><td><select style="width: 100%;" type="text" name="produk_id[' + i + ']" placeholder="Enter your Name" class="form-control" id="tipe' + i + '"><option value="">Pilih Tipe Produk</option>@foreach ($produk as $p)<option value="{{$p->id}}">{{$p->tipe}}</option>@endforeach</select></td><td><input type="text" name="produk_nama[' + i + ']"  placeholder="Nama Produk" class="form-control" id="nama_produk' + i + '" readonly></td><td><input type="text" name="harga[' + i + ']" placeholder="Harga" class="form-control" id="harga' + i + '"></td><td><input type="text" name="jumlah[' + i + ']" placeholder="Jumlah" class="form-control" id="jumlah' + i + '"></td><td><input type="text" name="subtotal[' + i + ']" placeholder="Subtotal" class="form-control" id="subtotal' + i + '" readonly></td><td><button type="button" class="btn btn-danger remove-tr"><i class="fas fa-trash"></i></button></td></tr>');
 
     $('#tipe' + i + '').select2({
@@ -425,7 +529,6 @@
       allowClear: true,
       theme: 'bootstrap4',
     })
-
 
     $(document).ready(function() {
       $('select[id="tipe' + i + '"]').on('change', function() {
@@ -446,7 +549,6 @@
       });
     });
   });
-
 
   $(document).on('click', '.remove-tr', function() {
     $(this).parents('tr').remove();
@@ -473,5 +575,4 @@
     });
   });
 </script>
-
 @endsection

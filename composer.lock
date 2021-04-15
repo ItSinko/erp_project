@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "aa5b746e0f64376e2fc2e267a243d100",
+    "content-hash": "4fef488e2a91af0e4b1a964a5ff31040",
     "packages": [
         {
             "name": "almasaeed2010/adminlte",
@@ -6020,6 +6020,61 @@
                 }
             ],
             "time": "2020-11-12T00:07:28+00:00"
+        },
+        {
+            "name": "wandersonwhcr/romans",
+            "version": "v1.2.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/wandersonwhcr/romans.git",
+                "reference": "fe09d21c4a1498fad1acb28a585b6c3333feb88e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/wandersonwhcr/romans/zipball/fe09d21c4a1498fad1acb28a585b6c3333feb88e",
+                "reference": "fe09d21c4a1498fad1acb28a585b6c3333feb88e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0"
+            },
+            "require-dev": {
+                "jakub-onderka/php-parallel-lint": "1.0.*",
+                "phpmd/phpmd": "2.6.*",
+                "phpunit/phpunit": "6.1.*",
+                "sebastian/phpcpd": "3.0.*",
+                "squizlabs/php_codesniffer": "3.5.*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-develop": "1.2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Romans\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A Simple PHP Roman Numerals Library",
+            "keywords": [
+                "converter",
+                "filter",
+                "format",
+                "roman",
+                "roman-number",
+                "roman-numeral",
+                "validator"
+            ],
+            "support": {
+                "issues": "https://github.com/wandersonwhcr/romans/issues",
+                "source": "https://github.com/wandersonwhcr/romans/tree/v1.2.3"
+            },
+            "time": "2021-03-18T14:38:41+00:00"
         },
         {
             "name": "yajra/laravel-datatables-oracle",

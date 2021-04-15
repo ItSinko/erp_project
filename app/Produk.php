@@ -36,4 +36,8 @@ class Produk extends Model
     {
         return $this->hasMany('App\Produk');
     }
+    public function detail_ecommerces()
+    {
+        return $this->hasMany('App\Detail_ecommereces');
+    }
 }

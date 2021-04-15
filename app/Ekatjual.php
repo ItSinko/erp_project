@@ -14,8 +14,4 @@ class Ekatjual extends Model
     {
         return $this->belongsTo('App\Distributor', 'distributor_id');
     }
-    // public function detail_ekatjual()
-    // {
-    //     return $this->hasMany('App\Detail_ekatjual', 'id');
-    // }
 }

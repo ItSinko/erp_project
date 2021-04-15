@@ -14,6 +14,10 @@ class Distributor extends Model
     {
         return $this->hasMany('App\Ekatjual');
     }
+    public function ecommerce()
+    {
+        return $this->hasMany('App\Ecommerces');
+    }
     //public function podo_on(){
     //  return $this->hasMany('App\podo_on');
     //}

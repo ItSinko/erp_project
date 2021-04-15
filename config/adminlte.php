@@ -290,9 +290,15 @@ return [
                 ],
                 [
                     'text' => 'E-Commerce',
-                    'url'  => '#',
+                    'url'  => '/penjualan_online_ecom',
                 ],
             ],
+        ],
+        [
+            'text' => 'Offline',
+            'url'  => '/penjualan_offline',
+            'icon' => 'fas fa-table',
+            'auth' => [26]
         ],
         [
             'text'    => 'PO / DO',
