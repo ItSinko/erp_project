@@ -2,9 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Event;
-use App\Produk;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Collection;
+use App\Events\Notification;
+use Yajra\DataTables\Facades\DataTables;
+
+use App\User;
+use App\Bill_of_material;
+use App\Produk;
+use App\Part;
+use App\Bppb;
+use App\KelompokProduk;
+use App\Event;
 
 class PPICController extends Controller
 {
