@@ -5,6 +5,11 @@ namespace App;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Divisi;
+use App\Notification;
+use App\Perakitan;
+use App\UserLog;
+use App\PeminjamanAlat;
 
 class User extends Authenticatable
 {
@@ -40,5 +45,30 @@ class User extends Authenticatable
     public function messages()
     {
         return $this->hasMany(Message::class);
+    }
+
+    public function Divisi()
+    {
+        return $this->belongsTo(Divisi::class);
+    }
+
+    public function Notification()
+    {
+        return $this->hasMany(Notification::class);
+    }
+
+    public function Perakitan()
+    {
+        return $this->hasMany(Perakitan::class);
+    }
+
+    public function UserLog()
+    {
+        return $this->hasMany(UserLog::class);
+    }
+
+    public function PeminjamanAlat()
+    {
+        return $this->hasMany(PeminjamanAlat::class);
     }
 }

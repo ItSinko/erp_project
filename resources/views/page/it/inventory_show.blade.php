@@ -1,4 +1,11 @@
-@extends('layouts.app')
+@extends('adminlte.page')
+
+@section('title', 'Beta Version')
+
+@section('content_header')
+<h1 class="m-0 text-dark">Dashboard</h1>
+@stop
+
 @section('content')
 <section class="content-header">
     <div class="container-fluid">
@@ -22,7 +29,7 @@
             <div class="card">
                 <div class="card-body">
                     <h2>Inventory Divisi</h2>
-                    <table id="example" class="table table-hover styled-table-small table-striped table-item" style="width:100%;">
+                    <table id="example" class="table table-hover styled-table-ss table-striped table-item" style="width:100%;">
                         <thead style="text-align: center;">
                             <tr>
                                 <th colspan="20">
@@ -31,14 +38,11 @@
                             </tr>
                             <tr>
                                 <th>No</th>
-                                <th>Kode Barang</th>
                                 <th>Nama Barang</th>
                                 <th>Jumlah</th>
                                 <th>Tanggal Perolehan</th>
-                                <th>Masa Manfaat</th>
                                 <th>Harga Perolehan</th>
                                 <th>Lokasi</th>
-                                <th>Kondisi</th>
                                 <th>Nilai Penyusutan</th>
                                 <th>Akum Nilai Penyusutan</th>
                                 <th>Nilai Sisa Buku</th>
@@ -119,7 +123,7 @@
 </section>
 @endsection
 
-@section('footer_script')
+@section('adminlte_js')
 <script>
     $(function() {
         $('#example').DataTable({
@@ -131,9 +135,6 @@
                     name: 'DT_RowIndex',
                     orderable: false,
                     searchable: false
-                }, {
-                    data: 'kode_barang',
-                    name: 'kode_barang'
                 },
                 {
                     data: 'nama_barang',
@@ -148,32 +149,28 @@
                     name: 'tanggal_perolehan'
                 },
                 {
-                    data: 'masa_manfaat',
-                    name: 'masa_manfaat'
-                },
-                {
                     data: 'harga_perolehan',
-                    name: 'harga_perolehan'
+                    name: 'harga_perolehan',
+                    render: $.fn.dataTable.render.number('.', ',', 2, 'Rp. ')
                 },
                 {
                     data: 'lokasi',
                     name: 'lokasi'
                 },
                 {
-                    data: 'kondisi',
-                    name: 'kondisi'
-                },
-                {
                     data: 'nilai_penyusutan',
-                    name: 'nilai_penyusutan'
+                    name: 'nilai_penyusutan',
+                    render: $.fn.dataTable.render.number('.', ',', 2, 'Rp. ')
                 },
                 {
                     data: 'akum_nilai_penyusutan',
-                    name: 'akum_nilai_penyusutan'
+                    name: 'akum_nilai_penyusutan',
+                    render: $.fn.dataTable.render.number('.', ',', 2, 'Rp. ')
                 },
                 {
                     data: 'nilai_sisa_buku',
-                    name: 'nilai_sisa_buku'
+                    name: 'nilai_sisa_buku',
+                    render: $.fn.dataTable.render.number('.', ',', 2, 'Rp. ')
                 },
                 {
                     data: 'keterangan',

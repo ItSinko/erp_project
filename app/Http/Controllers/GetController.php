@@ -96,9 +96,26 @@ class GetController extends Controller
         echo json_encode($s);
     }
 
-    public function get_no_seri_exist_not_in($no_seri, $id)
+    public function get_kode_perakitan_exist_not_in_id($bppb, $id, $no_seri)
     {
-        $s = $this->HasilPerakitanController->show_no_seri_exist_not_in($no_seri, $id);
+        $s = HasilPerakitan::whereHas('Perakitan', function ($q) use ($bppb) {
+            $q->where('bppb_id', $bppb);
+        })
+            ->where('no_seri', $no_seri)
+            ->whereNotIn('id', [$id])
+            ->count();
+
+        echo json_encode($s);
+    }
+
+    public function get_kode_perakitan_exist_not_in($bppb, $no_seri)
+    {
+        $s = HasilPerakitan::whereHas('Perakitan', function ($q) use ($bppb) {
+            $q->where('bppb_id', $bppb);
+        })
+            ->where('no_seri', $no_seri)
+            ->count();
+
         echo json_encode($s);
     }
 

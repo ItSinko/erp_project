@@ -1,6 +1,8 @@
-@extends('layouts.app')
+@extends('adminlte.page')
 
-@section('content')
+@section('title', 'Beta Version')
+
+@section('content_header')
 <section class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
@@ -16,6 +18,11 @@
         </div>
     </div>
 </section>
+@stop
+
+
+@section('content')
+
 <section class="content">
     <div class="row">
         <div class="col-lg-12">
@@ -144,7 +151,7 @@
 </section>
 @endsection
 
-@section('footer_script')
+@section('adminlte_js')
 <script>
     $(function() {
         $('input[name="tanggal_perolehan[]"]').val(year + "-01-01");
