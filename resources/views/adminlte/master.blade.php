@@ -26,9 +26,9 @@
     <link rel="stylesheet" href="{{asset('css/table.css')}}">
     <link rel="stylesheet" href="{{asset('css/text.css')}}">
     <link rel="stylesheet" href="{{asset('css/image.css')}}">
-    <link rel="stylesheet" href="{{asset('css/button.css')}}">
     <link rel="stylesheet" href="{{asset('css/calendar.css')}}">
     <link rel="stylesheet" href="{{asset('css/background.css')}}">
+    <link rel="stylesheet" href="{{asset('css/button.css')}}">
 
     @if(!config('adminlte.enabled_laravel_mix'))
 

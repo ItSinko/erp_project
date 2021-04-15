@@ -3,11 +3,6 @@
 @section('title', 'Beta Version')
 
 @section('content_header')
-<h1 class="m-0 text-dark">Dashboard</h1>
-@stop
-
-
-@section('content')
 <section class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
@@ -23,6 +18,9 @@
         </div>
     </div>
 </section>
+@stop
+
+@section('content')
 <section class="content">
     <div class="row">
         <div class="col-lg-12">
@@ -157,14 +155,30 @@
             });
         }
 
+        function numberRows($t) {
+            var c = 0 - 2;
+            $t.find("tr").each(function(ind, el) {
+                $(el).find("td:eq(0)").html(++c);
+                var j = c - 1;
+                $(el).find('input[id="tanggals"]').attr('name', 'tanggals[' + j + ']');
+                $(el).find('select[id="karyawan_id"]').attr('name', 'karyawan_id[' + j + '][]');
+                $(el).find('select[id="karyawan_id"]').attr('id', 'karyawan_id' + j);
+                $(el).find('input[id="no_seri"]').attr('name', 'no_seri[' + j + ']');
+                $(el).find('input[id="warna"]').attr('name', 'warna[' + j + ']');
+                $('select[name="karyawan_id[' + j + '][]"]').select2();
+            });
+        }
+
+
+
         $('#tambahitem').click(function(e) {
-            var data = "";
-            data += `<tr><td></td>
-            <td><select class="select2 form-control divinvid" name="divisi_inventory_id[]" id="divisi_inventory_id" data-placeholder="Pilih Inventory Divisi" data-dropdown-css-class="select2-info" style="width: 80%;">
-                                                            @foreach($d as $i)
-                                                            <option value="{{$i->id}}">{{$i->divisi->nama}}</option>
-                                                            @endforeach
-                                                        </select></td>
+            $('#tableitem tr:last').after(`<tr>
+                <td></td>
+                <td><select class="select2 form-control divinvid" name="divisi_inventory_id[]" id="divisi_inventory_id" data-placeholder="Pilih Inventory Divisi" data-dropdown-css-class="select2-info" style="width: 80%;">
+                    @foreach($d as $i)
+                    <option value="{{$i->id}}">{{$i->divisi->nama}}</option>
+                    @endforeach
+                </select></td>
                 <td><select class="select2 form-control invid" name="inventory_id[]" id="inventory_id" data-placeholder="Pilih Kode Barang" data-dropdown-css-class="select2-info" style="width: 80%;">
                 </select></td>
                 <td><input type="number" placeholder="Masukkan Jumlah" min="0" class="form-control @error('jumlah') is-invalid @enderror" name="jumlah[]" id="jumlah" value="{{old('jumlah')}}" readonly=true>
@@ -172,9 +186,7 @@
                 </td>
                 <td><textarea class="form-control" name="keteranganinv[]" id="keteranganinv" placeholder="Masukkan Keterangan"></textarea></td>
                 <td><button type="button" class="btn btn-block btn-danger btn-sm circle-button karyawan-img-small" id="closetable"><i class="fas fa-times"></i></button></td>
-            </tr>`;
-            $('#tableitem tr:last').after(data);
-
+            </tr>`);
             numberRows($("#tableitem"));
         });
 

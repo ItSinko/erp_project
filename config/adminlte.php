@@ -310,25 +310,52 @@ return [
             ],
         ],
         [
+            'header' => 'MASTER DATA',
+            'auth' => [14, 17]
+        ],
+        [
             'text' => 'Produk',
             'url'  => '/produk',
             'icon' => 'fas fa-table',
-            'auth' => [14]
+            'auth' => [14, 17]
+        ],
+        [
+            'text' => 'Data Karyawan',
+            'icon' => 'fas fa-users',
+            'auth' => [14, 17],
+            'submenu' => [
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Jadwal Kerja Operator',
+                    'url'  => '/karyawan',
+                ],
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Daftar Staff',
+                    'url'  => '/karyawan',
+                ],
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Permohonan Penugasan',
+                    'url'  => '/karyawan/peminjaman',
+                ],
+            ],
         ],
         [
             'text'    => 'Inventory',
             'icon'    => 'fas fa-boxes',
-            'auth' => [14],
+            'auth' => [14, 17],
             'submenu' => [
                 [
                     'icon' => 'far fa-circle',
                     'text' => 'Master Inventory',
+                    'auth' => [14],
                     'url'  => '/inventory/divisi',
                 ],
                 [
                     'icon' => 'far fa-circle',
                     'text' => 'Inventory',
-                    'url'  => '/inventory/14',
+                    'url'  => '/inventory',
                 ],
                 [
                     'icon' => 'far fa-circle',
@@ -355,6 +382,65 @@ return [
 
             ],
         ],
+
+        [
+            'header' => 'PRODUKSI',
+            'auth' => [17]
+        ],
+        [
+            'text'    => 'Jadwal Kerja Produksi',
+            'icon'    => 'fas fa-calendar-alt',
+            'url'  => '/jadwal_kerja_produksi',
+            'auth' => [17],
+        ],
+        [
+            'text'    => 'BPPB',
+            'icon'    => 'fas fa-project-diagram',
+            'url' => '/bppb',
+            'auth' => [17],
+        ],
+        [
+            'text'    => 'Perakitan',
+            'icon'    => 'fas fa-cogs',
+            'auth' => [17],
+            'submenu' => [
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Laporan',
+                    'url'  => '/perakitan',
+                ],
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Pemeriksaan',
+                    'url'  => '/perakitan/pemeriksaan',
+                ],
+
+            ],
+        ],
+        [
+            'text'    => 'Pengujian',
+            'icon'    => 'fab fa-searchengin',
+            'url' => '/pengujian',
+            'auth' => [17],
+        ],
+        [
+            'text'    => 'Pengemasan',
+            'icon'    => 'fas fa-box-open',
+            'auth' => [17],
+            'submenu' => [
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Laporan',
+                    'url'  => '/pengemasan/laporan',
+                ],
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Pemeriksaan',
+                    'url'  => '/pengemasan/pemeriksaan',
+                ],
+            ],
+        ],
+
 
         // ['header' => 'LOGOUT'],
         // [
