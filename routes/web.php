@@ -107,11 +107,15 @@ Route::get('/penjualan_online/detail/data/edit/{id}', 'PenjualanController@penju
 /*Tabel*/
 Route::get('/penjualan_online_ecom', 'PenjualanController@penjualan_online_ecom');
 Route::get('/penjualan_online_ecom/tambah', 'PenjualanController@penjualan_online_ecom_tambah');
+Route::get('/penjualan_online_ecom/ubah/{id}', 'PenjualanController@penjualan_online_ecom_ubah');
 // Action
 Route::post('/penjualan_online_ecom/aksi_tambah', 'PenjualanController@penjualan_online_ecom_aksi_tambah');
+Route::put('/penjualan_online_ecom/aksi_ubah/{id}', 'PenjualanController@penjualan_online_ecom_aksi_ubah');
+Route::put('/penjualan_online_ecom/detail/aksi_ubah/', 'PenjualanController@detail_penjualan_online_ecom_aksi_ubah');
 /* Get Data */
 Route::get('/penjualan_online_ecom/data', 'PenjualanController@penjualan_online_ecom_Data');
 Route::get('/penjualan_online_ecom/detail/data/{id}', 'PenjualanController@detail_penjualan_online_ecom_data');
+Route::get('/penjualan_online_ecom/detail/data/edit/{id}', 'PenjualanController@detail_penjualan_online_ecom_data_edit');
 
 
 
@@ -120,14 +124,16 @@ Route::get('/penjualan_online_ecom/detail/data/{id}', 'PenjualanController@detai
 /* Get Data */
 Route::get('/penjualan_offline/data', 'PenjualanController@penjualan_offline_data');
 Route::get('/penjualan_offline/detail/data/{id}', 'PenjualanController@detail_penjualan_offline_data');
-
 /*Tabel*/
 Route::get('/penjualan_offline', 'PenjualanController@penjualan_offline');
 /* Action */
 Route::post('/penjualan_offline/aksi_tambah', 'PenjualanController@penjualan_offline_aksi_tambah');
+Route::put('/penjualan_offline/aksi_ubah/{id}', 'PenjualanController@penjualan_offline_aksi_ubah');
 Route::put('/penjualan_offline/detail/aksi_ubah', 'PenjualanController@penjualan_offline_detail_aksi_ubah');
 /* Tambah */
 Route::get('/penjualan_offline/tambah', 'PenjualanController@penjualan_offline_tambah');
+/*Ubah*/
+Route::get('/penjualan_offline/ubah/{id}', 'PenjualanController@penjualan_offline_ubah');
 /*Detail*/
 Route::get('/penjualan_offline/detail/data/edit/{id}', 'PenjualanController@penjualan_offline_detail_edit');
 

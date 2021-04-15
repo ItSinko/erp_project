@@ -203,7 +203,16 @@
           searchable: false
         },
         {
-          data: 'status'
+          data: 'status',
+          render: function(data) {
+            if (data == 'Lunas') {
+              return '<span class="badge bg-success" title = "' + data + '">Sepakat</span>';
+            } else if (data == 'Proses') {
+              return '<span class="badge bg-warning  " title = "' + data + '">Negoisasi</span>';
+            } else {
+              return '<span class="badge bg-danger " title = "' + data + '">Batal</span>';
+            }
+          }
         },
         {
           data: 'order_id'
@@ -218,9 +227,10 @@
           data: 'id',
           render: function(data) {
             $btn_view = '<div class="inline-flex"><button type="button" id="detail" class="btn btn-block btn-primary karyawan-img-small" style="border-radius:50%;"><i class="fa fa-eye" aria-hidden="true"></i></button>';
-            $btn_edit = '<a href="/penjualan_online/ubah/' + data + '"><button type="button" class="btn btn-block btn-warning karyawan-img-small" style="border-radius:50%;"  data-target="#edit_mod"><i class="fas fa-edit"></i></button></a>';
+            $btn_print = '<a href="/penjualan_offline/ubah/' + data + '"><button type="button" class="btn btn-block btn-warning karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-edit"></i></button></a>';
+            $btn_edit = '<a href="/penjualan_offline/ubah/' + data + '"><button type="button" class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-print"></i></button></a>';
             $btn_hapus = ' <button type="button" class="btn btn-block btn-danger karyawan-img-small" style="border-radius:50%;" data-toggle="modal" data-target="#delete" ><i class="fas fa-trash"></i></button></div>';
-            return $btn_view + $btn_edit + $btn_hapus;
+            return $btn_view + $btn_edit + $btn_print + $btn_hapus;
           },
           orderable: false,
           searchable: false
