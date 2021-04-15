@@ -234,3 +234,6 @@ Route::get('/gudang/data', 'GudangController@get_data')->name('gudang.data');
 
 //PPIC
 Route::get('/ppic', 'PpicController@index');
+Route::post('/schedule/create', 'PpicController@calendar_create')->name('schedule.create');
+Route::post('/schedule/delete', 'PpicController@calendar_delete')->name('schedule.delete');
+Route::get('test', 'PpicController@test')->name('schedule.test');
