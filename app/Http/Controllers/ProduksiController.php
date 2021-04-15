@@ -562,7 +562,7 @@ class ProduksiController extends Controller
     public function perakitan_laporan_delete($id, Request $request)
     {
         $p = Perakitan::find($id);
-        $this->UserLogController->create(Auth::user()->id, "Perakitan " . $p->no_bppb, 'Perakitan', 'Hapus', $request->keterangan_log);
+        $this->UserLogController->create(Auth::user()->id, "Perakitan untuk BPPB " . $p->Bppb->no_bppb, 'Perakitan', 'Hapus', $request->keterangan_log);
         $u = User::where('divisi_id', '14')->get();
         foreach ($u as $i) {
             $cs = $this->NotifikasiController->create("Perakitan", "telah menghapus Perakitan " . $p->no_bppb, Auth::user()->id, $i->id, "/perakitan");
@@ -698,7 +698,7 @@ class ProduksiController extends Controller
     public function perakitan_hasil_delete($id, Request $request)
     {
         $p = HasilPerakitan::where('id', $id)->first();
-        $this->UserLogController->create(Auth::user()->id, "Hasil Perakitan " . $p->no_seri, 'Hasil Perakitan', 'Hapus', $request->keterangan_log);
+        $this->UserLogController->create(Auth::user()->id, "Hasil Perakitan " . $p->no_seri . ", untuk BPPB " . $p->Perakitan->Bppb->no_bppb, 'Hasil Perakitan', 'Hapus', $request->keterangan_log);
 
         $hp = HasilPerakitan::find($id);
         $hp->delete();
