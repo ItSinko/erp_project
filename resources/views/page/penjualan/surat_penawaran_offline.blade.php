@@ -12,7 +12,7 @@
           <th style="width: 50%">
             <h6>Jl. Tambak Osowilangon No 61<br>
               Pergudangan Osowilangon Permai<br>
-              SURABAYA - INDONESIA<br>
+              SURABAYA -NDONESIA<br>
               Telp : 62 - 31 - 7482816, 7492882<br>
               Fax : 62 - 31 - 7482865<br>
               Email : sinkoprima@gmail.com<br>
@@ -34,7 +34,7 @@
         <tr>
           <td style="width:5%">No</td>
           <td style="width:30%">: 055/Penawaran/IX/SPA/2018</td>
-          <td style="width:25%" rowspan="5">Kepada Yth. <br> DINAS KESEHATAN KOTA <br>Jl. Raya Jemursari No. 197 A<br>Surabaya</td>
+          <td style="width:25%" rowspan="5">Kepada Yth. <br>{{$penawaran_offline->offline->distributor->nama}}<br>{{$penawaran_offline->offline->distributor->alamat}}</td>
         </tr>
         <tr>
           <td style="width:9.3%">Lampiran</td>
@@ -59,12 +59,8 @@
           <td>Dengan Hormat,</td>
         </tr>
         <tr>
-          <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam quis ullamcorper velit, sit amet aliquet mauris.
-            Suspendisse erat ante, rutrum at dolor sed, convallis tristique mi. Nullam dolor metus, pulvinar at consequat eget,
-            sollicitudin quis mi. Cras sem orci, facilisis quis neque lobortis, faucibus finibus justo. Integer varius diam nec libero
-            ultrices tristique. Sed a congue quam. Aenean et ultrices velit. Cras condimentum velit in malesuada tincidunt. Phasellus commodo,
-            justo vel pretium aliquet, libero lacus egestas dolor, vel suscipit quam dolor in lectus. Phasellus gravida consectetur
-            erat ac suscipit. Pellentesque vestibulum odio justo, id mollis dui semper et. Morbi eu condimentum nisl.</td>
+          <td>{{$penawaran_offline->deskripsi}}
+          </td>
         </tr>
         <tr>
           <td style="height:3%"></td>
@@ -72,7 +68,7 @@
       </thead>
     </table>
     <table id="tabel" class="table table-hover styled-table table-striped" border="1" style="border-collapse: collapse; table-layout: fixed; width: 100%">
-      <thead style="text-align: left;">
+      <thead style="text-align: center;">
 
         <tr>
           <td style="width:5%"><b>No</b></td>
@@ -81,34 +77,16 @@
           <td style="width:13%"><b>Quantity</b></td>
           <td><b>Jumlah</b></td>
         </tr>
+        @foreach ($detail_offline as $do)
         <tr>
-          <td>1</td>
-          <td>Pellentesque vestibulum odio justo,</td>
-          <td>Rp. 1.100.000</td>
-          <td>1 pcs</td>
-          <td>Rp. 1.100.000</td>
+          <td>{{$loop->iteration}}</td>
+          <td>{{$do->produk->nama}}</td>
+          <td>Rp. {{number_format($do->harga)}}</td>
+          <td>{{$do->jumlah}} unit</td>
+          <td>Rp. {{number_format(($do->harga)*($do->jumlah))}}</td>
         </tr>
-        <tr>
-          <td>2</td>
-          <td>Pellentesque vestibulum odio justo,</td>
-          <td>Rp. 1.100.000</td>
-          <td>1 pcs</td>
-          <td>Rp. 1.100.000</td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td>Pellentesque vestibulum odio justo,</td>
-          <td>Rp. 1.100.000</td>
-          <td>1 pcs</td>
-          <td>Rp. 1.100.000</td>
-        </tr>
-        <tr>
-          <td>4</td>
-          <td>Pellentesque vestibulum odio justo,</td>
-          <td>Rp. 1.100.000</td>
-          <td>1 pcs</td>
-          <td>Rp. 1.100.000</td>
-        </tr>
+        @endforeach
+
       </thead>
     </table>
     <table id="tabel" class="table table-hover styled-table table-striped" border="0" style="table-layout: fixed; width: 100%">
@@ -122,7 +100,7 @@
         </tr>
         <tr>
           <td>2.</td>
-          <td style="width:95%">Penawaran harga ini berlaku selama 1 Minggu (terhitung : 99 Januari 2021)</td>
+          <td style="width:95%">Penawaran harga ini berlaku selama 1 Minggu (terhitung : {{$penawaran_offline->tgl_surat}})</td>
         </tr>
         <tr>
           <td>3.</td>
@@ -146,7 +124,7 @@
           <td style="height:3%"></td>
         </tr>
         <tr>
-          <td>Surabaya, 99 Januari 2021</td>
+          <td>Surabaya, {{ date('d-M-Y', strtotime($penawaran_offline->tgl_surat))}}</td>
         </tr>
         <tr>
           <td>Hormat Kami,</td>
@@ -155,7 +133,7 @@
           <td style="height:3%"></td>
         </tr>
         <tr>
-          <td><u>(Siek Agus Tinus)</u></td>
+          <td><u>({{$penawaran_offline->karyawan->nama}})</u></td>
         </tr>
         <tr>
           <td>Direktur</td>

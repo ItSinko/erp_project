@@ -14,4 +14,9 @@ class Offline extends Model
     {
         return $this->belongsTo('App\Distributor', 'customer_id');
     }
+
+    public function penawaran_offline()
+    {
+        return $this->hasOne('App\Penawaran_Offline', 'id');
+    }
 }

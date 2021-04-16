@@ -309,7 +309,7 @@ return [
                 ],
                 [
                     'text' => 'Offline',
-                    'url'  => '#',
+                    'url'  => '/penawaran_offline',
                 ]
             ],
         ],

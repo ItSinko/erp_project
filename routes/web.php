@@ -140,9 +140,25 @@ Route::get('/penjualan_offline/tambah', 'PenjualanController@penjualan_offline_t
 Route::get('/penjualan_offline/ubah/{id}', 'PenjualanController@penjualan_offline_ubah');
 /*Detail*/
 Route::get('/penjualan_offline/detail/data/edit/{id}', 'PenjualanController@penjualan_offline_detail_edit');
-/*Print*/
-Route::get('/penjualan_offline/cetak_penawaran', 'PenjualanController@cetak_penawaran');
 
+//PENAWARAN OFFLINE
+/*Table*/
+Route::get('/penawaran_offline', 'PenjualanController@penawaran_offline');
+/* Get Data */
+Route::get('/penawaran_offline/data', 'PenjualanController@penawaran_offline_data');
+/* Tambah */
+Route::get('/penawaran_offline/tambah', 'PenjualanController@penawaran_offline_tambah');
+/* Ubah */
+Route::get('/penawaran_offline/ubah/{id}', 'PenjualanController@penawaran_offline_ubah');
+/*Print*/
+Route::get('/penawaran_offline/cetak_penawaran/{id}', 'PenjualanController@cetak_penawaran');
+/* Get Data */
+Route::get('/penawaran_offline/data/{customer_id}', 'PenjualanController@penjualan_offline_data_select');
+/* Action */
+Route::post('/penawaran_offline/aksi_tambah', 'PenjualanController@penawaran_offline_aksi_tambah');
+Route::put('/penawaran_offline/aksi_ubah/{id}', 'PenjualanController@penawaran_offline_aksi_ubah');
+/*Detail*/
+Route::get('/penawaran_offline/data/detail/{id}', 'PenjualanController@detail_penjualan_offline_data');
 
 
 //GET DATA SELECT
