@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CommonController;
+use App\Http\Controllers\GetController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -117,8 +118,6 @@ Route::get('/penjualan_online_ecom/data', 'PenjualanController@penjualan_online_
 Route::get('/penjualan_online_ecom/detail/data/{id}', 'PenjualanController@detail_penjualan_online_ecom_data');
 
 
-
-
 // PENJUALAN OFFLINE
 /* Get Data */
 Route::get('/penjualan_offline/data', 'PenjualanController@penjualan_offline_data');
@@ -135,20 +134,26 @@ Route::get('/penjualan_offline/tambah', 'PenjualanController@penjualan_offline_t
 Route::get('/penjualan_offline/detail/data/edit/{id}', 'PenjualanController@penjualan_offline_detail_edit');
 
 
-
 //GET DATA SELECT
 /* Get Data */
 Route::get('/produk/get_select/{id}', 'CommonController@produk_get_select');
 
+
 //PRODUK
 Route::get('/produk', 'ItController@produk')->name('produk');
+Route::get('/produk/show', 'ItController@produk_show')->name('produk.show');
 /* Create */
-Route::get('/produk/create', 'ItController@tambah_produk')->name('produk.create');
-Route::post('/produk/store', 'ItController@store_produk')->name('produk.store');
+Route::get('/produk/create', 'ItController@produk_create')->name('produk.create');
+Route::get('/produk/create/get_kategori_produk_by_kelompok_produk/{kelompok_produk_id}', 'GetController@get_kategori_produk_by_kelompok_produk');
+Route::get('/produk/create/get_tipe_produk_exist/{kelompok_produk_id}', 'GetController@get_tipe_produk_exist');
+Route::post('/produk/store', 'ItController@produk_store')->name('produk.store');
 /* Edit */
-Route::get('/produk/edit/{id}',  'ItController@edit_produk')->name('produk.edit');
-Route::put('/produk/update/{id}',  'ItController@update_produk')->name('produk.update');
-Route::put('/produk/delete/{id}', 'ItController@delete_produk')->name('produk.delete');
+Route::get('/produk/edit/{id}',  'ItController@produk_edit')->name('produk.edit');
+Route::put('/produk/update/{id}',  'ItController@produk_update')->name('produk.update');
+Route::put('/produk/delete/{id}', 'ItController@produk_delete')->name('produk.delete');
+/* Detail */
+Route::get('/produk/detail', 'ItController@produk_detail')->name('produk.detail');
+Route::get('/produk/detail/show/{id}', 'ItController@produk_detail_show')->name('produk.detail.show');
 
 
 //INVENTORY

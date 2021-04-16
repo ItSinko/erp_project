@@ -18,10 +18,12 @@ use App\KelompokProduk;
 use App\KategoriProduk;
 use App\PeminjamanAlat;
 use App\DetailPeminjamanKaryawan;
+use App\DetailProduk;
 use Carbon\Carbon;
 use App\Http\Controllers\GetController;
 use App\Http\Controllers\UserLogController;
 use App\PeminjamanKaryawan;
+use Yajra\DataTables\Contracts\DataTable;
 use Yajra\DataTables\Facades\DataTables;
 
 class ItController extends Controller
@@ -47,17 +49,62 @@ class ItController extends Controller
     //PRODUK
     public function produk()
     {
-        $s = Produk::all();
-        return view('page.it.produk_show', ['s' => $s]);
+        return view('page.it.produk_show');
     }
 
-    public function tambah_produk()
+    public function produk_show()
+    {
+        $s = Produk::all();
+        return DataTables::of($s)
+            ->addIndexColumn()
+            ->editColumn('kategori_id', function ($s) {
+                $btn = '<hgroup><h6 class="heading">' . $s->tipe . ' - ' . $s->nama . '</h6>';
+                $btn .= '<div class="subheading text-muted">' . $s->KategoriProduk['nama'] . '</div></hgroup>';
+                return $btn;
+            })
+            ->editColumn('kelompok_produk_id', function ($s) {
+                return  $s->KelompokProduk['nama'];
+            })
+            ->addColumn('aksi', function ($s) {
+                $btn = '<a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Klik untuk melihat detail produk"><i class="fa fa-ellipsis-v" aria-hidden="true"></i></a>';
+                $btn .= '<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">';
+                $btn .= '<a class="dropdown-item detailmodal" data-toggle="modal" data-target="#detailmodal" data-attr="/produk/detail/show/' . $s->id . '" data-id="' . $s->id . '"><span style="color: black;"><i class="fas fa-eye" aria-hidden="true"></i>&nbsp;Detail</span></a>';
+                $btn .= '<a class="dropdown-item" href="/produk/edit/' . $s->id . '"><span style="color: black;"><i class="fa fa-edit" aria-hidden="true"></i>&nbsp;Ubah</span></a>';
+                $btn .= '<a class="dropdown-item deletemodal" data-toggle="modal" data-target="#deletemodal" data-url="/produk/delete/' . $s->id . '"><span style="color: black;"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp;Hapus</span></a></div>';
+                return $btn;
+            })
+            ->rawColumns(['kategori_id', 'aksi'])
+            ->make(true);
+    }
+
+    public function produk_detail()
+    {
+        return view('page.it.produk_detail_show');
+    }
+
+    public function produk_detail_show($id)
+    {
+        $s = DetailProduk::where('produk_id', $id)->get();
+        return DataTables::of($s)
+            ->addIndexColumn()
+            ->addColumn('aksi', function ($s) {
+                $btn = '<a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Klik untuk melihat detail produk"><i class="fa fa-ellipsis-v" aria-hidden="true"></i></a>';
+                $btn .= '<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">';
+                $btn .= '<a class="dropdown-item" href="/produk/detail/edit/' . $s->id . '"><span style="color: black;"><i class="fa fa-edit" aria-hidden="true"></i>&nbsp;Ubah</span></a>';
+                $btn .= '<a class="dropdown-item deletemodal" data-toggle="modal" data-target="#deletemodal" data-url="/produk/detail/delete/' . $s->id . '"><span style="color: black;"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp;Hapus</span></a></div>';
+                return $btn;
+            })
+            ->rawColumns(['aksi'])
+            ->make(true);
+    }
+
+    public function produk_create()
     {
         $k = KelompokProduk::all();
         return view('page.it.produk_create', ['k' => $k]);
     }
 
-    public function store_produk(Request $request)
+    public function produk_store(Request $request)
     {
         $v = Validator::make(
             $request->all(),
@@ -86,33 +133,50 @@ class ItController extends Controller
                 'merk' => $request->merk,
                 'tipe' => $request->tipe,
                 'nama' => $request->nama,
-                'foto' => NULL,
-                'kode' => $request->kode,
                 'kode_barcode' => $request->kode_barcode,
-                'berat' => $request->berat,
-                'satuan' => $request->satuan,
                 'nama_coo' => $request->nama_coo,
                 'no_akd' => $request->no_akd,
-                'keterangan' => $request->keterangan
+                'keterangan' => $request->keterangan,
+                'status' => 'show'
             ]);
             if ($c) {
-                $this->UserLogController->create(Auth::user()->id, $request->tipe, 'Produk', 'Tambah', "");
-                return redirect()->back()->with('success', "Berhasil menambahkan Produk");
+                $bool = true;
+                for ($i = 0; $i < count($request->nama_detail1); $i++) {
+                    $cs = DetailProduk::create([
+                        'produk_id' => $c->id,
+                        'kode' => $request->kode[$i],
+                        'nama' => $request->nama_detail1[$i] . " + " . $request->nama_detail2[$i],
+                        'harga' => $request->harga[$i],
+                        'berat' => $request->berat[$i],
+                        'satuan' => $request->satuan[$i],
+                        'keterangan' => $request->keterangan_detail[$i],
+                        'status' => 'ada'
+                    ]);
+                    if (!$cs) {
+                        $bool = false;
+                    }
+                }
+                if ($bool == true) {
+                    $this->UserLogController->create(Auth::user()->id, $request->tipe, 'Produk', 'Tambah', "");
+                    return redirect()->back()->with('success', "Berhasil menambahkan Produk");
+                } else if ($bool == false) {
+                    return redirect()->back()->with('error', "Gagal menambahkan Produk");
+                }
             } else {
                 return redirect()->back()->with('error', "Gagal menambahkan Produk");
             }
         }
     }
 
-    public function edit_produk($id)
+    public function produk_edit($id)
     {
         $k = KelompokProduk::all();
         $kp = KategoriProduk::all();
         $p = Produk::find($id);
-        return view('page.it.produk_edit', ['k' => $k, 'kp' => $kp, 'i' => $p]);
+        return view('page.it.produk_edit', ['id' => $id, 'k' => $k, 'kp' => $kp, 'p' => $p]);
     }
 
-    public function update_produk($id, Request $request)
+    public function produk_update($id, Request $request)
     {
         $v = Validator::make(
             $request->all(),
@@ -160,7 +224,7 @@ class ItController extends Controller
         }
     }
 
-    public function delete_produk($id, Request $request)
+    public function produk_delete($id, Request $request)
     {
         $p = Produk::find($id);
         $this->UserLogController->create(Auth::user()->id, $p->tipe, 'Produk', 'Hapus', $request->keterangan_log);

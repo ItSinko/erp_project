@@ -7,8 +7,11 @@ use App\Http\Controllers\KategoriProdukController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\BppbController;
 use App\Bppb;
+use App\Produk;
+use App\DetailProduk;
 use App\DivisiInventory;
 use App\HasilPerakitan;
+use App\KategoriProduk;
 use Carbon\Carbon;
 
 class GetController extends Controller
@@ -45,9 +48,26 @@ class GetController extends Controller
         echo json_encode($s);
     }
 
+    //KATEGORI PRODUK
+    public function get_kategori_produk_by_kelompok_produk($kelompok_produk_id)
+    {
+        $s = KategoriProduk::where('kelompok_produk_id', $kelompok_produk_id)->get();
+        echo json_encode($s);
+    }
+
+    //DETAIL PRODUK
+    public function get_detail_produk_by_kelompok_produk($kelompok_produk_id)
+    {
+        $s = DetailProduk::whereHas('Produk', function ($q) use ($kelompok_produk_id) {
+            $q->where('kelompok_produk_id', '=', $kelompok_produk_id);
+        })->get();
+        echo json_encode($s);
+    }
+
+    //PRODUK
     public function get_tipe_produk_exist($tipe)
     {
-        $s = $this->ProdukController->show_tipe_exist($tipe);
+        $s = Produk::where('tipe', $tipe)->count();
         echo json_encode($s);
     }
 

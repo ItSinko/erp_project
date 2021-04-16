@@ -6,8 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class DetailProduk extends Model
 {
+    protected $fillable = ['produk_id', 'kode', 'nama', 'stok', 'harga', 'foto', 'berat'];
+
     public function BillOfMaterial()
     {
-        return $this->belongsTo(BillOfMaterial::class);
+        return $this->hasMany(BillOfMaterial::class);
+    }
+
+    public function Produk()
+    {
+        return $this->belongsTo(Produk::class);
+    }
+
+    public function Bppb()
+    {
+        return $this->hasMany(Bppb::class);
     }
 }

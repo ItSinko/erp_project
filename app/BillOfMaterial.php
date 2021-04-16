@@ -10,11 +10,11 @@ class BillOfMaterial extends Model
 
     public function DetailProduk()
     {
-        $this->belongsTo(DetailProduk::class);
+        return $this->belongsTo(DetailProduk::class);
     }
 
     public function PartEng()
     {
-        $this->belongsTo(PartEng::class);
+        return $this->belongsTo(PartEng::class);
     }
 }

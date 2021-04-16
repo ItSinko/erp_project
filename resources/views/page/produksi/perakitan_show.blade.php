@@ -25,8 +25,6 @@
   <div class="row">
     <div class="col-12">
       <div class="card">
-
-        <!-- /.card-header -->
         <div class="card-body">
           <table id="example" class="table table-hover table-bordered styled-table">
             <thead style="text-align: center;">
@@ -61,9 +59,7 @@
             </tfoot>
           </table>
         </div>
-        <!-- /.card-body -->
       </div>
-      <!-- /.card -->
 
       <div class="modal fade" id="detailmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog modal-lg" role="document">

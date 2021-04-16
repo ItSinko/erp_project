@@ -12,6 +12,7 @@ use Yajra\DataTables\Facades\DataTables;
 
 use App\User;
 use App\Bill_of_material;
+use App\DetailProduk;
 use App\Produk;
 use App\Part;
 use App\Bppb;
@@ -72,17 +73,17 @@ class PPICController extends Controller
             ->addColumn('gambar', function ($s) {
                 $gambar = '<div class="text-center">';
                 $gambar .= '<img class="product-img-small img-fluid"';
-                if (empty($s->produk->foto)) {
+                if (empty($s->DetailProduk->foto)) {
                     $gambar .= `src="{{url('assets/image/produk')}}/noimage.png"`;
-                } else if (!empty($s->foto)) {
-                    $gambar = `src="{{asset('image/produk/')}}/{{` . $s->produk->foto . `}}"`;
+                } else if (!empty($s->DetailProduk->foto)) {
+                    $gambar = `src="{{asset('image/produk/')}}/` . $s->DetailProduk->foto . `"`;
                 }
 
-                $gambar .= `title="` . $s->produk->nama . `">`;
+                $gambar .= `title="` . $s->DetailProduk->nama . `">`;
                 return $gambar;
             })
-            ->editColumn('produk', function ($s) {
-                $btn = '<hgroup><h6 class="heading">' . $s->produk->tipe . ' - ' . $s->produk->nama . '</h6><div class="subheading text-muted">' . $s->produk->kelompokproduk->nama . '</div></hgroup>';
+            ->addColumn('produk', function ($s) {
+                $btn = '<hgroup><h6 class="heading">' . $s->DetailProduk->nama . '</h6><div class="subheading text-muted">' . $s->DetailProduk->Produk->Kelompokproduk->nama . '</div></hgroup>';
                 return $btn;
             })
             ->addColumn('aksi', function ($s) {
@@ -100,7 +101,6 @@ class PPICController extends Controller
             })
             ->rawColumns(['gambar', 'produk', 'aksi'])
             ->make(true);
-        return view('page.ppic.bppb_show', ['b' => $b]);
     }
 
     public function bppb_create()
@@ -114,7 +114,7 @@ class PPICController extends Controller
         $v = Validator::make(
             $request->all(),
             [
-                'produk_id' => 'required',
+                'detail_produk_id' => 'required',
                 'divisi_id' => 'required',
                 'no_bppb_urutan' => 'required',
                 'no_bppb_kode' => 'required',
@@ -124,7 +124,7 @@ class PPICController extends Controller
                 'tanggal_bppb' => 'required',
             ],
             [
-                'produk_id.required' => "Silahkan Pilih Produk",
+                'detail_produk_id.required' => "Silahkan Pilih Produk",
                 'divisi_id.reqired' => "Silahkan Pilih Divisi",
                 'jumlah.required' => "Jumlah Harus Diisi",
                 'tanggal_bppb.required' => "Tanggal Harus Diisi",
@@ -137,7 +137,7 @@ class PPICController extends Controller
             $no_bppb = $request->no_bppb_urutan . '/' . $request->no_bppb_kode . '/' . $request->no_bppb_bulan . '/' . $request->no_bppb_tahun;
             $c = Bppb::create([
                 'no_bppb' => $no_bppb,
-                'produk_id' => $request->produk_id,
+                'detail_produk_id' => $request->detail_produk_id,
                 'divisi_id' => $request->divisi_id,
                 'tanggal_bppb' => $request->tanggal_bppb,
                 'jumlah' => $request->jumlah
@@ -159,10 +159,10 @@ class PPICController extends Controller
     {
         $b = Bppb::find($id);
         $k = KelompokProduk::all();
-        $p = Produk::all();
+        $dp = DetailProduk::all();
 
         $no_bppb = explode("/", $b->no_bppb);
-        return view('page.ppic.bppb_edit', ['id' => $id, 'i' => $b, 'no_bppb' => $no_bppb, 'k' => $k, 'p' => $p]);
+        return view('page.ppic.bppb_edit', ['id' => $id, 'i' => $b, 'no_bppb' => $no_bppb, 'k' => $k, 'dp' => $dp]);
     }
 
     public function bppb_update($id, Request $request)
@@ -170,7 +170,7 @@ class PPICController extends Controller
         $v = Validator::make(
             $request->all(),
             [
-                'produk_id' => 'required',
+                'detail_produk_id' => 'required',
                 'divisi_id' => 'required',
                 'no_bppb_urutan' => 'required',
                 'no_bppb_kode' => 'required',
@@ -180,7 +180,7 @@ class PPICController extends Controller
                 'tanggal_bppb' => 'required',
             ],
             [
-                'produk_id.required' => "Silahkan Pilih Produk",
+                'detail_produk_id.required' => "Silahkan Pilih Produk",
                 'divisi_id.reqired' => "Silahkan Pilih Divisi",
                 'jumlah.required' => "Jumlah Harus Diisi",
                 'tanggal_bppb.required' => "Tanggal Harus Diisi",
@@ -194,7 +194,7 @@ class PPICController extends Controller
 
             $u = Bppb::find($id);
             $u->no_bppb = $no_bppb;
-            $u->produk_id = $request->produk_id;
+            $u->detail_produk_id = $request->detail_produk_id;
             $u->divisi_id = $request->divisi_id;
             $u->tanggal_bppb = $request->tanggal_bppb;
             $u->jumlah = $request->jumlah;

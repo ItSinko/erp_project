@@ -3,10 +3,6 @@
 @section('title', 'Beta Version')
 
 @section('content_header')
-<h1 class="m-0 text-dark">Dashboard</h1>
-@stop
-
-@section('content')
 <section class="content-header">
   <div class="container-fluid">
     <div class="row mb-2">
@@ -22,6 +18,10 @@
     </div>
   </div><!-- /.container-fluid -->
 </section>
+@stop
+
+@section('content')
+
 
 <section class="content">
   <div class="row">
@@ -30,7 +30,7 @@
 
         <!-- /.card-header -->
         <div class="card-body">
-          <table id="example2" class="table table-hover styled-table">
+          <table id="example" class="table table-hover styled-table">
             <thead style="text-align: center;">
               <tr>
                 <th colspan="12">
@@ -41,112 +41,13 @@
                 <th>No</th>
                 <th>No AKD</th>
                 <th>Barcode</th>
-                <th>Gambar</th>
                 <th>Tipe dan Nama</th>
                 <th>Nama COO</th>
                 <th>Kategori</th>
-                <th>Berat</th>
-                <th>Satuan</th>
                 <th>Aksi</th>
               </tr>
             </thead>
             <tbody style="text-align:center;">
-              @foreach($s as $i)
-              <tr>
-                <td class="counterCell"></td>
-                <td>{{$i->no_akd}}</td>
-                <td>{{$i->kode_barcode}}</td>
-                <td>
-                  <div class="text-center">
-                    <img class="product-img-small img-fluid" @if(empty($i->foto))
-                    src="{{url('assets/image/produk')}}/noimage.png"
-                    @elseif(!empty($p->foto))
-                    src="{{asset('image/produk/')}}/{{$i->foto}}"
-                    @endif
-                    title="{{$i->nama}}"
-                    >
-                  </div>
-                </td>
-                <td style="vertical-align:middle;text-align:left;">
-                  <hgroup>
-                    <h6 class="heading">{{$i->tipe}} - {{$i->nama}}</h6>
-                    <div class="subheading text-muted">{{$i->kategoriproduk->nama}}</div>
-                  </hgroup>
-                <td>{{$i->nama_coo}}</td>
-                <td>{{$i->kelompokproduk['nama']}}</td>
-                <td>{{$i->berat}} gr</td>
-                <td>{{ucfirst($i->satuan)}}</td>
-                <td>
-                  <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Klik untuk melihat detail BPPB">
-                    <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-                  </a>
-                  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                    <a class="dropdown-item" href="{{route('produk.edit', ['id' => $i->id])}}"><span style="color: black;"><i class="fa fa-edit" aria-hidden="true"></i>&nbsp;Ubah</span></a>
-                    <a class="dropdown-item delete-produk" data-url="{{route('produk.delete', ['id' => $i->id])}}" data-toggle="modal" data-target="#deletemodal"><span style="color: black;"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp;Hapus</span></a>
-                  </div>
-                </td>
-              </tr>
-              <div class="modal fade" id="deletemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                <div class="modal-dialog modal-md" role="document">
-                  <div class="modal-content">
-                    <div class="modal-header" style="background-color:#cc0000;">
-                      <h4 class="modal-title" id="myModalLabel" style="color:white;">Hapus Data</h4>
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    </div>
-                    <div class="modal-body" id="delete">
-                      <div class="card">
-                        <div class="card-body" style="text-align:center;">
-                          <input id="labelid" name="labelid" hidden>
-                          <h6>Kenapa anda ingin menghapus data ini?</h6>
-                        </div>
-                        <form id="delete-produk" action="" method="POST">
-                          {{ csrf_field() }}
-                          {{ method_field('PUT') }}
-                          <div class="form-group row">
-                            <div class="col-sm-1"></div>
-                            <div class="col-sm-3">
-                              <div class="icheck-danger d-inline">
-                                <input type="radio" id="revisi" name="keterangan_log" value="revisi" checked>
-                                <label for="revisi">
-                                  Revisi
-                                </label>
-                              </div>
-                            </div>
-
-                            <div class="col-sm-4">
-                              <div class="icheck-danger d-inline">
-                                <input type="radio" id="salah_input" name="keterangan_log" value="salah_input">
-                                <label for="salah_input">
-                                  Salah Input
-                                </label>
-                              </div>
-                            </div>
-
-                            <div class="col-sm-3">
-                              <div class="icheck-danger d-inline">
-                                <input type="radio" id="pembatalan" name="keterangan_log" value="pembatalan">
-                                <label for="pembatalan">
-                                  Pembatalan
-                                </label>
-                              </div>
-                            </div>
-
-                          </div>
-                          <div class="card-footer col-12" style="margin-bottom: 2%;">
-                            <span>
-                              <button type="button" class="btn btn-block btn-info batalsk" data-dismiss="modal" id="batalhapussk" style="width:30%;float:left;">Batal</button>
-                            </span>
-                            <span>
-                              <button type="submit" class="btn btn-block btn-danger hapussk" id="hapussk" style="width:30%;float:right;">Hapus</button>
-                            </span>
-                          </div>
-                        </form>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              @endforeach
             </tbody>
 
           </table>
@@ -155,6 +56,33 @@
       </div>
       <!-- /.card -->
 
+      <div class="modal fade" id="detailmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-xl" role="document">
+          <div class="modal-content">
+            <div class="modal-header" style="background-color:	#006400;">
+              <h4 class="modal-title" id="myModalLabel" style="color:white;">Detail</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body" id="detail">
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="deletemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-md" role="document">
+          <div class="modal-content">
+            <div class="modal-header" style="background-color:#cc0000;">
+              <h4 class="modal-title" id="myModalLabel" style="color:white;">Hapus Laporan</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body" id="delete">
+
+            </div>
+          </div>
+        </div>
+      </div>
 
       <!-- /.card -->
     </div>
@@ -174,30 +102,106 @@
   });
 
   $(function() {
-
-    var table = $('.data-table').DataTable({
+    $('#example').DataTable({
       processing: true,
       serverSide: true,
-      ajax: "{{ route('produk') }}",
+      ajax: "{{ route('produk.show') }}",
       columns: [{
-          data: 'id',
-          name: 'id'
+          data: 'DT_RowIndex',
+          name: 'DT_RowIndex',
+          orderable: false,
+          searchable: false
         },
         {
-          data: 'name',
-          name: 'name'
+          data: 'no_akd',
         },
         {
-          data: 'email',
-          name: 'email'
+          data: 'kode_barcode',
         },
         {
-          data: 'action',
-          name: 'action',
+          data: 'kategori_id',
+        },
+        {
+          data: 'nama_coo',
+        },
+        {
+          data: 'kelompok_produk_id',
+        },
+        {
+          data: 'aksi',
+          name: 'aksi',
           orderable: false,
           searchable: false
         },
       ]
+    });
+
+    $(document).on('click', '.detailmodal', function(event) {
+      event.preventDefault();
+      var href = $(this).attr('data-attr');
+      var dataid = $(this).attr('data-id');
+      $.ajax({
+        url: '/produk/detail',
+        beforeSend: function() {
+          $('#loader').show();
+        },
+        // return the result
+        success: function(result) {
+          $('#detailmodal').modal("show");
+          $('#detail').html(result).show();
+          console.log(result);
+          $('#detaildata').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: href,
+            columns: [{
+                data: 'DT_RowIndex',
+                name: 'DT_RowIndex',
+                orderable: false,
+                searchable: false
+              }, {
+                data: 'kode',
+              },
+              {
+                data: 'nama',
+              },
+              {
+                data: 'stok',
+              },
+              {
+                data: 'harga',
+              },
+              {
+                data: 'foto',
+              },
+              {
+                data: 'berat',
+              },
+              {
+                data: 'satuan',
+              },
+              {
+                data: 'keterangan',
+              },
+              {
+                data: 'aksi',
+                name: 'aksi',
+                orderable: false,
+                searchable: false
+              },
+            ]
+          });
+        },
+        complete: function() {
+          $('#loader').hide();
+        },
+        error: function(jqXHR, testStatus, error) {
+          console.log(error);
+          alert("Page " + href + " cannot open. Error:" + error);
+          $('#loader').hide();
+        },
+        timeout: 8000
+      })
     });
 
   });
