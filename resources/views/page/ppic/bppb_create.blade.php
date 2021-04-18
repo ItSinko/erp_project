@@ -61,9 +61,9 @@
                 <h3>Detail Produk</h3>
                 <div class="form-horizontal">
                   <div class="form-group row">
-                    <label for="fk_kategori" class="col-sm-4 col-form-label" style="text-align:right;">Kelompok Barang</label>
+                    <label for="kelompok_produk_id" class="col-sm-4 col-form-label" style="text-align:right;">Kelompok Barang</label>
                     <div class="col-sm-8">
-                      <select class="form-control select2 select2-info @error('kelompok_produk_id') is-invalid @enderror" data-dropdown-css-class="select2-info" style="width: 30%;" data-placeholder="Pilih Kelompok Barang" name="kelompok_produk_id">
+                      <select class="form-control select2 select2-info @error('kelompok_produk_id') is-invalid @enderror" data-dropdown-css-class="select2-info" style="width: 30%;" data-placeholder="Pilih Kelompok Barang" name="kelompok_produk_id" id="kelompok_produk_id">
                         <option value=""></option>
                         @foreach($k as $i)
                         <option value="{{$i->id}}">{{$i->nama}}</option>
@@ -176,15 +176,25 @@
   </div><!-- /.container-fluid -->
 </section>
 @endsection
-@section('footer_script')
+@section('adminlte_js')
 <script>
   $(function() {
+    function formatted_string(pad, user_str, pad_pos) {
+                if (typeof user_str === 'undefined')
+                    return pad;
+                if (pad_pos == 'l') {
+                    return (pad + user_str).slice(-pad.length);
+                } else {
+                    return (user_str + pad).substring(0, pad.length);
+                }
+            }
     $('select[name="kelompok_produk_id"]').on('change', function() {
+      alert('hei');
       var kelompok_produk_id = jQuery(this).val();
       console.log(kelompok_produk_id);
       if (kelompok_produk_id) {
         $.ajax({
-          url: 'get_detail_produk_by_kelompok/' + kelompok_produk_id,
+          url: 'create/get_detail_produk_by_kelompok_produk/' + kelompok_produk_id,
           type: "GET",
           dataType: "json",
           success: function(data) {
@@ -193,8 +203,8 @@
             $('select[name="detail_produk_id"]').append('<option value=""></option>');
             $.each(data, function(key, value) {
               console.log(value);
-              $('select[name="detail_produk_id"]').append('<option value="' + value['detailproduk'][0]['id'] + '">' + value['detailproduk'][0]['nama'] + '</option>');
-              $('input[name="no_bppb_kode"]').val(value['produk'][0]['kode_barcode']);
+              $('select[name="detail_produk_id"]').append('<option value="' + value.id + '">' + value.nama + '</option>');
+              $('input[name="no_bppb_kode"]').val(value.kode_barcode);
             });
           }
         });
@@ -208,26 +218,11 @@
       console.log(detail_produk_id);
       if (detail_produk_id) {
         $.ajax({
-          url: 'get_kategori_by_produk/' + produk_id,
+          url: 'create/get_detail_produk_by_id/' + detail_produk_id,
           type: "GET",
           dataType: "json",
           success: function(data) {
-            console.log(data);
-            $.each(data, function(key, value) {
-              document.getElementById('kategori_id').value = value['kategori_id'];
-            });
-          }
-        });
-
-        $.ajax({
-          url: 'get_detail_produk_id/' + produk_id,
-          type: "GET",
-          dataType: "json",
-          success: function(data) {
-            console.log(data);
-            $.each(data, function(key, value) {
-              $('input[name="no_bppb_kode"]').val(value['kode_barcode']);
-            });
+            $('input[name="no_bppb_kode"]').val(data[0]['produk']['kode_barcode']);
           }
         });
 
@@ -235,7 +230,7 @@
         var tahun = tanggal.getFullYear();
         if (tahun != "") {
           $.ajax({
-            url: '/get_bppb_produk_count_by_year/' + tahun + '/' + produk_id,
+            url: 'create/get_bppb_detail_produk_count_by_year/' + tahun + '/' + detail_produk_id,
             type: "GET",
             dataType: "json",
             success: function(data) {
@@ -251,12 +246,12 @@
     $('input[name="tanggal_bppb"]').on('change', function() {
       var tanggal = new Date($(this).val());
       var tahun = tanggal.getFullYear();
-      var produk_id = $('select[name="produk_id"]').val();
+      var detail_produk_id = $('select[name="detail_produk_id"]').val();
       $('input[name="no_bppb_bulan"]').val(formatted_string('00', (tanggal.getMonth() + 1), 'l'));
       $('input[name="no_bppb_tahun"]').val(formatted_string('00', (tanggal.getYear()), 'l'));
-      if (produk_id != "" && tahun != "") {
+      if (detail_produk_id != "" && tahun != "") {
         $.ajax({
-          url: '/get_bppb_produk_count_by_year/' + tahun + '/' + produk_id,
+          url: 'create/get_bppb_detail_produk_count_by_year/' + tahun + '/' + detail_produk_id,
           type: "GET",
           dataType: "json",
           success: function(data) {

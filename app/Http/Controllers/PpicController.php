@@ -74,9 +74,9 @@ class PPICController extends Controller
                 $gambar = '<div class="text-center">';
                 $gambar .= '<img class="product-img-small img-fluid"';
                 if (empty($s->DetailProduk->foto)) {
-                    $gambar .= `src="{{url('assets/image/produk')}}/noimage.png"`;
+                    $gambar .= 'src="{{url(\'assets/image/produk\')}}/noimage.png"';
                 } else if (!empty($s->DetailProduk->foto)) {
-                    $gambar = `src="{{asset('image/produk/')}}/` . $s->DetailProduk->foto . `"`;
+                    $gambar = 'src="{{asset(\'image/produk/\')}}/' . $s->DetailProduk->foto . '"';
                 }
 
                 $gambar .= `title="` . $s->DetailProduk->nama . `">`;
@@ -144,10 +144,10 @@ class PPICController extends Controller
             ]);
 
             if ($c) {
-                $u = User::where('divisi_id', $request->divisi_id)->get();
-                foreach ($u as $i) {
-                    $cs = $this->NotifikasiController->create("Penambahan BPPB", "telah menambahkan BPPB", Auth::user()->id, $i->id, "/bppb");
-                }
+                // $u = User::where('divisi_id', $request->divisi_id)->get();
+                // foreach ($u as $i) {
+                //     $cs = $this->NotifikasiController->create("Penambahan BPPB", "telah menambahkan BPPB", Auth::user()->id, $i->id, "/bppb");
+                // }
                 return redirect()->back()->with('success', "Berhasil menambahkan BPPB");
             } else {
                 return redirect()->back()->with('error', "Gagal menambahkan BPPB");
@@ -181,7 +181,7 @@ class PPICController extends Controller
             ],
             [
                 'detail_produk_id.required' => "Silahkan Pilih Produk",
-                'divisi_id.reqired' => "Silahkan Pilih Divisi",
+                'divisi_id.required' => "Silahkan Pilih Divisi",
                 'jumlah.required' => "Jumlah Harus Diisi",
                 'tanggal_bppb.required' => "Tanggal Harus Diisi",
             ]
@@ -201,9 +201,9 @@ class PPICController extends Controller
             $up = $u->save();
 
             if ($up) {
-                return redirect()->back()->with('success', "Berhasil menambahkan BPPB");
+                return redirect()->back()->with('success', "Berhasil mengubah BPPB");
             } else {
-                return redirect()->back()->with('error', "Gagal menambahkan BPPB");
+                return redirect()->back()->with('error', "Gagal mengubah BPPB");
             }
         }
     }

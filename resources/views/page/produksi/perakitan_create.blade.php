@@ -262,13 +262,14 @@
       var bppb_id = jQuery(this).val();
       if (bppb_id) {
         $.ajax({
-          url: 'get_bppb/' + bppb_id,
+          url: 'create/get_bppb/' + bppb_id,
           type: "GET",
           dataType: "json",
           success: function(data) {
-            $('input[name="kelompok_produk"]').val(data['nama_kelompok']);
-            $('input[name="kategori_produk"]').val(data['nama_kategori']);
-            $('input[name="tipe_produk"]').val(data['tipe_produk'] + ' ' + data['nama_produk']);
+            console.log(data);
+            $('input[name="kelompok_produk"]').val(data['detail_produk']['produk']['kelompok_produk']['nama']);
+            $('input[name="kategori_produk"]').val(data['detail_produk']['produk']['kategori_produk']['nama']);
+            $('input[name="tipe_produk"]').val(data['detail_produk']['nama']);
             $('input[name="jumlah"]').val(data['jumlah']);
           }
         });
