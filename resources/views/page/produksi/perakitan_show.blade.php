@@ -26,7 +26,7 @@
     <div class="col-12">
       <div class="card">
         <div class="card-body">
-          <table id="example" class="table table-hover table-bordered styled-table">
+          <table id="example" class="table table-hover styled-table">
             <thead style="text-align: center;">
               <tr>
                 <th colspan="12">
@@ -46,7 +46,7 @@
             <tbody style="text-align:center;">
 
             </tbody>
-            <tfoot>
+            <tfoot style="text-align:center;">
               <tr>
                 <th>No</th>
                 <th>No BPPB</th>

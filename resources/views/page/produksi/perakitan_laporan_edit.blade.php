@@ -34,17 +34,17 @@
 
           <div class="card-body box-profile">
             <div class="text-center">
-              <img class="product-img-small img-fluid" @if(empty($sh->Bppb->Produk->foto))
+              <img class="product-img-small img-fluid" @if(empty($sh->Bppb->DetailProduk->foto))
               src="{{url('assets/image/produk')}}/noimage.png"
-              @elseif(!empty($sh->Bppb->Produk->foto))
-              src="{{url('assets/image/produk')}}/{{$sh->Bppb->Produk->foto}}"
+              @elseif(!empty($sh->Bppb->DetailProduk->foto))
+              src="{{url('assets/image/produk')}}/{{$sh->Bppb->DetailProduk->foto}}"
               @endif
-              title="{{$sh->Bppb->Produk->nama}}"
+              title="{{$sh->Bppb->DetailProduk->nama}}"
               >
             </div>
             <div style="text-align:center;vertical-align:center;padding-top:10px">
-              <h5 class="card-heading">{{$sh->Bppb->Produk->tipe}}</h5>
-              <h6 class="card-subheading text-muted">{{$sh->Bppb->Produk->nama}}</h6>
+              <h5 class="card-heading">{{$sh->Bppb->DetailProduk->nama}}</h5>
+              <h6 class="card-subheading text-muted">{{$sh->Bppb->DetailProduk->Produk->nama}}</h6>
             </div>
           </div>
           <div class="row">
@@ -120,7 +120,6 @@
                     <th>Tanggal</th>
                     <th>No Seri</th>
                     <th>Operator</th>
-                    <th>Warna</th>
                     <th>Aksi</th>
                   </tr>
                 </thead>
@@ -138,7 +137,7 @@
                     <td>
                       <div class="form-group">
                         <div class="input-group">
-                          <input type="text" class="form-control @error('hasil_perakitans.*.no_seri') is-invalid @enderror" name="no_seri[]" id="no_seri" value="{{$i->no_seri}}">
+                          <input type="text" class="form-control @error('hasil_perakitans.*.no_seri') is-invalid @enderror" name="no_seri[{{$loop->iteration - 1}}]" id="no_seri" value="{{$i->no_seri}}">
                         </div>
                         @if ($errors->has('hasil_perakitans.*.no_seri'))
                         <span class="invalid-feedback" role="alert">{{$errors->first('hasil_perakitans.*.no_seri')}}</span>
@@ -149,7 +148,7 @@
                     <td>
                       <div class="form-group">
                         <div class="select2-info">
-                          <select class="select2 form-control @error('karyawan_id') is-invalid @enderror karyawan_id" multiple="multiple" name="karyawan_id[][]" id="karyawan_id{{$loop->iteration-1}}" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;">
+                          <select class="select2 form-control @error('karyawan_id') is-invalid @enderror karyawan_id" multiple="multiple" name="karyawan_id[{{$loop->iteration - 1}}][]" id="karyawan_id{{$loop->iteration-1}}" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;">
                             @foreach($kry as $j)
                             <option value="{{$j->id}}" @if($i->Karyawan->contains('id', $j->id))
                               selected
@@ -161,11 +160,6 @@
                           <span class="invalid-feedback" role="alert">{{$errors->first('karyawan_id.*')}}</span>
                           @endif
                         </div>
-                      </div>
-                    </td>
-                    <td>
-                      <div class="input-group">
-                        <input type="text" class="form-control" name="warna[]" id="warna[]" value="{{$i->warna}}">
                       </div>
                     </td>
                     <td>@if($first == false)
@@ -220,7 +214,6 @@
         $(el).find('.karyawan_id').attr('name', 'karyawan_id[' + j + '][]');
         $(el).find('.karyawan_id').attr('id', 'karyawan_id' + j);
         $(el).find('input[id="no_seri"]').attr('name', 'no_seri[' + j + ']');
-        $(el).find('input[id="warna"]').attr('name', 'warna[' + j + ']');
         $('select[name="karyawan_id[' + j + '][]"]').select2();
       });
     }
@@ -257,11 +250,6 @@
                 <span class="invalid-feedback" role="alert">{{$errors->first('karyawan_id.*')}}</span>
                 @endif
               </div>
-            </div>
-          </td>
-          <td>
-            <div class="input-group">
-              <input type="text" class="form-control" name="warna[]" id="warna[]" value="">
             </div>
           </td>
           <td>

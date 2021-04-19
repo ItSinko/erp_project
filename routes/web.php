@@ -245,11 +245,11 @@ Route::get('/perakitan/laporan/show/{id}', 'ProduksiController@perakitan_laporan
 /* Create dari BPPB */
 Route::get('/perakitan/create', 'ProduksiController@perakitan_create')->name('perakitan.create');
 Route::get('/perakitan/create/get_bppb/{bppb_id}', 'GetController@get_bppb');
-Route::get('/perakitan/get_no_seri_exist/{no_seri}', 'GetController@get_no_seri_exist');
+Route::get('/perakitan/create/get_kode_perakitan_exist_not_in/{bppb}/{no_seri}', 'GetController@get_kode_perakitan_exist_not_in');
 Route::post('/perakitan/store', 'ProduksiController@perakitan_store')->name('perakitan.store');
 /* Create */
 Route::get('/perakitan/laporan/create/{bppb_id}', 'ProduksiController@perakitan_laporan_create')->name('perakitan.laporan.create');
-Route::get('/perakitan/laporan/create/get_no_seri_exist/{no_seri}', 'GetController@get_no_seri_exist');
+Route::get('/perakitan/laporan/create/get_kode_perakitan_exist_not_in/{bppb}/{no_seri}', 'GetController@get_kode_perakitan_exist_not_in');
 Route::put('/perakitan/laporan/store/{bppb_id}', 'ProduksiController@perakitan_laporan_store')->name('perakitan.laporan.store');
 /* Edit */
 Route::get('/perakitan/laporan/edit/{id}', 'ProduksiController@perakitan_laporan_edit')->name('perakitan.laporan.edit');
@@ -258,11 +258,13 @@ Route::get('/perakitan/laporan/edit/get_kode_perakitan_exist_not_in_id/{bppb}/{i
 Route::put('/perakitan/laporan/update/{id}', 'ProduksiController@perakitan_laporan_update')->name('perakitan.laporan.update');
 /* Delete */
 Route::delete('/perakitan/laporan/delete/{id}', 'ProduksiController@perakitan_laporan_delete')->name('perakitan.laporan.delete');
+/* Status */
+Route::get('/perakitan/laporan/status/{id}/{status}', 'ProduksiController@perakitan_laporan_status')->name('perakitan.laporan.status');
 //HASIL
 Route::get('/perakitan/hasil/{id}', 'ProduksiController@perakitan_hasil')->name('perakitan.hasil');
 /* Create */
 Route::get('/perakitan/hasil/create/{id}', 'ProduksiController@perakitan_hasil_create')->name('perakitan.hasil.create');
-Route::get('/perakitan/hasil/get_no_seri_exist/{no_seri}', 'GetController@get_no_seri_exist');
+Route::get('/perakitan/hasil/create/get_kode_perakitan_exist_not_in/{bppb}/{no_seri}', 'GetController@get_kode_perakitan_exist_not_in');
 Route::put('/perakitan/hasil/store/{id}', 'ProduksiController@perakitan_hasil_store')->name('perakitan.hasil.store');
 /* Import */
 Route::put('/perakitan/hasil/import/{id}', 'ProduksiController@perakitan_hasil_import_store')->name('perakitan.hasil.import');
@@ -272,6 +274,13 @@ Route::get('/perakitan/hasil/edit/get_kode_perakitan_exist_not_in_id/{bppb}/{id}
 Route::put('/perakitan/hasil/update/{id}', 'ProduksiController@perakitan_hasil_update')->name('perakitan.hasil.update');
 /* Delete */
 Route::delete('/perakitan/hasil/delete/{id}', 'ProduksiController@perakitan_hasil_delete')->name('perakitan.hasil.delete');
+/* Status */
+Route::get('/perakitan/hasil/status/{id}/{status}', 'ProduksiController@perakitan_hasil_status')->name('perakitan.hasil.status');
+//PEMERIKSAAN
+Route::get('/perakitan/pemeriksaan', 'QCController@perakitan_pemeriksaan')->name('perakitan.pemeriksaan');
+Route::get('/perakitan/pemeriksaan/show', 'QCController@perakitan_pemeriksaan_show')->name('perakitan.pemeriksaan.show');
+Route::get('/perakitan/pemeriksaan/laporan', 'QCController@perakitan_pemeriksaan')->name('perakitan.pemeriksaan.laporan');
+Route::get('/perakitan/pemeriksaan/laporan/show', 'QCController@perakitan_pemeriksaan_laporan_show')->name('perakitan.pemeriksaan.laporan.show');
 
 //GUDANG
 Route::get('/gudang', 'GudangController@index')->name('gudang');

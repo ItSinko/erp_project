@@ -98,8 +98,8 @@ class GetController extends Controller
 
     public function get_bppb_detail_produk_count_by_year($tahun, $produk_id)
     {
-        $tahun1 = $tahun.'-01-01';
-        $tahun2 = $tahun.'-12-31';
+        $tahun1 = $tahun . '-01-01';
+        $tahun2 = $tahun . '-12-31';
         $c = Bppb::where('detail_produk_id', $produk_id)
             ->whereBetween('tanggal_bppb', [$tahun1, $tahun2])
             ->count();
@@ -116,7 +116,7 @@ class GetController extends Controller
 
     public function get_bppb($bppb_id)
     {
-        $s = Bppb::find($bppb_id);
+        $s = Bppb::with('DetailProduk')->where('id', $bppb_id)->get();
         echo json_encode($s);
     }
 

@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use App\Perakitan;
 use App\HasilPerakitanKaryawan;
 use App\Karyawan;
+use App\HistoriHasilPerakitan;
 
 class HasilPerakitan extends Model
 {
-    protected $fillable = ['perakitan_id','tanggal', 'no_seri', 'warna', 'kondisi', 'keterangan'];
+    protected $fillable = ['perakitan_id', 'tanggal', 'no_seri', 'warna', 'kondisi', 'keterangan'];
 
     public function Perakitan()
     {
@@ -24,5 +25,21 @@ class HasilPerakitan extends Model
     public function Karyawan()
     {
         return $this->belongsToMany(Karyawan::class, 'hasil_perakitan_karyawans')->withPivot('operator_custom')->withTimestamps();
+    }
+
+    public function HistoriHasilPerakitan()
+    {
+        return $this->hasMany(HistoriHasilPerakitan::class);
+    }
+
+    public function countStatus($status)
+    {
+        $k = $this->id;
+        $h = HistoriHasilPerakitan::where([
+            ['hasil_perakitan_id', '=', $k],
+            ['status', '=', $status]
+        ])->count();
+
+        return $h;
     }
 }

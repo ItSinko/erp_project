@@ -32,17 +32,17 @@
 
           <div class="card-body box-profile">
             <div class="text-center">
-              <img class="product-img-small img-fluid" @if(empty($b->Produk->foto))
+              <img class="product-img-small img-fluid" @if(empty($b->DetailProduk->foto))
               src="{{url('assets/image/produk')}}/noimage.png"
-              @elseif(!empty($b->Produk->foto))
-              src="{{url('assets/image/produk')}}/{{$b->Produk->foto}}"
+              @elseif(!empty($b->DetailProduk->foto))
+              src="{{url('assets/image/produk')}}/{{$b->DetailProduk->foto}}"
               @endif
-              title="{{$b->Produk->nama}}"
+              title="{{$b->DetailProduk->nama}}"
               >
             </div>
             <div style="text-align:center;vertical-align:center;padding-top:10px">
-              <h5 class="card-heading">{{$b->Produk->tipe}}</h5>
-              <h6 class="card-subheading text-muted">{{$b->Produk->nama}}</h6>
+              <h5 class="card-heading">{{$b->DetailProduk->nama}}</h5>
+              <h6 class="card-subheading text-muted">{{$b->DetailProduk->Produk->nama}}</h6>
             </div>
           </div>
           <div class="row">
@@ -124,7 +124,6 @@
                     <th>Tanggal</th>
                     <th>No Seri</th>
                     <th>Operator</th>
-                    <th>Warna</th>
                     <th>Aksi</th>
                   </tr>
                 </thead>
@@ -150,7 +149,7 @@
                     <td>
                       <div class="form-group">
                         <div class="select2-info">
-                          <select class="select2 myselect0 form-control @error('karyawan_id') is-invalid @enderror" multiple="multiple" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;" name="karyawan_id[][]" id="karyawan_id">
+                          <select class="select2 form-control @error('karyawan_id') is-invalid @enderror karyawan_id" multiple="multiple" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;" name="karyawan_id[][]" id="karyawan_id">
                             @foreach($kry as $i)
                             <option value="{{$i->id}}">{{$i->nama}}</option>
                             @endforeach
@@ -159,11 +158,6 @@
                           <span class="invalid-feedback" role="alert">{{$errors->first('karyawan_id.*')}}</span>
                           @endif
                         </div>
-                      </div>
-                    </td>
-                    <td>
-                      <div class="input-group">
-                        <input type="text" class="form-control" name="warna[]" id="warna">
                       </div>
                     </td>
                     <td>
@@ -210,10 +204,10 @@
         $(el).find("td:eq(0)").html(++c);
         var j = c - 1;
         $(el).find('input[id="tanggals"]').attr('name', 'tanggals[' + j + ']');
-        $(el).find('select[id="karyawan_id"]').attr('name', 'karyawan_id[' + j + '][]');
-        $(el).find('select[id="karyawan_id"]').attr('id', 'karyawan_id' + j);
+        $(el).find('.karyawan_id').attr('name', 'karyawan_id[' + j + '][]');
+        $(el).find('.karyawan_id').attr('id', 'karyawan_id' + j);
         $(el).find('input[id="no_seri"]').attr('name', 'no_seri[' + j + ']');
-        $(el).find('input[id="warna"]').attr('name', 'warna[' + j + ']');
+
         $('select[name="karyawan_id[' + j + '][]"]').select2();
       });
     }
@@ -241,7 +235,7 @@
       <td>
         <div class="form-group">
           <div class="select2-info">
-            <select class="select2 myselect form-control @error('karyawan_id') is-invalid @enderror" multiple="multiple" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;" name="karyawan_id[][]" id="karyawan_id" tabindex="-1"  aria-hidden="true">
+            <select class="select2 form-control @error('karyawan_id') is-invalid @enderror karyawan_id" multiple="multiple" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;" name="karyawan_id[][]" id="karyawan_id" tabindex="-1"  aria-hidden="true">
             @foreach($kry as $i)
               <option value="{{$i->id}}">{{$i->nama}}</option>
             @endforeach
@@ -250,11 +244,6 @@
               <span class="invalid-feedback" role="alert">{{$errors->first('karyawan_id.*')}}</span>
             @endif
           </div>
-        </div>
-      </td>
-      <td>
-        <div class="input-group">
-          <input type="text" class="form-control" name="warna[]" id="warna">
         </div>
       </td>
       <td>
@@ -269,13 +258,14 @@
       numberRows($("#tableitem"));
     });
 
-    $('#tableitem').on("change keyup", 'input[name="no_seri[]"]', function() {
-      var no_seri_val = $(this).closest('tr').find('input[name="no_seri[]"').val();
-      var no_seri = $(this).closest('tr').find('input[name="no_seri[]"');
+    $('#tableitem').on("change keyup", 'input[id="no_seri"]', function() {
+      var bppb = "{{$b->id}}"
+      var no_seri_val = $(this).closest('tr').find('input[id="no_seri"]').val();
+      var no_seri = $(this).closest('tr').find('input[id="no_seri"]');
       var message = $(this).closest('tr').find('span[id="no_seri-message[]"]');
       if (no_seri_val) {
         $.ajax({
-          url: 'get_no_seri_exist/' + no_seri_val,
+          url: 'get_kode_perakitan_exist_not_in/' + bppb + '/' + no_seri_val,
           type: "GET",
           dataType: "json",
           success: function(data) {

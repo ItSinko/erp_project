@@ -180,16 +180,15 @@
 <script>
   $(function() {
     function formatted_string(pad, user_str, pad_pos) {
-                if (typeof user_str === 'undefined')
-                    return pad;
-                if (pad_pos == 'l') {
-                    return (pad + user_str).slice(-pad.length);
-                } else {
-                    return (user_str + pad).substring(0, pad.length);
-                }
-            }
+      if (typeof user_str === 'undefined')
+        return pad;
+      if (pad_pos == 'l') {
+        return (pad + user_str).slice(-pad.length);
+      } else {
+        return (user_str + pad).substring(0, pad.length);
+      }
+    }
     $('select[name="kelompok_produk_id"]').on('change', function() {
-      alert('hei');
       var kelompok_produk_id = jQuery(this).val();
       console.log(kelompok_produk_id);
       if (kelompok_produk_id) {
@@ -239,7 +238,6 @@
             }
           })
         }
-
       }
     });
 
