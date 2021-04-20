@@ -98,7 +98,7 @@
       var href = $(this).attr('data-attr');
       var dataid = $(this).attr('data-id');
       $.ajax({
-        url: href,
+        url: "{{route('perakitan.pemeriksaan.laporan')}}",
         beforeSend: function() {
           $('#loader').show();
         },
@@ -110,7 +110,7 @@
           $('#detaildata').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "/perakitan/laporan/show/" + dataid,
+            ajax: href,
             columns: [{
                 data: 'DT_RowIndex',
                 name: 'DT_RowIndex',

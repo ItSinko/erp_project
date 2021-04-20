@@ -7,6 +7,7 @@ use App\Bppb;
 use App\Karyawan;
 use App\Perakitan;
 use App\HasilPerakitan;
+use App\HistoriHasilPerakitan;
 use App\PemeriksaanRakit;
 use Carbon\Carbon;
 use Yajra\DataTables\Facades\DataTables;
@@ -52,7 +53,7 @@ class QCController extends Controller
                 return $btn;
             })
             ->addColumn('laporan', function ($s) {
-                $btn = '<a class="detailmodal" data-toggle="modal" data-target="#detailmodal" data-attr="/perakitan/laporan/' . $s->id . '" data-id="' . $s->id . '">';
+                $btn = '<a class="detailmodal" data-toggle="modal" data-target="#detailmodal" data-attr="/perakitan/pemeriksaan/laporan/show/' . $s->id . '" data-id="' . $s->id . '">';
                 $btn .= '<button type="button" class="rounded-pill btn btn-sm btn-info">';
                 $btn .= '<span style="color:white;"><i class="fa fa-search" aria-hidden="true"></i>&nbsp;Detail Laporan</span></button></a>';
                 return $btn;
@@ -84,24 +85,101 @@ class QCController extends Controller
             ->addColumn('status', function ($s) {
                 $btn = "";
                 if ($s->status == '12') {
-                    $btn = '<span class="warning-text">
+                    $c = HasilPerakitan::where('perakitan_id', '=', $s->id)->whereIn('status', ['req_pemeriksaan_terbuka', 'req_pemeriksaan_tertutup'])->count();
+                    if ($c > 0) {
+                        $btn = '<span class="warning-text">
                         Periksa
                     </span>';
-                    //     $btn = '<div class="inline-flex">
-                    //     <a href = "/perakitan/laporan/status/' . $s->id . '/dibuat">
-                    //         <button type="button" class="btn btn-block btn-outline-info karyawan-img-small" style="border-radius:50%;" title="Kirim Laporan ke Quality Control"><i class="far fa-paper-plane"></i></button>
-                    //     </a>
-                    // </div>';
+                    } else if ($c <= 0) {
+                        $btn = '<div class="inline-flex">
+                        <a href = "/perakitan/laporan/status/' . $s->id . '/selesai">
+                            <button type="button" class="btn btn-block btn-outline-success karyawan-img-small" style="border-radius:50%;" title="Kirim Laporan ke Produksi"><i class="fas fa-check"></i></button>
+                        </a>
+                        </div>';
+                    }
                 }
+
                 return $btn;
             })
             ->addColumn('aksi', function ($s) {
-                $btn = '<a href = "/perakitan/hasil/' . $s->id . '"><button class="btn btn-info circle-button btn-circle-sm m-1 karyawan-img-small"><i class="fas fa-eye"></i></button></a>';
-                $btn .= '<a href = "/perakitan/laporan/edit/' . $s->id . '"><button class="btn btn-warning  btn-circle btn-circle-sm m-1 karyawan-img-small"><i class="fas fa-edit"></i></button></a>';
-                $btn .= '<a class="deletemodal" data-toggle="modal" data-target="#deletemodal" data-attr="/perakitan/laporan/delete/' . $s->id . '"><button class="btn btn-danger karyawan-img-small btn-circle btn-circle-sm m-1"><i class="fas fa-trash"></i></button></a>';
+                $btn = '<a href = "/perakitan/pemeriksaan/hasil/' . $s->id . '"><button class="btn btn-info circle-button btn-circle-sm m-1 karyawan-img-small"><i class="fas fa-eye"></i></button></a>';
                 return $btn;
             })
             ->rawColumns(['status', 'aksi'])
+            ->make(true);
+    }
+
+    public function perakitan_pemeriksaan_laporan_edit($id)
+    {
+        $s = Perakitan::find($id);
+        return view('page.qc.perakitan_pemeriksaan_laporan_edit', ['id' => $id, 's' => $s]);
+    }
+
+    public function perakitan_pemeriksaan_laporan_update($id, Request $request)
+    {
+        $bool = true;
+        for ($i = 0; $i < count($request->id); $i++) {
+            $h = HasilPerakitan::find($request->id[$i]);
+            $h->kondisi_terbuka = $request->kondisi_terbuka[$i];
+            $h->tindak_lanjut = $request->tindak_lanjut[$i];
+            $u = $h->save();
+
+            $kegiatan = "";
+            $tindak_lanjut = "";
+            if ($request->tindak_lanjut)
+                HistoriHasilPerakitan::create([
+                    'hasil_perakitan_id' => $request->id[$i],
+                    'kegiatan' => 1,
+                    'tanggal' => Carbon::now()->toDateString(),
+                    'hasil' => $request->kondisi_terbuka[$i],
+                    'keterangan' => $request->keterangan[$i],
+                    'tindak_lanjut' => $tindak_lanjut
+                ]);
+            if (!$u) {
+                $bool = false;
+            }
+        }
+
+        if ($bool == true) {
+            return redirect()->back()->with('success', "Berhasil mengubah Data");
+        } else if ($bool == false) {
+            return redirect()->back()->with('error', "Gagal mengubah Data");
+        }
+    }
+
+    public function perakitan_pemeriksaan_hasil($id)
+    {
+        $s = Perakitan::find($id);
+        return view('page.qc.perakitan_pemeriksaan_hasil_show', ['id' => $id, 's' => $s]);
+    }
+
+    public function perakitan_pemeriksaan_hasil_show($id)
+    {
+        $s = HasilPerakitan::where('perakitan_id', '=', $id)->get();
+        return DataTables::of($s)
+            ->addIndexColumn()
+            ->editColumn('tanggal', function ($s) {
+                return Carbon::createFromFormat('Y-m-d', $s->tanggal)->format('d-m-Y');
+            })
+            ->addColumn('operator', function ($s) {
+                $arr = [];
+                foreach ($s->Karyawan as $i) {
+                    array_push($arr, $i->nama);
+                }
+                return implode("<br>", $arr);
+            })
+            ->addColumn('aksi', function ($s) {
+                if ($s->status == 'req_pemeriksaan_terbuka' || $s->status == 'req_pemeriksaan_tertutup') {
+                    $btn = '<div class="inline-flex">
+                    <a href = "/perakitan/pemeriksaan/hasil/' . $s->id . '">
+                    <button class="btn btn-primary circle-button btn-circle-sm m-1" style="border-radius:50%;"><i class="fas fa-tasks"></i></button></a>
+                    </div>';
+                } else {
+                    $btn = '<button class="btn btn-secondary circle-button btn-circle-sm m-1 karyawan-img-small" disabled><i class="fas fa-tasks"></i></button>';
+                }
+                return $btn;
+            })
+            ->rawColumns(['operator', 'aksi'])
             ->make(true);
     }
 

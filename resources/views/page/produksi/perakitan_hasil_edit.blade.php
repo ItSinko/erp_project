@@ -21,8 +21,6 @@
 @stop
 
 @section('content')
-
-
 <section class="content">
   <div class="container-fluid">
     <div class="row">
@@ -206,6 +204,7 @@
   </div>
 </section>
 @endsection
+
 @section('adminlte_js')
 <script>
   var ids = "{{$id}}";

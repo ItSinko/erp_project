@@ -192,6 +192,7 @@ Route::delete('/peminjaman/alat/delete/{id}', 'ItController@peminjaman_alat_dele
 /*Status*/
 Route::get('/peminjaman/alat/status/{id}/{status}', 'ItController@peminjaman_alat_status')->name('peminjaman.alat.status');
 
+
 //COMMON
 Route::get('/template_form_delete', 'ItController@template_form_delete')->name('template_form_delete');
 Route::get('/form-template', 'ItController@form_template')->name('form-template');
@@ -216,6 +217,7 @@ Route::get('/peminjaman/karyawan/detail/show/{id}', 'ItController@peminjaman_kar
 Route::get('/peminjaman/karyawan/detail/edit/{id}/{karyawan_id}', 'ItController@peminjaman_karyawan_detail_edit')->name('peminjaman.karyawan.detail.edit');
 Route::put('/peminjaman/karyawan/detail/update/{id}/{karyawan_id}', 'ItController@peminjaman_karyawan_detail_update')->name('peminjaman.karyawan.detail.update');
 Route::get('/peminjaman/karyawan/detail/status/{id}/{karyawan_id}/{status}', 'ItController@peminjaman_karyawan_detail_status')->name('peminjaman.karyawan.detail.status');
+
 
 //BPPB
 Route::get('/bppb', 'PpicController@bppb')->name('bppb');
@@ -279,12 +281,21 @@ Route::get('/perakitan/hasil/status/{id}/{status}', 'ProduksiController@perakita
 //PEMERIKSAAN
 Route::get('/perakitan/pemeriksaan', 'QCController@perakitan_pemeriksaan')->name('perakitan.pemeriksaan');
 Route::get('/perakitan/pemeriksaan/show', 'QCController@perakitan_pemeriksaan_show')->name('perakitan.pemeriksaan.show');
-Route::get('/perakitan/pemeriksaan/laporan', 'QCController@perakitan_pemeriksaan')->name('perakitan.pemeriksaan.laporan');
-Route::get('/perakitan/pemeriksaan/laporan/show', 'QCController@perakitan_pemeriksaan_laporan_show')->name('perakitan.pemeriksaan.laporan.show');
+Route::get('/perakitan/pemeriksaan/laporan', 'QCController@perakitan_pemeriksaan_laporan')->name('perakitan.pemeriksaan.laporan');
+Route::get('/perakitan/pemeriksaan/laporan/show/{id}', 'QCController@perakitan_pemeriksaan_laporan_show')->name('perakitan.pemeriksaan.laporan.show');
+/* Edit */
+Route::get('/perakitan/pemeriksaan/laporan/edit/{id}', 'QCController@perakitan_pemeriksaan_laporan_edit')->name('perakitan.pemeriksaan.laporan.edit');
+Route::put('/perakitan/pemeriksaan/laporan/update/{id}', 'QCController@perakitan_pemeriksaan_laporan_update')->name('perakitan.pemeriksaan.laporan.update');
+/* Hasil */
+Route::get('/perakitan/pemeriksaan/hasil/{id}', 'QCController@perakitan_pemeriksaan_hasil')->name('perakitan.pemeriksaan.hasil');
+Route::get('/perakitan/pemeriksaan/hasil/show/{id}', 'QCController@perakitan_pemeriksaan_hasil_show')->name('perakitan.pemeriksaan.hasil.show');
+/* Edit */
+
 
 //GUDANG
 Route::get('/gudang', 'GudangController@index')->name('gudang');
 Route::get('/gudang/data', 'GudangController@get_data')->name('gudang.data');
+
 
 //PPIC
 Route::get('/ppic', 'PpicController@index');
