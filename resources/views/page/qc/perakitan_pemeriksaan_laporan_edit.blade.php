@@ -110,7 +110,7 @@
                                 <!-- form start -->
                                 <div class="form-horizontal">
                                     <div class="form-group row">
-                                        <table id="example" class="table table-hover table-bordered styled-table">
+                                        <table id="tableitem" class="table table-hover table-bordered styled-table">
                                             <thead style="text-align: center;">
                                                 <tr>
                                                     <th rowspan="2">No</th>
@@ -141,7 +141,7 @@
                                                             <div class="col-sm-12">
                                                                 <div class="form-group clearfix">
                                                                     <div class="icheck-success d-inline ">
-                                                                        <input type="radio" name="kondisi_terbuka[{{$loop->iteration-1}}]" id="ok{{$loop->iteration-1}}" checked>
+                                                                        <input class="kondisi_terbuka" type="radio" name="kondisi_terbuka[{{$loop->iteration-1}}]" id="ok{{$loop->iteration-1}}" value="ok" checked>
                                                                         <label for="ok{{$loop->iteration-1}}" style="color:green;">
                                                                             <i class="fas fa-check-circle"></i>
                                                                         </label>
@@ -153,7 +153,7 @@
                                                             <div class="col-sm-12">
                                                                 <div class="form-group clearfix">
                                                                     <div class="icheck-warning d-inline">
-                                                                        <input type="radio" name="kondisi_terbuka[{{$loop->iteration-1}}]" id="nok{{$loop->iteration-1}}">
+                                                                        <input class="kondisi_terbuka" type="radio" name="kondisi_terbuka[{{$loop->iteration-1}}]" id="nok{{$loop->iteration-1}}" value="nok">
                                                                         <label for="nok{{$loop->iteration-1}}" style="color:red;">
                                                                             <i class="fas fa-times-circle"></i>
                                                                         </label>
@@ -165,7 +165,7 @@
                                                     <td><select class="select2 form-control" name="tindak_lanjut_terbuka[{{$loop->iteration-1}}]" id="tindak_lanjut_terbuka{{$loop->iteration-1}}" data-placeholder="Pilih Data" data-dropdown-css-class="select2-info" style="width: 90%;">
                                                             <option value="produksi">Produksi</option>
                                                             <option value="operator">Operator</option>
-                                                            <option value="produk_spesialis">Produk Spesialis</option>
+                                                            <option value="produk_spesialis" disabled>Produk Spesialis</option>
                                                         </select></td>
                                                     <td><textarea class="form-control" name="keterangan[]" id="keterangan"></textarea></td>
                                                 </tr>
@@ -226,7 +226,17 @@
 @section('adminlte_js')
 <script>
     $(function() {
-
+        $('#tableitem').on("change", 'input[type="radio"][class="kondisi_terbuka"]', function() {
+            if (this.value == 'ok') {
+                $(this).closest('tr').find("select option[value='produk_spesialis']").attr('disabled', true);
+                $(this).closest('tr').find("select option[value='produksi']").attr('disabled', false);
+                $(this).closest('tr').find("select").prop("selectedIndex", -1)
+            } else if (this.value == 'nok') {
+                $(this).closest('tr').find("select option[value='produk_spesialis']").attr('disabled', false);
+                $(this).closest('tr').find("select option[value='produksi']").attr('disabled', true);
+                $(this).closest('tr').find("select").prop("selectedIndex", -1)
+            }
+        });
     });
 </script>
 @stop

@@ -21,7 +21,7 @@ class CreateHistoriHasilPerakitansTable extends Migration
             $table->date('tanggal');
             $table->enum('hasil', ['ok', 'nok'])->nullable();
             $table->text('keterangan')->nullable();
-            $table->enum('tindak_lanjut', ['operator', 'produksi_perbaikan', 'produk_spesialis', 'pengujian'])->nullable();
+            $table->enum('tindak_lanjut', ['produksi', 'operator', 'produksi_perbaikan', 'produk_spesialis', 'pengujian'])->nullable();
             $table->timestamps();
         });
     }

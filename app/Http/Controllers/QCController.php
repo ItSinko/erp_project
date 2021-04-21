@@ -119,22 +119,27 @@ class QCController extends Controller
     {
         $bool = true;
         for ($i = 0; $i < count($request->id); $i++) {
+            $status = "";
+            if ($request->kondisi_terbuka[$i] == "ok") {
+                $status = "acc_pemeriksaan_terbuka";
+            } else if ($request->kondisi_terbuka[$i] == "nok") {
+                $status = "rej_pemeriksaan_terbuka";
+            }
             $h = HasilPerakitan::find($request->id[$i]);
             $h->kondisi_terbuka = $request->kondisi_terbuka[$i];
-            $h->tindak_lanjut = $request->tindak_lanjut[$i];
+            $h->tindak_lanjut_terbuka = $request->tindak_lanjut_terbuka[$i];
+            $h->status = $status;
             $u = $h->save();
 
-            $kegiatan = "";
-            $tindak_lanjut = "";
-            if ($request->tindak_lanjut)
-                HistoriHasilPerakitan::create([
-                    'hasil_perakitan_id' => $request->id[$i],
-                    'kegiatan' => 1,
-                    'tanggal' => Carbon::now()->toDateString(),
-                    'hasil' => $request->kondisi_terbuka[$i],
-                    'keterangan' => $request->keterangan[$i],
-                    'tindak_lanjut' => $tindak_lanjut
-                ]);
+
+            HistoriHasilPerakitan::create([
+                'hasil_perakitan_id' => $request->id[$i],
+                'kegiatan' => 'pemeriksaan_terbuka',
+                'tanggal' => Carbon::now()->toDateString(),
+                'hasil' => $request->kondisi_terbuka[$i],
+                'keterangan' => $request->keterangan[$i],
+                'tindak_lanjut' => $request->tindak_lanjut_terbuka[$i]
+            ]);
             if (!$u) {
                 $bool = false;
             }

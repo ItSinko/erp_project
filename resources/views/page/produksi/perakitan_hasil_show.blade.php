@@ -141,7 +141,7 @@
           </div>
           @endif
 
-          <table id="example2" class="table table-hover styled-table">
+          <table id="example" class="table table-hover styled-table">
             <thead style="text-align: center;">
               @if(($sh->HasilPerakitan->count() < $sh->Bppb->jumlah) && ($sh->status == "0"))
                 <tr style="text-align: left;">
@@ -158,51 +158,11 @@
                   <th>Tanggal</th>
                   <th>No Seri</th>
                   <th>Operator</th>
-                  <th>Kondisi</th>
-                  <th>Keterangan</th>
+                  <th>Status</th>
                   <th>Aksi</th>
                 </tr>
             </thead>
             <tbody style="text-align:center;">
-              @foreach($sh->HasilPerakitan as $i)
-              <tr>
-                <td>{{$loop->iteration}}</td>
-                <td>@if(!empty($i->tanggal)){{date("d-m-Y", strtotime($i->tanggal))}} @endif</td>
-                <td>{{$i->no_seri}}</td>
-                <td>
-                  <ul>
-                    @foreach($i->Karyawan as $j)
-                    <li>{{$j->nama}}</li>
-                    @endforeach
-                  </ul>
-                </td>
-                <td>{{$i->kondisi}}</td>
-                <td>{{$i->keterangan}}</td>
-                <td>
-                  @if(Auth::user()->divisi->nama == "Produksi")
-                  @if($sh->status == "0")
-                  <div class="inline-flex">
-                    <a href="{{route('perakitan.hasil.edit', ['id' => $i->id])}}">
-                      <button type="button" class="btn btn-block btn-warning karyawan-img-small" style="border-radius:50%;"><i class="fas fa-edit"></i></button>
-                    </a>
-                  </div>
-                  <div class="inline-flex">
-
-                    <button type="button" class="btn btn-block btn-danger karyawan-img-small deletenoserimodal" style="border-radius:50%;" data-toggle="modal" data-target="#deletenoserimodal" data-attr="{{route('perakitan.hasil.delete', ['id' => $i->id])}}"><i class="fas fa-trash"></i></button>
-
-                  </div>
-                  @else
-                  <div class="inline-flex">
-                    <button type="button" class="btn btn-block btn-warning karyawan-img-small" style="border-radius:50%;" disabled><i class="fas fa-edit"></i></button>
-                  </div>
-                  <div class="inline-flex">
-                    <button type="button" class="btn btn-block btn-danger karyawan-img-small" style="border-radius:50%;" disabled><i class="fas fa-trash"></i></button>
-                  </div>
-                  @endif
-                  @endif
-                </td>
-              </tr>
-              @endforeach
             </tbody>
 
           </table>
@@ -276,6 +236,40 @@
 @section('adminlte_js')
 <script>
   $(function() {
+    $('#example').DataTable({
+      processing: true,
+      serverSide: true,
+      ajax: "{{ route('perakitan.hasil.show', ['id' => $id]) }}",
+      columns: [{
+          data: 'DT_RowIndex',
+          name: 'DT_RowIndex',
+          orderable: false,
+          searchable: false
+        }, {
+          data: 'tanggal',
+          name: 'tanggal'
+        },
+        {
+          data: 'no_seri',
+          name: 'no_seri'
+        },
+        {
+          data: 'operator',
+          name: 'operator'
+        },
+        {
+          data: 'status',
+          name: 'status'
+        },
+        {
+          data: 'aksi',
+          name: 'aksi',
+          orderable: false,
+          searchable: false
+        },
+      ]
+    });
+
     $(document).on('click', '.deletemodal', function(event) {
       event.preventDefault();
       var href = $(this).attr('data-attr');

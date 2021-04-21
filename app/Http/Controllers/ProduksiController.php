@@ -587,6 +587,63 @@ class ProduksiController extends Controller
         return view('page.produksi.perakitan_hasil_show', ['id' => $id, 'sh' => $sh]);
     }
 
+    public function perakitan_hasil_show($id)
+    {
+        $s = HasilPerakitan::where('perakitan_id', $id)->get();
+        return DataTables::of($s)
+            ->addIndexColumn()
+            ->editColumn('tanggal', function ($s) {
+                return Carbon::createFromFormat('Y-m-d', $s->tanggal)->format('d-m-Y');
+            })
+            ->addColumn('operator', function ($s) {
+                $arr = [];
+                foreach ($s->Karyawan as $i) {
+                    array_push($arr, $i->nama);
+                }
+                return implode("<br>", $arr);
+            })
+            ->editColumn('status', function ($s) {
+                $btn = "";
+                if ($s->status == 'dibuat') {
+                    $btn = '<span class="info-text">Draft</span>';
+                } else if ($s->status == 'req_pemeriksaan_terbuka') {
+                    $btn = '<span class="primary-text">Draft</span>';
+                } else if ($s->status == 'acc_pemeriksaan_terbuka') {
+                    $btn = '<span class="success-text">Lanjut Pemeriksaan Tertutup</span>';
+                } else if ($s->status == 'rej_pemeriksaan_terbuka') {
+                    if ($s->tindak_lanjut_terbuka == "operator") {
+                        $btn = '<small class="danger-text">Analisa Produk Spesialis</small>';
+                    } else if ($s->tindak_lanjut_terbuka == "produk_spesialis") {
+                        $btn = '<small class="danger-text">Analisa Produk Spesialis</small>';
+                    }
+                }
+                return $btn;
+            })
+            ->addColumn('aksi', function ($s) {
+                $btn = "";
+                if ($s->Perakitan->status == "0") {
+                    $btn = '<div class="inline-flex">
+                    <a href="{{route(\'perakitan.hasil.edit\', [\'id\' => ' . $s->id . '])}}">
+                      <button type="button" class="btn btn-block btn-warning karyawan-img-small" style="border-radius:50%;"><i class="fas fa-edit"></i></button>
+                    </a>
+                  </div>
+                  <div class="inline-flex">
+                    <button type="button" class="btn btn-block btn-danger karyawan-img-small deletenoserimodal" style="border-radius:50%;" data-toggle="modal" data-target="#deletenoserimodal" data-attr="{{route(\'perakitan.hasil.delete\', [\'id\' => ' . $s->id . '])}}"><i class="fas fa-trash"></i></button>
+                  </div>';
+                } else {
+                    $btn = '<div class="inline-flex">
+                    <button type="button" class="btn btn-block btn-warning karyawan-img-small" style="border-radius:50%;" disabled><i class="fas fa-edit"></i></button>
+                  </div>
+                  <div class="inline-flex">
+                    <button type="button" class="btn btn-block btn-danger karyawan-img-small" style="border-radius:50%;" disabled><i class="fas fa-trash"></i></button>
+                  </div>';
+                }
+                return $btn;
+            })
+            ->rawColumns(['operator', 'status', 'aksi'])
+            ->make(true);
+    }
+
     public function perakitan_hasil_import_store($id, Request $request)
     {
         $v = Validator::make(
@@ -718,5 +775,71 @@ class ProduksiController extends Controller
         $hp->delete();
 
         return redirect()->back();
+    }
+
+    public function pengemasan()
+    {
+        return view('page.produksi.pengemasan_show');
+    }
+
+    public function pengemasan_show()
+    {
+        $p = array();
+        if (Auth::user()->Divisi->nama == "Produksi") {
+            $p = Bppb::has('pengemasan')->get();
+        } else if (Auth::user()->Divisi->nama == "Quality Control") {
+            $p = Bppb::whereHas('pengemasan', function ($query) {
+                $query->whereNotIn('status', ['dibuat']);
+            })->get();
+        }
+        return DataTables::of($p)
+            ->addIndexColumn()
+            ->addColumn('gambar', function ($s) {
+                $gambar = '<img class="product-img-small img-fluid"';
+                if (empty($s->DetailProduk->foto)) {
+                    $gambar .= 'src="{{url(\'assets/image/produk\')}}/noimage.png"';
+                } else if (!empty($s->DetailProduk->foto)) {
+                    $gambar .= 'src="{{asset(\'image/produk/\')}}/' . $s->DetailProduk->foto . '"';
+                }
+                $gambar .= 'title="' . $s->DetailProduk->nama . '">';
+                return $gambar;
+            })
+            ->addColumn('produk', function ($s) {
+                $btn = '<hgroup><h6 class="heading">' . $s->DetailProduk->nama . '</h6><div class="subheading text-muted">' . $s->DetailProduk->Produk->KelompokProduk->nama . '</div></hgroup>';
+                return $btn;
+            })
+            ->editColumn('jumlah', function ($s) {
+                $btn = '<hgroup><h6 class="heading">' . $s->jumlah . " " . $s->DetailProduk->satuan . '</h6><div class="subheading "><small class="purple-text">Produksi saat ini: ' . $s->countHasilPerakitan() . ' ' . $s->DetailProduk->satuan . '</small></div></hgroup>';
+                return $btn;
+            })
+            ->addColumn('laporan', function ($s) {
+                $btn = '<a class="detailmodal" data-toggle="modal" data-target="#detailmodal" data-attr="/pengemasan/laporan/' . $s->id . '" data-id="' . $s->id . '">';
+                $btn .= '<button type="button" class="rounded-pill btn btn-sm btn-info">';
+                $btn .= '<span style="color:white;"><i class="fa fa-search" aria-hidden="true"></i>&nbsp;Detail Laporan</span></button></a>';
+                return $btn;
+            })
+            ->addColumn('aksi', function ($s) {
+                $btn = "";
+                if ($s->jumlah > $s->countHasilPengemasan()) {
+                    $btn = '<a href="/pengemasan/laporan/create/' . $s->id . '">';
+                    $btn .= '<button type="button" class="rounded-pill btn btn-sm btn-primary">';
+                    $btn .= '<span style="color:white;"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Tambah Laporan</a></span></button></a>';
+                } else if ($s->jumlah <= $s->countHasilPengemasan()) {
+                    $btn = '<button type="button" class="rounded-pill btn btn-sm btn-secondary" disabled>
+                      <span style="color:white;"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Tambah Laporan</a></span>
+                    </button>';
+                }
+                return $btn;
+            })
+            ->rawColumns(['gambar', 'produk', 'jumlah', 'laporan', 'aksi'])
+            ->make(true);
+    }
+
+    public function pengemasan_laporan()
+    {
+    }
+
+    public function pengemasan_laporan_show()
+    {
     }
 }

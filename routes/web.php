@@ -264,6 +264,7 @@ Route::delete('/perakitan/laporan/delete/{id}', 'ProduksiController@perakitan_la
 Route::get('/perakitan/laporan/status/{id}/{status}', 'ProduksiController@perakitan_laporan_status')->name('perakitan.laporan.status');
 //HASIL
 Route::get('/perakitan/hasil/{id}', 'ProduksiController@perakitan_hasil')->name('perakitan.hasil');
+Route::get('/perakitan/hasil/show/{id}', 'ProduksiController@perakitan_hasil_show')->name('perakitan.hasil.show');
 /* Create */
 Route::get('/perakitan/hasil/create/{id}', 'ProduksiController@perakitan_hasil_create')->name('perakitan.hasil.create');
 Route::get('/perakitan/hasil/create/get_kode_perakitan_exist_not_in/{bppb}/{no_seri}', 'GetController@get_kode_perakitan_exist_not_in');
@@ -289,7 +290,12 @@ Route::put('/perakitan/pemeriksaan/laporan/update/{id}', 'QCController@perakitan
 /* Hasil */
 Route::get('/perakitan/pemeriksaan/hasil/{id}', 'QCController@perakitan_pemeriksaan_hasil')->name('perakitan.pemeriksaan.hasil');
 Route::get('/perakitan/pemeriksaan/hasil/show/{id}', 'QCController@perakitan_pemeriksaan_hasil_show')->name('perakitan.pemeriksaan.hasil.show');
-/* Edit */
+
+//PENGEMASAN
+Route::get('/pengemasan', 'ProduksiController@pengemasan')->name('pengemasan');
+Route::get('/pengemasan/show', 'ProduksiController@pengemasan_show')->name('pengemasan.show');
+Route::get('/pengemasan/laporan/{id}', 'ProduksiController@pengemasan_laporan')->name('pengemasan.laporan');
+Route::get('/pengemasan/laporan/show/{id}', 'ProduksiController@pengemasan_laporan_show')->name('pengemasan.laporan.show');
 
 
 //GUDANG
