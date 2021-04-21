@@ -280,7 +280,7 @@ return [
             'auth'   => [26]
         ],
         [
-            'text'    => 'Online',
+            'text'    => 'Daftar Pesanan',
             'icon'    => 'fas fa-table',
             'auth' => [26],
             'submenu' => [
@@ -292,27 +292,25 @@ return [
                     'text' => 'E-Commerce',
                     'url'  => '/penjualan_online_ecom',
                 ],
+                [
+                    'text' => 'Offline',
+                    'url'  => '/penjualan_offline',
+                ]
             ],
         ],
         [
-            'text' => 'Offline',
-            'url'  => '/penjualan_offline',
-            'icon' => 'fas fa-table',
-            'auth' => [26]
-        ],
-        [
-            'text'    => 'PO / DO',
+            'text'    => 'Surat Penawaran',
             'icon'    => 'fas fa-table',
             'auth' => [26],
             'submenu' => [
                 [
-                    'text' => 'E-Katalog',
-                    'url'  => '#',
-                ],
-                [
                     'text' => 'E-Commerce',
                     'url'  => '#',
                 ],
+                [
+                    'text' => 'Offline',
+                    'url'  => '/penawaran_offline',
+                ]
             ],
         ],
         [
