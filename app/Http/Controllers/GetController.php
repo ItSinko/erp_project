@@ -7,8 +7,11 @@ use App\Http\Controllers\KategoriProdukController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\BppbController;
 use App\Bppb;
+use App\Produk;
+use App\DetailProduk;
 use App\DivisiInventory;
 use App\HasilPerakitan;
+use App\KategoriProduk;
 use Carbon\Carbon;
 
 class GetController extends Controller
@@ -45,9 +48,33 @@ class GetController extends Controller
         echo json_encode($s);
     }
 
+    //KATEGORI PRODUK
+    public function get_kategori_produk_by_kelompok_produk($kelompok_produk_id)
+    {
+        $s = KategoriProduk::where('kelompok_produk_id', $kelompok_produk_id)->get();
+        echo json_encode($s);
+    }
+
+    //DETAIL PRODUK
+    public function get_detail_produk_by_kelompok_produk($kelompok_produk_id)
+    {
+        $s = DetailProduk::whereHas('Produk', function ($q) use ($kelompok_produk_id) {
+            $q->where('kelompok_produk_id', '=', $kelompok_produk_id);
+        })->get();
+        echo json_encode($s);
+    }
+
+    public function get_detail_produk_by_id($id)
+    {
+        $s = DetailProduk::with('Produk')->where('id', $id)->get();
+        echo json_encode($s);
+    }
+
+
+    //PRODUK
     public function get_tipe_produk_exist($tipe)
     {
-        $s = $this->ProdukController->show_tipe_exist($tipe);
+        $s = Produk::where('tipe', $tipe)->count();
         echo json_encode($s);
     }
 
@@ -69,10 +96,13 @@ class GetController extends Controller
         echo json_encode($s);
     }
 
-    public function get_bppb_produk_count_by_year($tahun, $produk_id)
+    public function get_bppb_detail_produk_count_by_year($tahun, $produk_id)
     {
-
-        $c = $this->BppbController->count_produk_by_year($produk_id, $tahun);
+        $tahun1 = $tahun . '-01-01';
+        $tahun2 = $tahun . '-12-31';
+        $c = Bppb::where('detail_produk_id', $produk_id)
+            ->whereBetween('tanggal_bppb', [$tahun1, $tahun2])
+            ->count();
         echo json_encode($c);
 
         //echo json_encode($c);
@@ -86,7 +116,7 @@ class GetController extends Controller
 
     public function get_bppb($bppb_id)
     {
-        $s = $this->BppbController->show($bppb_id);
+        $s = Bppb::with('DetailProduk')->where('id', $bppb_id)->get();
         echo json_encode($s);
     }
 

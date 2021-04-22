@@ -21,8 +21,6 @@
 @stop
 
 @section('content')
-
-
 <section class="content">
   <div class="container-fluid">
     <div class="row">
@@ -36,17 +34,17 @@
 
             <div class="card-body box-profile">
               <div class="text-center">
-                <img class="product-img-small img-fluid" @if(empty($s->Perakitan->Bppb->Produk->foto))
+                <img class="product-img-small img-fluid" @if(empty($s->Perakitan->Bppb->DetailProduk->foto))
                 src="{{url('assets/image/produk')}}/noimage.png"
-                @elseif(!empty($s->Perakitan->Bppb->Produk->foto))
-                src="{{url('assets/image/produk')}}/{{$s->Perakitan->Bppb->Produk->foto}}"
+                @elseif(!empty($s->Perakitan->Bppb->DetailProduk->foto))
+                src="{{url('assets/image/produk')}}/{{$s->Perakitan->Bppb->DetailProduk->foto}}"
                 @endif
-                title="{{$s->Perakitan->Bppb->Produk->nama}}"
+                title="{{$s->Perakitan->Bppb->DetailProduk->nama}}"
                 >
               </div>
               <div style="text-align:center;vertical-align:center;padding-top:10px">
-                <h5 class="card-heading">{{$s->Perakitan->Bppb->Produk->tipe}}</h5>
-                <h6 class="card-subheading text-muted">{{$s->Perakitan->Bppb->Produk->nama}}</h6>
+                <h5 class="card-heading">{{$s->Perakitan->Bppb->DetailProduk->nama}}</h5>
+                <h6 class="card-subheading text-muted">{{$s->Perakitan->Bppb->DetailProduk->Produk->nama}}</h6>
               </div>
             </div>
 
@@ -152,16 +150,6 @@
                       <span id="no_seri-message" role="alert"></span>
                     </div>
                   </div>
-
-                  <div class="form-group row">
-                    <label for="warna" class="col-sm-4 col-form-label" style="text-align:right;">Warna</label>
-                    <div class="col-sm-6">
-                      <input type="text" class="form-control @error('warna') is-invalid @enderror" name="warna" id="warna" value="{{$s->warna}}" style="width: 30%;">
-                      @if ($errors->has('warna'))
-                      <span class="invalid-feedback" role="alert">{{$errors->first('warna')}}</span>
-                      @endif
-                    </div>
-                  </div>
                 </div>
 
 
@@ -216,6 +204,7 @@
   </div>
 </section>
 @endsection
+
 @section('adminlte_js')
 <script>
   var ids = "{{$id}}";

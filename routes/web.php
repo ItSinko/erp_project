@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CommonController;
+use App\Http\Controllers\GetController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -124,6 +125,10 @@ Route::get('/penjualan_online_ecom/data', 'PenjualanController@penjualan_online_
 Route::get('/penjualan_online_ecom/detail/data/{id}', 'PenjualanController@detail_penjualan_online_ecom_data');
 Route::get('/penjualan_online_ecom/detail/data/edit/{id}', 'PenjualanController@detail_penjualan_online_ecom_data_edit');
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 61f74974f5de6b1b4ce7d02bf560ade01b452c0a
 // PENJUALAN OFFLINE
 /* Get Data */
 Route::get('/penjualan_offline/data', 'PenjualanController@penjualan_offline_data');
@@ -160,6 +165,7 @@ Route::put('/penawaran_offline/aksi_ubah/{id}', 'PenjualanController@penawaran_o
 /*Detail*/
 Route::get('/penawaran_offline/data/detail/{id}', 'PenjualanController@detail_penjualan_offline_data');
 
+<<<<<<< HEAD
 //PENAWARAN ECOM
 /*Table*/
 Route::get('/penawaran_ecom', 'PenjualanController@penawaran_ecom');
@@ -213,19 +219,28 @@ Route::put('/podo_offline/aksi_ubah/{id}', 'PenjualanController@podo_offline_aks
 /* File View */
 Route::get('/podo_offline/file{nama}', 'PenjualanController@podo_offline_file');
 
+=======
+>>>>>>> 61f74974f5de6b1b4ce7d02bf560ade01b452c0a
 //GET DATA SELECT
 /* Get Data */
 Route::get('/produk/get_select/{id}', 'CommonController@produk_get_select');
 
+
 //PRODUK
 Route::get('/produk', 'ItController@produk')->name('produk');
+Route::get('/produk/show', 'ItController@produk_show')->name('produk.show');
 /* Create */
-Route::get('/produk/create', 'ItController@tambah_produk')->name('produk.create');
-Route::post('/produk/store', 'ItController@store_produk')->name('produk.store');
+Route::get('/produk/create', 'ItController@produk_create')->name('produk.create');
+Route::get('/produk/create/get_kategori_produk_by_kelompok_produk/{kelompok_produk_id}', 'GetController@get_kategori_produk_by_kelompok_produk');
+Route::get('/produk/create/get_tipe_produk_exist/{kelompok_produk_id}', 'GetController@get_tipe_produk_exist');
+Route::post('/produk/store', 'ItController@produk_store')->name('produk.store');
 /* Edit */
-Route::get('/produk/edit/{id}',  'ItController@edit_produk')->name('produk.edit');
-Route::put('/produk/update/{id}',  'ItController@update_produk')->name('produk.update');
-Route::put('/produk/delete/{id}', 'ItController@delete_produk')->name('produk.delete');
+Route::get('/produk/edit/{id}',  'ItController@produk_edit')->name('produk.edit');
+Route::put('/produk/update/{id}',  'ItController@produk_update')->name('produk.update');
+Route::put('/produk/delete/{id}', 'ItController@produk_delete')->name('produk.delete');
+/* Detail */
+Route::get('/produk/detail', 'ItController@produk_detail')->name('produk.detail');
+Route::get('/produk/detail/show/{id}', 'ItController@produk_detail_show')->name('produk.detail.show');
 
 
 
@@ -264,6 +279,7 @@ Route::delete('/peminjaman/alat/delete/{id}', 'ItController@peminjaman_alat_dele
 /*Status*/
 Route::get('/peminjaman/alat/status/{id}/{status}', 'ItController@peminjaman_alat_status')->name('peminjaman.alat.status');
 
+
 //COMMON
 Route::get('/template_form_delete', 'ItController@template_form_delete')->name('template_form_delete');
 Route::get('/form-template', 'ItController@form_template')->name('form-template');
@@ -289,22 +305,22 @@ Route::get('/peminjaman/karyawan/detail/edit/{id}/{karyawan_id}', 'ItController@
 Route::put('/peminjaman/karyawan/detail/update/{id}/{karyawan_id}', 'ItController@peminjaman_karyawan_detail_update')->name('peminjaman.karyawan.detail.update');
 Route::get('/peminjaman/karyawan/detail/status/{id}/{karyawan_id}/{status}', 'ItController@peminjaman_karyawan_detail_status')->name('peminjaman.karyawan.detail.status');
 
+
 //BPPB
 Route::get('/bppb', 'PpicController@bppb')->name('bppb');
 Route::get('/bppb/show', 'PpicController@bppb_show')->name('bppb.show');
 /* Create */
 Route::get('/bppb/create', 'PpicController@bppb_create')->name('bppb.create');
-Route::get('/bppb/get_kategori_produk/{kelompok_produk_id}', 'GetController@get_kategori_produk');
-Route::get('/bppb/get_produk_by_kelompok/{kelompok_produk_id}', 'GetController@get_produk_by_kelompok');
-Route::get('/bppb/get_produk_by_kategori/{kategori_id}', 'GetController@get_produk_by_kategori');
-Route::get('/bppb/get_kategori_by_produk/{produk_id}', 'GetController@get_kategori_by_produk');
-Route::get('/bppb/get_detail_produk_id/{produk_id}', 'GetController@get_detail_produk_id');
+Route::get('/bppb/create/get_detail_produk_by_kelompok_produk/{kelompok_produk_id}', 'GetController@get_detail_produk_by_kelompok_produk');
+Route::get('/bppb/create/get_detail_produk_by_id/{id}', 'GetController@get_detail_produk_by_id');
+Route::get('/bppb/create/get_bppb_detail_produk_count_by_year/{tahun}/{produk_id}', 'GetController@get_bppb_detail_produk_count_by_year');
 Route::get('/bppb/get_bppb_produk_count_by_year/{tahun}/{produk_id}', 'GetController@get_bppb_produk_count_by_year');
 Route::post('/bppb/store', 'PpicController@bppb_store')->name('bppb.store');
 /* Edit */
 Route::get('/bppb/edit/{id}', 'PpicController@bppb_edit')->name('bppb.edit');
-Route::get('/bppb/edit/get_produk_by_kelompok/{kelompok_produk_id}', 'GetController@get_produk_by_kelompok');
-Route::get('/bppb/edit/get_bppb_produk_count_by_year/{tahun}/{produk_id}', 'GetController@get_bppb_produk_count_by_year');
+Route::get('/bppb/edit/get_detail_produk_by_kelompok_produk/{kelompok_produk_id}', 'GetController@get_detail_produk_by_kelompok_produk');
+Route::get('/bppb/edit/get_detail_produk_by_id/{id}', 'GetController@get_detail_produk_by_id');
+Route::get('/bppb/edit/get_bppb_detail_produk_count_by_year/{tahun}/{produk_id}', 'GetController@get_bppb_detail_produk_count_by_year');
 Route::put('/bppb/update/{id}', 'PpicController@bppb_update')->name('bppb.update');
 /* Delete */
 Route::delete('/bppb/delete/{id}', 'PpicController@bppb_delete')->name('bppb.delete');
@@ -317,12 +333,12 @@ Route::get('/perakitan/laporan/{id}', 'ProduksiController@perakitan_laporan')->n
 Route::get('/perakitan/laporan/show/{id}', 'ProduksiController@perakitan_laporan_show')->name('perakitan.laporan.show');
 /* Create dari BPPB */
 Route::get('/perakitan/create', 'ProduksiController@perakitan_create')->name('perakitan.create');
-Route::get('/perakitan/get_bppb/{bppb_id}', 'GetController@get_bppb');
-Route::get('/perakitan/get_no_seri_exist/{no_seri}', 'GetController@get_no_seri_exist');
+Route::get('/perakitan/create/get_bppb/{bppb_id}', 'GetController@get_bppb');
+Route::get('/perakitan/create/get_kode_perakitan_exist_not_in/{bppb}/{no_seri}', 'GetController@get_kode_perakitan_exist_not_in');
 Route::post('/perakitan/store', 'ProduksiController@perakitan_store')->name('perakitan.store');
 /* Create */
 Route::get('/perakitan/laporan/create/{bppb_id}', 'ProduksiController@perakitan_laporan_create')->name('perakitan.laporan.create');
-Route::get('/perakitan/laporan/create/get_no_seri_exist/{no_seri}', 'GetController@get_no_seri_exist');
+Route::get('/perakitan/laporan/create/get_kode_perakitan_exist_not_in/{bppb}/{no_seri}', 'GetController@get_kode_perakitan_exist_not_in');
 Route::put('/perakitan/laporan/store/{bppb_id}', 'ProduksiController@perakitan_laporan_store')->name('perakitan.laporan.store');
 /* Edit */
 Route::get('/perakitan/laporan/edit/{id}', 'ProduksiController@perakitan_laporan_edit')->name('perakitan.laporan.edit');
@@ -331,11 +347,14 @@ Route::get('/perakitan/laporan/edit/get_kode_perakitan_exist_not_in_id/{bppb}/{i
 Route::put('/perakitan/laporan/update/{id}', 'ProduksiController@perakitan_laporan_update')->name('perakitan.laporan.update');
 /* Delete */
 Route::delete('/perakitan/laporan/delete/{id}', 'ProduksiController@perakitan_laporan_delete')->name('perakitan.laporan.delete');
+/* Status */
+Route::get('/perakitan/laporan/status/{id}/{status}', 'ProduksiController@perakitan_laporan_status')->name('perakitan.laporan.status');
 //HASIL
 Route::get('/perakitan/hasil/{id}', 'ProduksiController@perakitan_hasil')->name('perakitan.hasil');
+Route::get('/perakitan/hasil/show/{id}', 'ProduksiController@perakitan_hasil_show')->name('perakitan.hasil.show');
 /* Create */
 Route::get('/perakitan/hasil/create/{id}', 'ProduksiController@perakitan_hasil_create')->name('perakitan.hasil.create');
-Route::get('/perakitan/hasil/get_no_seri_exist/{no_seri}', 'GetController@get_no_seri_exist');
+Route::get('/perakitan/hasil/create/get_kode_perakitan_exist_not_in/{bppb}/{no_seri}', 'GetController@get_kode_perakitan_exist_not_in');
 Route::put('/perakitan/hasil/store/{id}', 'ProduksiController@perakitan_hasil_store')->name('perakitan.hasil.store');
 /* Import */
 Route::put('/perakitan/hasil/import/{id}', 'ProduksiController@perakitan_hasil_import_store')->name('perakitan.hasil.import');
@@ -345,10 +364,31 @@ Route::get('/perakitan/hasil/edit/get_kode_perakitan_exist_not_in_id/{bppb}/{id}
 Route::put('/perakitan/hasil/update/{id}', 'ProduksiController@perakitan_hasil_update')->name('perakitan.hasil.update');
 /* Delete */
 Route::delete('/perakitan/hasil/delete/{id}', 'ProduksiController@perakitan_hasil_delete')->name('perakitan.hasil.delete');
+/* Status */
+Route::get('/perakitan/hasil/status/{id}/{status}', 'ProduksiController@perakitan_hasil_status')->name('perakitan.hasil.status');
+//PEMERIKSAAN
+Route::get('/perakitan/pemeriksaan', 'QCController@perakitan_pemeriksaan')->name('perakitan.pemeriksaan');
+Route::get('/perakitan/pemeriksaan/show', 'QCController@perakitan_pemeriksaan_show')->name('perakitan.pemeriksaan.show');
+Route::get('/perakitan/pemeriksaan/laporan', 'QCController@perakitan_pemeriksaan_laporan')->name('perakitan.pemeriksaan.laporan');
+Route::get('/perakitan/pemeriksaan/laporan/show/{id}', 'QCController@perakitan_pemeriksaan_laporan_show')->name('perakitan.pemeriksaan.laporan.show');
+/* Edit */
+Route::get('/perakitan/pemeriksaan/laporan/edit/{id}', 'QCController@perakitan_pemeriksaan_laporan_edit')->name('perakitan.pemeriksaan.laporan.edit');
+Route::put('/perakitan/pemeriksaan/laporan/update/{id}', 'QCController@perakitan_pemeriksaan_laporan_update')->name('perakitan.pemeriksaan.laporan.update');
+/* Hasil */
+Route::get('/perakitan/pemeriksaan/hasil/{id}', 'QCController@perakitan_pemeriksaan_hasil')->name('perakitan.pemeriksaan.hasil');
+Route::get('/perakitan/pemeriksaan/hasil/show/{id}', 'QCController@perakitan_pemeriksaan_hasil_show')->name('perakitan.pemeriksaan.hasil.show');
+
+//PENGEMASAN
+Route::get('/pengemasan', 'ProduksiController@pengemasan')->name('pengemasan');
+Route::get('/pengemasan/show', 'ProduksiController@pengemasan_show')->name('pengemasan.show');
+Route::get('/pengemasan/laporan/{id}', 'ProduksiController@pengemasan_laporan')->name('pengemasan.laporan');
+Route::get('/pengemasan/laporan/show/{id}', 'ProduksiController@pengemasan_laporan_show')->name('pengemasan.laporan.show');
+
 
 //GUDANG
 Route::get('/gudang', 'GudangController@index')->name('gudang');
 Route::get('/gudang/data', 'GudangController@get_data')->name('gudang.data');
+
 
 //PPIC
 Route::get('/ppic', 'PpicController@index');

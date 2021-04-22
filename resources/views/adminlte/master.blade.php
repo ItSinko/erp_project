@@ -120,6 +120,7 @@
                 placeholder: "Pilih Data",
                 allowClear: true
             });
+            
         })
     </script>
 

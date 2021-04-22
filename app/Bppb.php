@@ -4,16 +4,17 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Perakitan;
-use App\HasilPerakitan;
+use App\Pengemasan;
+use App\DetailProduk;
 use App\Divisi;
 
 class Bppb extends Model
 {
-    protected $fillable = ['produk_id', 'no_bppb', 'tanggal_bppb', 'divisi_id', 'jumlah'];
-    
-    public function Produk()
+    protected $fillable = ['detail_produk_id', 'no_bppb', 'tanggal_bppb', 'divisi_id', 'jumlah'];
+
+    public function DetailProduk()
     {
-        return $this->belongsTo(Produk::class);
+        return $this->belongsTo(DetailProduk::class);
     }
 
     public function Divisi()
@@ -31,10 +32,27 @@ class Bppb extends Model
         $count = 0;
         $k = $this->Perakitan;
 
-        foreach($k as $l)
-        {
+        foreach ($k as $l) {
             $m = Perakitan::find($l->id);
             $count = $count + $m->HasilPerakitan->count();
+        }
+
+        return $count;
+    }
+
+    public function Pengemasan()
+    {
+        return $this->hasMany(Pengemasan::class);
+    }
+
+    public function countHasilPengemasan()
+    {
+        $count = 0;
+        $k = $this->Pengemasan;
+
+        foreach ($k as $l) {
+            $m = Pengemasan::find($l->id);
+            $count = $count + $m->HasilPengemasan->count();
         }
 
         return $count;

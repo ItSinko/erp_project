@@ -3,11 +3,6 @@
 @section('title', 'Beta Version')
 
 @section('content_header')
-<h1 class="m-0 text-dark">Dashboard</h1>
-@stop
-
-
-@section('content')
 <section class="content-header">
   <div class="container-fluid">
     <div class="row mb-2">
@@ -23,241 +18,225 @@
     </div>
   </div>
 </section>
+@stop
 
+
+@section('content')
 <section class="content">
   <div class="container-fluid">
     <div class="row">
       <!-- left column -->
       <div class="col-md-12">
+        @if(session()->has('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <strong><i class="fas fa-check"></i></strong> {{session()->get('success')}}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        @elseif(session()->has('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <strong><i class="fas fa-times"></i></strong> {{session()->get('error')}}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        @elseif(count($errors) > 0)
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <strong><i class="fas fa-times"></i></strong> Lengkapi data terlebih dahulu
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        @endif
+
         <div class="card">
-          <div class="card-header" style="background-color: #3c8dbc;">
-            <h3 class="card-title" style="color:white;"><i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;Tambah Produk Baru</h3>
+          <div class="card-header bg-success">
+            <h3 class="card-title"><i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;Tambah Produk</h3>
           </div>
           <div class="card-body">
-
             <div class="col-md-12">
-
-              @if(session()->has('success'))
-              <div class="alert alert-success" role="alert">
-                Berhasil menambahkan produk
-              </div>
-              @elseif(session()->has('error') || count($errors) > 0)
-              <div class="alert alert-danger" role="alert">
-                Gagal menambahkan produk
-              </div>
-              @endif
               <form id="form-tambah-produk" action="{{ route('produk.store') }}" method="post">
                 {{ csrf_field() }}
 
-                <div class="card">
-                  <div class="card-header">
-                    <h3 class="card-title"><i class="fa fa-info-circle"></i>&nbsp;Informasi Umum</h3>
-                  </div>
-                  <!-- /.card-header -->
-                  <!-- form start -->
-                  <div class="form-horizontal">
-                    <div class="card-body">
-
-                      <div class="form-group row">
-                        <label for="fk_kategori" class="col-sm-3 col-form-label" style="text-align:right;">Kategori</label>
-                        <div class="col-sm-9">
-                          <select class="form-control select2 select2-info" data-dropdown-css-class="select2-info" style="width: 50%;" name="kelompok_produk_id">
-                            @foreach($k as $i)
-                            <option value="{{$i->id}}">{{$i->nama}}</option>
-                            @endforeach
-                          </select>
-                          @if ($errors->has('kelompok_produk_id'))
-                          <span class="invalid-feedback" role="alert">{{$errors->first('kelompok_produk_id')}}</span>
-                          @endif
-                        </div>
-                      </div>
-
-
-                      <div class="form-group row">
-                        <label for="fk_kategori" class="col-sm-3 col-form-label" style="text-align:right;">Sub Kategori</label>
-                        <div class="col-sm-9">
-                          <select class="form-control select2 select2-info" data-dropdown-css-class="select2-info" style="width: 50%;" name="kategori_id">
-                            <option value="">-- Pilih Kategori --</option>
-                          </select>
-                          @if ($errors->has('kategori_id'))
-                          <span class="invalid-feedback" role="alert">{{$errors->first('kategori_id')}}</span>
-                          @endif
-                        </div>
-                      </div>
-
-                      <div class="form-group row">
-                        <label for="produk" class="col-sm-3 col-form-label" style="text-align:right;">Tipe Produk</label>
-                        <div class="col-sm-9">
-                          <input type="text" class="form-control @error('tipe') is-invalid @enderror" name="tipe" id="tipe" value="{{old('tipe')}}" style="width: 30%;">
-                          <span id="tipe-message" role="alert"></span>
-                          @if ($errors->has('tipe'))
-                          <span class="invalid-feedback" role="alert">{{$errors->first('tipe')}}</span>
-                          @endif
-                        </div>
-                      </div>
-
-                      <div class="form-group row">
-                        <label for="produk" class="col-sm-3 col-form-label" style="text-align:right;">Merk Produk</label>
-                        <div class="col-sm-9">
-                          <select class="form-control select2 select2-info" data-dropdown-css-class="select2-info" style="width: 30%;" name="merk">
-                            <option value="elitech">Elitech</option>
-                            <option value="mentor">Mentor</option>
-                            <option value="aelous">Aeolus</option>
-                            <option value="vanward">Vanward</option>
-                            <option value="other">Other</option>
-                          </select>
-                        </div>
-                      </div>
-
-                      <div class="form-group row">
-                        <label for="produk" class="col-sm-3 col-form-label" style="text-align:right;">Nama Produk</label>
-                        <div class="col-sm-9">
-                          <input type="text" class="form-control @error('nama') is-invalid @enderror " name="nama" id="nama" value="{{old('nama')}}" style="width: 60%;">
-                          @if ($errors->has('nama'))
-                          <span class="invalid-feedback" role="alert">{{$errors->first('nama')}}</span>
-                          @endif
-                        </div>
-                      </div>
-
-                      <div class="form-group row">
-                        <label for="produk" class="col-sm-3 col-form-label" style="text-align:right;">Gambar</label>
-                        <div class="col-sm-9">
-                          <input type="file" class="form-control" name="image" class="image" id="image" value="{{old('foto')}}" style="width: 25%;">
-                        </div>
-                      </div>
-
-                      <div class="form-group row">
-                        <label for="produk" class="col-sm-3 col-form-label" style="text-align:right;">Keterangan</label>
-                        <div class="col-sm-9">
-                          <textarea class="form-control @error('keterangan') is-invalid @enderror " name="keterangan" id="keterangan" value="{{old('keterangan')}}"></textarea>
-                          @if ($errors->has('keterangan'))
-                          <span class="invalid-feedback" role="alert">{{$errors->first('keterangan')}}</span>
-                          @endif
-                        </div>
-                      </div>
-
+                <h3>Tentang Produk</h3>
+                <div class="form-horizontal">
+                  <div class="form-group row">
+                    <label for="kelompok_produk_id" class="col-sm-4 col-form-label" style="text-align:right;">Kelompok</label>
+                    <div class="col-sm-8">
+                      <select class="form-control select2 select2-info" data-dropdown-css-class="select2-info" style="width: 50%;" name="kelompok_produk_id" data-placeholder="Pilih Kelompok Produk">
+                        <option value=""></option>
+                        @foreach($k as $i)
+                        <option value="{{$i->id}}">{{$i->nama}}</option>
+                        @endforeach
+                      </select>
+                      @if ($errors->has('kelompok_produk_id'))
+                      <span class="invalid-feedback" role="alert">{{$errors->first('kelompok_produk_id')}}</span>
+                      @endif
                     </div>
-
                   </div>
-                </div>
 
-                <div class="card">
-                  <div class="card-header">
-                    <h3 class="card-title"><i class="fa fa-info-circle"></i>&nbsp;Informasi Spesifik</h3>
+                  <div class="form-group row">
+                    <label for="kategori_id" class="col-sm-4 col-form-label" style="text-align:right;">Kategori Produk</label>
+                    <div class="col-sm-8">
+                      <select class="form-control select2 select2-info" data-dropdown-css-class="select2-info" style="width: 50%;" name="kategori_id" data-placeholder="Pilih Kategori Produk">
+                        <option value=""></option>
+                      </select>
+                      @if ($errors->has('kategori_id'))
+                      <span class="invalid-feedback" role="alert">{{$errors->first('kategori_id')}}</span>
+                      @endif
+                    </div>
                   </div>
-                  <div class="form-horizontal">
-                    <div class="card-body">
 
-                      <div class="form-group row">
-                        <label for="produk" class="col-sm-3 col-form-label" style="text-align:right;">Kode Produk</label>
-                        <div class="col-sm-9">
-                          <input type="text" class="form-control" name="kode" id="kode" value="{{old('kode')}}" style="width: 25%;">
-                          @if ($errors->has('kode'))
-                          <span class="invalid-feedback" role="alert">{{$errors->first('kode')}}</span>
-                          @endif
-                        </div>
-                      </div>
+                  <div class="form-group row">
+                    <label for="produk" class="col-sm-4 col-form-label" style="text-align:right;">Tipe Produk</label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control @error('tipe') is-invalid @enderror" name="tipe" id="tipe" value="{{old('tipe')}}" style="width: 30%;">
+                      <span id="tipe-message" role="alert"></span>
+                      @if ($errors->has('tipe'))
+                      <span class="invalid-feedback" role="alert">{{$errors->first('tipe')}}</span>
+                      @endif
+                    </div>
+                  </div>
 
-                      <div class="form-group row">
-                        <label for="produk" class="col-sm-3 col-form-label" style="text-align:right;">Kode Barcode</label>
-                        <div class="col-sm-9">
-                          <input type="text" class="form-control @error('kode_barcode') is-invalid @enderror " name="kode_barcode" id="kode_barcode" value="{{old('kode_barcode')}}" style="width: 15%;">
-                          @if ($errors->has('kode_barcode'))
-                          <span class="invalid-feedback" role="alert">{{$errors->first('kode_barcode')}}</span>
-                          @endif
-                        </div>
-                      </div>
+                  <div class="form-group row">
+                    <label for="produk" class="col-sm-4 col-form-label" style="text-align:right;">Merk Produk</label>
+                    <div class="col-sm-8">
+                      <select class="form-control select2 select2-info" data-dropdown-css-class="select2-info" style="width: 30%;" name="merk" data-placeholder="Pilih Merk">
+                        <option value=""></option>
+                        <option value="elitech">Elitech</option>
+                        <option value="mentor">Mentor</option>
+                        <option value="aelous">Aeolus</option>
+                        <option value="vanward">Vanward</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </div>
+                  </div>
 
-                      <div class="form-group row">
-                        <label for="produk" class="col-sm-3 col-form-label" style="text-align:right;">Nama COO</label>
-                        <div class="col-sm-9">
-                          <input type="text" class="form-control" name="nama_coo" id="nama_coo" value="{{old('nama_coo')}}" style="width: 35%;">
-                          @if ($errors->has('nama_coo'))
-                          <span class="invalid-feedback" role="alert">{{$errors->first('nama_coo')}}</span>
-                          @endif
-                        </div>
-                      </div>
-
-                      <div class="form-group row">
-                        <label for="produk" class="col-sm-3 col-form-label" style="text-align:right;">No AKD</label>
-                        <div class="col-sm-9">
-                          <input type="text" class="form-control @error('no_akd') is-invalid @enderror " name="no_akd" id="no_akd" value="{{old('no_akd')}}" style="width: 35%;">
-                          @if ($errors->has('no_akd'))
-                          <span class="invalid-feedback" role="alert">{{$errors->first('no_akd')}}</span>
-                          @endif
-                        </div>
-                      </div>
-
+                  <div class="form-group row">
+                    <label for="produk" class="col-sm-4 col-form-label" style="text-align:right;">Nama Produk</label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control @error('nama') is-invalid @enderror " name="nama" id="nama" value="{{old('nama')}}" style="width: 60%;">
+                      @if ($errors->has('nama'))
+                      <span class="invalid-feedback" role="alert">{{$errors->first('nama')}}</span>
+                      @endif
                     </div>
                   </div>
                 </div>
 
-                <div class="card">
-                  <div class="card-header">
-                    <h3 class="card-title"><i class="fa fa-info-circle"></i>&nbsp;Info Dimensi</h3>
+
+                <h3>Informasi</h3>
+                <div class="form-horizontal">
+                  <div class="form-group row">
+                    <label for="produk" class="col-sm-4 col-form-label" style="text-align:right;">Kode Barcode</label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control @error('kode_barcode') is-invalid @enderror " name="kode_barcode" id="kode_barcode" value="{{old('kode_barcode')}}" style="width: 15%;">
+                      @if ($errors->has('kode_barcode'))
+                      <span class="invalid-feedback" role="alert">{{$errors->first('kode_barcode')}}</span>
+                      @endif
+                    </div>
                   </div>
-                  <!-- /.card-header -->
-                  <!-- form start -->
 
-                  <div class="form-horizontal">
-                    <div class="card-body">
-                      <div class="form-group row">
-                        <label for="berat" class="col-sm-3 col-form-label" style="text-align:right;">Berat</label>
-                        <div class="col-sm-9">
-                          <input type="number" class="form-control" id="berat" name="berat" value="{{old('berat')}}" style="width: 10%;">
-                          <div id="message"></div>
-                          @if ($errors->has('berat'))
-                          <span class="invalid-feedback" role="alert">{{$errors->first('berat')}}</span>
-                          @endif
-                        </div>
-                      </div>
+                  <div class="form-group row">
+                    <label for="produk" class="col-sm-4 col-form-label" style="text-align:right;">Nama COO</label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control" name="nama_coo" id="nama_coo" value="{{old('nama_coo')}}" style="width: 35%;">
+                      @if ($errors->has('nama_coo'))
+                      <span class="invalid-feedback" role="alert">{{$errors->first('nama_coo')}}</span>
+                      @endif
+                    </div>
+                  </div>
 
-                      <div class="form-group row">
-                        <label for="satuan" class="col-sm-3 col-form-label" style="text-align:right;">Satuan</label>
-                        <div class="col-sm-9">
-                          <select class="form-control select2 select2-info" data-dropdown-css-class="select2-info" style="width: 15%;" name="satuan">
-                            <option value="unit">Unit</option>
-                            <option value="pcs">Pcs</option>
-                            <option value="pack">Pack</option>
-                            <option value="set">Set</option>
-                            <option value="dus">Dus</option>
-                            <option value="meter">Meter</option>
-                            <option value="roll">Roll</option>
-                          </select>
-                          <div id="message"></div>
-                          @if ($errors->has('satuan'))
-                          <span class="invalid-feedback" role="alert">{{$errors->first('satuan')}}</span>
-                          @endif
-                        </div>
-                      </div>
+                  <div class="form-group row">
+                    <label for="produk" class="col-sm-4 col-form-label" style="text-align:right;">No AKD</label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control @error('no_akd') is-invalid @enderror " name="no_akd" id="no_akd" value="{{old('no_akd')}}" style="width: 35%;">
+                      @if ($errors->has('no_akd'))
+                      <span class="invalid-feedback" role="alert">{{$errors->first('no_akd')}}</span>
+                      @endif
+                    </div>
+                  </div>
 
+                  <div class="form-group row">
+                    <label for="produk" class="col-sm-4 col-form-label" style="text-align:right;">Keterangan</label>
+                    <div class="col-sm-8">
+                      <textarea class="form-control @error('keterangan') is-invalid @enderror" name="keterangan" id="keterangan" value="{{old('keterangan')}}"></textarea>
+                      @if ($errors->has('keterangan'))
+                      <span class="invalid-feedback" role="alert">{{$errors->first('keterangan')}}</span>
+                      @endif
                     </div>
                   </div>
                 </div>
 
-                <span>
-                  <button type="button" class="btn btn-block btn-danger" style="width:200px;float:left;">Batal</button>
-                </span>
-                <span>
-                  <button type="submit" class="btn btn-block btn-success" style="width:200px;float:right;">Tambahkan</button>
-                </span>
-              </form>
+                <h3>Detail Produk</h3>
+                <div class="form-horizontal">
+                  <div class="form-group row">
+                    <table id="tableitem" class="table table-hover">
+                      <thead style="text-align: center;">
+                        <tr>
+                          <th>No</th>
+                          <th>Kode</th>
+                          <th>Nama</th>
+                          <th>Harga</th>
+                          <th>Berat</th>
+                          <th>Satuan</th>
+                          <th>Keterangan</th>
+                          <th>Aksi</th>
+                        </tr>
+                      </thead>
+                      <tbody style="text-align:center;">
+                        <tr>
+                          <td>1</td>
+                          <td><input type="text" class="form-control @error('kode') is-invalid @enderror" name="kode[]" id="kode" value="{{old('kode')}}"></td>
+                          <td>
+                            <div class="form-group row">
+                              <input type="text" class="form-control @error('nama_detail1') is-invalid @enderror col-sm-4" name="nama_detail1[]" id="nama_detail1" value="{{old('nama_detail1')}}">
+                              <input type="text" class="form-control @error('nama_detail2') is-invalid @enderror col-sm-8" name="nama_detail2[]" id="nama_detail2" value="{{old('nama_detail2')}}">
+                            </div>
+                          </td>
+                          <td><input type="text" class="form-control @error('harga') is-invalid @enderror" name="harga[]" id="harga" value="{{old('harga')}}"></td>
+                          <td><input type="number" class="form-control @error('berat') is-invalid @enderror" name="berat[]" id="berat" value="{{old('berat')}}"></td>
+                          <td>
+                            <select class="form-control select2 select2-info satuan" data-placeholder="Pilih Satuan" data-dropdown-css-class="select2-info" name="satuan[]" id="satuan">
+                              <option value="unit">Unit</option>
+                              <option value="pcs">Pcs</option>
+                              <option value="pack">Pack</option>
+                              <option value="set">Set</option>
+                              <option value="dus">Dus</option>
+                              <option value="meter">Meter</option>
+                              <option value="roll">Roll</option>
+                            </select>
+                          </td>
+                          <td>
+                            <textarea class="form-control @error('keterangan_detail') is-invalid @enderror " name="keterangan_detail[]" id="keterangan_detail">{{old('keterangan_detail')}}</textarea>
+                          </td>
+                          <td><button type="button" class="btn btn-success karyawan-img-small" style="border-radius:50%;" id="tambahitem"><i class="fas fa-plus-circle"></i></button></td>
+                        </tr>
+                      </tbody>
+
+                    </table>
+                  </div>
+                </div>
             </div>
-            <!-- /.card -->
-
+          </div>
+          <div class="card-footer"><span>
+              <button type="button" class="btn btn-block btn-danger rounded-pill" style="width:200px;float:left;"><i class="fas fa-times"></i>&nbsp;Batal</button>
+            </span>
+            <span>
+              <button type="submit" class="btn btn-block btn-success rounded-pill" style="width:200px;float:right;"><i class="fas fa-plus"></i>&nbsp;Tambahkan</button>
+            </span>
           </div>
         </div>
+        </form>
       </div>
-
     </div>
-    <!-- /.row -->
-  </div><!-- /.container-fluid -->
+  </div>
 
   <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="modalLabel">Laravel Crop Image Before Upload using Cropper JS - NiceSnippets.com</h5>
+          <h5 class="modal-title" id="modalLabel">Preview</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">×</span>
           </button>
@@ -286,19 +265,72 @@
 @section('adminlte_js')
 <script>
   $(function() {
+    function numberRows($t) {
+      var tipe = $('input[name="tipe"]').val();
+      var c = 0 - 1;
+      $t.find("tr").each(function(ind, el) {
+        $(el).find("td:eq(0)").html(++c);
+        var j = c - 1;
+        $(el).find('.satuan').attr('name', 'satuan[' + j + ']');
+        $(el).find('.satuan').attr('id', 'satuan' + j);
+        if (tipe) {
+          $(el).find('input[id="nama_detail1"]').val(tipe);
+        }
+        $('.satuan').select2();
+      });
+    }
+
+    $('#tambahitem').click(function(e) {
+      $('#tableitem tr:last').after(`<tr>
+      <td></td>
+      <td><input type="text" class="form-control @error('kode') is-invalid @enderror" name="kode[]" id="kode" value="{{old('kode')}}"></td>
+      <td><div class="form-group row">
+            <input type="text" class="form-control @error('nama_detail1') is-invalid @enderror col-sm-4" name="nama_detail1[]" id="nama_detail1" value="{{old('nama_detail1')}}">
+            <input type="text" class="form-control @error('nama_detail2') is-invalid @enderror col-sm-8" name="nama_detail2[]" id="nama_detail2" value="{{old('nama_detail2')}}">
+          </div>
+      </td>
+      <td><input type="text" class="form-control @error('harga') is-invalid @enderror" name="harga[]" id="harga" value="{{old('harga')}}"></td>
+      <td><input type="number" class="form-control @error('berat') is-invalid @enderror" name="berat[]" id="berat" value="{{old('berat')}}"></td>
+      <td>
+        <select class="form-control select2 select2-info satuan" data-placeholder="Pilih Satuan" data-dropdown-css-class="select2-info" name="satuan[]" id="satuan">
+          <option value="unit">Unit</option>
+          <option value="pcs">Pcs</option>
+          <option value="pack">Pack</option>
+          <option value="set">Set</option>
+          <option value="dus">Dus</option>
+          <option value="meter">Meter</option>
+          <option value="roll">Roll</option>
+        </select>
+      </td>
+      <td>
+        <textarea class="form-control @error('keterangan_detail') is-invalid @enderror " name="keterangan_detail[]" id="keterangan_detail">{{old('keterangan_detail')}}</textarea>
+      </td>
+      <td>
+        <button type="button" class="btn btn-danger karyawan-img-small" style="border-radius:50%;" id="closetable" ><i class="fas fa-times-circle"></i></button>
+      </td>
+      </tr>`);
+      numberRows($("#tableitem"));
+    });
+
+    $('#tableitem').on('click', '#closetable', function(e) {
+      $(this).closest('tr').remove();
+      numberRows($("#tableitem"));
+    });
+
     $('select[name="kelompok_produk_id"]').on('change', function() {
       var kelompok_produk_id = jQuery(this).val();
       console.log(kelompok_produk_id);
       if (kelompok_produk_id) {
         $.ajax({
-          url: 'get_kategori_produk/' + kelompok_produk_id,
+          url: 'create/get_kategori_produk_by_kelompok_produk/' + kelompok_produk_id,
           type: "GET",
           dataType: "json",
           success: function(data) {
             console.log(data);
-            jQuery('select[name="kategori_id"]').empty();
+            $('select[name="kategori_id"]').empty();
+            $('select[name="kategori_id"]').append('<option value=""></option>');
             $.each(data, function(key, value) {
-              $('select[name="kategori_id"]').append('<option value="' + value['kategori_id'] + '">' + value['nama_kategori'] + '</option>');
+              $('select[name="kategori_id"]').append('<option value="' + value['id'] + '">' + value['nama'] + '</option>');
             });
           }
         });
@@ -308,15 +340,17 @@
     });
 
     $('input[name="tipe"]').on("keyup", function() {
+
       var tipe = $(this).val();
+      $('#nama_coo').val(tipe);
+      $('#tableitem').find('input[id="nama_detail1"]').val(tipe);
       if (tipe) {
         $.ajax({
-          url: 'get_tipe_produk_exist/' + tipe,
+          url: 'create/get_tipe_produk_exist/' + tipe,
           type: "GET",
           dataType: "json",
           success: function(data) {
             console.log(data);
-
             if (data > 0) {
               $('span[id="tipe-message"]').addClass("invalid-feedback");
               $('input[name="tipe"]').addClass("is-invalid");
@@ -326,7 +360,6 @@
               $('input[name="tipe"]').removeClass("is-invalid");
               $('span[id="tipe-message"]').empty();
             }
-
           }
         });
       } else {
@@ -337,8 +370,12 @@
     });
 
     var rupiah1 = document.getElementById("harga");
-    rupiah1.addEventListener("keyup", function(e) {
-      rupiah1.value = convertRupiah(this.value);
+    $('#tableitem').addEventListener("keyup", 'input[id="harga"]', function(e) {
+      $(this).closest('tr').find('input[id="harga"]').val(convertRupiah(this.value));
+    });
+
+    $('#tableitem').addEventListener("keydown", 'input[id="harga"]', function(e) {
+      return isNumberKey(event);
     });
 
     rupiah1.addEventListener('keydown', function(event) {
@@ -349,14 +386,14 @@
       $("#harga").unmask();
     });
 
-    $('input[name="tipe"]').bind('keyup keypress blur', function() {
-      var input1 = $(this).val();
-      $('#nama_coo').val(input1);
-    });
+    // $('input[name="tipe"]').bind('keyup keypress blur', function() {
+    //   var input1 = $(this).val();
+    //   $('#nama_coo').val(input1);
+    // });
     // $('input[name="tipe"]').keypress(function() {
-    //     var input1   = $(this).val();
-    //     $('#nama_coo').val(input1);
-    //   });
+    //   var input1 = $(this).val();
+    //   $('#nama_coo').val(input1);
+    // });
 
 
     function convertRupiah(angka, prefix) {

@@ -3,29 +3,26 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use App\BillOfMaterial;
 use App\KelompokProduk;
 use App\KategoriProduk;
+use App\DetailProduk;
 
 class Produk extends Model
 {
-    protected $fillable = ['kelompok_produk_id', 'kategori_id', 'merk', 'tipe', 'nama', 'kode', 'kode_barcode', 'foto', 'berat', 'satuan', 'nama_coo', 'no_akd', 'harga', 'keterangan'];
+    protected $fillable = ['kelompok_produk_id', 'kategori_id', 'merk', 'tipe', 'nama', 'kode_barcode', 'nama_coo', 'no_akd', 'keterangan'];
 
-    public function Bppb()
-    {
-        return $this->hasOne(Bppb::class);
-    }
-    public function BillOfMaterial()
-    {
-        return $this->hasMany(BillOfMaterial::class);
-    }
     public function KelompokProduk()
     {
-        return $this->belongsTo(KelompokProduk::class, 'kelompok_produk_id');
+        return $this->belongsTo(KelompokProduk::class);
     }
     public function KategoriProduk()
     {
         return $this->belongsTo(KategoriProduk::class, 'kategori_id');
+    }
+
+    public function DetailProduk()
+    {
+        return $this->hasMany(DetailProduk::class);
     }
 
     public function detail_paket_produk()

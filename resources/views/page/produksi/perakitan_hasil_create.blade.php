@@ -116,7 +116,6 @@
                   <th>Tanggal</th>
                   <th>No Seri</th>
                   <th>Operator</th>
-                  <th>Warna</th>
                   <th>Aksi</th>
                 </tr>
               </thead>
@@ -151,11 +150,6 @@
                         <span class="invalid-feedback" role="alert">{{$errors->first('karyawan_id.*')}}</span>
                         @endif
                       </div>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="input-group">
-                      <input type="text" class="form-control" name="warna[]" id="warna[]">
                     </div>
                   </td>
                   <td>
@@ -223,11 +217,6 @@
               <span class="invalid-feedback" role="alert">{{$errors->first('karyawan_id.*')}}</span>
             @endif
           </div>
-        </div>
-      </td>
-      <td>
-        <div class="input-group">
-          <input type="text" class="form-control" name="warna[]" id="warna[]">
         </div>
       </td>
       <td>

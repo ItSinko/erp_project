@@ -82,7 +82,7 @@
                     </div>
                   </div>
 
-                  <div class="form-group row">
+                  <!-- <div class="form-group row">
                     <label for="kelompok_produk" class="col-sm-4 col-form-label" style="text-align:right;">Kelompok Produk</label>
                     <div class="col-sm-8">
                       <input type="text" class="form-control" name="kelompok_produk" id="kelompok_produk" value="{{old('kelompok_produk')}}" style="width: 30%;" readonly>
@@ -94,10 +94,10 @@
                     <div class="col-sm-8">
                       <input type="text" class="form-control" name="kategori_produk" id="kategori_produk" value="{{old('kategori_produk')}}" style="width: 40%;" readonly>
                     </div>
-                  </div>
+                  </div> -->
 
                   <div class="form-group row">
-                    <label for="tipe_produk" class="col-sm-4 col-form-label" style="text-align:right;">Tipe Produk</label>
+                    <label for="tipe_produk" class="col-sm-4 col-form-label" style="text-align:right;">Nama Produk</label>
                     <div class="col-sm-8">
                       <input type="text" class="form-control" name="tipe_produk" id="tipe_produk" value="{{old('tipe_produk')}}" style="width: 50%;" readonly>
                     </div>
@@ -110,17 +110,6 @@
                     </div>
                   </div>
 
-                  <!-- </div> -->
-
-                  <!-- </div> -->
-                  <!-- </div> -->
-
-                  <!-- <div class="card"> -->
-                  <!-- <div class="card-header">
-                      <h3 class="card-title"><i class="fa fa-info-circle"></i>&nbsp;Hasil Perakitan</h3>
-                    </div> -->
-                  <!-- /.card-header -->
-                  <!-- form start -->
                   <h3>Hasil Perakitan</h3>
                   <div class="form-horizontal">
                     <!-- <div class="card-body"> -->
@@ -156,7 +145,6 @@
                             <th>Tanggal</th>
                             <th>No Seri</th>
                             <th>Operator</th>
-                            <th>Warna</th>
                             <th>Aksi</th>
                           </tr>
                         </thead>
@@ -182,7 +170,7 @@
                             <td>
                               <div class="form-group">
                                 <div class="select2-info">
-                                  <select class="select2 myselect0 form-control @error('karyawan_id') is-invalid @enderror" multiple="multiple" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;" name="karyawan_id[][]" id="karyawan_id">
+                                  <select class="select2 form-control @error('karyawan_id') is-invalid @enderror karyawan_id" multiple="multiple" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;" name="karyawan_id[][]" id="karyawan_id">
                                     @foreach($kry as $i)
                                     <option value="{{$i->id}}">{{$i->nama}}</option>
                                     @endforeach
@@ -191,11 +179,6 @@
                                   <span class="invalid-feedback" role="alert">{{$errors->first('karyawan_id.*')}}</span>
                                   @endif
                                 </div>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="input-group">
-                                <input type="text" class="form-control" name="warna[]" id="warna">
                               </div>
                             </td>
                             <td>
@@ -249,10 +232,9 @@
         $(el).find("td:eq(0)").html(++c);
         var j = c - 1;
         $(el).find('input[id="tanggals"]').attr('name', 'tanggals[' + j + ']');
-        $(el).find('select[id="karyawan_id"]').attr('name', 'karyawan_id[' + j + '][]');
-        $(el).find('select[id="karyawan_id"]').attr('id', 'karyawan_id' + j);
+        $(el).find('.karyawan_id').attr('name', 'karyawan_id[' + j + '][]');
+        $(el).find('.karyawan_id').attr('id', 'karyawan_id' + j);
         $(el).find('input[id="no_seri"]').attr('name', 'no_seri[' + j + ']');
-        $(el).find('input[id="warna"]').attr('name', 'warna[' + j + ']');
         $('select[name="karyawan_id[' + j + '][]"]').select2();
       });
     }
@@ -262,14 +244,13 @@
       var bppb_id = jQuery(this).val();
       if (bppb_id) {
         $.ajax({
-          url: 'get_bppb/' + bppb_id,
+          url: 'create/get_bppb/' + bppb_id,
           type: "GET",
           dataType: "json",
           success: function(data) {
-            $('input[name="kelompok_produk"]').val(data['nama_kelompok']);
-            $('input[name="kategori_produk"]').val(data['nama_kategori']);
-            $('input[name="tipe_produk"]').val(data['tipe_produk'] + ' ' + data['nama_produk']);
-            $('input[name="jumlah"]').val(data['jumlah']);
+            console.log(data);
+            $('input[name="tipe_produk"]').val(data[0]['detail_produk']['nama']);
+            $('input[name="jumlah"]').val(data[0]['jumlah']);
           }
         });
       } else {
@@ -302,7 +283,7 @@
       <td>
         <div class="form-group">
           <div class="select2-info">
-            <select class="select2 myselect form-control @error('karyawan_id') is-invalid @enderror" multiple="multiple" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;" name="karyawan_id[][]" id="karyawan_id" tabindex="-1"  aria-hidden="true">
+            <select class="select2 form-control @error('karyawan_id') is-invalid @enderror karyawan_id" multiple="multiple" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;" name="karyawan_id[][]" id="karyawan_id" tabindex="-1"  aria-hidden="true">
             @foreach($kry as $i)
               <option value="{{$i->id}}">{{$i->nama}}</option>
             @endforeach
@@ -311,11 +292,6 @@
               <span class="invalid-feedback" role="alert">{{$errors->first('karyawan_id.*')}}</span>
             @endif
           </div>
-        </div>
-      </td>
-      <td>
-        <div class="input-group">
-          <input type="text" class="form-control" name="warna[]" id="warna">
         </div>
       </td>
       <td>
@@ -341,7 +317,6 @@
     });
 
     $('#tableitem').on("change keyup", 'input[id="no_seri"]', function() {
-      alert('hai');
       var no_seri_val = $(this).closest('tr').find('input[id="no_seri"]').val();
       var no_seri = $(this).closest('tr').find('input[id="no_seri"]');
       var message = $(this).closest('tr').find('span[id="no_seri-message"]');

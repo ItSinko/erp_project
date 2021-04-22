@@ -433,19 +433,20 @@ return [
         [
             'text'    => 'Perakitan',
             'icon'    => 'fas fa-cogs',
-            'auth' => [17],
+            'auth' => [17, 23],
             'submenu' => [
                 [
                     'icon' => 'far fa-circle',
                     'text' => 'Laporan',
                     'url'  => '/perakitan',
+                    'auth' => [17],
                 ],
                 [
                     'icon' => 'far fa-circle',
                     'text' => 'Pemeriksaan',
                     'url'  => '/perakitan/pemeriksaan',
+                    'auth' => [23],
                 ],
-
             ],
         ],
         [
@@ -457,17 +458,19 @@ return [
         [
             'text'    => 'Pengemasan',
             'icon'    => 'fas fa-box-open',
-            'auth' => [17],
+            'auth' => [17, 23],
             'submenu' => [
                 [
                     'icon' => 'far fa-circle',
                     'text' => 'Laporan',
-                    'url'  => '/pengemasan/laporan',
+                    'url'  => '/pengemasan',
+                    'auth' => [17],
                 ],
                 [
                     'icon' => 'far fa-circle',
                     'text' => 'Pemeriksaan',
                     'url'  => '/pengemasan/pemeriksaan',
+                    'auth' => [23],
                 ],
             ],
         ],
