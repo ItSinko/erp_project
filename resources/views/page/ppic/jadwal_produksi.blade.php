@@ -3,11 +3,20 @@
 @section('title', 'Beta Version')
 
 @section('content_header')
-<h1 class="m-0 text-dark">PPIC Scheduler</h1>
+<h1 id="page_header" class="m-0 text-dark">PPIC Scheduler</h1>
 @stop
 
 @section('adminlte_css')
 <link href='{{ asset("vendor/fullcalendar/main.css") }}' rel='stylesheet' />
+<style>
+    #calendar td.day-off {
+        background-color: #627070;
+    }
+
+    #calendar {
+        padding: 20px;
+    }
+</style>
 @stop
 
 @section('content')
@@ -15,47 +24,48 @@
     <div class="col-12">
         <div class="card">
             <div class="card-body">
-                <div class="modal fade" id="date_form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header text-center">
-                                <h4 class="modal-title w-100 font-weight-bold">Select Date</h4>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body mx-3">
-                                <div class="form-group row">
-                                    <label for="activity" class="col-sm-2 col-form-label">Activity</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="activity" placeholder="name" autocomplete="off">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="days" class="col-sm-2 col-form-label">Days</label>
-                                    <div class="col-sm-10">
-                                        <input type="number" class="form-control" id="days" placeholder="number of days" min="1" autocomplete="off" readonly>
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-group col-md-6">
-                                        <label for="date_start">Date start</label>
-                                        <input type="date" class="form-control" id="date_start" autocomplete="off">
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label for="date_end">Date end</label>
-                                        <input type="date" class="form-control" id="date_end" autocomplete="off">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer d-flex justify-content-center">
-                                <button type="submit" class="btn btn-default" id="save">Save</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <div id='calendar'></div>
                 <div id="date" hidden>{{ $date }}</div> <!-- catch data from controller -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="date_form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h4 class="modal-title w-100 font-weight-bold">Select Date</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body mx-3">
+                <div class="form-group row">
+                    <label for="activity" class="col-sm-2 col-form-label">Activity</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="activity" placeholder="name" autocomplete="off">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="days" class="col-sm-2 col-form-label">Days</label>
+                    <div class="col-sm-10">
+                        <input type="number" class="form-control" id="days" placeholder="number of days" min="1" autocomplete="off" readonly>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="date_start">Date start</label>
+                        <input type="date" class="form-control" id="date_start" autocomplete="off">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="date_end">Date end</label>
+                        <input type="date" class="form-control" id="date_end" autocomplete="off">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+                <button type="submit" class="btn btn-default" id="save">Save</button>
             </div>
         </div>
     </div>
@@ -65,6 +75,7 @@
 @section('adminlte_js')
 <script src="{{ asset('vendor/fullcalendar/main.js') }}"></script>
 <script src="{{ asset('vendor/bootbox/bootbox.js') }}"></script>
+<script src="{{ asset('vendor/popper/intro.js') }}"></script>
 <script>
     var initial_date = JSON.parse($('#date').html()); // load event from database
 
@@ -86,17 +97,61 @@
 
         var calendarEl = $('#calendar')[0];
         var calendar = new FullCalendar.Calendar(calendarEl, {
+            locale: 'id',
+            weekends: false,
             selectable: true,
             events: initial_date,
             select: function(info) {
-                start_date = info.startStr;
-                end_date = info.endStr;
-                $('#date_start').val(info.startStr);
-                $('#date_end').val(info.endStr);
-                date1 = new Date(start_date);
-                date2 = new Date(end_date);
-                $('#days').val(difference(date1, date2));
-                $('#date_form').modal('show');
+                // $('#date_form').modal('show');
+
+                var test = bootbox.dialog({
+                    title: "Select Date",
+                    size: 'large',
+                    message: `
+                    <div class="form-group row">
+                        <label for="activity" class="col-sm-2 col-form-label">Activity</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="activity" placeholder="name" autocomplete="off"">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="days" class="col-sm-2 col-form-label">Days</label>
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" id="days" placeholder="number of days" min="1" autocomplete="off" readonly>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="date_start">Date start</label>
+                            <input type="date" class="form-control" id="date_start" autocomplete="off">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="date_end">Date end</label>
+                            <input type="date" class="form-control" id="date_end" autocomplete="off">
+                        </div>
+                    </div>`,
+                    centerVertical: true,
+                    buttons: {
+                        save: {
+                            label: "Save",
+                            id: "save",
+                            className: "btn-secondary",
+                        }
+                    },
+                    callback: function() {
+                        start_date = info.startStr;
+                        end_date = info.endStr;
+                        console.log(start_date);
+                        $('#date_start').val(info.startStr);
+                        console.log($('#date_start').val());
+                        $('#date_end').val(info.endStr);
+                        date1 = new Date(start_date);
+                        date2 = new Date(end_date);
+                        $('#days').val(difference(date1, date2));
+                        alert($('#date_start').val());
+                    }
+
+                });
             },
             eventClick: function(event_info) {
                 bootbox.confirm({
@@ -167,6 +222,10 @@
                             title: $('#activity').val(),
                             start: start_date,
                             end: end_date,
+                            extendedProps: {
+                                'data-toggle': 'tooltip',
+                                'title': "Tooltip on test",
+                            },
                         });
                         $('#date_form').modal('hide');
                         $('#activity').val('');
@@ -179,6 +238,10 @@
                 }, 1000);
             }
         });
+
+        // $('save').click(function(){
+
+        // });
 
         $(document).keypress(function(e) {
             var key = e.which;

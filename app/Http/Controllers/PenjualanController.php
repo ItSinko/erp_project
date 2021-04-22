@@ -12,7 +12,6 @@ use Illuminate\Support\Collection;
 use Yajra\DataTables\Facades\DataTables;
 use Carbon\Carbon;
 use Romans\Filter\InttoRoman;
-
 use App\Spaon;
 use App\Distributor;
 use App\Produk;
@@ -20,15 +19,15 @@ use App\Ekatjual;
 use App\Detail_ekatjual;
 use App\Detail_offline;
 use App\Ecommerces;
+use App\Karyawan;
 use App\Offline;
+use App\Penawaran_offline;
+use PDF;
 
 class PenjualanController extends Controller
 {
-    public function penjualan_online()
-    {
-        $produk = Produk::all();
-        return view('page.penjualan.online', ['produk' => $produk]);
-    }
+
+
     public function penjualan_online_ecom()
     {
         return view('page.penjualan.ecom');
@@ -73,7 +72,6 @@ class PenjualanController extends Controller
     }
     public function detail_penjualan_offline_data($id)
     {
-
         $data = Detail_offline::with('produk')
             ->where('offline_id', $id);
         return datatables::of($data)
@@ -83,6 +81,7 @@ class PenjualanController extends Controller
             ->addIndexColumn()
             ->make(true);
     }
+
     public function penjualan_online_tambah()
     {
         $distributor = Distributor::all();
@@ -280,6 +279,35 @@ class PenjualanController extends Controller
         }
     }
 
+    public function detail_penjualan_online_ecom_aksi_ubah(Request $request)
+    {
+        $this->validate(
+            $request,
+            [
+                'harga' => 'required',
+                'jumlah' => 'required',
+            ],
+            [
+                'harga.required' => "Harga Produk harus diisi",
+                'jumlah.required' => "Jumlah Produk harus diisi",
+            ]
+        );
+
+        $id = $request->id;
+        $Detail_ecommerces = Detail_ecommerces::find($id);
+        $Detail_ecommerces->jumlah = $request->jumlah;
+        $Detail_ecommerces->harga = $request->harga;
+        $Detail_ecommerces->produk_id = $request->produk_id;
+        $Detail_ecommerces->ecommerces_id = $request->ecommerces_id;
+        $Detail_ecommerces->keterangan = $request->keterangan;
+        $Detail_ecommerces->save();
+
+        if ($Detail_ecommerces) {
+            return redirect()->back()->with('success', "");
+        } else {
+            return redirect()->back()->with('error', "");
+        }
+    }
     public function penjualan_online_detail_edit($id)
     {
         $data = Detail_ekatjual::with('produk')
@@ -294,13 +322,27 @@ class PenjualanController extends Controller
             ->get();
         echo json_encode($data);
     }
+    public function detail_penjualan_online_ecom_data_edit($id)
+    {
+        $data = Detail_ecommerces::with('produk')
+            ->where('id', $id)
+            ->get();
+        echo json_encode($data);
+    }
     public function penjualan_online_ecom_tambah()
     {
         $distributor = Distributor::all();
         $produk = Produk::all();
         return view('page.penjualan.online_ecom_tambah', ['distributor' => $distributor, 'produk' => $produk]);
     }
-
+    public function penjualan_online_ecom_ubah($id)
+    {
+        $ecommerces = Ecommerces::with('distributor')
+            ->find($id);
+        $distributor = Distributor::all();
+        $produk = Produk::all();
+        return view('page.penjualan.online_ecom_ubah', ['distributor' => $distributor, 'produk' => $produk, 'ecommerces' => $ecommerces]);
+    }
     public function penjualan_online_ecom_aksi_tambah(Request $request)
     {
         $this->validate(
@@ -361,6 +403,44 @@ class PenjualanController extends Controller
     }
 
 
+
+    public function penjualan_online_ecom_aksi_ubah($id, Request $request)
+    {
+        $this->validate(
+            $request,
+            [
+                'market' => 'required',
+                'customer_id' => 'required',
+                'status' => 'required',
+                'bayar' => 'required',
+
+            ],
+            [
+                'market.required' => "Market Asal harus diisi",
+                'customer_id.required' => "Customer harus dipilih",
+                'status.required' => "Status pesanan harus diisi",
+                'bayar.required' => "Jenis pembayaran harus diisi",
+
+
+            ]
+        );
+
+        $ecommerces = Ecommerces::find($id);
+        $ecommerces->order_id = $request->order_id;
+        $ecommerces->market = $request->market;
+        $ecommerces->customer_id = $request->customer_id;
+        $ecommerces->status = $request->status;
+        $ecommerces->bayar = $request->bayar;
+        $ecommerces->save();
+
+
+
+        if ($ecommerces) {
+            return redirect()->back()->with(["succes" => "Berhasil menambahkan data"]);
+        } else {
+            return redirect()->back()->with('error', "Gagal menambahkan data");
+        }
+    }
     public function penjualan_offline()
     {
         $produk = Produk::all();
@@ -378,6 +458,14 @@ class PenjualanController extends Controller
         $distributor = Distributor::all();
         $produk = Produk::all();
         return view('page.penjualan.offline_tambah', ['distributor' => $distributor, 'produk' => $produk]);
+    }
+    public function penjualan_offline_ubah($id)
+    {
+        $offline = Offline::with('distributor')
+            ->find($id);
+        $distributor = Distributor::all();
+        $produk = Produk::all();
+        return view('page.penjualan.offline_ubah', ['distributor' => $distributor, 'produk' => $produk, 'offline' => $offline]);
     }
     public function penjualan_offline_aksi_tambah(Request $request)
     {
@@ -424,5 +512,164 @@ class PenjualanController extends Controller
         } else {
             return redirect()->back()->with('error', "Gagal menambahkan data");
         }
+    }
+    public function penjualan_offline_aksi_ubah($id, Request $request)
+    {
+        $this->validate(
+            $request,
+            [
+                'customer_id' => 'required',
+                'status' => 'required',
+                'bayar' => 'required',
+            ],
+            [
+                'customer_id.required' => "Customer harus dipilih",
+                'status.required' => "Status pesanan harus diisi",
+                'bayar.required' => "Jenis pembayaran harus diisi",
+            ]
+        );
+
+        $offline = Offline::find($id);
+        $offline->order_id = $request->order_id;
+        $offline->customer_id = $request->customer_id;
+        $offline->status = $request->status;
+        $offline->bayar = $request->bayar;
+        $offline->save();
+
+        if ($offline) {
+            return redirect()->back()->with(["succes" => "Berhasil menambahkan data"]);
+        } else {
+            return redirect()->back()->with('error', "Gagal menambahkan data");
+        }
+    }
+
+
+    public function penjualan_offline_data_select($customer_id)
+    {
+        $data = Offline::where('customer_id', $customer_id)
+            ->get();
+        echo json_encode($data);
+    }
+
+    public function penawaran_offline()
+    {
+        return view('page.penjualan.penawaran_offline');
+    }
+
+    public function penawaran_offline_ubah($id)
+    {
+        $customer = Offline::with('distributor')
+            ->get();
+        $karyawan = Karyawan::where('jabatan', 'direktur')
+            ->get();
+        $penawaran_offline = Penawaran_offline::with('karyawan', 'offline')
+            ->find($id);
+
+        return view('page.penjualan.penawaran_offline_ubah', ['customer' => $customer, 'karyawan' => $karyawan, 'penawaran_offline' => $penawaran_offline]);
+    }
+
+    public function penawaran_offline_tambah()
+    {
+        $customer = Offline::with('distributor')
+            ->get();
+        $karyawan = Karyawan::where('jabatan', 'direktur')
+            ->get();
+        return view('page.penjualan.penawaran_offline_tambah', ['customer' => $customer, 'karyawan' => $karyawan]);
+    }
+    public function penawaran_offline_data()
+    {
+        $data = Penawaran_offline::with('karyawan', 'offline');
+        return datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('xx', function ($data) {
+                return $data->offline->distributor->nama;
+            })
+            ->addColumn('button', function ($data) {
+
+                $btn = '<div class="inline-flex"><button type="button" id="detail"  data-id="' . $data->offline_id . '" class="btn btn-block btn-primary karyawan-img-small" style="border-radius:50%;"><i class="fa fa-eye" aria-hidden="true"></i></button>';
+                $btn = $btn . '<a href="/penawaran_offline/cetak_penawaran/' . $data->offline_id .  '" target="_break"><button type="button" class="btn btn-block btn-warning karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-print"></i></button></a>';
+                $btn = $btn . '<a href="/penawaran_offline/ubah/' . $data->id . '"><button type="button" class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-edit"></i></button></a>';
+                $btn = $btn . ' <button type="button" class="btn btn-block btn-danger karyawan-img-small" style="border-radius:50%;" data-toggle="modal" data-target="#delete" ><i class="fas fa-trash"></i></button></div>';
+                return $btn;
+            })
+            ->rawColumns(['button'])
+            ->make(true);
+    }
+
+    public function  penawaran_offline_aksi_tambah(Request $request)
+    {
+        $this->validate(
+            $request,
+            [
+                'offline_id' => 'required|unique:penawaran_offlines',
+                'deskripsi' => 'required',
+                'tgl_surat' => 'required',
+                'karyawan_id' => 'required'
+            ],
+            [
+                'offline_id.unique' => "Order ID harus dipilih",
+                'offline_id.required' => "Order ID harus dipilih",
+                'deskripsi.required' => "Deskpripsi harus di isi",
+                'tgl_surat.required' => "Tgl Surat harus di isi",
+                'karyawan_id.required' => "Persetujuan harus di pilih",
+            ]
+        );
+
+        $a = Penawaran_offline::create([
+            'offline_id' => $request->offline_id,
+            'tujuan' => $request->tujuan,
+            'deskripsi' => $request->deskripsi,
+            'tgl_surat' => $request->tgl_surat,
+            'karyawan_id' => $request->karyawan_id
+        ]);
+
+        if ($a) {
+            return redirect()->back()->with('success', "");
+        } else {
+            return redirect()->back()->with('error', "");
+        }
+    }
+    public function  penawaran_offline_aksi_ubah($id, Request $request)
+    {
+        $this->validate(
+            $request,
+            [
+
+                'deskripsi' => 'required',
+                'tgl_surat' => 'required',
+                'karyawan_id' => 'required'
+            ],
+            [
+
+                'deskripsi.required' => "Deskpripsi harus di isi",
+                'tgl_surat.required' => "Tgl Surat harus di isi",
+                'karyawan_id.required' => "Persetujuan harus di pilih",
+            ]
+        );
+
+        $penawaran_offline = Penawaran_offline::find($id);
+        $penawaran_offline->offline_id = $request->offline_id;
+        $penawaran_offline->tujuan = $request->tujuan;
+        $penawaran_offline->deskripsi = $request->deskripsi;
+        $penawaran_offline->tgl_surat = $request->tgl_surat;
+        $penawaran_offline->karyawan_id = $request->karyawan_id;
+        $penawaran_offline->save();
+
+        if ($penawaran_offline) {
+            return redirect()->back()->with('success', "");
+        } else {
+            return redirect()->back()->with('error', "");
+        }
+    }
+
+    public function cetak_penawaran($id)
+    {
+        $penawaran_offline = Penawaran_offline::with('karyawan', 'offline')
+            ->where('offline_id', $id)
+            ->first();
+        $detail_offline = Detail_offline::where('offline_id', $id)
+            ->get();
+        $pdf = PDF::loadView('page.penjualan.surat_penawaran_offline', ['penawaran_offline' => $penawaran_offline, 'detail_offline' => $detail_offline])->setPaper('A4');
+        return $pdf->stream('');
     }
 }

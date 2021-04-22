@@ -35,6 +35,11 @@ class Karyawan extends Model
         return $this->belongsToMany(PeminjamanKaryawan::class, 'detail_peminjaman_karyawans')->withPivot('id', 'keterangan', 'status')->withTimestamps();
     }
 
+    public function Penawaran_offline()
+    {
+        return $this->hasMany('App\Penawaran_offline');
+    }
+
     // public function DetailPeminjamanKaryawan()
     // {
     //     return $this->hasMany(DetailPeminjamanKaryawan::class);

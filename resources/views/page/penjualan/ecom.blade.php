@@ -104,6 +104,88 @@
   </div>
 </div>
 <!-- End Modal Detail -->
+<!-- Modal Edit -->
+<div class="modal fade  bd-example-modal-lg" id="edit_mod" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">
+          <div class="data_detail_head"></div>
+        </h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <div class="data_detail">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="col-lg-12">
+                <form method="post" action="/penjualan_online_ecom/detail/aksi_ubah">
+                  {{ csrf_field() }}
+                  {{method_field('PUT')}}
+                  <div class="card">
+                    <div class="card-header bg-success">
+                      <div class="card-title"><i class="fas fa-plus-circle"></i>&nbsp;Ubah</div>
+                    </div>
+                    <div class="card-body">
+                      <div class="col-lg-12">
+                        <div class="row">
+                          <div class="col-lg-12">
+                            <div class="form-horizontal">
+                              <input type="text" name="id" class=" d-none form-control" id="fk" readonly>
+
+                              <input type="text" name="produk_id" class=" d-none form-control" id="produk_id" readonly>
+                              <table class="table table-bordered table-striped" id="xxx">
+                                <thead>
+                                  <tr>
+                                    <th width="15%">Tipe</th>
+                                    <th width="20%">Nama</th>
+                                    <th width="15%">Harga</th>
+                                    <th width="5%">Jumlah</th>
+                                    <th width="15%">Sub Total</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    <td><input type="text" name="ecommerces_id" class="d-none form-control" id="ecommerces_id" readonly><input type="text" name="produk_tipe" placeholder="Tipe Produk" class="form-control" id="tipe" readonly></td>
+                                    <td><input type="text" name="produk_nama" placeholder="Nama Produk" class="form-control" id="nama" readonly></td>
+                                    <td><input type="text" name="harga" placeholder="Harga" class="form-control" id="harga"></td>
+                                    <td><input type="text" name="jumlah" placeholder="Jumlah" class="form-control" id="jumlah"></td>
+                                    <td><input type="text" name="subtotal" placeholder="Sub Total" class="form-control" id="subtotal" readonly></td>
+                                  </tr>
+                                </tbody>
+                                <tfoot>
+                                  <tr>
+                                    <th width="15%" colspan="4">Total</th>
+                                    <th width="15%" colspan="2"><input type="text" name="subtotal" placeholder="Sub Total" class="form-control" id="subtotal" readonly></th>
+                                  </tr>
+                                  <tr>
+                                    <th width="15%" colspan="1">Catatan</th>
+                                    <th width="15%" colspan="5"><input type="text" name="keterangan" placeholder="Keterangan" class="form-control" id="keterangan"></th>
+                                  </tr>
+                                </tfoot>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card-footer">
+                      <span class="float-right"><button class="btn btn-success rounded-pill" id="button_tambah"><i class="fas fa-plus"></i>&nbsp;Ubah Data</button></span>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Modal Detail -->
 @stop
 @section('adminlte_js')
 <script>
@@ -121,7 +203,16 @@
           searchable: false
         },
         {
-          data: 'status'
+          data: 'status',
+          render: function(data) {
+            if (data == 'Lunas') {
+              return '<span class="badge bg-success" title = "' + data + '">Sepakat</span>';
+            } else if (data == 'Proses') {
+              return '<span class="badge bg-warning  " title = "' + data + '">Negoisasi</span>';
+            } else {
+              return '<span class="badge bg-danger " title = "' + data + '">Batal</span>';
+            }
+          }
         },
         {
           data: 'order_id'
@@ -139,7 +230,7 @@
           data: 'id',
           render: function(data) {
             $btn_view = '<div class="inline-flex"><button type="button" id="detail" class="btn btn-block btn-primary karyawan-img-small" style="border-radius:50%;"><i class="fa fa-eye" aria-hidden="true"></i></button>';
-            $btn_edit = '<a href="/penjualan_online/ubah/' + data + '"><button type="button" class="btn btn-block btn-warning karyawan-img-small" style="border-radius:50%;"  data-target="#edit_mod"><i class="fas fa-edit"></i></button></a>';
+            $btn_edit = '<a href="/penjualan_online_ecom/ubah/' + data + '"><button type="button" class="btn btn-block btn-warning karyawan-img-small" style="border-radius:50%;"  data-target="#edit_mod"><i class="fas fa-edit"></i></button></a>';
             $btn_hapus = ' <button type="button" class="btn btn-block btn-danger karyawan-img-small" style="border-radius:50%;" data-toggle="modal" data-target="#delete" ><i class="fas fa-trash"></i></button></div>';
             return $btn_view + $btn_edit + $btn_hapus;
           },
@@ -201,8 +292,8 @@
           {
             data: 'id',
             render: function(data) {
-              $btn_edit = '<div class="inline-flex"><button type="button" class="btn btn-block btn-warning karyawan-img-small" style="border-radius:50%;" data-toggle="modal" data-target="#edit_mod"  data-dismiss="modal" ><i class="fas fa-edit"></i></button>';
-              $btn_hapus = ' <button type="button" class="btn btn-block btn-danger karyawan-img-small" style="border-radius:50%;" data-toggle="modal" data-target="#delete" ><i class="fas fa-trash"></i></button></div>';
+              $btn_edit = '<div class="inline-flex"><button id="edit" data-id="' + data + '" type="button" class="btn btn-block btn-warning karyawan-img-small" style="border-radius:50%;"  data-dismiss="modal" ><i class="fas fa-edit"></i></button></div>';
+              $btn_hapus = ' <div class="inline-flex"><button type="button" class="btn btn-block btn-danger karyawan-img-small" style="border-radius:50%;" data-toggle="modal" data-target="#delete" ><i class="fas fa-trash"></i></button></div>';
               return $btn_edit + $btn_hapus;
             },
             orderable: false,
@@ -242,13 +333,37 @@
           $(api.column(4).footer()).html(jumlah_pesanan);
           $(api.column(5).footer()).html(num_for(total_pesanan));
         },
-
       });
-
-
     });
 
 
+    $('#tabel_detail > tbody').on('click', '#edit', function() {
+      var rows = $(this).data('id');
+
+      $.ajax({
+
+        url: '/penjualan_online_ecom/detail/data/edit/' + rows,
+        type: "GET",
+        dataType: "json",
+        success: function(data) {
+          console.log(data);
+          $('#edit_mod').modal('show');
+          $('#detail_mod').modal('hide');
+          $('input[id="produk_id"]').val(data[0]['produk_id']);
+          $('input[id="ecommerces_id"]').val(data[0]['ecommerces_id']);
+          $('input[id="fk"]').val(data[0]['id']);
+          $('input[id="tipe"]').val(data[0]['produk']['tipe']);
+          $('input[id="nama"]').val(data[0]['produk']['nama']);
+          $('input[id="harga"]').val(data[0]['harga']);
+          $('input[id="jumlah"]').val(data[0]['jumlah']);
+          $('input[id="keterangan"]').val(data[0]['keterangan']);
+          $('input[id="subtotal"]').val(data[0]['jumlah'] * data[0]['harga']);
+        },
+        error: function(error) {
+          console.log(error);
+        }
+      });
+    });
   });
 </script>
 @endsection

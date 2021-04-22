@@ -249,7 +249,7 @@
   </div>
 </div>
 <!-- End Modal Detail -->
-<!-- Modal Detail -->
+<!-- Modal Edit -->
 <div class="modal fade  bd-example-modal-lg" id="edit_mod" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
@@ -347,11 +347,11 @@
           data: 'status',
           render: function(data) {
             if (data == 'Sepakat') {
-              return '<i class="fas fa-check-circle " title = "' + data + '"></i>';
+              return '<span class="badge bg-success" title = "' + data + '">Sepakat</span>';
             } else if (data == 'Masih Negoisasi') {
-              return '<i class="fas fa-exclamation-triangle  " title = "' + data + '"></i>';
+              return '<span class="badge bg-warning  " title = "' + data + '">Negoisasi</span>';
             } else {
-              return '<i class="fas fa-times-circle " title = "' + data + '"></i>';
+              return '<span class="badge bg-danger " title = "' + data + '">Batal</span>';
             }
           },
           orderable: false,
