@@ -67,6 +67,15 @@
                 <h6 class="card-subheading text-muted ">Jumlah</h6>
                 <h5 class="card-heading">{{$sh->Bppb->jumlah}} {{ucfirst($sh->Bppb->Produk->satuan)}}</h5>
               </hgroup>
+              <hgroup>
+                <!-- hgroup is deprecated, just defiantly using it anyway -->
+                <h6 class="card-subheading text-muted ">Karyawan</h6>
+                <h5 class="card-heading">@foreach ($sh->Karyawan as $kry)
+                  {{ $loop->first ? '' : '' }}
+                  <div>{{ $kry->nama}}</div>
+                  @endforeach
+                </h5>
+              </hgroup>
             </div>
             <hgroup class="col-lg-12">
               <!-- hgroup is deprecated, just defiantly using it anyway -->
@@ -115,7 +124,6 @@
                   <th>No</th>
                   <th>Tanggal</th>
                   <th>No Seri</th>
-                  <th>Operator</th>
                   <th>Aksi</th>
                 </tr>
               </thead>
@@ -136,20 +144,6 @@
                       <span class="invalid-feedback" role="alert">{{$errors->first('hasil_perakitans.*.no_seri')}}</span>
                       @endif
                       <span id="no_seri-message[]" role="alert"></span>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="form-group">
-                      <div class="select2-info">
-                        <select class="select2 form-control @error('karyawan_id') is-invalid @enderror" multiple="multiple" name="karyawan_id[]" id="karyawan_id[]" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;">
-                          @foreach($k as $i)
-                          <option value="{{$i->id}}">{{$i->nama}}</option>
-                          @endforeach
-                        </select>
-                        @if ($errors->has('karyawan_id'))
-                        <span class="invalid-feedback" role="alert">{{$errors->first('karyawan_id.*')}}</span>
-                        @endif
-                      </div>
                     </div>
                   </td>
                   <td>

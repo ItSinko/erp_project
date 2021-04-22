@@ -10,21 +10,11 @@ use App\HistoriHasilPerakitan;
 
 class HasilPerakitan extends Model
 {
-    protected $fillable = ['perakitan_id', 'tanggal', 'no_seri', 'warna', 'kondisi', 'keterangan'];
+    protected $fillable = ['perakitan_id', 'tanggal', 'no_seri', 'kondisi_fisik_bahan_baku', 'kondisi_saat_proses_perakitan', 'tindak_lanjut_terbuka', 'fungsi', 'hasil', 'tindak_lanjut_tertutup', 'keterangan'];
 
     public function Perakitan()
     {
         return $this->belongsTo(Perakitan::class);
-    }
-
-    public function HasilPerakitanKaryawan()
-    {
-        return $this->hasMany(HasilPerakitanKaryawan::class);
-    }
-
-    public function Karyawan()
-    {
-        return $this->belongsToMany(Karyawan::class, 'hasil_perakitan_karyawans')->withPivot('operator_custom')->withTimestamps();
     }
 
     public function HistoriHasilPerakitan()

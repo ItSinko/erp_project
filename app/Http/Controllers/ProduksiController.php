@@ -192,6 +192,9 @@ class ProduksiController extends Controller
             ]);
 
             if ($c) {
+                $k = Perakitan::find($c->id);
+                $k->Karyawan()->sync($request->karyawan_id, false);
+                $k->save();
                 $bool = true;
                 if (!empty($request->file) || !empty($request->no_seri)) {
                     if (!empty($request->file) && empty($request->no_seri)) {
@@ -216,11 +219,9 @@ class ProduksiController extends Controller
                             ]);
                             if (!$s) {
                                 $bool = false;
-                            } else {
-                                $s->Karyawan()->sync($request->karyawan_id[$i], false);
                             }
                         }
-                        if ($bool = true) {
+                        if ($bool == true) {
                             $u = User::where('divisi_id', '14')->get();
                             foreach ($u as $i) {
                                 $cs = $this->NotifikasiController->create("Perakitan", "telah menambahkan Laporan Perakitan", Auth::user()->id, $i->id, "/perakitan");
@@ -242,8 +243,6 @@ class ProduksiController extends Controller
 
                         if (!$s) {
                             $bool = false;
-                        } else {
-                            $s->Karyawan()->sync($request->karyawan_id[$i], false);
                         }
                     }
 
@@ -296,11 +295,18 @@ class ProduksiController extends Controller
                 $btn = HasilPerakitan::where('perakitan_id', $s->id)->count();
                 return $btn . " " . $s->Bppb->DetailProduk->satuan;
             })
+            ->addColumn('operator', function ($s) {
+                $arr = [];
+                foreach ($s->Karyawan as $i) {
+                    array_push($arr, $i->nama);
+                }
+                return implode("<br>", $arr);
+            })
             ->addColumn('status', function ($s) {
                 $btn = "";
                 if ($s->status == '0') {
                     $btn = '<div class="inline-flex">
-                        <a href = "/perakitan/laporan/status/' . $s->id . '/dibuat">
+                        <a href = "/perakitan/laporan/status/' . $s->id . '/12">
                             <button type="button" class="btn btn-block btn-outline-info karyawan-img-small" style="border-radius:50%;" title="Kirim Laporan ke Quality Control"><i class="far fa-paper-plane"></i></button>
                         </a>
                     </div>';
@@ -310,12 +316,12 @@ class ProduksiController extends Controller
                 return $btn;
             })
             ->addColumn('aksi', function ($s) {
-                $btn = '<a href = "/perakitan/hasil/' . $s->id . '"><button class="btn btn-info circle-button btn-circle-sm m-1 karyawan-img-small"><i class="fas fa-eye"></i></button></a>';
-                $btn .= '<a href = "/perakitan/laporan/edit/' . $s->id . '"><button class="btn btn-warning  btn-circle btn-circle-sm m-1 karyawan-img-small"><i class="fas fa-edit"></i></button></a>';
-                $btn .= '<a class="deletemodal" data-toggle="modal" data-target="#deletemodal" data-attr="/perakitan/laporan/delete/' . $s->id . '"><button class="btn btn-danger karyawan-img-small btn-circle btn-circle-sm m-1"><i class="fas fa-trash"></i></button></a>';
+                $btn = '<a href = "/perakitan/hasil/' . $s->id . '"><button class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-eye"></i></button></a>';
+                $btn .= '<a href = "/perakitan/laporan/edit/' . $s->id . '"><button class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-edit"></i></button></a>';
+                $btn .= '<a class="deletemodal" data-toggle="modal" data-target="#deletemodal" data-attr="/perakitan/laporan/delete/' . $s->id . '"><button class="btn btn-danger btn-sm m-1" style="border-radius:50%;"><i class="fas fa-trash"></i></button></a>';
                 return $btn;
             })
-            ->rawColumns(['status', 'aksi'])
+            ->rawColumns(['status', 'aksi', 'operator'])
             ->make(true);
     }
 
@@ -384,6 +390,9 @@ class ProduksiController extends Controller
             ]);
 
             if ($c) {
+                $k = Perakitan::find($c->id);
+                $k->Karyawan()->sync($request->karyawan_id, false);
+                $k->save();
                 $bool = true;
                 if (!empty($request->file) || !empty($request->no_seri)) {
                     if (!empty($request->file) && empty($request->no_seri)) {
@@ -408,11 +417,9 @@ class ProduksiController extends Controller
                             ]);
                             if (!$s) {
                                 $bool = false;
-                            } else {
-                                $s->Karyawan()->sync($request->karyawan_id[$i]);
                             }
                         }
-                        if ($bool = true) {
+                        if ($bool == true) {
                             $u = User::where('divisi_id', '14')->get();
                             foreach ($u as $i) {
                                 $cs = $this->NotifikasiController->create("Perakitan", "telah menambahkan Laporan Perakitan", Auth::user()->id, $i->id, "/perakitan");
@@ -433,8 +440,6 @@ class ProduksiController extends Controller
                         ]);
                         if (!$s) {
                             $bool = false;
-                        } else {
-                            $s->Karyawan()->sync($request->karyawan_id[$i]);
                         }
                     }
 
@@ -443,7 +448,7 @@ class ProduksiController extends Controller
                         $bool = false;
                     }
 
-                    if ($bool = true) {
+                    if ($bool == true) {
                         $u = User::where('divisi_id', '14')->get();
                         foreach ($u as $i) {
                             $cs = $this->NotifikasiController->create("Perakitan", "telah menambahkan Laporan Perakitan", Auth::user()->id, $i->id, "/perakitan");
@@ -493,6 +498,7 @@ class ProduksiController extends Controller
         } else {
             $p = Perakitan::find($id);
             $p->tanggal = $request->tanggal_laporan;
+            $p->Karyawan()->sync($request->karyawan_id, false);
             $p->save();
             $bool = true;
 
@@ -500,12 +506,10 @@ class ProduksiController extends Controller
                 $hpid = array();
                 if (!empty($request->no_seri)) {
                     for ($i = 0; $i < count($request->no_seri); $i++) {
-                        echo json_encode($request->karyawan_id[$i]);
                         if (!empty($request->id[$i])) {
                             $hp = HasilPerakitan::find($request->id[$i]);
                             $hp->tanggal = $request->tanggals[$i];
                             $hp->no_seri = $request->no_seri[$i];
-                            $hp->Karyawan()->sync($request->karyawan_id[$i]);
                             $hp->save();
                             $hpid[$i] = $request->id[$i];
                             if (!$hp) {
@@ -520,14 +524,6 @@ class ProduksiController extends Controller
 
                             if ($c) {
                                 $hpid[$i] = $c->id;
-                                $hp = HasilPerakitan::find($c->id);
-                                $hp->Karyawan()->sync($request->karyawan_id[$i]);
-                                $hp->save();
-
-                                // echo $c->id;
-                                if (!$hp) {
-                                    $bool = false;
-                                }
                             }
                         }
                     }
@@ -569,13 +565,19 @@ class ProduksiController extends Controller
         if ($status == '12') {
             $p->status = $status;
             $u = $p->save();
-
             if ($u) {
                 $hp = HasilPerakitan::where('perakitan_id', $id)->get();
+                $bool = true;
                 foreach ($hp as $i) {
                     $h = HasilPerakitan::find($i->id);
                     $h->status = 'req_pemeriksaan_terbuka';
-                    $h->save();
+                    $up = $h->save();
+                    if (!$up) {
+                        $bool = false;
+                    }
+                }
+                if ($bool == true) {
+                    return redirect()->back();
                 }
             }
         }
@@ -594,13 +596,6 @@ class ProduksiController extends Controller
             ->addIndexColumn()
             ->editColumn('tanggal', function ($s) {
                 return Carbon::createFromFormat('Y-m-d', $s->tanggal)->format('d-m-Y');
-            })
-            ->addColumn('operator', function ($s) {
-                $arr = [];
-                foreach ($s->Karyawan as $i) {
-                    array_push($arr, $i->nama);
-                }
-                return implode("<br>", $arr);
             })
             ->editColumn('status', function ($s) {
                 $btn = "";
@@ -623,7 +618,7 @@ class ProduksiController extends Controller
                 $btn = "";
                 if ($s->Perakitan->status == "0") {
                     $btn = '<div class="inline-flex">
-                    <a href="{{route(\'perakitan.hasil.edit\', [\'id\' => ' . $s->id . '])}}">
+                    <a href="/perakitan/hasil/edit/' . $s->id . '">
                       <button type="button" class="btn btn-block btn-warning karyawan-img-small" style="border-radius:50%;"><i class="fas fa-edit"></i></button>
                     </a>
                   </div>
@@ -742,7 +737,6 @@ class ProduksiController extends Controller
             $hp = HasilPerakitan::find($id);
             $hp->tanggal = $request->tanggal;
             $hp->no_seri = $request->no_seri;
-            $hp->Karyawan()->sync($request->karyawan_id);
             $u = $hp->save();
 
             if (!$u) {

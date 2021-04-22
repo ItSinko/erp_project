@@ -123,24 +123,6 @@
                   </div>
 
                   <div class="form-group row">
-                    <label for="produk" class="col-sm-4 col-form-label" style="text-align:right;">Karyawan</label>
-                    <div class="col-sm-6">
-                      <select class="select2 form-control @error('karyawan_id') is-invalid @enderror" multiple="multiple" name="karyawan_id[]" id="karyawan_id[]" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;">
-                        @foreach($kry as $i)
-                        <option value="{{$i->id}}" @if($s->Karyawan->contains('id', $i->id))
-                          selected
-                          @endif
-                          >{{$i->nama}} </option>
-                        @endforeach
-                      </select>
-                      @if ($errors->has('karyawan_id'))
-                      <span class="invalid-feedback" role="alert">{{$errors->first('karyawan_id')}}</span>
-                      @endif
-                    </div>
-                  </div>
-
-
-                  <div class="form-group row">
                     <label for="produk" class="col-sm-4 col-form-label" style="text-align:right;">No Seri</label>
                     <div class="col-sm-5">
                       <input type="text" class="form-control @error('no_seri') is-invalid @enderror" name="no_seri" id="no_seri" value="{{$s->no_seri}}">

@@ -128,6 +128,10 @@
                 name: 'tanggal'
               },
               {
+                data: 'operator',
+                name: 'operator'
+              },
+              {
                 data: 'jumlah',
                 name: 'jumlah'
               },

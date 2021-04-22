@@ -14,12 +14,6 @@ use Yajra\DataTables\Facades\DataTables;
 
 class QCController extends Controller
 {
-    //PRODUKSI
-    // public function pemeriksaan_rakit($id)
-    // {
-    //     // $s = PemeriksaanRakit::all();
-    //     // return view('ui.pemeriksaan_rakit.show', ['s' => $s]);
-    // }
 
     public function perakitan_pemeriksaan()
     {
@@ -58,7 +52,43 @@ class QCController extends Controller
                 $btn .= '<span style="color:white;"><i class="fa fa-search" aria-hidden="true"></i>&nbsp;Detail Laporan</span></button></a>';
                 return $btn;
             })
-            ->rawColumns(['gambar', 'produk', 'jumlah', 'laporan'])
+            ->addColumn('aksi', function ($s) {
+                $btn = '<a href="/perakitan/pemeriksaan/bppb/' . $s->id . '"><button type="button" class="rounded-pill btn btn-sm btn-primary"><i class="fas fa-eye" aria-hidden="true"></i>&nbsp;Lihat Semua Data</button>';
+                return $btn;
+            })
+            ->rawColumns(['gambar', 'produk', 'jumlah', 'laporan', 'aksi'])
+            ->make(true);
+    }
+
+    public function perakitan_pemeriksaan_bppb($id)
+    {
+        $s = Bppb::find($id);
+        return view('page.qc.perakitan_pemeriksaan_bppb_show', ['id' => $id, 's' => $s]);
+    }
+
+    public function perakitan_pemeriksaan_bppb_show($id)
+    {
+        $s = HasilPerakitan::whereHas('Perakitan', function ($q) use ($id) {
+            $q->where('bppb_id', '=', $id);
+        })->whereNotIn('status', ['dibuat'])->get();
+
+        return DataTables::of($s)
+            ->addIndexColumn()
+            ->editColumn('tanggal', function ($s) {
+                return Carbon::createFromFormat('Y-m-d', $s->tanggal)->format('d-m-Y');
+            })
+            ->addColumn('operator', function ($s) {
+                $arr = [];
+                foreach ($s->Perakitan->Karyawan as $i) {
+                    array_push($arr, $i->nama);
+                }
+                return implode("<br>", $arr);
+            })
+            ->addColumn('aksi', function ($s) {
+                $btn = '<button class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-pencil-alt"></i></button>';
+                return $btn;
+            })
+            ->rawColumns(['operator', 'aksi'])
             ->make(true);
     }
 
@@ -77,6 +107,13 @@ class QCController extends Controller
             ->addIndexColumn()
             ->editColumn('tanggal', function ($s) {
                 return Carbon::createFromFormat('Y-m-d', $s->tanggal)->format('d-m-Y');
+            })
+            ->addColumn('operator', function ($s) {
+                $arr = [];
+                foreach ($s->Karyawan as $i) {
+                    array_push($arr, $i->nama);
+                }
+                return implode("<br>", $arr);
             })
             ->addColumn('jumlah', function ($s) {
                 $btn = HasilPerakitan::where('perakitan_id', $s->id)->count();
@@ -105,7 +142,7 @@ class QCController extends Controller
                 $btn = '<a href = "/perakitan/pemeriksaan/hasil/' . $s->id . '"><button class="btn btn-info circle-button btn-circle-sm m-1 karyawan-img-small"><i class="fas fa-eye"></i></button></a>';
                 return $btn;
             })
-            ->rawColumns(['status', 'aksi'])
+            ->rawColumns(['operator', 'status', 'aksi'])
             ->make(true);
     }
 
@@ -165,13 +202,6 @@ class QCController extends Controller
             ->addIndexColumn()
             ->editColumn('tanggal', function ($s) {
                 return Carbon::createFromFormat('Y-m-d', $s->tanggal)->format('d-m-Y');
-            })
-            ->addColumn('operator', function ($s) {
-                $arr = [];
-                foreach ($s->Karyawan as $i) {
-                    array_push($arr, $i->nama);
-                }
-                return implode("<br>", $arr);
             })
             ->addColumn('aksi', function ($s) {
                 if ($s->status == 'req_pemeriksaan_terbuka' || $s->status == 'req_pemeriksaan_tertutup') {

@@ -85,6 +85,15 @@
                 <h6 class="card-subheading text-muted ">Jumlah</h6>
                 <h5 class="card-heading">{{$sh->Bppb->jumlah}}</h5>
               </hgroup>
+              <hgroup>
+                <!-- hgroup is deprecated, just defiantly using it anyway -->
+                <h6 class="card-subheading text-muted ">Karyawan</h6>
+                <h5 class="card-heading">@foreach ($sh->Karyawan as $kry)
+                  {{ $loop->first ? '' : '' }}
+                  <div>{{ $kry->nama}}</div>
+                  @endforeach
+                </h5>
+              </hgroup>
             </div>
             <hgroup class="col-lg-12">
               <!-- hgroup is deprecated, just defiantly using it anyway -->
@@ -157,7 +166,6 @@
                   <th>No</th>
                   <th>Tanggal</th>
                   <th>No Seri</th>
-                  <th>Operator</th>
                   <th>Status</th>
                   <th>Aksi</th>
                 </tr>
@@ -252,10 +260,6 @@
         {
           data: 'no_seri',
           name: 'no_seri'
-        },
-        {
-          data: 'operator',
-          name: 'operator'
         },
         {
           data: 'status',
