@@ -17,7 +17,7 @@
             <thead style="text-align: center;">
               <tr>
                 <th colspan="12">
-                  <a href="/penjualan_produk/tambah" style="color: white;"><button type="button" class="btn btn-block btn-success btn-sm" style="width: 200px;"><i class="fas fa-plus"></i> &nbsp; Tambah</i></button></a>
+                  <button type="button" class="btn btn-block btn-success btn-sm" style="width: 200px;"><a href="/penjualan_produk/tambah" style="color: white;"><i class="fas fa-plus"></i> &nbsp; Tambah</i></a></button>
                 </th>
               </tr>
               <tr>

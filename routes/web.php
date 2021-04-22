@@ -333,3 +333,9 @@ Route::get('/ppic', 'PpicController@index');
 Route::post('/schedule/create', 'PpicController@calendar_create')->name('schedule.create');
 Route::post('/schedule/delete', 'PpicController@calendar_delete')->name('schedule.delete');
 Route::get('test', 'PpicController@test')->name('schedule.test');
+
+// Eng
+Route::view('/eng', 'page.engineering.index');
+Route::get('/eng/index', 'EngController@test');
+Route::get('/show_list/{produk?}/{document?}', 'EngController@show_list');
+Route::post('/eng/fileupload', 'EngController@fileupload')->name('eng.fileupload');
