@@ -39,6 +39,11 @@ Route::post('/message', 'ChatController@sendMessage');
 //     return view('page.default_form');
 // });
 
+//Karyawan
+/* Tabel */
+Route::get('/karyawan', 'CommonController@karyawan');
+Route::get('/karyawan/tambah', 'CommonController@karyawan_tambah');
+
 //JASA EKSPEDISI
 /* Tabel */
 Route::get('/jasa_eks', 'CommonController@jasa_eks')->name('jasa_eks');
@@ -105,8 +110,6 @@ Route::put('/penjualan_online/detail/aksi_ubah', 'PenjualanController@penjualan_
 Route::post('/penjualan_online/detail/aksi_tambah', 'PenjualanController@penjualan_online_detail_aksi_tambah');
 Route::get('/penjualan_online/detail/data/edit/{id}', 'PenjualanController@penjualan_online_detail_edit');
 
-
-
 //PENJUALAN ECOM (ONLINE)
 /*Tabel*/
 Route::get('/penjualan_online_ecom', 'PenjualanController@penjualan_online_ecom');
@@ -120,9 +123,6 @@ Route::put('/penjualan_online_ecom/detail/aksi_ubah/', 'PenjualanController@deta
 Route::get('/penjualan_online_ecom/data', 'PenjualanController@penjualan_online_ecom_Data');
 Route::get('/penjualan_online_ecom/detail/data/{id}', 'PenjualanController@detail_penjualan_online_ecom_data');
 Route::get('/penjualan_online_ecom/detail/data/edit/{id}', 'PenjualanController@detail_penjualan_online_ecom_data_edit');
-
-
-
 
 // PENJUALAN OFFLINE
 /* Get Data */
@@ -151,7 +151,7 @@ Route::get('/penawaran_offline/tambah', 'PenjualanController@penawaran_offline_t
 /* Ubah */
 Route::get('/penawaran_offline/ubah/{id}', 'PenjualanController@penawaran_offline_ubah');
 /*Print*/
-Route::get('/penawaran_offline/cetak_penawaran/{id}', 'PenjualanController@cetak_penawaran');
+Route::get('/penawaran_offline/cetak_penawaran/{id}', 'PenjualanController@cetak_penawaran_offline');
 /* Get Data */
 Route::get('/penawaran_offline/data/{customer_id}', 'PenjualanController@penjualan_offline_data_select');
 /* Action */
@@ -160,6 +160,58 @@ Route::put('/penawaran_offline/aksi_ubah/{id}', 'PenjualanController@penawaran_o
 /*Detail*/
 Route::get('/penawaran_offline/data/detail/{id}', 'PenjualanController@detail_penjualan_offline_data');
 
+//PENAWARAN ECOM
+/*Table*/
+Route::get('/penawaran_ecom', 'PenjualanController@penawaran_ecom');
+/* Get Data */
+Route::get('/penawaran_ecom/data', 'PenjualanController@penawaran_ecom_data');
+/* Tambah */
+Route::get('/penawaran_ecom/tambah', 'PenjualanController@penawaran_ecom_tambah');
+/* Ubah */
+Route::get('/penawaran_ecom/ubah/{id}', 'PenjualanController@penawaran_ecom_ubah');
+/* Get Data */
+Route::get('/penawaran_ecom/data/{customer_id}', 'PenjualanController@penjualan_ecom_data_select');
+/* Action */
+Route::post('/penawaran_ecom/aksi_tambah', 'PenjualanController@penawaran_ecom_aksi_tambah');
+Route::put('/penawaran_ecom/aksi_ubah/{id}', 'PenjualanController@penawaran_ecom_aksi_ubah');
+/*Print*/
+Route::get('/penawaran_ecom/cetak_penawaran/{id}', 'PenjualanController@cetak_penawaran_ecom');
+/*Detail*/
+Route::get('/penawaran_ecom/data/detail/{id}', 'PenjualanController@detail_penjualan_ecom_data');
+
+//PODO EKATALOG
+/*Table*/
+Route::get('/podo_online', 'PenjualanController@podo_online');
+/* Tambah */
+Route::get('/podo_online/tambah', 'PenjualanController@podo_online_tambah');
+/* Ubah */
+Route::get('/podo_online/ubah/{id}', 'PenjualanController@podo_online_ubah');
+/* Get Data */
+Route::get('/podo_online/data/{ak1}', 'PenjualanController@podo_online_data_select');
+/* Action */
+Route::post('/podo_online/aksi_tambah', 'PenjualanController@podo_online_aksi_tambah');
+Route::put('/podo_online/aksi_ubah/{id}', 'PenjualanController@podo_online_aksi_ubah');
+/* Get Data */
+Route::get('/podo_online/data', 'PenjualanController@podo_online_data');
+/* File View */
+Route::get('/podo_online/file{nama}', 'PenjualanController@podo_online_file');
+
+//PODO OFFLINE
+/*Table*/
+Route::get('/podo_offline', 'PenjualanController@podo_offline');
+/*Get Data*/
+Route::get('/podo_offline/data', 'PenjualanController@podo_offline_data');
+/*Tambah*/
+Route::get('/podo_offline/tambah', 'PenjualanController@podo_offline_tambah');
+/*Ubah*/
+Route::get('/podo_offline/ubah/{id}', 'PenjualanController@podo_offline_ubah');
+/*Get Data*/
+Route::get('/podo_offline/data/{customer_id}', 'PenjualanController@penjualan_offline_data_select');
+/*Action*/
+Route::post('/podo_offline/aksi_tambah', 'PenjualanController@podo_offline_aksi_tambah');
+Route::put('/podo_offline/aksi_ubah/{id}', 'PenjualanController@podo_offline_aksi_ubah');
+/* File View */
+Route::get('/podo_offline/file{nama}', 'PenjualanController@podo_offline_file');
 
 //GET DATA SELECT
 /* Get Data */
@@ -174,6 +226,7 @@ Route::post('/produk/store', 'ItController@store_produk')->name('produk.store');
 Route::get('/produk/edit/{id}',  'ItController@edit_produk')->name('produk.edit');
 Route::put('/produk/update/{id}',  'ItController@update_produk')->name('produk.update');
 Route::put('/produk/delete/{id}', 'ItController@delete_produk')->name('produk.delete');
+
 
 
 //INVENTORY
@@ -192,7 +245,6 @@ Route::get('/inventory/edit/{id}', 'ItController@inventory_edit')->name('invento
 Route::put('/inventory/update/{id}', 'ItController@inventory_update')->name('inventory.update');
 /*Delete*/
 Route::delete('/inventory/delete/{id}', 'ItController@inventory_delete')->name('inventory.delete');
-
 
 //PEMINJAMAN ALAT
 Route::get('/peminjaman/alat', 'ItController@peminjaman_alat')->name('peminjaman.alat');

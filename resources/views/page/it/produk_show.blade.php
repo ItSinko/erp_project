@@ -70,7 +70,7 @@
                 <td style="vertical-align:middle;text-align:left;">
                   <hgroup>
                     <h6 class="heading">{{$i->tipe}} - {{$i->nama}}</h6>
-                    <div class="subheading text-muted">{{$i->kategoriproduk->nama}}</div>
+                    <div class="subheading text-muted">{{$i->kategoriproduk['nama']}}</div>
                   </hgroup>
                 <td>{{$i->nama_coo}}</td>
                 <td>{{$i->kelompokproduk['nama']}}</td>

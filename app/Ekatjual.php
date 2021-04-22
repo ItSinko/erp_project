@@ -14,4 +14,9 @@ class Ekatjual extends Model
     {
         return $this->belongsTo('App\Distributor', 'distributor_id');
     }
+
+    public function podo_online()
+    {
+        return $this->hasOne('App\Podo_online', 'id');
+    }
 }
