@@ -45,15 +45,7 @@
                             <h6 class="card-subheading text-muted">{{$s->Bppb->DetailProduk->Produk->nama}}</h6>
                         </div>
                     </div>
-                    <div class="row" style="padding-bottom:10%;">
-                        @if($s->status == 12)
-                        <a href="{{route('perakitan.pemeriksaan.laporan.edit', ['id' => $s->id])}}">
-                            <div class="inline-flex col-lg-12">
-                                <button type="button" class="btn btn-block btn-primary rounded-pill"><i class="fas fa-tasks"></i> Pemeriksaan</button>
-                            </div>
-                        </a>
-                        @endif
-                    </div>
+
 
                     <div class="row">
                         <div class="col-lg-6" style="vertical-align: middle;">

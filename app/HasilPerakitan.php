@@ -27,7 +27,7 @@ class HasilPerakitan extends Model
         $k = $this->id;
         $h = HistoriHasilPerakitan::where([
             ['hasil_perakitan_id', '=', $k],
-            ['status', '=', $status]
+            ['kegiatan', '=', $status]
         ])->count();
 
         return $h;

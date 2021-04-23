@@ -14,7 +14,6 @@ use Yajra\DataTables\Facades\DataTables;
 
 class QCController extends Controller
 {
-
     public function perakitan_pemeriksaan()
     {
         return view('page.qc.perakitan_pemeriksaan_show');
@@ -77,6 +76,81 @@ class QCController extends Controller
             ->editColumn('tanggal', function ($s) {
                 return Carbon::createFromFormat('Y-m-d', $s->tanggal)->format('d-m-Y');
             })
+            ->editColumn('kondisi_fisik_bahan_baku', function ($s) {
+                $btn = "";
+                if ($s->kondisi_fisik_bahan_baku == "ok") {
+                    $btn = '<small><i style="color:green;" class="fas fa-check-circle"></i></small>';
+                } else if ($s->kondisi_fisik_bahan_baku == "nok") {
+                    $btn = '<small><i style="color:red;" class="fas fa-times-circle"></i></small>';
+                }
+                return $btn;
+            })
+            ->editColumn('kondisi_saat_proses_perakitan', function ($s) {
+                $btn = "";
+                if ($s->kondisi_saat_proses_perakitan == "ok") {
+                    $btn = '<small><i style="color:green;" class="fas fa-check-circle"></i></small>';
+                } else if ($s->kondisi_saat_proses_perakitan == "nok") {
+                    $btn = '<small><i style="color:red;" class="fas fa-times-circle"></i></small>';
+                }
+                return $btn;
+            })
+            ->editColumn('tindak_lanjut_terbuka', function ($s) {
+                $btn = "";
+                if ($s->tindak_lanjut_terbuka == "ok") {
+                    $btn = '<small><i style="color:green;" class="fas fa-check-circle"></i></small>';
+                } else if ($s->tindak_lanjut_terbuka != "ok" && !empty($s->tindak_lanjut_terbuka)) {
+                    $btn = '<small><i style="color:red;" class="fas fa-times-circle"></i>&nbsp;';
+                    if ($s->tindak_lanjut_terbuka == "produk_spesialis") {
+                        $btn .= 'Produk Spesialis';
+                    } else {
+                        $btn .= ucfirst($s->tindak_lanjut_terbuka);
+                    }
+                    $btn .= '</small><div><small>' . $s->keterangan_tindak_lanjut_terbuka . '</small></div>';
+                }
+                return $btn;
+            })
+            ->editColumn('kondisi_setelah_proses', function ($s) {
+                $btn = "";
+                if ($s->kondisi_setelah_proses == "ok") {
+                    $btn = '<small><i style="color:green;" class="fas fa-check-circle"></i></small>';
+                } else if ($s->kondisi_setelah_proses == "nok") {
+                    $btn = '<small><i style="color:red;" class="fas fa-times-circle"></i></small>';
+                }
+                return $btn;
+            })
+            ->editColumn('hasil', function ($s) {
+                $btn = "";
+                if ($s->hasil == "ok") {
+                    $btn = '<small><i style="color:green;" class="fas fa-check-circle"></i></small>';
+                } else if ($s->hasil == "nok") {
+                    $btn = '<small><i style="color:red;" class="fas fa-times-circle"></i></small>';
+                }
+                return $btn;
+            })
+            ->editColumn('fungsi', function ($s) {
+                $btn = "";
+                if ($s->fungsi == "ok") {
+                    $btn = '<small><i style="color:green;" class="fas fa-check-circle"></i></small>';
+                } else if ($s->fungsi == "nok") {
+                    $btn = '<small><i style="color:red;" class="fas fa-times-circle"></i></small>';
+                }
+                return $btn;
+            })
+            ->editColumn('tindak_lanjut_tertutup', function ($s) {
+                $btn = "";
+                if ($s->tindak_lanjut_tertutup == "aging") {
+                    $btn = '<small><i style="color:green;" class="fas fa-check-circle"></i></small>';
+                } else if ($s->tindak_lanjut_tertutup != "aging" && !empty($s->tindak_lanjut_tertutup)) {
+                    $btn = '<small><i style="color:red;" class="fas fa-times-circle"></i>&nbsp;<b>';
+                    if ($s->tindak_lanjut_tertutup == "produk_spesialis") {
+                        $btn .= 'Produk Spesialis';
+                    } else {
+                        $btn .= ucfirst($s->tindak_lanjut_tertutup);
+                    }
+                    $btn .= '</b></small><div><small>' . $s->keterangan_tindak_lanjut_tertutup . '</small></div>';
+                }
+                return $btn;
+            })
             ->addColumn('operator', function ($s) {
                 $arr = [];
                 foreach ($s->Perakitan->Karyawan as $i) {
@@ -85,10 +159,42 @@ class QCController extends Controller
                 return implode("<br>", $arr);
             })
             ->addColumn('aksi', function ($s) {
-                $btn = '<button class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-pencil-alt"></i></button>';
+                // $btn = '<a href="/perakitan/pemeriksaan/edit_pemeriksaan_terbuka/' . $s->id . '"><button class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-pencil-alt"></i></button></a>';
+                // return $btn;
+                $btn = "";
+                if ($s->status == "req_pemeriksaan_terbuka") {
+                    $btn = '<a href="/perakitan/pemeriksaan/terbuka/edit/' . $s->id . '"><button class="btn btn-warning btn-sm"><i class="fas fa-pencil-alt"></i>&nbsp;Pemeriksaan Terbuka</button></a>';
+                } else if ($s->status == "acc_pemeriksaan_terbuka") {
+                    $btn = '<small><i style="color:green;" class="fas fa-check-circle"></i><div>Pemeriksaan Terbuka</div></small>';
+                } else if ($s->status == "rej_pemeriksaan_terbuka") {
+                    $btn = '<small><i style="color:red;" class="fas fa-times-circle"></i><div>Pemeriksaan Terbuka</div></small>';
+                } else if ($s->status == "req_pemeriksaan_tertutup") {
+                    $btn = '<a href="/perakitan/pemeriksaan/tertutup/edit/' . $s->id . '"><button class="btn btn-warning btn-sm"><i class="fas fa-pencil-alt"></i>&nbsp;Pemeriksaan Tertutup</button></a>';
+                } else if ($s->status == "acc_pemeriksaan_tertutup") {
+                    $btn = '<small><i style="color:green;" class="fas fa-check-circle"></i><div>Pemeriksaan Tertutup</div></small>';
+                } else if ($s->status == "rej_pemeriksaan_tertutup") {
+                    $btn = '<small><i style="color:red;" class="fas fa-times-circle"></i><div>Pemeriksaan Tertutup</div></small>';
+                }
                 return $btn;
             })
-            ->rawColumns(['operator', 'aksi'])
+            // ->editColumn('status', function ($s) {
+            //     $btn = "";
+            //     if ($s->status == "req_pemeriksaan_terbuka") {
+            //         $btn = '<span class="info-text">Permintaan Pemeriksaan Terbuka</span>';
+            //     } else if ($s->status == "acc_pemeriksaan_terbuka") {
+            //         $btn = '<span class="warning-text">Menunggu Pemeriksaan Tertutup</span>';
+            //     } else if ($s->status == "rej_pemeriksaan_terbuka") {
+            //         $btn = '<span class="danger-text">Pemeriksaan Terbuka Not OK</span>';
+            //     } else if ($s->status == "req_pemeriksaan_tertutup") {
+            //         $btn = '<span class="info-text">Permintaan Pemeriksaan Tertutup</span>';
+            //     } else if ($s->status == "acc_pemeriksaan_tertutup") {
+            //         $btn = '<span class="warning-text">Selesai Pemeriksaan Perakitan</span>';
+            //     } else if ($s->status == "rej_pemeriksaan_tertutup") {
+            //         $btn = '<span class="danger-text">Pemeriksaan Terbuka Not OK</span>';
+            //     }
+            //     return $btn;
+            // })
+            ->rawColumns(['operator', 'aksi', 'kondisi_fisik_bahan_baku', 'kondisi_saat_proses_perakitan', 'tindak_lanjut_terbuka', 'kondisi_setelah_proses', 'hasil', 'fungsi', 'tindak_lanjut_tertutup'])
             ->make(true);
     }
 
@@ -101,7 +207,7 @@ class QCController extends Controller
     {
         $s = Perakitan::whereHas('Bppb', function ($query) use ($id) {
             $query->where('id', '=', $id);
-        })->whereNotIn('status', ['0'])->get();
+        })->get();
 
         return DataTables::of($s)
             ->addIndexColumn()
@@ -119,31 +225,117 @@ class QCController extends Controller
                 $btn = HasilPerakitan::where('perakitan_id', $s->id)->count();
                 return $btn . " " . $s->Bppb->DetailProduk->satuan;
             })
-            ->addColumn('status', function ($s) {
-                $btn = "";
-                if ($s->status == '12') {
-                    $c = HasilPerakitan::where('perakitan_id', '=', $s->id)->whereIn('status', ['req_pemeriksaan_terbuka', 'req_pemeriksaan_tertutup'])->count();
-                    if ($c > 0) {
-                        $btn = '<span class="warning-text">
-                        Periksa
-                    </span>';
-                    } else if ($c <= 0) {
-                        $btn = '<div class="inline-flex">
-                        <a href = "/perakitan/laporan/status/' . $s->id . '/selesai">
-                            <button type="button" class="btn btn-block btn-outline-success karyawan-img-small" style="border-radius:50%;" title="Kirim Laporan ke Produksi"><i class="fas fa-check"></i></button>
-                        </a>
-                        </div>';
-                    }
-                }
+            // ->addColumn('status', function ($s) {
+            //     $btn = "";
+            //     if ($s->status == '12') {
+            //         $c = HasilPerakitan::where('perakitan_id', '=', $s->id)->whereIn('status', ['req_pemeriksaan_terbuka', 'req_pemeriksaan_tertutup'])->count();
+            //         if ($c > 0) {
+            //             $btn = '<span class="warning-text">
+            //             Periksa
+            //         </span>';
+            //         } else if ($c <= 0) {
+            //             $btn = '<div class="inline-flex">
+            //             <a href = "/perakitan/laporan/status/' . $s->id . '/selesai">
+            //                 <button type="button" class="btn btn-block btn-outline-success karyawan-img-small" style="border-radius:50%;" title="Kirim Laporan ke Produksi"><i class="fas fa-check"></i></button>
+            //             </a>
+            //             </div>';
+            //         }
+            //     }
 
-                return $btn;
-            })
+            //     return $btn;
+            // })
             ->addColumn('aksi', function ($s) {
                 $btn = '<a href = "/perakitan/pemeriksaan/hasil/' . $s->id . '"><button class="btn btn-info circle-button btn-circle-sm m-1 karyawan-img-small"><i class="fas fa-eye"></i></button></a>';
                 return $btn;
             })
-            ->rawColumns(['operator', 'status', 'aksi'])
+            ->rawColumns(['operator', 'aksi'])
             ->make(true);
+    }
+
+    public function perakitan_pemeriksaan_terbuka_edit($id)
+    {
+        $s = HasilPerakitan::find($id);
+        return view('page.qc.perakitan_pemeriksaan_terbuka_edit', ['id' => $id, 's' => $s]);
+    }
+
+    public function perakitan_pemeriksaan_terbuka_update($id, Request $request)
+    {
+        $status = "";
+        if ($request->tindak_lanjut_terbuka == "ok") {
+            $status = "acc_pemeriksaan_terbuka";
+        } else {
+            $status = "rej_pemeriksaan_terbuka";
+        }
+
+        $h = HasilPerakitan::find($id);
+        $h->kondisi_fisik_bahan_baku = $request->kondisi_fisik_bahan_baku;
+        $h->kondisi_saat_proses_perakitan = $request->kondisi_saat_proses_perakitan;
+        $h->tindak_lanjut_terbuka = $request->tindak_lanjut_terbuka;
+        $h->keterangan_tindak_lanjut_terbuka = $request->keterangan_tindak_lanjut_terbuka;
+        $h->status = $status;
+        $u = $h->save();
+
+
+        if ($u) {
+            $c = HistoriHasilPerakitan::create([
+                'hasil_perakitan_id' => $id,
+                'kegiatan' => 'pemeriksaan_terbuka',
+                'tanggal' => Carbon::now()->toDateString(),
+                'hasil' => $request->hasil,
+                'keterangan' => $request->keterangan_tindak_lanjut_terbuka,
+                'tindak_lanjut' => $request->tindak_lanjut_terbuka
+            ]);
+            if ($c) {
+                return redirect()->back()->with('success', "Berhasil mengubah Data");
+            } else {
+                return redirect()->back()->with('error', "Gagal mengubah Data");
+            }
+        } else {
+            return redirect()->back()->with('error', "Gagal mengubah Data");
+        }
+    }
+
+    public function perakitan_pemeriksaan_tertutup_edit($id)
+    {
+        $s = HasilPerakitan::find($id);
+        return view('page.qc.perakitan_pemeriksaan_tertutup_edit', ['id' => $id, 's' => $s]);
+    }
+
+    public function perakitan_pemeriksaan_tertutup_update($id, Request $request)
+    {
+        $status = "";
+        if ($request->tindak_lanjut_tertutup == "ok") {
+            $status = "acc_pemeriksaan_tertutup";
+        } else {
+            $status = "rej_pemeriksaan_tertutup";
+        }
+
+        $h = HasilPerakitan::find($id);
+        $h->fungsi = $request->fungsi;
+        $h->kondisi_setelah_proses = $request->kondisi_setelah_proses;
+        $h->hasil = $request->hasil;
+        $h->tindak_lanjut_tertutup = $request->tindak_lanjut_tertutup;
+        $h->keterangan_tindak_lanjut_tertutup = $request->keterangan_tindak_lanjut_tertutup;
+        $h->status = $status;
+        $u = $h->save();
+
+        if ($u) {
+            $c = HistoriHasilPerakitan::create([
+                'hasil_perakitan_id' => $id,
+                'kegiatan' => 'pemeriksaan_tertutup',
+                'tanggal' => Carbon::now()->toDateString(),
+                'hasil' => $request->hasil,
+                'keterangan' => $request->keterangan_tindak_lanjut_tertutup,
+                'tindak_lanjut' => $request->tindak_lanjut_terbuka
+            ]);
+            if ($c) {
+                return redirect()->back()->with('success', "Berhasil mengubah Data");
+            } else {
+                return redirect()->back()->with('error', "Gagal mengubah Data");
+            }
+        } else {
+            return redirect()->back()->with('error', "Gagal mengubah Data");
+        }
     }
 
     public function perakitan_pemeriksaan_laporan_edit($id)

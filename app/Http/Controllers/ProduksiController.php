@@ -215,7 +215,7 @@ class ProduksiController extends Controller
                                 'perakitan_id' => $c->id,
                                 'tanggal' => $request->tanggals[$i],
                                 'no_seri' => $request->no_seri[$i],
-                                'status' => 'dibuat'
+                                'status' => 'req_pemeriksaan_terbuka'
                             ]);
                             if (!$s) {
                                 $bool = false;
@@ -238,7 +238,7 @@ class ProduksiController extends Controller
                             'perakitan_id' => $c->id,
                             'tanggal' => $request->tanggals[$i],
                             'no_seri' => $request->no_seri[$i],
-                            'status' => 'dibuat'
+                            'status' => 'req_pemeriksaan_terbuka'
                         ]);
 
                         if (!$s) {
@@ -302,19 +302,19 @@ class ProduksiController extends Controller
                 }
                 return implode("<br>", $arr);
             })
-            ->addColumn('status', function ($s) {
-                $btn = "";
-                if ($s->status == '0') {
-                    $btn = '<div class="inline-flex">
-                        <a href = "/perakitan/laporan/status/' . $s->id . '/12">
-                            <button type="button" class="btn btn-block btn-outline-info karyawan-img-small" style="border-radius:50%;" title="Kirim Laporan ke Quality Control"><i class="far fa-paper-plane"></i></button>
-                        </a>
-                    </div>';
-                } else if ($s->status == '12') {
-                    $btn = '<span class="label info-text">Dibuat</span>';
-                }
-                return $btn;
-            })
+            // ->addColumn('status', function ($s) {
+            //     $btn = "";
+            //     if ($s->status == '0') {
+            //         $btn = '<div class="inline-flex">
+            //             <a href = "/perakitan/laporan/status/' . $s->id . '/12">
+            //                 <button type="button" class="btn btn-block btn-outline-info karyawan-img-small" style="border-radius:50%;" title="Kirim Laporan ke Quality Control"><i class="far fa-paper-plane"></i></button>
+            //             </a>
+            //         </div>';
+            //     } else if ($s->status == '12') {
+            //         $btn = '<span class="label info-text">Dibuat</span>';
+            //     }
+            //     return $btn;
+            // })
             ->addColumn('aksi', function ($s) {
                 $btn = '<a href = "/perakitan/hasil/' . $s->id . '"><button class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-eye"></i></button></a>';
                 $btn .= '<a href = "/perakitan/laporan/edit/' . $s->id . '"><button class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-edit"></i></button></a>';
@@ -413,7 +413,7 @@ class ProduksiController extends Controller
                                 'perakitan_id' => $c->id,
                                 'tanggal' => $request->tanggals[$i],
                                 'no_seri' => $request->no_seri[$i],
-                                'status' => 'dibuat'
+                                'status' => 'req_pemeriksaan_terbuka'
                             ]);
                             if (!$s) {
                                 $bool = false;
@@ -436,7 +436,7 @@ class ProduksiController extends Controller
                             'perakitan_id' => $c->id,
                             'tanggal' => $request->tanggals[$i],
                             'no_seri' => $request->no_seri[$i],
-                            'status' => 'dibuat'
+                            'status' => 'req_pemeriksaan_terbuka'
                         ]);
                         if (!$s) {
                             $bool = false;
@@ -559,29 +559,29 @@ class ProduksiController extends Controller
         return redirect('/perakitan')->with('success', "Berhasil menghapus data perakitan");
     }
 
-    public function perakitan_laporan_status($id, $status)
-    {
-        $p = Perakitan::find($id);
-        if ($status == '12') {
-            $p->status = $status;
-            $u = $p->save();
-            if ($u) {
-                $hp = HasilPerakitan::where('perakitan_id', $id)->get();
-                $bool = true;
-                foreach ($hp as $i) {
-                    $h = HasilPerakitan::find($i->id);
-                    $h->status = 'req_pemeriksaan_terbuka';
-                    $up = $h->save();
-                    if (!$up) {
-                        $bool = false;
-                    }
-                }
-                if ($bool == true) {
-                    return redirect()->back();
-                }
-            }
-        }
-    }
+    // public function perakitan_laporan_status($id, $status)
+    // {
+    //     $p = Perakitan::find($id);
+    //     if ($status == '12') {
+    //         $p->status = $status;
+    //         $u = $p->save();
+    //         if ($u) {
+    //             $hp = HasilPerakitan::where('perakitan_id', $id)->get();
+    //             $bool = true;
+    //             foreach ($hp as $i) {
+    //                 $h = HasilPerakitan::find($i->id);
+    //                 $h->status = 'req_pemeriksaan_terbuka';
+    //                 $up = $h->save();
+    //                 if (!$up) {
+    //                     $bool = false;
+    //                 }
+    //             }
+    //             if ($bool == true) {
+    //                 return redirect()->back();
+    //             }
+    //         }
+    //     }
+    // }
 
     public function perakitan_hasil($id)
     {
@@ -695,7 +695,7 @@ class ProduksiController extends Controller
                     'perakitan_id' => $id,
                     'tanggal' => $request->tanggals[$i],
                     'no_seri' => $request->no_seri[$i],
-                    'status' => 'dibuat'
+                    'status' => 'req_pemeriksaan_terbuka'
                 ]);
                 if (!$s) {
                     $bool = false;

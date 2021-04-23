@@ -44,15 +44,15 @@
                             <h6 class="card-subheading text-muted">{{$s->DetailProduk->Produk->nama}}</h6>
                         </div>
                     </div>
-                    <div class="row" style="padding-bottom:10%;">
+                    <!-- <div class="row" style="padding-bottom:10%;">
                         @if($s->status == 12)
-                        <a href="{{route('perakitan.pemeriksaan.laporan.edit', ['id' => $s->id])}}">
+                        <a href="">
                             <div class="inline-flex col-lg-12">
                                 <button type="button" class="btn btn-block btn-primary rounded-pill"><i class="fas fa-tasks"></i> Pemeriksaan</button>
                             </div>
                         </a>
                         @endif
-                    </div>
+                    </div> -->
 
                     <div class="row">
                         <div class="col-lg-6" style="vertical-align: middle;">
@@ -99,7 +99,7 @@
                     </div>
                     @endif
 
-                    <table id="examples" class="table table-hover table-bordered styled-table">
+                    <table id="examples" class="table table-hover table-bordered styled-table" style="width:100%;">
                         <thead style="text-align: center;">
                             <tr>
                                 <th rowspan="2">No</th>
@@ -107,7 +107,7 @@
                                 <th rowspan="2">No Seri</th>
                                 <th rowspan="2">Operator</th>
                                 <th colspan="3">Pemeriksaan Terbuka</th>
-                                <th colspan="2">Pemeriksaan Tertutup</th>
+                                <th colspan="4">Pemeriksaan Tertutup</th>
                                 <th rowspan="2">Keterangan</th>
                                 <th rowspan="2">Aksi</th>
                             </tr>
@@ -117,6 +117,8 @@
                                 <th>Tindak Lanjut</th>
                                 <th>Fungsi</th>
                                 <th>Kondisi Setelah Perakitan</th>
+                                <th>Hasil</th>
+                                <th>Tindak Lanjut</th>
                             </tr>
                         </thead>
                         <tbody style="text-align:center;">
@@ -156,6 +158,7 @@
 <script>
     $(function() {
         $('#examples').DataTable({
+            scrollX: true,
             processing: true,
             serverSide: true,
             ajax: "{{ route('perakitan.pemeriksaan.bppb.show', ['id' => $id]) }}",
@@ -188,6 +191,22 @@
                 {
                     data: 'tindak_lanjut_terbuka',
                     name: 'tindak_lanjut_terbuka'
+                },
+                {
+                    data: 'fungsi',
+                    name: 'fungsi'
+                },
+                {
+                    data: 'kondisi_setelah_proses',
+                    name: 'kondisi_setelah_proses'
+                },
+                {
+                    data: 'hasil',
+                    name: 'hasil'
+                },
+                {
+                    data: 'tindak_lanjut_tertutup',
+                    name: 'tindak_lanjut_tertutup'
                 },
                 {
                     data: 'keterangan',

@@ -310,8 +310,10 @@ Route::get('/perakitan/pemeriksaan/show', 'QCController@perakitan_pemeriksaan_sh
 Route::get('/perakitan/pemeriksaan/laporan', 'QCController@perakitan_pemeriksaan_laporan')->name('perakitan.pemeriksaan.laporan');
 Route::get('/perakitan/pemeriksaan/laporan/show/{id}', 'QCController@perakitan_pemeriksaan_laporan_show')->name('perakitan.pemeriksaan.laporan.show');
 /* Edit */
-Route::get('/perakitan/pemeriksaan/laporan/edit/{id}', 'QCController@perakitan_pemeriksaan_laporan_edit')->name('perakitan.pemeriksaan.laporan.edit');
-Route::put('/perakitan/pemeriksaan/laporan/update/{id}', 'QCController@perakitan_pemeriksaan_laporan_update')->name('perakitan.pemeriksaan.laporan.update');
+Route::get('/perakitan/pemeriksaan/terbuka/edit/{id}', 'QCController@perakitan_pemeriksaan_terbuka_edit')->name('perakitan.pemeriksaan.terbuka.edit');
+Route::put('/perakitan/pemeriksaan/terbuka/update/{id}', 'QCController@perakitan_pemeriksaan_terbuka_update')->name('perakitan.pemeriksaan.terbuka.update');
+Route::get('/perakitan/pemeriksaan/tertutup/edit/{id}', 'QCController@perakitan_pemeriksaan_tertutup_edit')->name('perakitan.pemeriksaan.tertutup.edit');
+Route::put('/perakitan/pemeriksaan/tertutup/update/{id}', 'QCController@perakitan_pemeriksaan_tertutup_update')->name('perakitan.pemeriksaan.tertutup.update');
 /* Hasil */
 Route::get('/perakitan/pemeriksaan/hasil/{id}', 'QCController@perakitan_pemeriksaan_hasil')->name('perakitan.pemeriksaan.hasil');
 Route::get('/perakitan/pemeriksaan/hasil/show/{id}', 'QCController@perakitan_pemeriksaan_hasil_show')->name('perakitan.pemeriksaan.hasil.show');

@@ -131,10 +131,6 @@
                 name: 'jumlah'
               },
               {
-                data: 'status',
-                name: 'status'
-              },
-              {
                 data: 'aksi',
                 name: 'aksi',
                 orderable: false,
