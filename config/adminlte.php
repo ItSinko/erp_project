@@ -282,6 +282,10 @@ return [
             'auth' => [26]
         ],
         [
+            'header' => 'KESEHATAN',
+            'auth'   => [26]
+        ],
+        [
             'header' => 'TRANSAKSI',
             'auth'   => [26]
         ],

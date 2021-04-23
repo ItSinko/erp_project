@@ -64,7 +64,7 @@ Route::get('/karyawan/peminjaman/show', 'ItController@karyawan_peminjaman_show')
 
 //NAMA & ALAMAT
 /* Tabel */
-Route::get('/nama_alamat', 'CommonController@nama_alamat')->name('nama_alamat');
+Route::get('/n ama_alamat', 'CommonController@nama_alamat')->name('nama_alamat');
 /* Get Data */
 Route::get('/nama_alamat/data', 'CommonController@nama_alamat_data');
 /* Tambah */
@@ -125,10 +125,6 @@ Route::get('/penjualan_online_ecom/data', 'PenjualanController@penjualan_online_
 Route::get('/penjualan_online_ecom/detail/data/{id}', 'PenjualanController@detail_penjualan_online_ecom_data');
 Route::get('/penjualan_online_ecom/detail/data/edit/{id}', 'PenjualanController@detail_penjualan_online_ecom_data_edit');
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 61f74974f5de6b1b4ce7d02bf560ade01b452c0a
 // PENJUALAN OFFLINE
 /* Get Data */
 Route::get('/penjualan_offline/data', 'PenjualanController@penjualan_offline_data');
@@ -165,7 +161,6 @@ Route::put('/penawaran_offline/aksi_ubah/{id}', 'PenjualanController@penawaran_o
 /*Detail*/
 Route::get('/penawaran_offline/data/detail/{id}', 'PenjualanController@detail_penjualan_offline_data');
 
-<<<<<<< HEAD
 //PENAWARAN ECOM
 /*Table*/
 Route::get('/penawaran_ecom', 'PenjualanController@penawaran_ecom');
@@ -219,8 +214,6 @@ Route::put('/podo_offline/aksi_ubah/{id}', 'PenjualanController@podo_offline_aks
 /* File View */
 Route::get('/podo_offline/file{nama}', 'PenjualanController@podo_offline_file');
 
-=======
->>>>>>> 61f74974f5de6b1b4ce7d02bf560ade01b452c0a
 //GET DATA SELECT
 /* Get Data */
 Route::get('/produk/get_select/{id}', 'CommonController@produk_get_select');
