@@ -271,6 +271,7 @@ class QCController extends Controller
         $h->kondisi_fisik_bahan_baku = $request->kondisi_fisik_bahan_baku;
         $h->kondisi_saat_proses_perakitan = $request->kondisi_saat_proses_perakitan;
         $h->tindak_lanjut_terbuka = $request->tindak_lanjut_terbuka;
+        $h->hasil_terbuka = $request->hasil_terbuka;
         $h->keterangan_tindak_lanjut_terbuka = $request->keterangan_tindak_lanjut_terbuka;
         $h->status = $status;
         $u = $h->save();
@@ -281,7 +282,7 @@ class QCController extends Controller
                 'hasil_perakitan_id' => $id,
                 'kegiatan' => 'pemeriksaan_terbuka',
                 'tanggal' => Carbon::now()->toDateString(),
-                'hasil' => $request->hasil,
+                'hasil' => $request->hasil_terbuka,
                 'keterangan' => $request->keterangan_tindak_lanjut_terbuka,
                 'tindak_lanjut' => $request->tindak_lanjut_terbuka
             ]);
@@ -313,7 +314,7 @@ class QCController extends Controller
         $h = HasilPerakitan::find($id);
         $h->fungsi = $request->fungsi;
         $h->kondisi_setelah_proses = $request->kondisi_setelah_proses;
-        $h->hasil = $request->hasil;
+        $h->hasil_tertutup = $request->hasil_tertutup;
         $h->tindak_lanjut_tertutup = $request->tindak_lanjut_tertutup;
         $h->keterangan_tindak_lanjut_tertutup = $request->keterangan_tindak_lanjut_tertutup;
         $h->status = $status;
@@ -324,7 +325,7 @@ class QCController extends Controller
                 'hasil_perakitan_id' => $id,
                 'kegiatan' => 'pemeriksaan_tertutup',
                 'tanggal' => Carbon::now()->toDateString(),
-                'hasil' => $request->hasil,
+                'hasil' => $request->hasil_tertutup,
                 'keterangan' => $request->keterangan_tindak_lanjut_tertutup,
                 'tindak_lanjut' => $request->tindak_lanjut_terbuka
             ]);

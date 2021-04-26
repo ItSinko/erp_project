@@ -134,10 +134,10 @@
                                     </div>
 
                                     <div class="form-group row">
-                                        <label for="hasil" class="col-sm-4 col-form-label" style="text-align:right;">Hasil</label>
+                                        <label for="hasil_tertutup" class="col-sm-4 col-form-label" style="text-align:right;">Hasil</label>
                                         <div class="col-sm-2 col-form-label">
                                             <div class="icheck-primary d-inline">
-                                                <input type="radio" id="hasil_ok" name="hasil" value="ok" checked>
+                                                <input type="radio" id="hasil_ok" name="hasil_tertutup" value="ok" checked>
                                                 <label for="hasil_ok">
                                                     OK
                                                 </label>
@@ -145,7 +145,7 @@
                                         </div>
                                         <div class="col-sm-2 col-form-label">
                                             <div class="icheck-primary d-inline">
-                                                <input type="radio" id="hasil_nok" name="hasil" value="nok">
+                                                <input type="radio" id="hasil_nok" name="hasil_tertutup" value="nok">
                                                 <label for="hasil_nok">
                                                     NOK
                                                 </label>

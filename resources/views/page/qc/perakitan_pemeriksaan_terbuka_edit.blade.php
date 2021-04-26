@@ -134,6 +134,31 @@
                                     </div>
 
                                     <div class="form-group row">
+                                        <label for="hasil_terbuka" class="col-sm-4 col-form-label" style="text-align:right;">Hasil</label>
+
+                                        <div class="col-sm-2 col-form-label">
+                                            <div class="icheck-primary d-inline">
+                                                <input type="radio" id="hasil_terbuka_ok" name="hasil_terbuka" value="ok" checked>
+                                                <label for="hasil_terbuka_ok">
+                                                    OK
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-2 col-form-label">
+                                            <div class="icheck-primary d-inline">
+                                                <input type="radio" id="hasil_terbuka_nok" name="hasil_terbuka" value="nok">
+                                                <label for="hasil_terbuka_nok">
+                                                    NOK
+                                                </label>
+                                            </div>
+                                        </div>
+                                        @if ($errors->has('hasil_terbuka'))
+                                        <span class="invalid-feedback" role="alert">{{$errors->first('hasil_terbuka')}}</span>
+                                        @endif
+                                    </div>
+
+                                    <div class="form-group row">
                                         <label for="kelompok_produk_id" class="col-sm-4 col-form-label" style="text-align:right;">Tindak Lanjut</label>
                                         <div class="col-sm-8">
                                             <select class="form-control select2 select2-info @error('tindak_lanjut_terbuka') is-invalid @enderror" data-dropdown-css-class="select2-info" style="width: 30%;" data-placeholder="Pilih Tindak Lanjut" name="tindak_lanjut_terbuka" id="tindak_lanjut_terbuka">
