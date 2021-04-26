@@ -480,13 +480,13 @@ return [
         ],
 
 
-        // ['header' => 'LOGOUT'],
-        // [
-        //     'text' => 'Logout',
-        //     'url' => '/logout',
-        //     'icon' => 'fas fa-sign-out-alt',
-        //     'form' => true,
-        // ],
+        ['header' => 'LOGOUT'],
+        [
+            'text' => 'Logout',
+            'url' => '/logout',
+            'icon' => 'fas fa-sign-out-alt',
+            'form' => true,
+        ],
     ],
 
     /*

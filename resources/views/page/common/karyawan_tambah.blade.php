@@ -10,17 +10,6 @@
 @section('content')
 <section class="content-header">
     <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-
-            </div>
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item active">DataTables</li>
-                </ol>
-            </div>
-        </div>
     </div>
 </section>
 
@@ -41,37 +30,14 @@
                                             <div class="form-group row">
                                                 <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Nama</label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" class="form-control @error('data') is-invalid @enderror" name="no_pemeriksaan" id="no_pemeriksaan" placeholder="Nama Karyawan" value="{{old('no_pemeriksaan')}}" style="width:45%;">
+                                                    <select type="text" class="form-control @error('data') is-invalid @enderror select2" name="no_pemeriksaan" id="no_pemeriksaan" placeholder="Nama Karyawan" value="{{old('no_pemeriksaan')}}" style="width:45%;">
+                                                        <option value=""></option>
+                                                        @foreach($karyawan as $k)
+                                                        <option value=""></option>
+                                                        @endforeach
+                                                    </select>
                                                 </div>
                                                 <span role="alert" id="no_pemeriksaan-msg"></span>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;">Tgl Lahir</label>
-                                                <div class="col-sm-8">
-                                                    <input type="date" class="form-control @error('data') is-invalid @enderror" name="tanggal" id="tanggal" value="{{old('tanggal')}}" placeholder="Masukkan tanggal" style="width:45%;">
-                                                </div>
-                                                <span role="alert" id="no_seri-msg"></span>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;">NIK</label>
-                                                <div class="col-sm-8">
-                                                    <input type="text" class="form-control @error('data') is-invalid @enderror" name="tanggal" id="tanggal" value="{{old('tanggal')}}" placeholder="Nomor Induk Kependudukan" style="width:45%;">
-                                                </div>
-                                                <span role="alert" id="no_seri-msg"></span>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;">No BPJS</label>
-                                                <div class="col-sm-8">
-                                                    <input type="text" class="form-control @error('data') is-invalid @enderror" name="tanggal" id="tanggal" value="{{old('tanggal')}}" placeholder="Nomor Kartu BPJS" style="width:45%;">
-                                                </div>
-                                                <span role="alert" id="no_seri-msg"></span>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;">Tgl Masuk Kerja</label>
-                                                <div class="col-sm-8">
-                                                    <input type="text" class="form-control @error('data') is-invalid @enderror" name="tanggal" id="tanggal" value="{{old('tanggal')}}" style="width:45%;">
-                                                </div>
-                                                <span role="alert" id="no_seri-msg"></span>
                                             </div>
                                             <div class="form-group row">
                                                 <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;">Vaksin</label>
@@ -99,167 +65,172 @@
                                                 <span role="alert" id="no_seri-msg"></span>
                                             </div>
                                             <div class="form-group row">
-                                                <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;">Cek Kesehatan Awal</label>
+                                                <label for="keterangan" class="col-sm-4 col-form-label" style="text-align:right;">Tinggi Badan</label>
+                                                <div class="col-sm-2">
+                                                    <div class="input-group mb-3">
+                                                        <input type="number" class="form-control" name="tinggi" id="tinggi" value="{{ old('tinggi') }}">
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text">Cm</span>
+                                                        </div>
+                                                    </div>
+                                                    @if($errors->has('ak1'))
+                                                    <div class="text-danger">
+                                                        {{ $errors->first('ak1')}}
+                                                    </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="keterangan" class="col-sm-4 col-form-label" style="text-align:right;">Berat Badan</label>
+                                                <div class="col-sm-2">
+                                                    <div class="input-group mb-3">
+                                                        <input type="number" class="form-control" name="berat" id="berat" value="{{ old('berat') }}">
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text">Kg</span>
+                                                        </div>
+                                                    </div>
+                                                    @if($errors->has('ak1'))
+                                                    <div class="text-danger">
+                                                        {{ $errors->first('ak1')}}
+                                                    </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Body Mass Index</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" class="form-control @error('data') is-invalid @enderror " id="bmi" style="width:15%;" disabled>
+                                                    <small id="status_bmi" class="form-text text-muted"></small>
+                                                </div>
+                                                <span role="alert" id="no_pemeriksaan-msg"></span>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;">Buta Warna</label>
                                                 <div class="col-sm-8" style="margin-top:7px;">
                                                     <div class="icheck-success d-inline col-sm-4">
-                                                        <input type="radio" name="status_kesehatan" value="0" checked="0">
+                                                        <input type="radio" name="status_mata" value="Defisensi">
                                                         <label for="no">
-                                                            Belum
+                                                            Defisiensi
                                                         </label>
                                                     </div>
                                                     <div class="icheck-warning d-inline col-sm-4">
-                                                        <input type="radio" name="status_kesehatan" value="1">
+                                                        <input type="radio" name="status_mata" value="Abnormal">
                                                         <label for="sample">
-                                                            Sudah
+                                                            Abnormal
+                                                        </label>
+                                                    </div>
+                                                    <div class="icheck-warning d-inline col-sm-4">
+                                                        <input type="radio" name="status_mata" value="Normal">
+                                                        <label for="sample">
+                                                            Normal
+                                                        </label>
+                                                    </div>
+                                                    <span class="invalid-feedback" role="alert" id="kondisi-msg"></span>
+                                                    <small id="status_butawarna" class="form-text text-muted"></small>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;">Hasil Medical Check Up</label>
+                                                <div class="col-sm-4">
+                                                    <input type="file" class="form-control @error('data') is-invalid @enderror" name="tanggal" id="tanggal" value="{{old('tanggal')}}" placeholder="Nomor Induk Kependudukan" style="width:45%;">
+                                                </div>
+                                                <span role="alert" id="no_seri-msg"></span>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;">Pemeriksaan Covid</label>
+                                                <div class="col-sm-8" style="margin-top:7px;">
+                                                    <div class="icheck-success d-inline col-sm-4">
+                                                        <input type="radio" name="jenis_tes" value="1" checked="0">
+                                                        <label for="no">
+                                                            Antibody
+                                                        </label>
+                                                    </div>
+                                                    <div class="icheck-warning d-inline col-sm-4">
+                                                        <input type="radio" name="jenis_tes" value="2">
+                                                        <label for="sample">
+                                                            Antigen
+                                                        </label>
+                                                    </div>
+                                                    <div class="icheck-warning d-inline col-sm-4">
+                                                        <input type="radio" name="jenis_tes" value="2">
+                                                        <label for="sample">
+                                                            Ge Nose
+                                                        </label>
+                                                    </div>
+                                                    <div class="icheck-warning d-inline col-sm-4">
+                                                        <input type="radio" name="jenis_tes" value="2">
+                                                        <label for="sample">
+                                                            PCR
+                                                        </label>
+                                                    </div>
+                                                    <div class="icheck-warning d-inline col-sm-4">
+                                                        <input type="radio" name="jenis_tes" value="3">
+                                                        <label for="sample">
+                                                            Saliva
                                                         </label>
                                                     </div>
                                                     <span class="invalid-feedback" role="alert" id="kondisi-msg"></span>
                                                 </div>
                                             </div>
-                                            <div id="cek_form">
+                                            <div id="tipe_1">
                                                 <div class="form-group row">
-                                                    <label for="keterangan" class="col-sm-4 col-form-label" style="text-align:right;">Tinggi Badan</label>
-                                                    <div class="col-sm-1">
-                                                        <div class="input-group mb-3">
-                                                            <input type="text" class="form-control" name="tinggi" value="{{ old('tinggi') }}">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text">Cm</span>
-                                                            </div>
-                                                        </div>
-                                                        @if($errors->has('ak1'))
-                                                        <div class="text-danger">
-                                                            {{ $errors->first('ak1')}}
-                                                        </div>
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                                <div class="form-group row">
-                                                    <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;">Buta Warna</label>
+                                                    <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;"></label>
                                                     <div class="col-sm-8" style="margin-top:7px;">
                                                         <div class="icheck-success d-inline col-sm-4">
-                                                            <input type="radio" name="status_mata" value="0" checked="0">
+                                                            <input type="radio" name="tes_covid" value="non-reaktif">
                                                             <label for="no">
-                                                                Defisiensi
+                                                                C
+                                                            </label>
+                                                        </div>
+                                                        <div class="icheck-success d-inline col-sm-4">
+                                                            <input type="radio" name="tes_covid" value="reaktif">
+                                                            <label for="no">
+                                                                C/IG
                                                             </label>
                                                         </div>
                                                         <div class="icheck-warning d-inline col-sm-4">
-                                                            <input type="radio" name="status_mata" value="1">
+                                                            <input type="radio" name="tes_covid" value="reaktif">
                                                             <label for="sample">
-                                                                Abnormal
+                                                                C/IgM
                                                             </label>
                                                         </div>
                                                         <div class="icheck-warning d-inline col-sm-4">
-                                                            <input type="radio" name="status_mata" value="1">
+                                                            <input type="radio" name="tes_covid" value="reaktif">
                                                             <label for="sample">
-                                                                Normal
+                                                                C/IgG/IgM
                                                             </label>
                                                         </div>
                                                         <span class="invalid-feedback" role="alert" id="kondisi-msg"></span>
                                                     </div>
                                                 </div>
+                                            </div>
+                                            <div id="tipe_2">
                                                 <div class="form-group row">
-                                                    <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;">Hasil Medical Check Up</label>
+                                                    <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;"></label>
+                                                    <div class="col-sm-8" style="margin-top:7px;">
+                                                        <div class="icheck-success d-inline col-sm-4">
+                                                            <input type="radio" name="tes_covid" value="negatif">
+                                                            <label for="no">
+                                                                C
+                                                            </label>
+                                                        </div>
+                                                        <div class="icheck-warning d-inline col-sm-4">
+                                                            <input type="radio" name="tes_covid" value="positif">
+                                                            <label for="sample">
+                                                                C/T
+                                                            </label>
+                                                        </div>
+                                                        <span class="invalid-feedback" role="alert" id="kondisi-msg"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="tipe_3">
+                                                <div class="form-group row">
+                                                    <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;"></label>
                                                     <div class="col-sm-4">
                                                         <input type="file" class="form-control @error('data') is-invalid @enderror" name="tanggal" id="tanggal" value="{{old('tanggal')}}" placeholder="Nomor Induk Kependudukan" style="width:45%;">
                                                     </div>
                                                     <span role="alert" id="no_seri-msg"></span>
-                                                </div>
-                                                <div class="form-group row">
-                                                    <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;">Pemeriksaan Covid</label>
-                                                    <div class="col-sm-8" style="margin-top:7px;">
-                                                        <div class="icheck-success d-inline col-sm-4">
-                                                            <input type="radio" name="jenis_tes" value="1" checked="0">
-                                                            <label for="no">
-                                                                Antibody
-                                                            </label>
-                                                        </div>
-                                                        <div class="icheck-warning d-inline col-sm-4">
-                                                            <input type="radio" name="jenis_tes" value="2">
-                                                            <label for="sample">
-                                                                Antigen
-                                                            </label>
-                                                        </div>
-                                                        <div class="icheck-warning d-inline col-sm-4">
-                                                            <input type="radio" name="jenis_tes" value="2">
-                                                            <label for="sample">
-                                                                Ge Nose
-                                                            </label>
-                                                        </div>
-                                                        <div class="icheck-warning d-inline col-sm-4">
-                                                            <input type="radio" name="jenis_tes" value="2">
-                                                            <label for="sample">
-                                                                PCR
-                                                            </label>
-                                                        </div>
-                                                        <div class="icheck-warning d-inline col-sm-4">
-                                                            <input type="radio" name="jenis_tes" value="3">
-                                                            <label for="sample">
-                                                                Saliva
-                                                            </label>
-                                                        </div>
-                                                        <span class="invalid-feedback" role="alert" id="kondisi-msg"></span>
-                                                    </div>
-                                                </div>
-                                                <div id="tipe_1">
-                                                    <div class="form-group row">
-                                                        <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;"></label>
-                                                        <div class="col-sm-8" style="margin-top:7px;">
-                                                            <div class="icheck-success d-inline col-sm-4">
-                                                                <input type="radio" name="tes_covid" value="non-reaktif">
-                                                                <label for="no">
-                                                                    C
-                                                                </label>
-                                                            </div>
-                                                            <div class="icheck-success d-inline col-sm-4">
-                                                                <input type="radio" name="tes_covid" value="reaktif">
-                                                                <label for="no">
-                                                                    C/IG
-                                                                </label>
-                                                            </div>
-                                                            <div class="icheck-warning d-inline col-sm-4">
-                                                                <input type="radio" name="tes_covid" value="reaktif">
-                                                                <label for="sample">
-                                                                    C/IgM
-                                                                </label>
-                                                            </div>
-                                                            <div class="icheck-warning d-inline col-sm-4">
-                                                                <input type="radio" name="tes_covid" value="reaktif">
-                                                                <label for="sample">
-                                                                    C/IgG/IgM
-                                                                </label>
-                                                            </div>
-                                                            <span class="invalid-feedback" role="alert" id="kondisi-msg"></span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div id="tipe_2">
-                                                    <div class="form-group row">
-                                                        <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;"></label>
-                                                        <div class="col-sm-8" style="margin-top:7px;">
-                                                            <div class="icheck-success d-inline col-sm-4">
-                                                                <input type="radio" name="tes_covid" value="negatif">
-                                                                <label for="no">
-                                                                    C
-                                                                </label>
-                                                            </div>
-                                                            <div class="icheck-warning d-inline col-sm-4">
-                                                                <input type="radio" name="tes_covid" value="positif">
-                                                                <label for="sample">
-                                                                    C/T
-                                                                </label>
-                                                            </div>
-                                                            <span class="invalid-feedback" role="alert" id="kondisi-msg"></span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div id="tipe_3">
-                                                    <div class="form-group row">
-                                                        <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;"></label>
-                                                        <div class="col-sm-4">
-                                                            <input type="file" class="form-control @error('data') is-invalid @enderror" name="tanggal" id="tanggal" value="{{old('tanggal')}}" placeholder="Nomor Induk Kependudukan" style="width:45%;">
-                                                        </div>
-                                                        <span role="alert" id="no_seri-msg"></span>
-                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -296,13 +267,14 @@
         $('#tipe_2').hide();
         $('#tipe_3').hide();
 
-        $('input[type=radio][name=status_kesehatan]').on('change', function() {
-            if (this.value == 1) {
-                // $('input[name=tinggi]').val('');
-                $('#cek_form').hide().fadeIn(500);
-            } else if (this.value == 0) {
-                // $('input[name=tinggi]').val('');
-                $('#cek_form').show().fadeOut(500);
+
+        $('input[type=radio][name=status_mata]').on('change', function() {
+            if (this.value == 'Defisensi') {
+                $('#status_butawarna').text('Dapat membaca < 7 angka');
+            } else if (this.value == 'Abnormal') {
+                $('#status_butawarna').text('Dapat membaca >=7 angka ');
+            } else {
+                $('#status_butawarna').text('Dapat membaca semua angka');
             }
         });
 
@@ -323,7 +295,25 @@
 
             }
         });
+
+        $(function() {
+            $('#berat, #tinggi').keyup(function() {
+                var value1 = parseFloat($('#berat').val()) || 0;
+                var value2 = parseFloat($('#tinggi').val()) || 0;
+                var sum = value1 / ((value2 / 100) * (value2 / 100))
+                $('#bmi').val(sum.toFixed(2));
+
+                if (sum >= 30) {
+                    $('#status_bmi').text('Kegemukan (Obesitas)');
+                } else if (sum >= 25 || sum >= 29.9) {
+                    $('#status_bmi').text('Kelebihan Berat Badan');
+                } else if (sum >= 18.5 || sum >= 24.9) {
+                    $('#status_bmi').text('Normal (Ideal)');
+                } else {
+                    $('#status_bmi').text('Kekurangan Berat Badan');
+                }
+            });
+        });
     });
 </script>
-\\
 @stop

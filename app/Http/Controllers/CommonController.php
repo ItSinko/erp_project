@@ -31,7 +31,8 @@ class CommonController extends Controller
     }
     public function karyawan_tambah()
     {
-        return view('page.common.karyawan_tambah');
+        $data = Karyawan::all();
+        return view('page.common.karyawan_tambah', ['karyawan' => $karyawan]);
     }
     public function jasa_eks()
     {
