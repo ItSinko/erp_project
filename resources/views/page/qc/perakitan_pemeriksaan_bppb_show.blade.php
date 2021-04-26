@@ -106,17 +106,14 @@
                                 <th rowspan="2">Tanggal</th>
                                 <th rowspan="2">No Seri</th>
                                 <th rowspan="2">Operator</th>
-                                <th colspan="3">Pemeriksaan Terbuka</th>
-                                <th colspan="4">Pemeriksaan Tertutup</th>
+                                <th colspan="2">Pemeriksaan Terbuka</th>
+                                <th colspan="2">Pemeriksaan Tertutup</th>
                                 <th rowspan="2">Keterangan</th>
                                 <th rowspan="2">Aksi</th>
                             </tr>
                             <tr>
-                                <th>Kondisi Bahan Baku</th>
-                                <th>Kondisi Proses Perakitan</th>
+                                <th>Hasil</th>
                                 <th>Tindak Lanjut</th>
-                                <th>Fungsi</th>
-                                <th>Kondisi Setelah Perakitan</th>
                                 <th>Hasil</th>
                                 <th>Tindak Lanjut</th>
                             </tr>
@@ -181,28 +178,16 @@
                     name: 'operator'
                 },
                 {
-                    data: 'kondisi_fisik_bahan_baku',
-                    name: 'kondisi_fisik_bahan_baku'
-                },
-                {
-                    data: 'kondisi_saat_proses_perakitan',
-                    name: 'kondisi_saat_proses_perakitan'
+                    data: 'hasil_terbuka',
+                    name: 'hasil_terbuka'
                 },
                 {
                     data: 'tindak_lanjut_terbuka',
                     name: 'tindak_lanjut_terbuka'
                 },
                 {
-                    data: 'fungsi',
-                    name: 'fungsi'
-                },
-                {
-                    data: 'kondisi_setelah_proses',
-                    name: 'kondisi_setelah_proses'
-                },
-                {
-                    data: 'hasil',
-                    name: 'hasil'
+                    data: 'hasil_tertutup',
+                    name: 'hasil_tertutup'
                 },
                 {
                     data: 'tindak_lanjut_tertutup',

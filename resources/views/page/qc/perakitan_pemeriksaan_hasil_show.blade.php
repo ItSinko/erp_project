@@ -66,6 +66,15 @@
                                 <h6 class="card-subheading text-muted ">Jumlah</h6>
                                 <h5 class="card-heading">{{$s->Bppb->jumlah}}</h5>
                             </hgroup>
+                            <hgroup>
+                                <!-- hgroup is deprecated, just defiantly using it anyway -->
+                                <h6 class="card-subheading text-muted ">Karyawan</h6>
+                                <h5 class="card-heading">@foreach ($s->Karyawan as $kry)
+                                    {{ $loop->first ? '' : '' }}
+                                    <div>{{ $kry->nama}}</div>
+                                    @endforeach
+                                </h5>
+                            </hgroup>
                         </div>
                     </div>
                 </div>
@@ -98,7 +107,6 @@
                                 <th rowspan="2">No</th>
                                 <th rowspan="2">Tanggal</th>
                                 <th rowspan="2">No Seri</th>
-                                <th rowspan="2">Operator</th>
                                 <th colspan="2">Pemeriksaan Terbuka</th>
                                 <th colspan="2">Pemeriksaan Tertutup</th>
                                 <th rowspan="2">Keterangan</th>
@@ -191,20 +199,16 @@
                     name: 'no_seri'
                 },
                 {
-                    data: 'operator',
-                    name: 'operator'
-                },
-                {
-                    data: 'kondisi_terbuka',
-                    name: 'kondisi_terbuka'
+                    data: 'hasil_terbuka',
+                    name: 'hasil_terbuka'
                 },
                 {
                     data: 'tindak_lanjut_terbuka',
                     name: 'tindak_lanjut_terbuka'
                 },
                 {
-                    data: 'kondisi_tertutup',
-                    name: 'kondisi_tertutup'
+                    data: 'hasil_tertutup',
+                    name: 'hasil_tertutup'
                 },
                 {
                     data: 'tindak_lanjut_tertutup',

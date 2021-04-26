@@ -10,7 +10,7 @@ use App\HistoriHasilPerakitan;
 
 class HasilPerakitan extends Model
 {
-    protected $fillable = ['perakitan_id', 'tanggal', 'no_seri', 'kondisi_fisik_bahan_baku', 'kondisi_saat_proses_perakitan', 'tindak_lanjut_terbuka', 'keterangan_tindak_lanjut_terbuka', 'fungsi', 'hasil', 'tindak_lanjut_tertutup', 'keterangan_tindak_lanjut_tertutup', 'keterangan'];
+    protected $fillable = ['perakitan_id', 'tanggal', 'no_seri', 'kondisi_fisik_bahan_baku', 'kondisi_saat_proses_perakitan', 'hasil_terbuka', 'tindak_lanjut_terbuka', 'keterangan_tindak_lanjut_terbuka', 'fungsi', 'hasil_tertutup', 'tindak_lanjut_tertutup', 'keterangan_tindak_lanjut_tertutup', 'keterangan', 'status'];
 
     public function Perakitan()
     {

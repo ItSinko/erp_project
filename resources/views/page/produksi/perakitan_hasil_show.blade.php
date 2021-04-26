@@ -45,7 +45,7 @@
             </div>
           </div>
           <div class="row" style="padding-bottom:10%;">
-            @if($sh->status == 0)
+            @if(Auth::user()->divisi->nama == "Produksi")
             <div class="inline-flex col-lg-6">
               <a href="{{route('perakitan.laporan.edit', ['id' => $sh->id])}}" class="col-lg-12">
                 <button type="button" class="btn btn-block btn-warning rounded-pill"><i class="fas fa-edit"></i> Edit</button>
@@ -95,36 +95,7 @@
                 </h5>
               </hgroup>
             </div>
-            <hgroup class="col-lg-12">
-              <!-- hgroup is deprecated, just defiantly using it anyway -->
-              <h6 class="card-subheading text-muted ">Status</h6>
-              <h5 class="card-heading">
-                @if( Auth::user()->divisi_id == "17")
-                @if($sh->status == 0)
-                <div class="inline-flex">
-                  <a href="{{route('perakitan.laporan.status', ['id' => $id, 'status' => '12'])}}">
-                    <button type="button" class="btn btn-block btn-outline-info karyawan-img-small" style="border-radius:50%;" title="Kirim Laporan ke Quality Control"><i class="far fa-paper-plane"></i></button>
-                  </a>
-                </div>
-                @elseif($sh->status == '12')
-                <span class="label info-text">Dibuat</span>
-                @endif
-                @elseif(Auth::user()->divisi_id == "23")
-                @if($sh->status == '12')
-                <div class="inline-flex">
-                  <a href="">
-                    <button type="button" class="btn btn-block btn-outline-danger karyawan-img-small" style="border-radius:50%;" title="Tolak Hasil Perakitan"><i class="fas fa-times"></i></button>
-                  </a>
-                </div>
-                <div class="inline-flex">
-                  <a href="">
-                    <button type="button" class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" title="Terima Hasil Perakitan"><i class="fas fa-check"></i></button>
-                  </a>
-                </div>
-                @endif
-                @endif
-              </h5>
-            </hgroup>
+
           </div>
         </div>
       </div>
@@ -152,7 +123,7 @@
 
           <table id="example" class="table table-hover styled-table">
             <thead style="text-align: center;">
-              @if(($sh->HasilPerakitan->count() < $sh->Bppb->jumlah) && ($sh->status == "0"))
+              @if(($sh->Bppb->countHasilPerakitan() < $sh->Bppb->jumlah) && Auth::user()->divisi->nama == "Produksi")
                 <tr style="text-align: left;">
                   <th colspan="12">
 

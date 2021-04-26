@@ -134,7 +134,7 @@
                                     </div>
 
                                     <div class="form-group row">
-                                        <label for="hasil_tertutup" class="col-sm-4 col-form-label" style="text-align:right;">Hasil</label>
+                                        <label for="hasil" class="col-sm-4 col-form-label" style="text-align:right;">Hasil</label>
                                         <div class="col-sm-2 col-form-label">
                                             <div class="icheck-primary d-inline">
                                                 <input type="radio" id="hasil_ok" name="hasil_tertutup" value="ok" checked>
@@ -162,8 +162,8 @@
                                             <select class="form-control select2 select2-info @error('tindak_lanjut_tertutup') is-invalid @enderror" data-dropdown-css-class="select2-info" style="width: 30%;" data-placeholder="Pilih Tindak Lanjut" name="tindak_lanjut_tertutup" id="tindak_lanjut_tertutup">
                                                 <option value=""></option>
                                                 <option value="aging">Aging</option>
-                                                <option value="perbaikan">Perbaikan</option>
-                                                <option value="produk_spesialis">Produk Spesialis</option>
+                                                <option value="perbaikan" disabled>Perbaikan</option>
+                                                <option value="produk_spesialis" disabled>Produk Spesialis</option>
                                             </select>
                                             <small id="alert-perubahan"></small>
                                             @if ($errors->has('tindak_lanjut_tertutup'))
@@ -205,8 +205,30 @@
 @section('adminlte_js')
 <script>
     $(function() {
+        var countStatus = "{{$s->countStatus('perbaikan_pemeriksaan_tertutup')}}";
+        $('input[type="radio"][name="hasil_tertutup"]').on("change", function() {
+
+            if (this.value == 'ok') {
+                // $('select').select2('val', '');
+                $('select').val('').trigger('change');
+                $("select option[value='aging']").attr('disabled', false);
+                $("select option[value='perbaikan']").attr('disabled', true);
+                $("select option[value='produk_spesialis']").attr('disabled', true);
+
+            } else if (this.value == 'nok') {
+                // $('select').select2('val', '');
+                $('select').val('').trigger('change');
+                $("select option[value='aging']").attr('disabled', true);
+                if (countStatus < 1) {
+                    $("select option[value='perbaikan']").attr('disabled', false);
+                } else if (countStatus >= 1) {
+                    $("select option[value='produk_spesialis']").attr('disabled', false);
+                    $("select option[value='perbaikan']").attr('disabled', false);
+                }
+            }
+        });
         $('select[name="tindak_lanjut_tertutup"]').on("change", function() {
-            if (this.value == 'aging') {
+            if (this.value == 'aging' || this.value == '') {
                 $('textarea[name="keterangan_tindak_lanjut_tertutup"]').attr('disabled', true);
             } else {
                 $('textarea[name="keterangan_tindak_lanjut_tertutup"]').attr('disabled', false);

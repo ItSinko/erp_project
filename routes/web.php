@@ -317,6 +317,7 @@ Route::put('/perakitan/pemeriksaan/tertutup/update/{id}', 'QCController@perakita
 /* Hasil */
 Route::get('/perakitan/pemeriksaan/hasil/{id}', 'QCController@perakitan_pemeriksaan_hasil')->name('perakitan.pemeriksaan.hasil');
 Route::get('/perakitan/pemeriksaan/hasil/show/{id}', 'QCController@perakitan_pemeriksaan_hasil_show')->name('perakitan.pemeriksaan.hasil.show');
+Route::get('/perakitan/pemeriksaan/hasil/detail/{id}', 'QCController@perakitan_pemeriksaan_hasil_detail')->name('perakitan.pemeriksaan.hasil.detail');
 /* BPPB */
 Route::get('/perakitan/pemeriksaan/bppb/{id}', 'QCController@perakitan_pemeriksaan_bppb')->name('perakitan.pemeriksaan.bppb');
 Route::get('/perakitan/pemeriksaan/bppb/show/{id}', 'QCController@perakitan_pemeriksaan_bppb_show')->name('perakitan.pemeriksaan.bppb.show');

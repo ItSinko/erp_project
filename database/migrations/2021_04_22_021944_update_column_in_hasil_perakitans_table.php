@@ -20,7 +20,7 @@ class UpdateColumnInHasilPerakitansTable extends Migration
             $table->enum('fungsi', ['ok', 'nok'])->nullable()->after('tindak_lanjut_terbuka');
             $table->enum('hasil', ['ok', 'nok'])->nullable()->after('fungsi');
             $table->enum('tindak_lanjut_tertutup', ['operator', 'perbaikan', 'karantina', 'ps'])->nullable()->after('hasil');
-            $table->enum('status', ['dibuat', 'req_pemeriksaan_terbuka', 'acc_pemeriksaan_terbuka', 'rej_pemeriksaan_terbuka', 'req_pemeriksaan_tertutup', 'acc_pemeriksaan_tertutup', 'rej_pemeriksaan_tertutup'])->after('keterangan');
+            $table->enum('status', ['dibuat', 'req_pemeriksaan_terbuka', 'acc_pemeriksaan_terbuka', 'perbaikan_pemeriksaan_terbuka', 'analisa_pemeriksaan_terbuka_ps', 'rej_pemeriksaan_terbuka', 'req_pemeriksaan_tertutup', 'acc_pemeriksaan_tertutup', 'perbaikan_pemeriksaan_tertutup', 'analisa_pemeriksaan_tertutup_ps', 'rej_pemeriksaan_tertutup'])->after('keterangan');
         });
     }
 
