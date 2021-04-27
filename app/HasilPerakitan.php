@@ -10,21 +10,11 @@ use App\HistoriHasilPerakitan;
 
 class HasilPerakitan extends Model
 {
-    protected $fillable = ['perakitan_id', 'tanggal', 'no_seri', 'warna', 'kondisi', 'keterangan'];
+    protected $fillable = ['perakitan_id', 'tanggal', 'no_seri', 'kondisi_fisik_bahan_baku', 'kondisi_saat_proses_perakitan', 'hasil_terbuka', 'tindak_lanjut_terbuka', 'keterangan_tindak_lanjut_terbuka', 'fungsi', 'hasil_tertutup', 'tindak_lanjut_tertutup', 'keterangan_tindak_lanjut_tertutup', 'keterangan', 'status'];
 
     public function Perakitan()
     {
         return $this->belongsTo(Perakitan::class);
-    }
-
-    public function HasilPerakitanKaryawan()
-    {
-        return $this->hasMany(HasilPerakitanKaryawan::class);
-    }
-
-    public function Karyawan()
-    {
-        return $this->belongsToMany(Karyawan::class, 'hasil_perakitan_karyawans')->withPivot('operator_custom')->withTimestamps();
     }
 
     public function HistoriHasilPerakitan()
@@ -37,7 +27,7 @@ class HasilPerakitan extends Model
         $k = $this->id;
         $h = HistoriHasilPerakitan::where([
             ['hasil_perakitan_id', '=', $k],
-            ['status', '=', $status]
+            ['kegiatan', '=', $status]
         ])->count();
 
         return $h;

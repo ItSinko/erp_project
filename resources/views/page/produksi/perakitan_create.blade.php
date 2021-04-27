@@ -125,6 +125,22 @@
                     </div>
 
                     <div class="form-group row">
+                      <label for="karyawan_id" class="col-sm-4 col-form-label" style="text-align:right;">Karyawan</label>
+                      <div class="col-sm-5">
+                        <div class="select2-info">
+                          <select class="select2 form-control @error('karyawan_id') is-invalid @enderror karyawan_id" multiple="multiple" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;" name="karyawan_id[]" id="karyawan_id">
+                            @foreach($kry as $i)
+                            <option value="{{$i->id}}">{{$i->nama}}</option>
+                            @endforeach
+                          </select>
+                          @if ($errors->has('karyawan_id'))
+                          <span class="invalid-feedback" role="alert">{{$errors->first('karyawan_id.*')}}</span>
+                          @endif
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-group row">
                       <label for="import_file" class="col-sm-4 col-form-label" style="text-align:right;">Import No Seri (Excel)</label>
                       <div class="col-sm-8">
                         <input type="file" class="form-control" name="file">
@@ -144,7 +160,6 @@
                             <th>No</th>
                             <th>Tanggal</th>
                             <th>No Seri</th>
-                            <th>Operator</th>
                             <th>Aksi</th>
                           </tr>
                         </thead>
@@ -165,20 +180,6 @@
                                 <span class="invalid-feedback" role="alert">{{$errors->first('hasil_perakitans.*.no_seri')}}</span>
                                 @endif
                                 <span id="no_seri-message[]" role="alert"></span>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="form-group">
-                                <div class="select2-info">
-                                  <select class="select2 form-control @error('karyawan_id') is-invalid @enderror karyawan_id" multiple="multiple" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;" name="karyawan_id[][]" id="karyawan_id">
-                                    @foreach($kry as $i)
-                                    <option value="{{$i->id}}">{{$i->nama}}</option>
-                                    @endforeach
-                                  </select>
-                                  @if ($errors->has('karyawan_id'))
-                                  <span class="invalid-feedback" role="alert">{{$errors->first('karyawan_id.*')}}</span>
-                                  @endif
-                                </div>
                               </div>
                             </td>
                             <td>
@@ -232,10 +233,7 @@
         $(el).find("td:eq(0)").html(++c);
         var j = c - 1;
         $(el).find('input[id="tanggals"]').attr('name', 'tanggals[' + j + ']');
-        $(el).find('.karyawan_id').attr('name', 'karyawan_id[' + j + '][]');
-        $(el).find('.karyawan_id').attr('id', 'karyawan_id' + j);
         $(el).find('input[id="no_seri"]').attr('name', 'no_seri[' + j + ']');
-        $('select[name="karyawan_id[' + j + '][]"]').select2();
       });
     }
 
@@ -277,21 +275,7 @@
           @if ($errors->has('no_seri'))
             <span class="invalid-feedback" role="alert" >{{$errors->first('hasil_perakitans.*.no_seri')}}</span>
           @endif
-          <span id="no_seri-message[]" role="alert"></span>
-        </div>
-      </td>
-      <td>
-        <div class="form-group">
-          <div class="select2-info">
-            <select class="select2 form-control @error('karyawan_id') is-invalid @enderror karyawan_id" multiple="multiple" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;" name="karyawan_id[][]" id="karyawan_id" tabindex="-1"  aria-hidden="true">
-            @foreach($kry as $i)
-              <option value="{{$i->id}}">{{$i->nama}}</option>
-            @endforeach
-            </select>
-            @if ($errors->has('karyawan_id'))
-              <span class="invalid-feedback" role="alert">{{$errors->first('karyawan_id.*')}}</span>
-            @endif
-          </div>
+          <span id="no_seri-message" role="alert"></span>
         </div>
       </td>
       <td>

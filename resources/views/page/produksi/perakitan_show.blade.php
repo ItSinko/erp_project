@@ -128,12 +128,12 @@
                 name: 'tanggal'
               },
               {
-                data: 'jumlah',
-                name: 'jumlah'
+                data: 'operator',
+                name: 'operator'
               },
               {
-                data: 'status',
-                name: 'status'
+                data: 'jumlah',
+                name: 'jumlah'
               },
               {
                 data: 'aksi',

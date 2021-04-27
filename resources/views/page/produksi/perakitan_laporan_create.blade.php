@@ -102,10 +102,26 @@
             <div class="form-group row">
               <label for="tanggal_laporan" class="col-sm-4 col-form-label" style="text-align:right;">Tanggal Laporan</label>
               <div class="col-sm-8">
-                <input type="date" class="form-control" name="tanggal_laporan" id="tanggal_laporan" value="{{old('tanggal_laporan')}}" style="width: 20%;">
+                <input type="date" class="form-control" name="tanggal_laporan" id="tanggal_laporan" value="{{old('tanggal_laporan')}}" style="width: 30%;">
                 @if ($errors->has('tanggal_laporan'))
                 <span class="invalid-feedback" role="alert">{{$errors->first('tanggal_laporan')}}</span>
                 @endif
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="karyawan_id" class="col-sm-4 col-form-label" style="text-align:right;">Karyawan</label>
+              <div class="col-sm-5">
+                <div class="select2-info">
+                  <select class="select2 form-control @error('karyawan_id') is-invalid @enderror karyawan_id" multiple="multiple" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;" name="karyawan_id[]" id="karyawan_id">
+                    @foreach($kry as $i)
+                    <option value="{{$i->id}}">{{$i->nama}}</option>
+                    @endforeach
+                  </select>
+                  @if ($errors->has('karyawan_id'))
+                  <span class="invalid-feedback" role="alert">{{$errors->first('karyawan_id.*')}}</span>
+                  @endif
+                </div>
               </div>
             </div>
 
@@ -123,7 +139,6 @@
                     <th>No</th>
                     <th>Tanggal</th>
                     <th>No Seri</th>
-                    <th>Operator</th>
                     <th>Aksi</th>
                   </tr>
                 </thead>
@@ -143,25 +158,11 @@
                         @if ($errors->has('no_seri'))
                         <span class="invalid-feedback" role="alert">{{$errors->first('hasil_perakitans.*.no_seri')}}</span>
                         @endif
-                        <span id="no_seri-message[]" role="alert"></span>
+                        <span id="no_seri-message" role="alert"></span>
                       </div>
                     </td>
                     <td>
-                      <div class="form-group">
-                        <div class="select2-info">
-                          <select class="select2 form-control @error('karyawan_id') is-invalid @enderror karyawan_id" multiple="multiple" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;" name="karyawan_id[][]" id="karyawan_id">
-                            @foreach($kry as $i)
-                            <option value="{{$i->id}}">{{$i->nama}}</option>
-                            @endforeach
-                          </select>
-                          @if ($errors->has('karyawan_id'))
-                          <span class="invalid-feedback" role="alert">{{$errors->first('karyawan_id.*')}}</span>
-                          @endif
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <button type="button" class="btn btn-block btn-success btn-sm" style="border-radius:50%;" id="tambahitem"><i class="fas fa-plus-circle"></i></button>
+                      <button type="button" class="btn btn-block btn-success btn-sm karyawan-img-small" style="border-radius:50%;" id="tambahitem"><i class="fas fa-plus-circle"></i></button>
                     </td>
                   </tr>
                 </tbody>
@@ -198,17 +199,15 @@
 @section('adminlte_js')
 <script>
   $(function() {
+    $('.select2').select2();
+
     function numberRows($t) {
       var c = 0 - 1;
       $t.find("tr").each(function(ind, el) {
         $(el).find("td:eq(0)").html(++c);
         var j = c - 1;
         $(el).find('input[id="tanggals"]').attr('name', 'tanggals[' + j + ']');
-        $(el).find('.karyawan_id').attr('name', 'karyawan_id[' + j + '][]');
-        $(el).find('.karyawan_id').attr('id', 'karyawan_id' + j);
         $(el).find('input[id="no_seri"]').attr('name', 'no_seri[' + j + ']');
-
-        $('select[name="karyawan_id[' + j + '][]"]').select2();
       });
     }
 
@@ -230,20 +229,6 @@
             <span class="invalid-feedback" role="alert" >{{$errors->first('hasil_perakitans.*.no_seri')}}</span>
           @endif
           <span id="no_seri-message[]" role="alert"></span>
-        </div>
-      </td>
-      <td>
-        <div class="form-group">
-          <div class="select2-info">
-            <select class="select2 form-control @error('karyawan_id') is-invalid @enderror karyawan_id" multiple="multiple" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;" name="karyawan_id[][]" id="karyawan_id" tabindex="-1"  aria-hidden="true">
-            @foreach($kry as $i)
-              <option value="{{$i->id}}">{{$i->nama}}</option>
-            @endforeach
-            </select>
-            @if ($errors->has('karyawan_id'))
-              <span class="invalid-feedback" role="alert">{{$errors->first('karyawan_id.*')}}</span>
-            @endif
-          </div>
         </div>
       </td>
       <td>

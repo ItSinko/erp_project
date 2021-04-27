@@ -15,9 +15,9 @@ class Karyawan extends Model
         return $this->hasMany(HasilPerakitanKaryawan::class);
     }
 
-    public function HasilPerakitan()
+    public function Perakitan()
     {
-        return $this->belongsToMany(HasilPerakitan::class, 'hasil_perakitan_karyawans')->withPivot('operator_custom');
+        return $this->belongsToMany(HasilPerakitan::class, 'perakitan_karyawans')->withPivot('operator_custom');
     }
 
     public function DivisiInventory()

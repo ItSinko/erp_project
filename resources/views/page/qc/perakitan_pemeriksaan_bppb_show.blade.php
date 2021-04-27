@@ -7,19 +7,18 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>Pemeriksaan Perakitan</h1>
+                <h1>Perakitan</h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item active">DataTables</li>
+                    <li class="breadcrumb-item active">Pengemasan</li>
                 </ol>
             </div>
         </div>
     </div><!-- /.container-fluid -->
 </section>
 @stop
-
 @section('content')
 <section class="content">
     <div class="row">
@@ -32,27 +31,35 @@
 
                     <div class="card-body box-profile">
                         <div class="text-center">
-                            <img class="product-img-small img-fluid" @if(empty($s->Bppb->DetailProduk->foto))
+                            <img class="product-img-small img-fluid" @if(empty($s->DetailProduk->foto))
                             src="{{url('assets/image/produk')}}/noimage.png"
-                            @elseif(!empty($s->Bppb->DetailProduk->foto))
-                            src="{{url('assets/image/produk')}}/{{$s->Bppb->DetailProduk->foto}}"
+                            @elseif(!empty($s->DetailProduk->foto))
+                            src="{{url('assets/image/produk')}}/{{$s->DetailProduk->foto}}"
                             @endif
-                            title="{{$s->Bppb->DetailProduk->nama}}"
+                            title="{{$s->DetailProduk->nama}}"
                             >
                         </div>
                         <div style="text-align:center;vertical-align:center;padding-top:10px">
-                            <h5 class="card-heading">{{$s->Bppb->DetailProduk->nama}}</h5>
-                            <h6 class="card-subheading text-muted">{{$s->Bppb->DetailProduk->Produk->nama}}</h6>
+                            <h5 class="card-heading">{{$s->DetailProduk->nama}}</h5>
+                            <h6 class="card-subheading text-muted">{{$s->DetailProduk->Produk->nama}}</h6>
                         </div>
                     </div>
-
+                    <!-- <div class="row" style="padding-bottom:10%;">
+                        @if($s->status == 12)
+                        <a href="">
+                            <div class="inline-flex col-lg-12">
+                                <button type="button" class="btn btn-block btn-primary rounded-pill"><i class="fas fa-tasks"></i> Pemeriksaan</button>
+                            </div>
+                        </a>
+                        @endif
+                    </div> -->
 
                     <div class="row">
                         <div class="col-lg-6" style="vertical-align: middle;">
                             <hgroup>
                                 <!-- hgroup is deprecated, just defiantly using it anyway -->
                                 <h6 class="card-subheading text-muted">No BPPB</h6>
-                                <h5 class="card-heading">{{$s->Bppb->no_bppb}}</h5>
+                                <h5 class="card-heading">{{$s->no_bppb}}</h5>
                             </hgroup>
                             <hgroup>
                                 <!-- hgroup is deprecated, just defiantly using it anyway -->
@@ -64,16 +71,7 @@
                             <hgroup>
                                 <!-- hgroup is deprecated, just defiantly using it anyway -->
                                 <h6 class="card-subheading text-muted ">Jumlah</h6>
-                                <h5 class="card-heading">{{$s->Bppb->jumlah}}</h5>
-                            </hgroup>
-                            <hgroup>
-                                <!-- hgroup is deprecated, just defiantly using it anyway -->
-                                <h6 class="card-subheading text-muted ">Karyawan</h6>
-                                <h5 class="card-heading">@foreach ($s->Karyawan as $kry)
-                                    {{ $loop->first ? '' : '' }}
-                                    <div>{{ $kry->nama}}</div>
-                                    @endforeach
-                                </h5>
+                                <h5 class="card-heading">{{$s->jumlah}}</h5>
                             </hgroup>
                         </div>
                     </div>
@@ -101,21 +99,22 @@
                     </div>
                     @endif
 
-                    <table id="example" class="table table-hover table-bordered styled-table">
+                    <table id="examples" class="table table-hover table-bordered styled-table" style="width:100%;">
                         <thead style="text-align: center;">
                             <tr>
                                 <th rowspan="2">No</th>
                                 <th rowspan="2">Tanggal</th>
                                 <th rowspan="2">No Seri</th>
+                                <th rowspan="2">Operator</th>
                                 <th colspan="2">Pemeriksaan Terbuka</th>
                                 <th colspan="2">Pemeriksaan Tertutup</th>
                                 <th rowspan="2">Keterangan</th>
                                 <th rowspan="2">Aksi</th>
                             </tr>
                             <tr>
-                                <th>Kondisi</th>
+                                <th>Hasil</th>
                                 <th>Tindak Lanjut</th>
-                                <th>Kondisi</th>
+                                <th>Hasil</th>
                                 <th>Tindak Lanjut</th>
                             </tr>
                         </thead>
@@ -130,31 +129,6 @@
 
 
             <!-- /.card -->
-        </div>
-
-        <div class="modal fade" id="importExcel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <form method="post" action="{{route('perakitan.hasil.import', ['id' => $s->id])}}" enctype="multipart/form-data">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Import Excel</h5>
-                        </div>
-                        <div class="modal-body">
-                            {{ csrf_field() }}
-                            {{ method_field('PUT') }}
-                            <label>Pilih file excel</label>
-                            <div class="form-group">
-                                <input type="file" name="file" required="required" accept=".xls,.xlsx,.csv">
-                            </div>
-
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Import</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
         </div>
 
         <div class="modal fade" id="deletenoserimodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -180,10 +154,11 @@
 @section('adminlte_js')
 <script>
     $(function() {
-        $('#example').DataTable({
+        $('#examples').DataTable({
+            scrollX: true,
             processing: true,
             serverSide: true,
-            ajax: "{{ route('perakitan.pemeriksaan.hasil.show', ['id' => $id]) }}",
+            ajax: "{{ route('perakitan.pemeriksaan.bppb.show', ['id' => $id]) }}",
             columns: [{
                     data: 'DT_RowIndex',
                     name: 'DT_RowIndex',
@@ -197,6 +172,10 @@
                 {
                     data: 'no_seri',
                     name: 'no_seri'
+                },
+                {
+                    data: 'operator',
+                    name: 'operator'
                 },
                 {
                     data: 'hasil_terbuka',
