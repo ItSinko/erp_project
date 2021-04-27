@@ -12,11 +12,28 @@ use Yajra\DataTables\Facades\DataTables;
 
 use App\Jasa_eks;
 use App\Distributor;
+use App\Karyawan;
 use App\Produk;
 use App\Penjualan_produk;
 
 class CommonController extends Controller
 {
+    public function karyawan()
+    {
+        return view('page.common.karyawan');
+    }
+    public function karyawan_data()
+    {
+        $data = Karyawan::all();
+        return datatables::of($data)
+            ->addIndexColumn()
+            ->make(true);
+    }
+    public function karyawan_tambah()
+    {
+        $data = Karyawan::all();
+        return view('page.common.karyawan_tambah', ['karyawan' => $karyawan]);
+    }
     public function jasa_eks()
     {
         return view('page.common.jasa_eks');

@@ -19,4 +19,9 @@ class Offline extends Model
     {
         return $this->hasOne('App\Penawaran_Offline', 'id');
     }
+
+    public function podo_offline()
+    {
+        return $this->hasOne('App\Podo_offline', 'id');
+    }
 }

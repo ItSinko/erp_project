@@ -276,6 +276,16 @@ return [
             'auth' => [26]
         ],
         [
+            'text' => 'Karyawan',
+            'url'  => '/karyawan',
+            'icon' => 'fas fa-table',
+            'auth' => [26]
+        ],
+        [
+            'header' => 'KESEHATAN',
+            'auth'   => [26]
+        ],
+        [
             'header' => 'TRANSAKSI',
             'auth'   => [26]
         ],
@@ -305,7 +315,7 @@ return [
             'submenu' => [
                 [
                     'text' => 'E-Commerce',
-                    'url'  => '#',
+                    'url'  => '/penawaran_ecom',
                 ],
                 [
                     'text' => 'Offline',
@@ -314,14 +324,29 @@ return [
             ],
         ],
         [
+            'text'    => 'PO / DO',
+            'icon'    => 'fas fa-table',
+            'auth' => [26],
+            'submenu' => [
+                [
+                    'text' => 'E-Katalog',
+                    'url'  => '/podo_online',
+                ],
+                [
+                    'text' => 'Offline',
+                    'url'  => '/podo_offline',
+                ]
+            ],
+        ],
+        [
             'header' => 'MASTER DATA',
-            'auth' => [14, 17]
+            'auth' => [14, 17, 26]
         ],
         [
             'text' => 'Produk',
             'url'  => '/produk',
             'icon' => 'fas fa-table',
-            'auth' => [14, 17]
+            'auth' => [14, 17, 26]
         ],
         [
             'text' => 'Data Karyawan',
@@ -455,13 +480,13 @@ return [
         ],
 
 
-        // ['header' => 'LOGOUT'],
-        // [
-        //     'text' => 'Logout',
-        //     'url' => '/logout',
-        //     'icon' => 'fas fa-sign-out-alt',
-        //     'form' => true,
-        // ],
+        ['header' => 'LOGOUT'],
+        [
+            'text' => 'Logout',
+            'url' => '/logout',
+            'icon' => 'fas fa-sign-out-alt',
+            'form' => true,
+        ],
     ],
 
     /*

@@ -35,7 +35,7 @@
         <tr>
           <td style="width:5%">No</td>
           <td style="width:30%">: 055/Penawaran/IX/SPA/2018</td>
-          <td style="width:25%" rowspan="5">Kepada Yth. <br>{{$penawaran_offline->offline->distributor->nama}}<br>{{$penawaran_offline->offline->distributor->alamat}}</td>
+          <td style="width:25%" rowspan="5">Kepada Yth. <br>{{$penawaran_ecom->ecommerce->distributor->nama}}<br>{{$penawaran_ecom->ecommerce->distributor->alamat}}</td>
         </tr>
         <tr>
           <td style="width:9.3%">Lampiran</td>
@@ -60,7 +60,7 @@
           <td>Dengan Hormat,</td>
         </tr>
         <tr>
-          <td>{{$penawaran_offline->deskripsi}}
+          <td>{{$penawaran_ecom->deskripsi}}
           </td>
         </tr>
         <tr>
@@ -77,7 +77,7 @@
           <td style="width:13%"><b>Quantity</b></td>
           <td><b>Jumlah</b></td>
         </tr>
-        @foreach ($detail_offline as $do)
+        @foreach ($detail_ecommerce as $do)
         <tr>
           <td>{{$loop->iteration}}</td>
           <td>{{$do->produk->nama}}</td>
@@ -99,7 +99,7 @@
         </tr>
         <tr>
           <td>2.</td>
-          <td style="width:95%">Penawaran harga ini berlaku selama 1 Minggu (terhitung : {{$date->date_set($penawaran_offline->tgl_surat)}})</td>
+          <td style="width:95%">Penawaran harga ini berlaku selama 1 Minggu (terhitung : {{$date->date_set($penawaran_ecom->tgl_surat)}})</td>
         </tr>
         <tr>
           <td>3.</td>
@@ -123,7 +123,7 @@
           <td style="height:3%"></td>
         </tr>
         <tr>
-          <td>Surabaya, {{$date->date_set($penawaran_offline->tgl_surat)}}</td>
+          <td>Surabaya, {{$date->date_set($penawaran_ecom->tgl_surat)}}</td>
         </tr>
         <tr>
           <td>Hormat Kami,</td>
@@ -132,7 +132,7 @@
           <td style="height:3%"></td>
         </tr>
         <tr>
-          <td><u>({{$penawaran_offline->karyawan->nama}})</u></td>
+          <td><u>({{$penawaran_ecom->karyawan->nama}})</u></td>
         </tr>
         <tr>
           <td>Direktur</td>

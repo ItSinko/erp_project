@@ -42,7 +42,10 @@ return [
     */
 
     'disks' => [
-
+        'my_files' => [
+            'driver' => 'local',
+            'root' => public_path() . '/podo',
+        ],
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app'),
