@@ -236,7 +236,6 @@ Route::get('/produk/detail', 'ItController@produk_detail')->name('produk.detail'
 Route::get('/produk/detail/show/{id}', 'ItController@produk_detail_show')->name('produk.detail.show');
 
 
-
 //INVENTORY
 Route::get('/inventory/divisi', 'ItController@inventory_divisi')->name('inventory.divisi');
 Route::get('/inventory/divisi/show', 'ItController@inventory_divisi_show')->name('inventory.divisi.show');
@@ -377,6 +376,12 @@ Route::get('/perakitan/pemeriksaan/hasil/detail/{id}', 'QCController@perakitan_p
 Route::get('/perakitan/pemeriksaan/bppb/{id}', 'QCController@perakitan_pemeriksaan_bppb')->name('perakitan.pemeriksaan.bppb');
 Route::get('/perakitan/pemeriksaan/bppb/show/{id}', 'QCController@perakitan_pemeriksaan_bppb_show')->name('perakitan.pemeriksaan.bppb.show');
 
+//PENGUJIAN
+Route::get('/pengujian/monitoring_proses/show/{bppb_id}', 'QCController@pengujian_monitoring_proses_show')->name('pengujian.monitoring_proses.show');
+Route::get('/pengujian/monitoring_proses/create', 'QCController@pengujian_monitoring_proses_create')->name('pengujian.monitoring_proses.create');
+Route::post('/pengujian/monitoring_proses/store', 'QCController@pengujian_monitoring_proses_store')->name('pengujian.monitoring_proses.store');
+Route::get('/pengujian/monitoring_proses/laporan/edit/{id}', 'QCController@pengujian_monitoring_proses_edit')->name('pengujian.monitoring_proses.edit');
+Route::put('/pengujian/monitoring_proses/laporan/update/{id}', 'QCController@pengujian_monitoring_proses_update')->name('pengujian.monitoring_proses.update');
 
 //PENGEMASAN
 Route::get('/pengemasan', 'ProduksiController@pengemasan')->name('pengemasan');

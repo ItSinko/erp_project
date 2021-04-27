@@ -8,8 +8,11 @@ use App\Karyawan;
 use App\Perakitan;
 use App\HasilPerakitan;
 use App\HistoriHasilPerakitan;
+use App\MonitoringProses;
+use App\HasilMonitoringProses;
 use App\PemeriksaanRakit;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 
 class QCController extends Controller
@@ -532,6 +535,31 @@ class QCController extends Controller
             // })
             ->rawColumns(['operator', 'aksi', 'kondisi_fisik_bahan_baku', 'kondisi_saat_proses_perakitan', 'tindak_lanjut_terbuka', 'kondisi_setelah_proses', 'hasil_terbuka', 'hasil_tertutup', 'fungsi', 'tindak_lanjut_tertutup'])
             ->make(true);
+    }
+
+    public function pengujian_monitoring_proses_create()
+    {
+        $s = Bppb::all();
+        $k = Karyawan::all();
+        return view('page.qc.pengujian_monitoring_proses_create', ['kry' => $k, 's' => $s]);
+    }
+
+    public function pengujian_monitoring_proses_store(Request $request)
+    {
+        $c = MonitoringProses::create([
+            'bppb_id' => $request->bppb_id,
+            'tanggal' => $request->tanggal,
+            'karyawan_id' => $request->karyawan_id,
+            'user_id' => Auth::user()->id
+        ]);
+
+        if ($c) {
+            if (!empty($request->no_seri)) {
+                for ($i = 0; $i < count($request->no_seri); $i++) {
+                    HasilMonitoringProses::create([]);
+                }
+            }
+        }
     }
 
     public function tambah_pemeriksaan_rakit($id)

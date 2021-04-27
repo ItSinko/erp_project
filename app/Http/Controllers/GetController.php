@@ -138,6 +138,10 @@ class GetController extends Controller
         echo json_encode($s);
     }
 
+    public function get_no_seri_by_bppb($bppb_id, $status)
+    {
+    }
+
     public function get_kode_perakitan_exist_not_in($bppb, $no_seri)
     {
         $s = HasilPerakitan::whereHas('Perakitan', function ($q) use ($bppb) {
