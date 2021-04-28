@@ -24,7 +24,7 @@
                     <div class="col-md-8">
                         <div class="card-body">
                             <h5 class="card-title font-weight-bold">{{Auth::user()->nama}}</h5>
-                            <p class="card-text">IT</p>
+                            <p class="card-text">{{ Auth::user()->divisi->nama }}</p>
                         </div>
                     </div>
                 </div>

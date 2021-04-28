@@ -16,13 +16,12 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
+Auth::routes();
+
 Route::get('/', function () {
     // return view('welcome');
     return redirect('/home');
 });
-
-Auth::routes();
-
 Route::get('/home', function () {
     return view('home');
 })->name('home')->middleware('auth');
@@ -32,9 +31,6 @@ Route::post('/logout', function () {
     return redirect('/login');
 })->name('logout');
 
-Route::get('/chat', 'ChatController@index');
-Route::get('/message', 'ChatController@fetchMessages');
-Route::post('/message', 'ChatController@sendMessage');
 
 // Route::get('/default_form', function () {
 //     return view('page.default_form');
@@ -401,3 +397,9 @@ Route::view('/eng', 'page.engineering.index');
 Route::get('/eng/index', 'EngController@test');
 Route::get('/show_list/{produk?}/{document?}', 'EngController@show_list');
 Route::post('/eng/fileupload', 'EngController@fileupload')->name('eng.fileupload');
+Route::get('test_spa', 'EngController@index');
+
+
+Route::get('/chat', 'ChatController@index');
+Route::get('/message', 'ChatController@fetchMessages');
+Route::post('/message', 'ChatController@sendMessage');
