@@ -377,9 +377,11 @@ Route::get('/perakitan/pemeriksaan/bppb/{id}', 'QCController@perakitan_pemeriksa
 Route::get('/perakitan/pemeriksaan/bppb/show/{id}', 'QCController@perakitan_pemeriksaan_bppb_show')->name('perakitan.pemeriksaan.bppb.show');
 
 //PENGUJIAN
+Route::get('/pengujian', 'QCController@pengujian')->name('pengujian');
+Route::get('/pengujian/show', 'QCController@pengujian_show')->name('pengujian.show');
 Route::get('/pengujian/monitoring_proses/show/{bppb_id}', 'QCController@pengujian_monitoring_proses_show')->name('pengujian.monitoring_proses.show');
-Route::get('/pengujian/monitoring_proses/create', 'QCController@pengujian_monitoring_proses_create')->name('pengujian.monitoring_proses.create');
-Route::post('/pengujian/monitoring_proses/store', 'QCController@pengujian_monitoring_proses_store')->name('pengujian.monitoring_proses.store');
+Route::get('/pengujian/monitoring_proses/create/{bppb_id}', 'QCController@pengujian_monitoring_proses_create')->name('pengujian.monitoring_proses.create');
+Route::put('/pengujian/monitoring_proses/store/{bppb_id}', 'QCController@pengujian_monitoring_proses_store')->name('pengujian.monitoring_proses.store');
 Route::get('/pengujian/monitoring_proses/laporan/edit/{id}', 'QCController@pengujian_monitoring_proses_edit')->name('pengujian.monitoring_proses.edit');
 Route::put('/pengujian/monitoring_proses/laporan/update/{id}', 'QCController@pengujian_monitoring_proses_update')->name('pengujian.monitoring_proses.update');
 

@@ -82,16 +82,19 @@
                                     </div>
                                 </div>
 
-                                <h3>Pemeriksaan</h3>
+                                <hgroup>
+                                    <h3 class="card-heading">Pemeriksaan</h3>
+                                    <h6 class="card-subheading text-muted ">Pemeriksaan ke-{{$s->countStatus('perbaikan_pemeriksaan_tertutup') + 1}}</h6>
+                                </hgroup>
                                 <div class="form-horizontal">
 
                                     <div class="form-group row">
                                         <label for="fungsi" class="col-sm-4 col-form-label" style="text-align:right;">Fungsi</label>
-                                        <div class="col-sm-2 col-form-label">
+                                        <div class="col-sm-1 col-form-label">
                                             <div class="icheck-primary d-inline">
                                                 <input type="radio" id="fungsi_ok" name="fungsi" value="ok" checked>
                                                 <label for="fungsi_ok">
-                                                    OK
+                                                    Baik
                                                 </label>
                                             </div>
                                         </div>
@@ -99,7 +102,7 @@
                                             <div class="icheck-primary d-inline">
                                                 <input type="radio" id="fungsi_nok" name="fungsi" value="nok">
                                                 <label for="fungsi_nok">
-                                                    NOK
+                                                    Tidak Baik
                                                 </label>
                                             </div>
                                         </div>
@@ -111,11 +114,11 @@
                                     <div class="form-group row">
                                         <label for="kondisi_setelah_proses" class="col-sm-4 col-form-label" style="text-align:right;">Kondisi Setelah Proses</label>
 
-                                        <div class="col-sm-2 col-form-label">
+                                        <div class="col-sm-1 col-form-label">
                                             <div class="icheck-primary d-inline">
                                                 <input type="radio" id="kondisi_setelah_proses_ok" name="kondisi_setelah_proses" value="ok" checked>
                                                 <label for="kondisi_setelah_proses_ok">
-                                                    OK
+                                                    Baik
                                                 </label>
                                             </div>
                                         </div>
@@ -124,7 +127,7 @@
                                             <div class="icheck-primary d-inline">
                                                 <input type="radio" id="kondisi_setelah_proses_nok" name="kondisi_setelah_proses" value="nok">
                                                 <label for="kondisi_setelah_proses_nok">
-                                                    NOK
+                                                    Tidak Baik
                                                 </label>
                                             </div>
                                         </div>
@@ -135,11 +138,11 @@
 
                                     <div class="form-group row">
                                         <label for="hasil" class="col-sm-4 col-form-label" style="text-align:right;">Hasil</label>
-                                        <div class="col-sm-2 col-form-label">
+                                        <div class="col-sm-1 col-form-label">
                                             <div class="icheck-primary d-inline">
                                                 <input type="radio" id="hasil_ok" name="hasil_tertutup" value="ok" checked>
                                                 <label for="hasil_ok">
-                                                    OK
+                                                    Baik
                                                 </label>
                                             </div>
                                         </div>
@@ -147,7 +150,7 @@
                                             <div class="icheck-primary d-inline">
                                                 <input type="radio" id="hasil_nok" name="hasil_tertutup" value="nok">
                                                 <label for="hasil_nok">
-                                                    NOK
+                                                    Tidak Baik
                                                 </label>
                                             </div>
                                         </div>

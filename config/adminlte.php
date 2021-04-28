@@ -457,7 +457,7 @@ return [
             'text'    => 'Pengujian',
             'icon'    => 'fab fa-searchengin',
             'url' => '/pengujian',
-            'auth' => [17],
+            'auth' => [23],
         ],
         [
             'text'    => 'Pengemasan',
