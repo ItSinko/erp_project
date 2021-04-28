@@ -25,6 +25,8 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        Gate::define('register_member', function ($user) {
+            return ($user->divisi->nama == 'Super Admin') || ($user->divisi->nama == 'IT');
+        });
     }
 }
