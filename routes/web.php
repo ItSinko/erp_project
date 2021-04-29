@@ -40,10 +40,24 @@ Route::post('/message', 'ChatController@sendMessage');
 //     return view('page.default_form');
 // });
 
-//Karyawan
+//Kesehatan
 /* Tabel */
-Route::get('/karyawan', 'CommonController@karyawan');
-Route::get('/karyawan/tambah', 'CommonController@karyawan_tambah');
+Route::get('/kesehatan', 'KesehatanController@kesehatan');
+/* Tambah */
+Route::get('/kesehatan/tambah', 'KesehatanController@kesehatan_tambah');
+Route::post('/kesehatan/aksi_tambah', 'KesehatanController@kesehatan_aksi_tambah');
+/* Get Data */
+Route::get('/kesehatan/data', 'KesehatanController@kesehatan_data');
+
+//Kesehatan Harian
+/* Tabel */
+Route::get('/kesehatan_harian', 'KesehatanController@kesehatan_harian');
+Route::get('/kesehatan_harian/data', 'KesehatanController@kesehatan_harian_data');
+Route::get('/kesehatan_harian/detail', 'KesehatanController@kesehatan_harian_detail');
+Route::get('/kesehatan_harian/tambah', 'KesehatanController@kesehatan_harian_tambah');
+Route::post('/kesehatan_harian/aksi_tambah', 'KesehatanController@kesehatan_harian_aksi_tambah');
+Route::get('/kesehatan_harian/tambah/data/{id}', 'KesehatanController@kesehatan_harian_tambah_data');
+
 
 //JASA EKSPEDISI
 /* Tabel */

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0d05bc408988ad5057097047076aea77",
+    "content-hash": "60a1d537edd0fe33f0acbf59fa45794c",
     "packages": [
         {
             "name": "almasaeed2010/adminlte",
@@ -1791,6 +1791,78 @@
                 "source": "https://github.com/laravel/ui/tree/v2.5.0"
             },
             "time": "2020-11-03T19:45:19+00:00"
+        },
+        {
+            "name": "laravelcollective/html",
+            "version": "v6.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/LaravelCollective/html.git",
+                "reference": "ae15b9c4bf918ec3a78f092b8555551dd693fde3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/LaravelCollective/html/zipball/ae15b9c4bf918ec3a78f092b8555551dd693fde3",
+                "reference": "ae15b9c4bf918ec3a78f092b8555551dd693fde3",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/http": "^6.0|^7.0|^8.0",
+                "illuminate/routing": "^6.0|^7.0|^8.0",
+                "illuminate/session": "^6.0|^7.0|^8.0",
+                "illuminate/support": "^6.0|^7.0|^8.0",
+                "illuminate/view": "^6.0|^7.0|^8.0",
+                "php": ">=7.2.5"
+            },
+            "require-dev": {
+                "illuminate/database": "^6.0|^7.0|^8.0",
+                "mockery/mockery": "~1.0",
+                "phpunit/phpunit": "~8.5"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "6.x-dev"
+                },
+                "laravel": {
+                    "providers": [
+                        "Collective\\Html\\HtmlServiceProvider"
+                    ],
+                    "aliases": {
+                        "Form": "Collective\\Html\\FormFacade",
+                        "Html": "Collective\\Html\\HtmlFacade"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Collective\\Html\\": "src/"
+                },
+                "files": [
+                    "src/helpers.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Adam Engebretson",
+                    "email": "adam@laravelcollective.com"
+                },
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylorotwell@gmail.com"
+                }
+            ],
+            "description": "HTML and Form Builders for the Laravel Framework",
+            "homepage": "https://laravelcollective.com",
+            "support": {
+                "issues": "https://github.com/LaravelCollective/html/issues",
+                "source": "https://github.com/LaravelCollective/html"
+            },
+            "time": "2020-12-15T20:20:05+00:00"
         },
         {
             "name": "league/commonmark",
@@ -6387,6 +6459,234 @@
                 "source": "https://github.com/wandersonwhcr/romans/tree/v1.2.3"
             },
             "time": "2021-03-18T14:38:41+00:00"
+        },
+        {
+            "name": "yajra/laravel-datatables-buttons",
+            "version": "v4.13.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/yajra/laravel-datatables-buttons.git",
+                "reference": "3ac8d2bbfbb930852e75bdd3eb601ab629719247"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/yajra/laravel-datatables-buttons/zipball/3ac8d2bbfbb930852e75bdd3eb601ab629719247",
+                "reference": "3ac8d2bbfbb930852e75bdd3eb601ab629719247",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/console": "*",
+                "maatwebsite/excel": "^3.0",
+                "php": ">=7.0",
+                "yajra/laravel-datatables-html": "3.*|4.*",
+                "yajra/laravel-datatables-oracle": "8.*|9.*"
+            },
+            "require-dev": {
+                "mockery/mockery": "~1.0",
+                "phpunit/phpunit": "~7.0"
+            },
+            "suggest": {
+                "barryvdh/laravel-snappy": "Allows exporting of dataTable to PDF using the print view.",
+                "dompdf/dompdf": "Allows exporting of dataTable to PDF using the DomPDF."
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "4.0-dev"
+                },
+                "laravel": {
+                    "providers": [
+                        "Yajra\\DataTables\\ButtonsServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Yajra\\DataTables\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Arjay Angeles",
+                    "email": "aqangeles@gmail.com"
+                }
+            ],
+            "description": "Laravel DataTables Buttons Plugin.",
+            "keywords": [
+                "buttons",
+                "datatables",
+                "jquery",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/yajra/laravel-datatables-buttons/issues",
+                "source": "https://github.com/yajra/laravel-datatables-buttons/tree/v4.13.0"
+            },
+            "funding": [
+                {
+                    "url": "https://www.paypal.me/yajra",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://www.patreon.com/yajra",
+                    "type": "patreon"
+                }
+            ],
+            "time": "2021-04-21T05:35:51+00:00"
+        },
+        {
+            "name": "yajra/laravel-datatables-editor",
+            "version": "v1.22.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/yajra/laravel-datatables-editor.git",
+                "reference": "149f0560bd02ce6475a0911157b6da6d27396a7e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/yajra/laravel-datatables-editor/zipball/149f0560bd02ce6475a0911157b6da6d27396a7e",
+                "reference": "149f0560bd02ce6475a0911157b6da6d27396a7e",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/console": "*",
+                "illuminate/database": "*",
+                "illuminate/http": "*",
+                "illuminate/validation": "*",
+                "php": ">=7.0",
+                "yajra/laravel-datatables-buttons": "3.*|4.*"
+            },
+            "require-dev": {
+                "orchestra/testbench": "~3.5"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                },
+                "laravel": {
+                    "providers": [
+                        "Yajra\\DataTables\\EditorServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Yajra\\DataTables\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Arjay Angeles",
+                    "email": "aqangeles@gmail.com"
+                }
+            ],
+            "description": "Laravel DataTables Editor plugin for Laravel 5.5+.",
+            "keywords": [
+                "JS",
+                "datatables",
+                "editor",
+                "html",
+                "jquery",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/yajra/laravel-datatables-editor/issues",
+                "source": "https://github.com/yajra/laravel-datatables-editor/tree/v1.22.0"
+            },
+            "funding": [
+                {
+                    "url": "https://www.paypal.me/yajra",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://www.patreon.com/yajra",
+                    "type": "patreon"
+                }
+            ],
+            "time": "2020-09-09T05:22:02+00:00"
+        },
+        {
+            "name": "yajra/laravel-datatables-html",
+            "version": "v4.36.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/yajra/laravel-datatables-html.git",
+                "reference": "9a964881da68f36d169eea0eb7a3dc5683c57b26"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/yajra/laravel-datatables-html/zipball/9a964881da68f36d169eea0eb7a3dc5683c57b26",
+                "reference": "9a964881da68f36d169eea0eb7a3dc5683c57b26",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "laravelcollective/html": "^5.4|^6",
+                "php": "^7.1.3|^8",
+                "yajra/laravel-datatables-oracle": "~9.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.3.1",
+                "phpunit/phpunit": "^9.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "4.0-dev"
+                },
+                "laravel": {
+                    "providers": [
+                        "Yajra\\DataTables\\HtmlServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Yajra\\DataTables\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Arjay Angeles",
+                    "email": "aqangeles@gmail.com"
+                }
+            ],
+            "description": "Laravel DataTables HTML builder plugin for Laravel 5.4+.",
+            "keywords": [
+                "JS",
+                "datatables",
+                "html",
+                "jquery",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/yajra/laravel-datatables-html/issues",
+                "source": "https://github.com/yajra/laravel-datatables-html/tree/v4.36.3"
+            },
+            "funding": [
+                {
+                    "url": "https://www.paypal.me/yajra",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://www.patreon.com/yajra",
+                    "type": "patreon"
+                }
+            ],
+            "time": "2021-04-23T11:14:28+00:00"
         },
         {
             "name": "yajra/laravel-datatables-oracle",

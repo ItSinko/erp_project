@@ -276,14 +276,23 @@ return [
             'auth' => [26]
         ],
         [
-            'text' => 'Karyawan',
-            'url'  => '/karyawan',
+            'text' => 'Kesehatan',
             'icon' => 'fas fa-table',
-            'auth' => [26]
-        ],
-        [
-            'header' => 'KESEHATAN',
-            'auth'   => [26]
+            'auth' => [26],
+            'submenu' => [
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Pemeriksaan Awal',
+                    'auth' => [26],
+                    'url'  => '/kesehatan',
+                ],
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Pemeriksaan Harian',
+                    'auth' => [26],
+                    'url'  => '/kesehatan_harian',
+                ]
+            ],
         ],
         [
             'header' => 'TRANSAKSI',
@@ -574,6 +583,16 @@ return [
                 ],
             ],
         ],
+        'Chartjs' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/charts/chart.js',
+                ]
+            ],
+        ],
     ],
 
     /*
@@ -586,6 +605,5 @@ return [
     | For detailed instructions you can look the livewire here:
     | https://github.com/jeroennoten/Laravel-AdminLTE/wiki/9.-Other-Configuration
     */
-
     'livewire' => false,
 ];
