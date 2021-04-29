@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 use App\Divisi;
 use App\Notification;
 use App\Perakitan;
@@ -13,7 +14,7 @@ use App\PeminjamanAlat;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -21,7 +22,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'divisi_id', 'nama', 'username', 'email', 'password', 'foto'
     ];
 
     /**
@@ -70,5 +71,10 @@ class User extends Authenticatable
     public function PeminjamanAlat()
     {
         return $this->hasMany(PeminjamanAlat::class);
+    }
+
+    public function getIsSuperAdminAttribute()
+    {
+        return ($this->id == 1) ? true : false;
     }
 }
