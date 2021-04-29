@@ -182,7 +182,7 @@
                                                                 <div class="col-sm-6">
                                                                     <div class="form-group clearfix">
                                                                         <div class="icheck-success d-inline checked">
-                                                                            <input type="radio" name="hasil" id="ok" class="hasil" value="ok" checked>
+                                                                            <input type="radio" name="hasil[]" id="ok" class="hasil" value="ok" checked>
                                                                             <label for="ok">
                                                                                 <i class="fas fa-check-circle" style="color:green;"></i>
                                                                             </label>
@@ -194,7 +194,7 @@
                                                                 <div class="col-sm-6">
                                                                     <div class="form-group clearfix">
                                                                         <div class="icheck-danger d-inline">
-                                                                            <input type="radio" name="hasil" id="nok" value="nok" class="hasil">
+                                                                            <input type="radio" name="hasil[]" id="nok" value="nok" class="hasil">
                                                                             <label for="nok">
                                                                                 <i class="fas fa-times-circle" style="color:red;"></i>
                                                                             </label>
