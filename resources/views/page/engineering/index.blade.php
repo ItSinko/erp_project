@@ -40,7 +40,7 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <select class="form-control select2" style="width: 50%;" name="product" data-placeholder="Select product name" autocomplete="FALSE">
+                <select id="select_product" class="form-control select2" style="width: 50%;" name="product" data-placeholder="Select product name">
                     <option disabled selected value></option>
                     @foreach ($data as $d)
                     <option value="{{ $d->nama }}">{{ $d->nama }}</option>
@@ -87,12 +87,15 @@
 <script src="{{ asset('vendor/bootbox/bootbox.js') }}"></script>
 <script src="{{ asset('vendor/dropzone/dropzone.js') }}"></script>
 <script>
+
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
+
     $(document).ready(function() {
+        // $('#prooduct').selectmenu("refresh", true);
         $('#show_doc').hide();
         $('#tabel').hide();
         $('select[name="product"]').on('change', function() {
