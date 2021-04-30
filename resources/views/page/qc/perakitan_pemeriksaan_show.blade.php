@@ -35,6 +35,7 @@
                 <th>Tipe dan Nama</th>
                 <th>Jumlah</th>
                 <th>Laporan</th>
+                <th>Aksi</th>
               </tr>
             </thead>
             <tbody style="text-align:center;">
@@ -48,6 +49,7 @@
                 <th>Tipe dan Nama</th>
                 <th>Jumlah</th>
                 <th>Laporan</th>
+                <th>Aksi</th>
               </tr>
             </tfoot>
           </table>
@@ -121,12 +123,12 @@
                 name: 'tanggal'
               },
               {
-                data: 'jumlah',
-                name: 'jumlah'
+                data: 'operator',
+                name: 'operator'
               },
               {
-                data: 'status',
-                name: 'status'
+                data: 'jumlah',
+                name: 'jumlah'
               },
               {
                 data: 'aksi',
@@ -177,6 +179,10 @@
         {
           data: 'laporan',
           name: 'laporan'
+        },
+        {
+          data: 'aksi',
+          name: 'aksi'
         },
       ]
     });

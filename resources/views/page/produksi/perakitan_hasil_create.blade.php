@@ -28,23 +28,23 @@
   <div class="row">
     <div class="col-3">
       <div class="card">
-        <div class="card-header">
-          <div class="card-title">Info Perakitan</div>
+        <div class="card-header bg-info">
+          <div class="card-title"><i class="fas fa-info-circle"></i>&nbsp;Info Perakitan</div>
         </div>
         <div class="card-body">
           <div class="card-body box-profile">
             <div class="text-center">
-              <img class="product-img-small img-fluid" @if(empty($sh->Bppb->Produk->foto))
+              <img class="product-img-small img-fluid" @if(empty($sh->Bppb->DetailProduk->foto))
               src="{{url('assets/image/produk')}}/noimage.png"
-              @elseif(!empty($sh->Bppb->Produk->foto))
-              src="{{url('assets/image/produk')}}/{{$sh->Bppb->Produk->foto_produk}}"
+              @elseif(!empty($sh->Bppb->DetailProduk->foto))
+              src="{{url('assets/image/produk')}}/{{$sh->Bppb->DetailProduk->foto_produk}}"
               @endif
-              title="{{$sh->Bppb->Produk->nama}}"
+              title="{{$sh->Bppb->DetailProduk->nama}}"
               >
             </div>
             <div style="text-align:center;vertical-align:center;padding-top:10px">
-              <h5 class="card-heading">{{$sh->Bppb->Produk->tipe}}</h5>
-              <h6 class="card-subheading text-muted">{{$sh->Bppb->Produk->nama}}</h6>
+              <h5 class="card-heading">{{$sh->Bppb->DetailProduk->nama}}</h5>
+              <h6 class="card-subheading text-muted">{{$sh->Bppb->DetailProduk->Produk->nama}}</h6>
             </div>
           </div>
           <div class="row">
@@ -65,72 +65,75 @@
               <hgroup>
                 <!-- hgroup is deprecated, just defiantly using it anyway -->
                 <h6 class="card-subheading text-muted ">Jumlah</h6>
-                <h5 class="card-heading">{{$sh->Bppb->jumlah}} {{ucfirst($sh->Bppb->Produk->satuan)}}</h5>
+                <h5 class="card-heading">{{$sh->Bppb->jumlah}} {{ucfirst($sh->Bppb->DetailProduk->satuan)}}</h5>
+              </hgroup>
+              <hgroup>
+                <!-- hgroup is deprecated, just defiantly using it anyway -->
+                <h6 class="card-subheading text-muted ">Karyawan</h6>
+                <h5 class="card-heading">@foreach ($sh->Karyawan as $kry)
+                  {{ $loop->first ? '' : '' }}
+                  <div>{{ $kry->nama}}</div>
+                  @endforeach
+                </h5>
               </hgroup>
             </div>
-            <hgroup class="col-lg-12">
-              <!-- hgroup is deprecated, just defiantly using it anyway -->
-              <h6 class="card-subheading text-muted ">Status</h6>
-              <h5 class="card-heading">
-                @if( Auth::user()->divisi_id == "17")
-                @if($sh->status == 0)
-                <span class="label info-text">Dibuat</span>
-                @elseif($sh->status == '12')
-                <span class="label warning-text">Menunggu</span>
-                @endif
-                @endif
-              </h5>
-            </hgroup>
           </div>
         </div>
       </div>
     </div>
     <div class="col-9">
+      @if(session()->has('success'))
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong><i class="fas fa-check"></i></strong> {{session()->get('success')}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      @elseif(session()->has('error'))
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong><i class="fas fa-times"></i></strong> {{session()->get('error')}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      @elseif(count($errors) > 0)
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong><i class="fas fa-times"></i></strong> Lengkapi data terlebih dahulu
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      @endif
       <div class="card">
-        <div class="card-header">
-          <div class="card-title">Hasil Perakitan</div>
+        <div class="card-header bg-success">
+          <div class="card-title"><i class="fas fa-plus-circle"></i>&nbsp;Tambah Hasil Perakitan</div>
         </div>
         <!-- /.card-header -->
         <div class="card-body">
-          @if(session()->has('success'))
-          <div class="alert alert-success" role="alert">
-            Berhasil menambahkan produk
-          </div>
-          @elseif(session()->has('error') || count($errors) > 0)
-          <div class="alert alert-danger" role="alert">
-            Gagal menambahkan produk
-          </div>
-          @endif
           <form action="{{ route('perakitan.hasil.store', ['id' => $sh->id]) }}" method="post" enctype="multipart/form-data">
             {{ csrf_field() }}
             {{ method_field('PUT') }}
             <table id="tableitem" class="table table-hover styled-table">
               <thead style="text-align: center;">
-                <tr style="text-align: left;">
-                  <th colspan="12">
-                    <button type="button" id="tambahitem" class="btn btn-block btn-success btn-sm" style="width: 200px;"><i class="fas fa-plus"></i> &nbsp; Tambah No Seri Perakitan</i></button></a>
-                  </th>
-                </tr>
                 <tr>
                   <th>No</th>
                   <th>Tanggal</th>
                   <th>No Seri</th>
-                  <th>Operator</th>
                   <th>Aksi</th>
                 </tr>
               </thead>
               <tbody style="text-align:center;">
                 <tr>
-                  <td class="counterCell"></td>
+                  <td>1</td>
                   <td>
                     <div class="input-group">
-                      <input type="date" class="form-control" name="tanggals[]" id="tanggals[]">
+                      <input type="date" class="form-control" name="tanggals[]" id="tanggals">
                     </div>
                   </td>
                   <td>
                     <div class="form-group">
                       <div class="input-group">
-                        <input type="text" class="form-control @error('hasil_perakitans.*.no_seri') is-invalid @enderror" name="no_seri[]" id="no_seri[]">
+                        <input type="text" class="form-control @error('hasil_perakitans.*.no_seri') is-invalid @enderror" name="no_seri[]" id="no_seri">
                       </div>
                       @if ($errors->has('hasil_perakitans.*.no_seri'))
                       <span class="invalid-feedback" role="alert">{{$errors->first('hasil_perakitans.*.no_seri')}}</span>
@@ -139,21 +142,7 @@
                     </div>
                   </td>
                   <td>
-                    <div class="form-group">
-                      <div class="select2-info">
-                        <select class="select2 form-control @error('karyawan_id') is-invalid @enderror" multiple="multiple" name="karyawan_id[]" id="karyawan_id[]" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;">
-                          @foreach($k as $i)
-                          <option value="{{$i->id}}">{{$i->nama}}</option>
-                          @endforeach
-                        </select>
-                        @if ($errors->has('karyawan_id'))
-                        <span class="invalid-feedback" role="alert">{{$errors->first('karyawan_id.*')}}</span>
-                        @endif
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <button type="button" class="btn btn-block btn-danger btn-sm" id="closetable"><i class="fas fa-times-circle"></i></button>
+                    <button type="button" class="btn btn-success btn-sm m-1" style="border-radius:50%;" id="tambahitem"><i class="fas fa-plus-circle"></i></button>
                   </td>
                 </tr>
               </tbody>
@@ -165,7 +154,7 @@
             <button type="button" class="btn btn-block btn-danger" style="width:200px;float:left;">Batal</button>
           </span>
           <span>
-            <button type="submit" class="btn btn-block btn-success" style="width:200px;float:right;">Tambahkan</button>
+            <button type="submit" class="btn btn-block btn-success btn" style="width:200px;float:right;">Tambahkan</button>
           </span>
         </div>
         </form>
@@ -186,56 +175,56 @@
 @section('adminlte_js')
 <script>
   $(function() {
+    function numberRows($t) {
+      var c = 0 - 1;
+      $t.find("tr").each(function(ind, el) {
+        $(el).find("td:eq(0)").html(++c);
+        var j = c - 1;
+        $(el).find('input[id="tanggals"]').attr('name', 'tanggals[' + j + ']');
+        $(el).find('input[id="no_seri"]').attr('name', 'no_seri[' + j + ']');
+      });
+    }
+
     $('#tambahitem').click(function(e) {
       $('#tableitem tr:last').after(`<tr>
-      <td class="counterCell"></td>
+      <td></td>
       <td>
         <div class="input-group">
-          <input type="date" class="form-control" name="tanggals[]" id="tanggals[]">
+          <input type="date" class="form-control" name="tanggals[]" id="tanggals">
         </div>
       </td>
       <td>
         <div class="form-group">
           <div class="input-group">
-            <input type="text" class="form-control @error('hasil_perakitans.*.no_seri') is-invalid @enderror"" name="no_seri[]" id="no_seri[]">
+            <input type="text" class="form-control @error('hasil_perakitans.*.no_seri') is-invalid @enderror"" name="no_seri[]" id="no_seri">
           </div>
           @if ($errors->has('no_seri'))
             <span class="invalid-feedback" role="alert" >{{$errors->first('hasil_perakitans.*.no_seri')}}</span>
           @endif
-          <span id="no_seri-message[]" role="alert"></span>
+          <span id="no_seri-message" role="alert"></span>
         </div>
       </td>
       <td>
-        <div class="form-group">
-          <div class="select2-info">
-            <select class="select2 form-control @error('karyawan_id') is-invalid @enderror" multiple="multiple" name="karyawan_id[]" id="karyawan_id[]" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;">
-            @foreach($k as $i)
-              <option value="{{$i->id}}">{{$i->nama}}</option>
-            @endforeach
-            </select>
-            @if ($errors->has('karyawan_id'))
-              <span class="invalid-feedback" role="alert">{{$errors->first('karyawan_id.*')}}</span>
-            @endif
-          </div>
-        </div>
+        <button type="button" class="btn btn-danger btn-sm m-1" style="border-radius:50%;" id="closetable" ><i class="fas fa-times-circle"></i></button>
       </td>
-      <td>
-        <button type="button" class="btn btn-block btn-danger btn-sm" id="closetable" ><i class="fas fa-times-circle"></i></button>
-      </td>
-      </tr>`)
+      </tr>`);
+      numberRows($("#tableitem"));
     });
+
 
     $('#tableitem').on('click', '#closetable', function(e) {
       $(this).closest('tr').remove();
+      numberRows($("#tableitem"));
     });
 
-    $('#tableitem').on("change keyup", 'input[name="no_seri[]"]', function() {
-      var no_seri_val = $(this).closest('tr').find('input[name="no_seri[]"').val();
-      var no_seri = $(this).closest('tr').find('input[name="no_seri[]"');
-      var message = $(this).closest('tr').find('span[id="no_seri-message[]"]');
+    $('#tableitem').on("change keyup", 'input[id="no_seri"]', function() {
+      var bppb = "{{$sh->Bppb->id}}";
+      var no_seri_val = $(this).closest('tr').find('input[id="no_seri"]').val();
+      var no_seri = $(this).closest('tr').find('input[id="no_seri"]');
+      var message = $(this).closest('tr').find('span[id="no_seri-message"]');
       if (no_seri_val) {
         $.ajax({
-          url: '/tambah_hasil_perakitan/get_no_seri_exist/' + no_seri_val,
+          url: 'get_kode_perakitan_exist_not_in/' + bppb + '/' + no_seri_val,
           type: "GET",
           dataType: "json",
           success: function(data) {

@@ -68,6 +68,11 @@ return [
             'endpoint' => env('AWS_ENDPOINT'),
         ],
 
+        'document' => [
+            'driver' => 'local',
+            'root' => public_path('/dokumen'),
+            'visibility' => 'public',
+        ]
     ],
 
     /*

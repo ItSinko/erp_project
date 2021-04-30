@@ -14,8 +14,8 @@
                             <tr>
                                 <th>No</th>
                                 <th>Tanggal</th>
+                                <th>Operator</th>
                                 <th>Jumlah</th>
-                                <th>Status</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>

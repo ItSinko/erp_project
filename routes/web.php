@@ -383,11 +383,18 @@ Route::get('/perakitan/pemeriksaan/show', 'QCController@perakitan_pemeriksaan_sh
 Route::get('/perakitan/pemeriksaan/laporan', 'QCController@perakitan_pemeriksaan_laporan')->name('perakitan.pemeriksaan.laporan');
 Route::get('/perakitan/pemeriksaan/laporan/show/{id}', 'QCController@perakitan_pemeriksaan_laporan_show')->name('perakitan.pemeriksaan.laporan.show');
 /* Edit */
-Route::get('/perakitan/pemeriksaan/laporan/edit/{id}', 'QCController@perakitan_pemeriksaan_laporan_edit')->name('perakitan.pemeriksaan.laporan.edit');
-Route::put('/perakitan/pemeriksaan/laporan/update/{id}', 'QCController@perakitan_pemeriksaan_laporan_update')->name('perakitan.pemeriksaan.laporan.update');
+Route::get('/perakitan/pemeriksaan/terbuka/edit/{id}', 'QCController@perakitan_pemeriksaan_terbuka_edit')->name('perakitan.pemeriksaan.terbuka.edit');
+Route::put('/perakitan/pemeriksaan/terbuka/update/{id}', 'QCController@perakitan_pemeriksaan_terbuka_update')->name('perakitan.pemeriksaan.terbuka.update');
+Route::get('/perakitan/pemeriksaan/tertutup/edit/{id}', 'QCController@perakitan_pemeriksaan_tertutup_edit')->name('perakitan.pemeriksaan.tertutup.edit');
+Route::put('/perakitan/pemeriksaan/tertutup/update/{id}', 'QCController@perakitan_pemeriksaan_tertutup_update')->name('perakitan.pemeriksaan.tertutup.update');
 /* Hasil */
 Route::get('/perakitan/pemeriksaan/hasil/{id}', 'QCController@perakitan_pemeriksaan_hasil')->name('perakitan.pemeriksaan.hasil');
 Route::get('/perakitan/pemeriksaan/hasil/show/{id}', 'QCController@perakitan_pemeriksaan_hasil_show')->name('perakitan.pemeriksaan.hasil.show');
+Route::get('/perakitan/pemeriksaan/hasil/detail/{id}', 'QCController@perakitan_pemeriksaan_hasil_detail')->name('perakitan.pemeriksaan.hasil.detail');
+/* BPPB */
+Route::get('/perakitan/pemeriksaan/bppb/{id}', 'QCController@perakitan_pemeriksaan_bppb')->name('perakitan.pemeriksaan.bppb');
+Route::get('/perakitan/pemeriksaan/bppb/show/{id}', 'QCController@perakitan_pemeriksaan_bppb_show')->name('perakitan.pemeriksaan.bppb.show');
+
 
 //PENGEMASAN
 Route::get('/pengemasan', 'ProduksiController@pengemasan')->name('pengemasan');
@@ -406,3 +413,9 @@ Route::get('/ppic', 'PpicController@index');
 Route::post('/schedule/create', 'PpicController@calendar_create')->name('schedule.create');
 Route::post('/schedule/delete', 'PpicController@calendar_delete')->name('schedule.delete');
 Route::get('test', 'PpicController@test')->name('schedule.test');
+
+// Eng
+Route::view('/eng', 'page.engineering.index');
+Route::get('/eng/index', 'EngController@test');
+Route::get('/show_list/{produk?}/{document?}', 'EngController@show_list');
+Route::post('/eng/fileupload', 'EngController@fileupload')->name('eng.fileupload');
