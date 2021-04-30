@@ -389,6 +389,7 @@ Route::get('/pengujian/monitoring_proses/laporan/create/{id}', 'QCController@pen
 Route::put('/pengujian/monitoring_proses/laporan/store/{id}', 'QCController@pengujian_monitoring_proses_laporan_store')->name('pengujian.monitoring_proses.laporan.store');
 Route::get('/pengujian/monitoring_proses/laporan/edit/{id}', 'QCController@pengujian_monitoring_proses_laporan_edit')->name('pengujian.monitoring_proses.laporan.edit');
 Route::put('/pengujian/monitoring_proses/laporan/update/{id}', 'QCController@pengujian_monitoring_proses_laporan_update')->name('pengujian.monitoring_proses.laporan.update');
+Route::get('/pengujian/ik_pemeriksaan', 'QCController@pengujian_ik_pemeriksaan')->name('pengujian.ik_pemeriksaan');
 
 //PENGEMASAN
 Route::get('/pengemasan', 'ProduksiController@pengemasan')->name('pengemasan');

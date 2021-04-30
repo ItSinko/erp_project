@@ -252,12 +252,15 @@
 @section('adminlte_js')
 <script>
     $(function() {
+        var rdb = "";
         $('input[type="radio"][name="brc"]').on("change", function() {
             if (this.value == 'ya') {
-                $('.barcode').attr('disabled', false);
-
+                $('.barcode').attr('readonly', false);
+                rdb = 'ya';
             } else if (this.value == 'tidak') {
-                $('.barcode').attr('disabled', true);
+                $('.barcode').attr('readonly', true);
+                rdb = 'tidak';
+                $('.barcode').val("");
             }
         });
 
@@ -282,7 +285,7 @@
         }
 
         $('#tambahitem').click(function(e) {
-            $('#tableitem tr:last').after(`<tr>
+            var data = `<tr>
                 <td></td>
                 <td>
                     <div class="form-group">
@@ -305,7 +308,11 @@
                 <td>
                     <div class="form-group">
                         <div class="input-group">
-                            <input type="text" class="form-control @error('no_barcode') is-invalid @enderror barcode" name="no_barcode[]" id="no_barcode">
+                            <input type="text" class="form-control @error('no_barcode') is-invalid @enderror barcode" name="no_barcode[]" id="no_barcode"`;
+            if (rdb == 'tidak') {
+                data += `readonly`;
+            }
+            data += `>
                         </div>
                         @if ($errors->has('no_barcode'))
                         <span class="invalid-feedback" role="alert">{{$errors->first('no_barcode')}}</span>
@@ -359,7 +366,8 @@
                 <td>
                     <button type="button" class="btn btn-danger karyawan-img-small" style="border-radius:50%;" id="closetable"><i class="fas fa-times-circle"></i></button>
                 </td>
-            </tr>`);
+            </tr>`;
+            $('#tableitem tr:last').after(data);
             numberRows($("#tableitem"));
         });
 

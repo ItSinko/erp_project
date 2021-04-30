@@ -508,6 +508,7 @@ class ProduksiController extends Controller
                 if (!empty($request->no_seri)) {
                     for ($i = 0; $i < count($request->no_seri); $i++) {
                         if (!empty($request->id[$i])) {
+
                             $hp = HasilPerakitan::find($request->id[$i]);
                             $hp->tanggal = $request->tanggals[$i];
                             $hp->no_seri = $request->no_seri[$i];

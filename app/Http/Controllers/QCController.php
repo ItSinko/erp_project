@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\DetailProduk;
 use App\Bppb;
 use App\Karyawan;
 use App\Perakitan;
@@ -594,6 +595,11 @@ class QCController extends Controller
             ->make(true);
     }
 
+    public function perakitan_ik_pemeriksaan()
+    {
+        return view('page.qc.perakitan_ik_pemeriksaan');
+    }
+
     public function pengujian()
     {
         return view('page.qc.pengujian_show');
@@ -758,21 +764,44 @@ class QCController extends Controller
 
     public function pengujian_monitoring_proses_store(Request $request, $bppb_id)
     {
-        $v = Validator::make(
-            $request->all(),
-            [
-                'tanggal_laporan' => 'required',
-                'karyawan_id' => 'required',
-                'no_seri.*' => 'required',
-                'tindak_lanjut.*' => 'required',
-            ],
-            [
-                'tanggal_laporan.required' => "Tanggal harus diisi",
-                'no_seri.*.required' => "No Seri harus diisi",
-                'karyawan_id.required' => "Karyawan harus dipilih",
-                'tindak_lanjut.*.required' => "Tindak Lanjut harus dipilih",
-            ]
-        );
+        $v = [];
+        echo ($request->brc);
+        if ($request->brc == "tidak") {
+            $v = Validator::make(
+                $request->all(),
+                [
+                    'tanggal_laporan' => 'required',
+                    'karyawan_id' => 'required',
+                    'no_seri' => 'required',
+                    'tindak_lanjut' => 'required',
+                ],
+                [
+                    'tanggal_laporan.required' => "Tanggal harus diisi",
+                    'no_seri.*.required' => "No Seri harus diisi",
+                    'karyawan_id.required' => "Karyawan harus dipilih",
+                    'tindak_lanjut.required' => "Tindak Lanjut harus dipilih",
+                ]
+            );
+        } else if ($request->brc == "ya") {
+            $v = Validator::make(
+                $request->all(),
+                [
+                    'tanggal_laporan' => 'required',
+                    'karyawan_id' => 'required',
+                    'no_seri' => 'required',
+                    'tindak_lanjut' => 'required',
+                    'no_barcode.*' => 'required',
+                ],
+                [
+                    'tanggal_laporan.required' => "Tanggal harus diisi",
+                    'no_seri.*.required' => "No Seri harus diisi",
+                    'karyawan_id.required' => "Karyawan harus dipilih",
+                    'tindak_lanjut.required' => "Tindak Lanjut harus dipilih",
+                    'no_barcode.*.required' => "No Barcode harus diisi",
+                ]
+            );
+        }
+
         if ($v->fails()) {
             return redirect()->back()->withErrors($v);
         } else {
@@ -834,21 +863,42 @@ class QCController extends Controller
 
     public function pengujian_monitoring_proses_laporan_update($id, Request $request)
     {
-        $v = Validator::make(
-            $request->all(),
-            [
-                'tanggal_laporan' => 'required',
-                'karyawan_id' => 'required',
-                'no_seri' => 'required',
-                'tindak_lanjut' => 'required',
-            ],
-            [
-                'tanggal_laporan.required' => "Tanggal harus diisi",
-                'no_seri.*.required' => "No Seri harus diisi",
-                'karyawan_id.required' => "Karyawan harus dipilih",
-                'tindak_lanjut.required' => "Tindak Lanjut harus dipilih",
-            ]
-        );
+        $v = [];
+        if ($request->brc == "tidak") {
+            $v = Validator::make(
+                $request->all(),
+                [
+                    'tanggal_laporan' => 'required',
+                    'karyawan_id' => 'required',
+                    'no_seri' => 'required',
+                    'tindak_lanjut' => 'required',
+                ],
+                [
+                    'tanggal_laporan.required' => "Tanggal harus diisi",
+                    'no_seri.*.required' => "No Seri harus diisi",
+                    'karyawan_id.required' => "Karyawan harus dipilih",
+                    'tindak_lanjut.required' => "Tindak Lanjut harus dipilih",
+                ]
+            );
+        } else if ($request->brc == "ya") {
+            $v = Validator::make(
+                $request->all(),
+                [
+                    'tanggal_laporan' => 'required',
+                    'karyawan_id' => 'required',
+                    'no_seri' => 'required',
+                    'tindak_lanjut' => 'required',
+                    'no_barcode.*' => 'required',
+                ],
+                [
+                    'tanggal_laporan.required' => "Tanggal harus diisi",
+                    'no_seri.required' => "No Seri harus diisi",
+                    'karyawan_id.required' => "Karyawan harus dipilih",
+                    'tindak_lanjut.required' => "Tindak Lanjut harus dipilih",
+                    'no_barcode.*.required' => "No Barcode harus diisi",
+                ]
+            );
+        }
         if ($v->fails()) {
             return redirect()->back()->withErrors($v);
         } else {
@@ -856,15 +906,17 @@ class QCController extends Controller
             $s->tanggal = $request->tanggal_laporan;
             $s->karyawan_id = $request->karyawan_id;
             $s->save();
-
             if ($s) {
                 $hpid = array();
                 if (!empty($request->hasil)) {
                     $bool = true;
+                    $v = 0;
                     for ($i = 0; $i < count($request->hasil); $i++) {
-                        if (!empty($request->id[$i])) {
-                            $u = HasilMonitoringProses::find($request->id[$i]);
-                            $u->monitoring_proses_id = $id;
+                        echo ('id' . $request->mpid[$i]);
+                        if (!empty($request->mpid[$i])) {
+                            $hpid[$v] = $request->mpid[$i];
+                            echo json_encode($hpid);
+                            $u = HasilMonitoringProses::find($request->mpid[$i]);
                             $u->hasil_perakitan_id = $request->no_seri[$i];
                             $u->no_barcode = $request->no_barcode[$i];
                             $u->hasil = $request->hasil[$i];
@@ -872,11 +924,11 @@ class QCController extends Controller
                             $u->keterangan = $request->keterangan[$i];
                             $us = $u->save();
 
-                            $hpid[$i] = $request->id[$i];
                             if (!$us) {
                                 $bool = false;
                             }
                         } else if (empty($request->id[$i])) {
+
                             $cs  = HasilMonitoringProses::create([
                                 'monitoring_proses_id' => $id,
                                 'hasil_perakitan_id' => $request->no_seri[$i],
@@ -888,10 +940,13 @@ class QCController extends Controller
                             if (!$cs) {
                                 $bool = false;
                             } else if ($cs) {
-                                $hpid[$i] = $cs->id;
+                                $hpid[$v] = $cs->id;
+                                echo json_encode($hpid);
                             }
                         }
+                        $v++;
                     }
+                    echo json_encode($hpid);
                     if (!empty($hpid)) {
                         HasilMonitoringProses::where('monitoring_proses_id', $id)->whereNotIn('id', $hpid)->delete();
                     }
@@ -905,6 +960,23 @@ class QCController extends Controller
                 return redirect()->back()->with('error', "Gagal menambahkan Pengujian");
             }
         }
+    }
+
+    public function pengujian_monitoring_proses_hasil_delete($id, Request $request)
+    {
+        $p = HasilMonitoringProses::where('id', $id)->first();
+        $this->UserLogController->create(Auth::user()->id, "Hasil Monitoring Proses " . $p->HasilPerakitan->no_seri . ", untuk BPPB " . $p->MonitoringProses->Bppb->no_bppb, 'Hasil Monitoring Proses', 'Hapus', $request->keterangan_log);
+
+        $hp = HasilMonitoringProses::find($id);
+        $hp->delete();
+
+        return redirect()->back();
+    }
+
+    public function pengujian_ik_pemeriksaan()
+    {
+        $dp = DetailProduk::all();
+        return view('page.qc.pengujian_ik_pemeriksaan', ['dp' => $dp]);
     }
 
     public function tambah_pemeriksaan_rakit($id)
