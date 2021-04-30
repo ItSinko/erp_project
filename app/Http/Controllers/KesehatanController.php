@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Charts\SampleChart;
 use App\Divisi;
 use App\Karyawan;
 use App\Kesehatan_awal;
@@ -143,7 +144,6 @@ class KesehatanController extends Controller
             ]);
         }
 
-
         if ($kesehatan_harian) {
             return redirect()->back()->with('success', 'Berhasil menambahkan data');
         } else {
@@ -169,13 +169,13 @@ class KesehatanController extends Controller
             ->addColumn('sp', function ($data) {
                 return $data->spo2 . ' %';
             })
-            ->addColumn('pr', function ($data) {
+            ->addColumn('prx', function ($data) {
                 return $data->pr . ' bpm';
             })
             ->addColumn('button', function ($data) {
-                $btn = '<div class="inline-flex"><a href="/kesehatan_harian/detail"><button type="button" id="detail"   class="btn btn-block btn-primary karyawan-img-small" style="border-radius:50%;"><i class="fa fa-eye" aria-hidden="true"></i></button></a>';
-                $btn = $btn . '<a href="/podo_online/ubah/' . $data->id . '"><button type="button" class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-edit"></i></button></a>';
-                $btn = $btn . ' <button type="button" class="btn btn-block btn-danger karyawan-img-small" style="border-radius:50%;" data-toggle="modal" data-target="#delete" ><i class="fas fa-trash"></i></button></div>';
+
+                $btn = '<div class="inline-flex"><button type="button" id="edit" class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-edit"></i></button></div>';
+                $btn = $btn . ' <div class="inline-flex"><button type="button" class="btn btn-block btn-danger karyawan-img-small" style="border-radius:50%;" data-toggle="modal" data-target="#delete" ><i class="fas fa-trash"></i></button></div>';
                 return $btn;
             })
             ->rawColumns(['button'])
@@ -183,7 +183,61 @@ class KesehatanController extends Controller
     }
     public function kesehatan_harian_detail()
     {
+        $kesehatan_harian_tgl = Kesehatan_harian::orderby('tgl_cek')->pluck('tgl_cek');
+        $kesehatan_harian_pagi = Kesehatan_harian::orderby('tgl_cek')->pluck('suhu_pagi');
+        $kesehatan_harian_siang = Kesehatan_harian::orderby('tgl_cek')->pluck('suhu_siang');
+        $chart = new SampleChart;
+        $chart->labels($kesehatan_harian_tgl->values());
+        $chart->dataset('Pagi', 'line', $kesehatan_harian_pagi->values())->color('red')->backgroundColor('transparent');
+        $chart->dataset('Siang', 'line', $kesehatan_harian_siang->values())->color('blue')->backgroundColor('transparent');
         $karyawan = Karyawan::all();
-        return view('page.kesehatan.kesehatan_harian_detail', ['karyawan' => $karyawan]);
+        return view('page.kesehatan.kesehatan_harian_detail', ['karyawan' => $karyawan, 'chart' => $chart]);
+    }
+
+    public function kesehatan_harian_detail_data($id)
+    {
+        $data = Kesehatan_harian::with('karyawan')
+            ->orderBy('tgl_cek', 'DESC')
+            ->where('karyawan_id', $id);
+
+        return datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('x', function ($data) {
+                return $data->karyawan->divisi->nama;
+            })
+            ->addColumn('pagi', function ($data) {
+                return $data->suhu_pagi . ' °C';
+            })
+            ->addColumn('siang', function ($data) {
+                return $data->suhu_siang . ' °C';
+            })
+            ->addColumn('sp', function ($data) {
+                return $data->spo2 . ' %';
+            })
+            ->addColumn('pr', function ($data) {
+                return $data->pr . ' bpm';
+            })
+            ->make(true);
+    }
+    public function kesehatan_harian_detail_data_karyawan($id)
+    {
+        $data = Kesehatan_harian::where('karyawan_id', $id)->get();
+        echo json_encode($data);
+    }
+    public function kesehatan_harian_aksi_ubah(Request $request)
+    {
+        $id = $request->id;
+        $kesehatan_harian = Kesehatan_harian::find($id);
+        $kesehatan_harian->suhu_pagi = $request->suhu_pagi;
+        $kesehatan_harian->suhu_siang = $request->suhu_siang;
+        $kesehatan_harian->spo2 = $request->spo2;
+        $kesehatan_harian->pr = $request->pr;
+        $kesehatan_harian->save();
+
+        if ($kesehatan_harian) {
+            return redirect()->back()->with('success', 'Berhasil menambahkan data');
+        } else {
+            return redirect()->back()->with('error', 'Gagal menambahkan data');
+        }
     }
 }

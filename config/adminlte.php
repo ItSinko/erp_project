@@ -223,7 +223,6 @@ return [
     | https://github.com/jeroennoten/Laravel-AdminLTE/wiki/8.-Menu-Configuration
     |
     */
-
     'menu' => [
         [
             'text' => 'search',
@@ -282,15 +281,47 @@ return [
             'submenu' => [
                 [
                     'icon' => 'far fa-circle',
-                    'text' => 'Pemeriksaan Awal',
+                    'text' => 'Cek Awal',
                     'auth' => [26],
                     'url'  => '/kesehatan',
                 ],
                 [
                     'icon' => 'far fa-circle',
-                    'text' => 'Pemeriksaan Harian',
+                    'text' => 'Cek Harian',
                     'auth' => [26],
-                    'url'  => '/kesehatan_harian',
+                    'submenu' => [
+                        [
+                            'icon' => 'far fa-circle',
+                            'text' => 'Data',
+                            'auth' => [26],
+                            'url'  => '/kesehatan_harian',
+                        ],
+                        [
+                            'icon' => 'far fa-circle',
+                            'text' => 'Detail',
+                            'auth' => [26],
+                            'url'  => '/kesehatan_harian/detail',
+                        ]
+                    ],
+                ],
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Cek Mingguan',
+                    'auth' => [26],
+                    'submenu' => [
+                        [
+                            'icon' => 'far fa-circle',
+                            'text' => 'Data',
+                            'auth' => [26],
+                            'url'  => '/kesehatan_mingguan',
+                        ],
+                        [
+                            'icon' => 'far fa-circle',
+                            'text' => 'Detail',
+                            'auth' => [26],
+                            'url'  => '/kesehatan_harian/detail',
+                        ]
+                    ],
                 ]
             ],
         ],
@@ -487,8 +518,6 @@ return [
                 ],
             ],
         ],
-
-
         ['header' => 'LOGOUT'],
         [
             'text' => 'Logout',
@@ -519,7 +548,6 @@ return [
         JeroenNoten\LaravelAdminLte\Menu\Filters\LangFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\DataFilter::class,
     ],
-
     /*
     |--------------------------------------------------------------------------
     | Plugins Initialization
@@ -531,7 +559,6 @@ return [
     | https://github.com/jeroennoten/Laravel-AdminLTE/wiki/9.-Other-Configuration
     |
     */
-
     'plugins' => [
         'Datatables' => [
             'active' => true,
