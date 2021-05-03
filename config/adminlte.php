@@ -283,7 +283,20 @@ return [
                     'icon' => 'far fa-circle',
                     'text' => 'Cek Awal',
                     'auth' => [26],
-                    'url'  => '/kesehatan',
+                    'submenu' => [
+                        [
+                            'icon' => 'far fa-circle',
+                            'text' => 'Data',
+                            'auth' => [26],
+                            'url'  => '/kesehatan',
+                        ],
+                        [
+                            'icon' => 'far fa-circle',
+                            'text' => 'Detail',
+                            'auth' => [26],
+                            'url'  => '/kesehatan/detail',
+                        ]
+                    ],
                 ],
                 [
                     'icon' => 'far fa-circle',
@@ -304,25 +317,25 @@ return [
                         ]
                     ],
                 ],
-                [
-                    'icon' => 'far fa-circle',
-                    'text' => 'Cek Mingguan',
-                    'auth' => [26],
-                    'submenu' => [
-                        [
-                            'icon' => 'far fa-circle',
-                            'text' => 'Data',
-                            'auth' => [26],
-                            'url'  => '/kesehatan_mingguan',
-                        ],
-                        [
-                            'icon' => 'far fa-circle',
-                            'text' => 'Detail',
-                            'auth' => [26],
-                            'url'  => '/kesehatan_harian/detail',
-                        ]
-                    ],
-                ]
+                // [
+                //     'icon' => 'far fa-circle',
+                //     'text' => 'Cek Mingguan',
+                //     'auth' => [26],
+                //     'submenu' => [
+                //         [
+                //             'icon' => 'far fa-circle',
+                //             'text' => 'Data',
+                //             'auth' => [26],
+                //             'url'  => '/kesehatan_mingguan',
+                //         ],
+                //         [
+                //             'icon' => 'far fa-circle',
+                //             'text' => 'Detail',
+                //             'auth' => [26],
+                //             'url'  => '/kesehatan_harian/detail',
+                //         ]
+                //     ],
+                // ]
             ],
         ],
         [

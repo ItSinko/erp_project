@@ -46,8 +46,12 @@ Route::get('/kesehatan', 'KesehatanController@kesehatan');
 /* Tambah */
 Route::get('/kesehatan/tambah', 'KesehatanController@kesehatan_tambah');
 Route::post('/kesehatan/aksi_tambah', 'KesehatanController@kesehatan_aksi_tambah');
+/* Ubah */
+Route::get('/kesehatan/ubah/{id}', 'KesehatanController@kesehatan_ubah');
 /* Get Data */
 Route::get('/kesehatan/data', 'KesehatanController@kesehatan_data');
+Route::get('/kesehatan/detail', 'KesehatanController@kesehatan_detail');
+
 
 //Kesehatan Harian
 /* Tabel */
@@ -62,6 +66,7 @@ Route::get('/kesehatan_harian/data', 'KesehatanController@kesehatan_harian_data'
 Route::get('/kesehatan_harian/data/karyawan/{id}', 'KesehatanController@kesehatan_harian_detail_data_karyawan');
 Route::get('/kesehatan_harian/tambah/data/{id}', 'KesehatanController@kesehatan_harian_tambah_data');
 Route::get('/kesehatan_harian/detail/{id}', 'KesehatanController@kesehatan_harian_detail_data');
+
 
 //JASA EKSPEDISI
 /* Tabel */

@@ -68,13 +68,11 @@
                                                     </div>
                                                     @endif
                                                 </div>
-
                                             </div>
                                         </div>
                                         <table id="tabel" class="table table-hover styled-table table-striped">
                                             <thead style="text-align: center;">
                                                 <tr>
-
                                                     <th></th>
                                                     <th></th>
                                                     <th></th>
@@ -142,7 +140,7 @@
                                                          <td>    
                                                          <div class="input-group mb-3">
                                                          <input type="number" class="form-control d-none" name="karyawan_id[` + x + `]" value="` + value[`id`] + `">
-                                                         <input type="number" class="form-control" name="suhu_pagi[` + x + `]" >
+                                                         <input type="text" class="form-control" name="suhu_pagi[` + x + `]" >
                                                          <div class="input-group-append">
                                                             <span class="input-group-text">°C</span>
                                                            </div>
@@ -150,7 +148,7 @@
                                                         </td>
                                                          <td>    
                                                          <div class="input-group mb-3">
-                                                         <input type="number" class="form-control" name="suhu_siang[` + x + `]" >
+                                                         <input type="text" class="form-control" name="suhu_siang[` + x + `]" >
                                                          <div class="input-group-append">
                                                             <span class="input-group-text">°C</span>
                                                            </div>

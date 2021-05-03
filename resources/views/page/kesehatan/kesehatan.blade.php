@@ -40,6 +40,16 @@
     </div>
   </div>
 </div>
+
+<!-- Modal Detail -->
+<div class="modal fade  bd-example-modal-lg" id="detail_mod" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="card-body">
+      <canvas id="berat_chart"></canvas>
+    </div>
+  </div>
+</div>
+<!-- End Modal Detail -->
 @stop
 @section('adminlte_js')
 <script>
@@ -99,6 +109,25 @@
       ]
     });
 
+
+
+
+    $('#tabel > tbody').on('click', '#edit', function() {
+      var rows = tabel.rows($(this).parents('tr')).data();
+      $('.data_detail_head').html(
+        rows[0]['karyawan']['nama']
+      );
+      $('input[id="id"]').val(rows[0]['id']);
+      $('input[id="tgl"]').val(rows[0]['tgl_cek']);
+      $('input[id="suhu_pagi"]').val(rows[0]['suhu_pagi']);
+      $('input[id="suhu_siang"]').val(rows[0]['suhu_siang']);
+      $('input[id="spo2"]').val(rows[0]['spo2']);
+      $('input[id="pr"]').val(rows[0]['pr']);
+      $('#detail_mod').modal('show');
+      $('#tambah_mod').on('hidden.bs.modal', function() {
+        $('#tambah_mod form')[0].reset();
+      });
+    })
   });
 </script>
 @endsection

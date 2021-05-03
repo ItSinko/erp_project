@@ -20,6 +20,11 @@ class KesehatanController extends Controller
     {
         return view('page.kesehatan.kesehatan');
     }
+    public function kesehatan_detail()
+    {
+        $karyawan = Karyawan::all();
+        return view('page.kesehatan.kesehatan_detail', ['karyawan' => $karyawan]);
+    }
     public function kesehatan_data()
     {
         $data = Kesehatan_awal::with('karyawan');
@@ -38,8 +43,8 @@ class KesehatanController extends Controller
                 return $data->berat / (($data->tinggi / 100) * ($data->tinggi / 100));
             })
             ->addColumn('button', function ($data) {
-                $btn = '<div class="inline-flex"><button type="button" id="detail"  data-id="' . $data->id . '" class="btn btn-block btn-primary karyawan-img-small" style="border-radius:50%;"><i class="fa fa-eye" aria-hidden="true"></i></button>';
-                $btn = $btn . '<a href="/podo_online/ubah/' . $data->id . '"><button type="button" class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-edit"></i></button></a>';
+                $btn = '<div class="inline-flex"><button type="button" id="edit"  data-id="' . $data->id . '" class="btn btn-block btn-primary karyawan-img-small" style="border-radius:50%;"><i class="fa fa-eye" aria-hidden="true"></i></button>';
+                $btn = $btn . '<a href="/kesehatan/ubah/' . $data->id . '"><button type="button" class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-edit"></i></button></a>';
                 $btn = $btn . ' <button type="button" class="btn btn-block btn-danger karyawan-img-small" style="border-radius:50%;" data-toggle="modal" data-target="#delete" ><i class="fas fa-trash"></i></button></div>';
                 return $btn;
             })
@@ -50,6 +55,12 @@ class KesehatanController extends Controller
     {
         $karyawan = Karyawan::all();
         return view('page.kesehatan.kesehatan_tambah', ['karyawan' => $karyawan]);
+    }
+    public function kesehatan_ubah($id)
+    {
+        $karyawan = Karyawan::all();
+        $kesehatan_awal = Kesehatan_awal::find($id);
+        return view('page.kesehatan.kesehatan_ubah', ['karyawan' => $karyawan, 'kesehatan_awal' => $kesehatan_awal]);
     }
 
     public function kesehatan_aksi_tambah(Request $request)
@@ -183,15 +194,15 @@ class KesehatanController extends Controller
     }
     public function kesehatan_harian_detail()
     {
-        $kesehatan_harian_tgl = Kesehatan_harian::orderby('tgl_cek')->pluck('tgl_cek');
-        $kesehatan_harian_pagi = Kesehatan_harian::orderby('tgl_cek')->pluck('suhu_pagi');
-        $kesehatan_harian_siang = Kesehatan_harian::orderby('tgl_cek')->pluck('suhu_siang');
-        $chart = new SampleChart;
-        $chart->labels($kesehatan_harian_tgl->values());
-        $chart->dataset('Pagi', 'line', $kesehatan_harian_pagi->values())->color('red')->backgroundColor('transparent');
-        $chart->dataset('Siang', 'line', $kesehatan_harian_siang->values())->color('blue')->backgroundColor('transparent');
+        // // $kesehatan_harian_tgl = Kesehatan_harian::orderby('tgl_cek')->pluck('tgl_cek');
+        // // $kesehatan_harian_pagi = Kesehatan_harian::orderby('tgl_cek')->pluck('suhu_pagi');
+        // // $kesehatan_harian_siang = Kesehatan_harian::orderby('tgl_cek')->pluck('suhu_siang');
+        // // $chart = new SampleChart;
+        // $chart->labels($kesehatan_harian_tgl->values());
+        // $chart->dataset('Pagi', 'line', $kesehatan_harian_pagi->values())->color('red')->backgroundColor('transparent');
+        // $chart->dataset('Siang', 'line', $kesehatan_harian_siang->values())->color('blue')->backgroundColor('transparent');
         $karyawan = Karyawan::all();
-        return view('page.kesehatan.kesehatan_harian_detail', ['karyawan' => $karyawan, 'chart' => $chart]);
+        return view('page.kesehatan.kesehatan_harian_detail', ['karyawan' => $karyawan]);
     }
 
     public function kesehatan_harian_detail_data($id)
@@ -222,7 +233,13 @@ class KesehatanController extends Controller
     public function kesehatan_harian_detail_data_karyawan($id)
     {
         $data = Kesehatan_harian::where('karyawan_id', $id)->get();
-        echo json_encode($data);
+        $tgl = $data->pluck('tgl_cek');
+        $labels2 = $data->pluck('suhu_pagi');
+        $labels3 = $data->pluck('suhu_siang');
+        $labels4 = $data->pluck('spo2');
+        $labels5 = $data->pluck('pr');
+        return response()->json(compact('tgl', 'data', 'labels2', 'labels3', 'labels4', 'labels5'));
+        //echo json_encode($data, $labels);
     }
     public function kesehatan_harian_aksi_ubah(Request $request)
     {

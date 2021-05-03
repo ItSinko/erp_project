@@ -15,7 +15,7 @@
                 {{ csrf_field() }}
                 <div class="card">
                     <div class="card-header bg-success">
-                        <div class="card-title"><i class="fas fa-plus-circle"></i>&nbsp;Detail pengecekan harian</div>
+                        <div class="card-title"><i class="fas fa-plus-circle"></i>&nbsp;Detail pengecekan awal</div>
                     </div>
                     <div class="card-body">
                         <div class='table-responsive'>
@@ -39,10 +39,27 @@
                                 <div class="row">
 
                                     <div class="col-lg-4">
+                                        <div class="card card-info">
+                                            <div class="card-header">
+                                                <h3 class="card-title">Kadar Dalam Tubuh</h3>
+                                                <div class="card-tools">
+                                                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                                        <i class="fas fa-minus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="card-body">
+                                                    50
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
                                         <!-- LINE CHART -->
                                         <div class="card card-info">
                                             <div class="card-header">
-                                                <h3 class="card-title">Suhu</h3>
+                                                <h3 class="card-title">Kadar Dalam Tubuh</h3>
                                                 <div class="card-tools">
                                                     <button type="button" class="btn btn-tool" data-card-widget="collapse">
                                                         <i class="fas fa-minus"></i>
@@ -57,40 +74,6 @@
                                         </div>
                                     </div>
                                     <div class="col-lg-4">
-                                        <!-- LINE CHART -->
-                                        <div class="card card-info">
-                                            <div class="card-header">
-                                                <h3 class="card-title">SpO2 (%)</h3>
-                                                <div class="card-tools">
-                                                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                                        <i class="fas fa-minus"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="card-body">
-                                                    <canvas id="spo2_chart"></canvas>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <!-- LINE CHART -->
-                                        <div class="card card-info">
-                                            <div class="card-header">
-                                                <h3 class="card-title">Pulse Rate (bpm)</h3>
-                                                <div class="card-tools">
-                                                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                                        <i class="fas fa-minus"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="card-body">
-                                                    <canvas id="pr_chart"></canvas>
-                                                </div>
-                                            </div>
-                                        </div>
                                     </div>
                                     <div class="card-body">
 
@@ -161,97 +144,36 @@
 
     });
 </script>
-
-
-
 <script>
     //Suhu 
     var ctx = document.getElementById("suhu_chart");
     var suhu_chart = new Chart(ctx, {
-        type: 'line',
+        type: 'polarArea',
         data: {
-            labels: [],
+            labels: [
+                'Red',
+                'Green',
+                'Yellow',
+                'Grey',
+                'Blue'
+            ],
             datasets: [{
-                    label: 'Suhu Pagi',
-                    data: [],
-                    borderWidth: 2,
-                    backgroundColor: 'transparent',
-                    borderColor: 'red',
-                },
-                {
-                    label: 'Suhu Siang',
-                    data: [],
-                    borderWidth: 2,
-                    backgroundColor: 'transparent',
-                    borderColor: 'blue',
-                }
-            ]
-        },
-        options: {
-            scales: {
-                xAxes: [],
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
-            }
-        }
-    });
-    //Spo2
-    var ctx = document.getElementById("spo2_chart");
-    var spo2_chart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: [],
-            datasets: [{
-                label: 'Spo2 (%)',
-                data: [],
-                borderWidth: 2,
-                backgroundColor: 'transparent',
-                borderColor: 'green',
+                label: 'My First Dataset',
+                data: [32.6, 51.8, 35.9, 3.6, 2566],
+                backgroundColor: [
+                    'rgb(255, 99, 132)',
+                    'rgb(75, 192, 192)',
+                    'rgb(255, 205, 86)',
+                    'rgb(201, 203, 207)',
+                    'rgb(54, 162, 235)'
+                ]
             }]
-        },
-        options: {
-            scales: {
-                xAxes: [],
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
-            }
         }
     });
-    //Pulse Rate
-    var ctx = document.getElementById("pr_chart");
-    var pr_chart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: [],
-            datasets: [{
-                label: 'Pulse rate (bpm)',
-                data: [],
-                borderWidth: 2,
-                backgroundColor: 'transparent',
-                borderColor: 'black',
-            }]
-        },
-        options: {
-            scales: {
-                xAxes: [],
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
-            }
-        }
-    });
+
     $('#karyawan_id').change(function() {
         var karyawan_id = $(this).val();
         $('#tabel').DataTable().ajax.url('/kesehatan_harian/detail/' + karyawan_id).load();
-
         var updateChart = function() {
             $.ajax({
                 url: "/kesehatan_harian/data/karyawan/" + karyawan_id,
@@ -267,13 +189,6 @@
                     suhu_chart.data.datasets[1].data = data.labels3;
                     suhu_chart.update();
 
-                    spo2_chart.data.labels = data.tgl;
-                    spo2_chart.data.datasets[0].data = data.labels4;
-                    spo2_chart.update();
-
-                    pr_chart.data.labels = data.tgl;
-                    pr_chart.data.datasets[0].data = data.labels5;
-                    pr_chart.update();
                 },
                 error: function(data) {
                     console.log(data);
