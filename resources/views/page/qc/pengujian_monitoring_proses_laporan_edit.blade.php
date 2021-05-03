@@ -111,12 +111,11 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="form-group row">
                                 <label for="brc" class="col-sm-4 col-form-label" style="text-align:right;">Barcode</label>
                                 <div class="col-sm-1 col-form-label">
                                     <div class="icheck-primary d-inline">
-                                        <input type="radio" id="brc_ya" name="brc" value="ya" checked>
+                                        <input type="radio" id="brc_ya" name="brc" value="ya" @if(!is_null($s->HasilMonitoringProses->pluck('no_barcode'))) checked @endif>
                                         <label for="brc_ya">
                                             Buat
                                         </label>
@@ -124,7 +123,7 @@
                                 </div>
                                 <div class="col-sm-2 col-form-label">
                                     <div class="icheck-primary d-inline">
-                                        <input type="radio" id="brc_tidak" name="brc" value="tidak">
+                                        <input type="radio" id="brc_tidak" name="brc" value="tidak" @if(is_null($s->HasilMonitoringProses->pluck('no_barcode'))) checked @endif>
                                         <label for="brc_tidak">
                                             Tidak
                                         </label>
@@ -140,8 +139,8 @@
                                     <thead style="text-align: center;">
                                         <tr>
                                             <th>No</th>
-                                            <th>No Seri</th>
                                             <th hidden>id</th>
+                                            <th>No Seri</th>
                                             <th>Barcode</th>
                                             <th>Hasil Cek</th>
                                             <th>Keterangan</th>
@@ -154,6 +153,9 @@
                                         @foreach($s->HasilMonitoringProses as $j)
                                         <tr>
                                             <td>{{$loop->iteration}}</td>
+                                            <td hidden>
+                                                <input type="text" class="form-control" name="mpid[{{$loop->iteration - 1}}]" id="mpid" value="{{$j->id}}">
+                                            </td>
                                             <td>
                                                 <div class="form-group">
                                                     <div class="select2-info">
@@ -172,13 +174,10 @@
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td hidden>
-                                                <input type="text" class="form-control @error('id') is-invalid @enderror barcode" name="id[]" id="id" value="{{$j->id}}">
-                                            </td>
                                             <td>
                                                 <div class="form-group">
                                                     <div class="input-group">
-                                                        <input type="text" class="form-control @error('no_barcode') is-invalid @enderror barcode" value="{{old('no_barcode', $j->no_barcode)}}" name="no_barcode[{{$loop->iteration - 1}}]" id="no_barcode">
+                                                        <input type="text" class="form-control @error('no_barcode') is-invalid @enderror barcode" value="{{$j->no_barcode}}" name="no_barcode[{{$loop->iteration - 1}}]" id="no_barcode">
                                                     </div>
                                                     @if ($errors->has('no_barcode'))
                                                     <span class="invalid-feedback" role="alert">{{$errors->first('no_barcode')}}</span>
@@ -263,12 +262,16 @@
 @section('adminlte_js')
 <script>
     $(function() {
+        var rdb = "";
         $('input[type="radio"][name="brc"]').on("change", function() {
             if (this.value == 'ya') {
-                $('.barcode').attr('disabled', false);
+                $('.barcode').attr('readonly', false);
+                rdb = 'ya';
 
             } else if (this.value == 'tidak') {
-                $('.barcode').attr('disabled', true);
+                $('.barcode').attr('readonly', true);
+                rdb = 'tidak';
+                $('.barcode').val("");
             }
         });
 
@@ -279,6 +282,7 @@
                 $(el).find("td:eq(0)").html(++c);
                 var j = c - 1;
                 $(el).find('input[id="no_barcode"]').attr('name', 'no_barcode[' + j + ']');
+                $(el).find('input[id="mpid"]').attr('name', 'mpid[' + j + ']');
                 $(el).find('.no_seri').attr('name', 'no_seri[' + j + ']');
                 $(el).find('.no_seri').attr('id', 'no_seri[' + j + ']');
                 $(el).find('.hasil').attr('id', 'ok' + j);
@@ -293,15 +297,18 @@
         }
 
         $('#tambahitem').click(function(e) {
-            $('#tableitem tr:last').after(`<tr>
+            data = `<tr>
                 <td></td>
+                <td hidden>
+                <input type="text" class="form-control" name="mpid[]" id="mpid">
+                </td>
                 <td>
                     <div class="form-group">
                         <div class="select2-info">
                             <select class="select2 custom-select form-control @error('no_seri') is-invalid @enderror no_seri" data-placeholder="Pilih No Seri" data-dropdown-css-class="select2-info" style="width: 100%;" name="no_seri[]" id="no_seri">
                             <option value=""></option>
                             @foreach($ns as $i)
-                            <option value="{{$i->id}}" @if($j->hasil_perakitan_id == $i->id) selected @endif>
+                            <option value="{{$i->id}}">
                                 {{$i->no_seri}} @if($i->status == "rej_pemeriksaan_terbuka" || $i->status == "rej_pemeriksaan_tertutup") * @endif
                             </option>
                             @endforeach
@@ -313,13 +320,14 @@
                         </div>
                     </div>
                 </td>
-                <td hidden>
-                <input type="text" class="form-control @error('id') is-invalid @enderror barcode" name="id[]" id="id">
-                </td>
                 <td>
                     <div class="form-group">
                         <div class="input-group">
-                            <input type="text" class="form-control @error('no_barcode') is-invalid @enderror barcode" name="no_barcode[]" id="no_barcode">
+                            <input type="text" class="form-control @error('no_barcode') is-invalid @enderror barcode" name="no_barcode[]" id="no_barcode"`;
+            if (rdb == 'tidak') {
+                data += `readonly`;
+            }
+            data += `>
                         </div>
                         @if ($errors->has('no_barcode'))
                         <span class="invalid-feedback" role="alert">{{$errors->first('no_barcode')}}</span>
@@ -373,7 +381,8 @@
                 <td>
                     <button type="button" class="btn btn-danger karyawan-img-small" style="border-radius:50%;" id="closetable"><i class="fas fa-times-circle"></i></button>
                 </td>
-            </tr>`);
+            </tr>`
+            $('#tableitem tr:last').after(data);
             numberRows($("#tableitem"));
         });
 

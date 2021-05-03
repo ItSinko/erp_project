@@ -183,7 +183,7 @@
                                         <div class="col-sm-8">
                                             <select class="form-control select2 select2-info @error('tindak_lanjut_tertutup') is-invalid @enderror" data-dropdown-css-class="select2-info" style="width: 30%;" data-placeholder="Pilih Tindak Lanjut" name="tindak_lanjut_tertutup" id="tindak_lanjut_tertutup">
                                                 <option value=""></option>
-                                                <option value="aging">Aging</option>
+                                                <option value="aging">Pengujian</option>
                                                 <option value="perbaikan" disabled>Perbaikan</option>
                                                 <option value="produk_spesialis" disabled>Produk Spesialis</option>
                                             </select>
