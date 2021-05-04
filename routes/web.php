@@ -346,7 +346,9 @@ Route::group(['prefix' => '/pengemasan', 'middleware' => 'auth'], function () {
 
 // DOCUMENT CONTROL
 Route::group(['prefix' => 'dc', 'middleware' => 'auth'], function () {
-    Route::get('/home', 'dc_controller\HomeController@index')->name('admin.dashboard');
+    Route::get('/', 'dc_controller\HomeController@index')->name('dc.dashboard');
+    Route::resource('/documents', 'dc_controller\DocumentController');
+    Route::get('/eng', 'dc_controller\DocumentController@eng');
 });
 
 // ARI Controller Temporary

@@ -5,30 +5,16 @@ namespace App\Http\Controllers\dc_controller;
 use App\dc_model\Activity;
 use App\dc_model\Document;
 use App\dc_model\File;
-use App\dc_model\Tag;
 use App\dc_model\User;
 use App\Http\Requests\UpdateProfileRequest;
-use App\Rules\CurrentPassword;
 use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Http\Request;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
 use ZipArchive;
 
 class HomeController extends AppBaseController
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        /*$this->middleware('auth');*/
-    }
-
     /**
      * Show the application dashboard.
      *
@@ -44,20 +30,9 @@ class HomeController extends AppBaseController
             $activities->whereDate('created_at', '<=', $dates[1] ?? '');
         }
         $activities = $activities->orderByDesc('id')->paginate(25);
-        $allTags = Tag::with('documents', 'documents.files')->withCount('documents');
-        if (!auth()->user()->can('read documents')) {
-            $allPerm = auth()->user()->getAllPermissions();
-            $tmpTags = array_column(groupTagsPermissions($allPerm), 'tag_id');
-            $allTags->whereIn('id', $tmpTags);
-        }
-        $allTags = $allTags->get();
-        $tagCounts = $allTags->count();
-        $allDocs =  Document::whereHas('tags', function ($q) use ($allTags) {
-            return $q->whereIn('tag_id', $allTags->pluck('id')->toArray());
-        })->pluck('id');
-        $documentCounts = $allDocs->count();
-        $filesCounts = File::whereIn('document_id', $allDocs->toArray())->count();
-        return view('page.document_control.home', compact('documents', 'activities', 'tagCounts', 'documentCounts', 'filesCounts'));
+        $documentCounts = $documents->count();
+        $filesCounts = File::whereIn('document_id', $documents->toArray())->count();
+        return view('page.document_control.home', compact('documents', 'activities', 'documentCounts', 'filesCounts'));
     }
 
     public function welcome()

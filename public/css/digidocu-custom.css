@@ -1,9 +1,10 @@
 /*table mini style*/
-table.table-mini{
+table.table-mini {
     font-size: 1.25rem;
 }
 
-table.table-mini th, table.table-mini td {
+table.table-mini th,
+table.table-mini td {
     padding: 0.3rem !important;
 }
 
@@ -26,11 +27,11 @@ table.table-mini th, table.table-mini td {
 }
 
 /*Custom Dropdown item button style*/
-.dropdown-menu>li>form>button:hover {
+.dropdown-menu > li > form > button:hover {
     background-color: #e1e3e9;
     color: #333;
 }
-.dropdown-menu>li>form>button {
+.dropdown-menu > li > form > button {
     display: block;
     width: 100%;
     text-align: left;
@@ -44,19 +45,19 @@ table.table-mini th, table.table-mini td {
 }
 
 /*Tags input style*/
-div.bootstrap-tagsinput{
+div.bootstrap-tagsinput {
     display: block;
     border-radius: 0;
     box-shadow: none;
 }
 
-div.bootstrap-tagsinput:focus-within{
+div.bootstrap-tagsinput:focus-within {
     border-color: #3c8dbc;
 }
 
-
 /*Disable pdf button through style*/
-.dt-button.buttons-pdf{ /*Todo: Not finding way to disable pdf button*/
+.dt-button.buttons-pdf {
+    /*Todo: Not finding way to disable pdf button*/
     display: none !important;
 }
 

@@ -81,7 +81,7 @@ class Document extends Model
     public static $rules = [
         'name' => 'required',
         'description' => 'nullable',
-        'tags' => 'required',
+        // 'tags' => 'required',
         'custom_fields' => 'nullable'
     ];
 
