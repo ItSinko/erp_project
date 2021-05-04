@@ -39,9 +39,4 @@ class Produk extends Model
     {
         return $this->hasMany('App\Detail_ecommereces');
     }
-
-    public function IkPemeriksaanPengujian()
-    {
-        return $this->hasMany(IkPemeriksaanPengujian::class);
-    }
 }

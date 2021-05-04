@@ -979,6 +979,7 @@ class QCController extends Controller
 
     public function pengujian_ik_pemeriksaan()
     {
+<<<<<<< HEAD
         return view('page.qc.pengujian_ik_pemeriksaan_show');
     }
 
@@ -1055,6 +1056,10 @@ class QCController extends Controller
     {
         $s = IkPemeriksaanPengujian::where('detail_produk_id', $id)->get();
         return view('page.qc.pengujian_ik_pemeriksaan_detail_show', ['id' => $id, 's' => $s]);
+=======
+        $dp = DetailProduk::all();
+        return view('page.qc.pengujian_ik_pemeriksaan', ['dp' => $dp]);
+>>>>>>> fe6949fb8fcf1caf0f4993ccf51f5b05e494eee5
     }
 
     public function tambah_pemeriksaan_rakit($id)

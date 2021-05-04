@@ -13,8 +13,8 @@ class IkPemeriksaanPengujian extends Model
         return $this->hasMany(HasilIkPemeriksaanPengujian::class, 'ik_pemeriksaan_id');
     }
 
-    public function Produk()
+    public function DetailProduk()
     {
-        return $this->belongsTo(Produk::class);
+        return $this->belongsTo(DetailProduk::class);
     }
 }
