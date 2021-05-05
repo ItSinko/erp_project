@@ -45,6 +45,33 @@ Route::group(['prefix' => '/karyawan', 'middleware' => 'auth'], function () {
     Route::get('/peminjaman', 'ItController@karyawan_peminjaman')->name('karyawan.peminjaman');
     Route::get('/peminjaman/show', 'ItController@karyawan_peminjaman_show')->name('karyawan.peminjaman.show');
 });
+//Kesehatan
+/* Tabel */
+Route::get('/kesehatan', 'KesehatanController@kesehatan');
+/* Tambah */
+Route::get('/kesehatan/tambah', 'KesehatanController@kesehatan_tambah');
+Route::post('/kesehatan/aksi_tambah', 'KesehatanController@kesehatan_aksi_tambah');
+/* Ubah */
+Route::get('/kesehatan/ubah/{id}', 'KesehatanController@kesehatan_ubah');
+/* Get Data */
+Route::get('/kesehatan/data', 'KesehatanController@kesehatan_data');
+Route::get('/kesehatan/detail', 'KesehatanController@kesehatan_detail');
+
+
+//Kesehatan Harian
+/* Tabel */
+Route::get('/kesehatan_harian', 'KesehatanController@kesehatan_harian');
+Route::get('/kesehatan_harian/detail', 'KesehatanController@kesehatan_harian_detail');
+/* Tambah */
+Route::get('/kesehatan_harian/tambah', 'KesehatanController@kesehatan_harian_tambah');
+Route::post('/kesehatan_harian/aksi_tambah', 'KesehatanController@kesehatan_harian_aksi_tambah');
+Route::put('/kesehatan_harian/aksi_ubah', 'KesehatanController@kesehatan_harian_aksi_ubah');
+/* Get Data */
+Route::get('/kesehatan_harian/data', 'KesehatanController@kesehatan_harian_data');
+Route::get('/kesehatan_harian/data/karyawan/{id}', 'KesehatanController@kesehatan_harian_detail_data_karyawan');
+Route::get('/kesehatan_harian/tambah/data/{id}', 'KesehatanController@kesehatan_harian_tambah_data');
+Route::get('/kesehatan_harian/detail/{id}', 'KesehatanController@kesehatan_harian_detail_data');
+
 
 //JASA EKSPEDISI
 Route::group(['prefix' => '/jasa_eks', 'middleware' => 'auth'], function () {

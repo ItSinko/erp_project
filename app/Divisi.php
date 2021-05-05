@@ -19,4 +19,8 @@ class Divisi extends Model
     {
         return $this->hasOne(DivisiInventory::class);
     }
+    public function Karyawan()
+    {
+        return $this->hasMany('App\Karyawan');
+    }
 }

@@ -40,6 +40,18 @@ class Karyawan extends Model
         return $this->hasMany('App\Penawaran_offline');
     }
 
+    public function Kesehatan_awal()
+    {
+        return $this->hasOne('App\Kesehatan_awal');
+    }
+    public function Kesehatan_harian()
+    {
+        return $this->hasMany('App\Kesehatan_harian');
+    }
+    public function Divisi()
+    {
+        return $this->belongsTo('App\Divisi');
+    }
     // public function DetailPeminjamanKaryawan()
     // {
     //     return $this->hasMany(DetailPeminjamanKaryawan::class);
