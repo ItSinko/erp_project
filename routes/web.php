@@ -356,11 +356,26 @@ Route::group(['prefix' => '/perakitan', 'middleware' => 'auth'], function () {
 //PENGUJIAN
 Route::get('/pengujian', 'QCController@pengujian')->name('pengujian');
 Route::get('/pengujian/show', 'QCController@pengujian_show')->name('pengujian.show');
+Route::get('/pengujian/monitoring_proses', 'QCController@pengujian_monitoring_proses')->name('pengujian.monitoring_proses');
 Route::get('/pengujian/monitoring_proses/show/{bppb_id}', 'QCController@pengujian_monitoring_proses_show')->name('pengujian.monitoring_proses.show');
+Route::get('/pengujian/monitoring_proses/hasil/{id}', 'QCController@pengujian_monitoring_proses_hasil')->name('pengujian.monitoring_proses.hasil');
+Route::get('/pengujian/monitoring_proses/hasil/show/{id}', 'QCController@pengujian_monitoring_proses_hasil_show')->name('pengujian.monitoring_proses.hasil.show');
 Route::get('/pengujian/monitoring_proses/create/{bppb_id}', 'QCController@pengujian_monitoring_proses_create')->name('pengujian.monitoring_proses.create');
 Route::put('/pengujian/monitoring_proses/store/{bppb_id}', 'QCController@pengujian_monitoring_proses_store')->name('pengujian.monitoring_proses.store');
-Route::get('/pengujian/monitoring_proses/laporan/edit/{id}', 'QCController@pengujian_monitoring_proses_edit')->name('pengujian.monitoring_proses.edit');
-Route::put('/pengujian/monitoring_proses/laporan/update/{id}', 'QCController@pengujian_monitoring_proses_update')->name('pengujian.monitoring_proses.update');
+Route::get('/pengujian/monitoring_proses/laporan/create/{id}', 'QCController@pengujian_monitoring_proses_laporan_create')->name('pengujian.monitoring_proses.laporan.create');
+Route::put('/pengujian/monitoring_proses/laporan/store/{id}', 'QCController@pengujian_monitoring_proses_laporan_store')->name('pengujian.monitoring_proses.laporan.store');
+Route::get('/pengujian/monitoring_proses/laporan/edit/{id}', 'QCController@pengujian_monitoring_proses_laporan_edit')->name('pengujian.monitoring_proses.laporan.edit');
+Route::put('/pengujian/monitoring_proses/laporan/update/{id}', 'QCController@pengujian_monitoring_proses_laporan_update')->name('pengujian.monitoring_proses.laporan.update');
+Route::get('/pengujian/ik_pemeriksaan', 'QCController@pengujian_ik_pemeriksaan')->name('pengujian.ik_pemeriksaan');
+Route::get('/pengujian/ik_pemeriksaan/show', 'QCController@pengujian_ik_pemeriksaan_show')->name('pengujian.ik_pemeriksaan.show');
+Route::get('/pengujian/ik_pemeriksaan/create', 'QCController@pengujian_ik_pemeriksaan_create')->name('pengujian.ik_pemeriksaan.create');
+Route::post('/pengujian/ik_pemeriksaan/store', 'QCController@pengujian_ik_pemeriksaan_store')->name('pengujian.ik_pemeriksaan.store');
+Route::get('/pengujian/ik_pemeriksaan/detail', 'QCController@pengujian_ik_pemeriksaan_detail')->name('pengujian.ik_pemeriksaan.detail');
+Route::get('/pengujian/pemeriksaan_proses/{id}', 'QCController@pengujian_pemeriksaan_proses')->name('pengujian.pemeriksaan_proses');
+Route::get('/pengujian/pemeriksaan_proses/show/{id}', 'QCController@pengujian_pemeriksaan_proses_show')->name('pengujian.pemeriksaan_proses.show');
+Route::get('/pengujian/pemeriksaan_proses/create/{id}', 'QCController@pengujian_pemeriksaan_proses_create')->name('pengujian.pemeriksaan_proses.create');
+Route::put('/pengujian/pemeriksaan_proses/store/{id}', 'QCController@pengujian_pemeriksaan_proses_store')->name('pengujian.pemeriksaan_proses.store');
+
 
 //PENGEMASAN
 Route::group(['prefix' => '/pengemasan', 'middleware' => 'auth'], function () {
@@ -373,6 +388,7 @@ Route::group(['prefix' => '/pengemasan', 'middleware' => 'auth'], function () {
 
 // DOCUMENT CONTROL
 Route::group(['prefix' => 'dc', 'middleware' => 'auth'], function () {
+    Route::view('/dash', 'page.dokumen_spa.dashboard');
     Route::get('/', 'dc_controller\HomeController@index')->name('dc.dashboard');
     Route::resource('/documents', 'dc_controller\DocumentController');
     Route::get('/eng', 'dc_controller\DocumentController@eng');
@@ -401,3 +417,40 @@ Route::get('test_spa', 'EngController@index');
 Route::get('/chat', 'ChatController@index');
 Route::get('/message', 'ChatController@fetchMessages');
 Route::post('/message', 'ChatController@sendMessage');
+
+// users
+Route::resource('users', 'UsersController');
+// departments
+Route::resource('departments', 'DepartmentsController');
+// categories
+Route::resource('categories', 'CategoriesController');
+Route::delete('categoriesDeleteMulti', 'CategoriesController@deleteMulti');
+// documents
+Route::resource('documents', 'digidocu\DocumentsController');
+Route::get('documents/download/{id}', 'DocumentsController@download');
+Route::get('documents/open/{id}', 'DocumentsController@open');
+Route::get('mydocuments', 'DocumentsController@mydocuments');
+Route::get('/trash', 'DocumentsController@trash');
+Route::get('documents/restore/{id}', 'DocumentsController@restore');
+Route::delete('documentsDeleteMulti', 'DocumentsController@deleteMulti');
+// search
+Route::post('/search', 'DocumentsController@search');
+// sort
+Route::post('/sort', 'DocumentsController@sort');
+// shared
+Route::resource('shared', 'ShareController');
+// roles and permissions
+Route::resource('roles', 'RolesController');
+// profile
+Route::resource('profile', 'ProfileController');
+Route::patch('profile', 'ProfileController@changePassword');
+// registeration requests
+Route::resource('requests', 'RequestsController');
+// backup
+Route::get('backup', 'BackupController@index');
+Route::get('backup/create', 'BackupController@create');
+Route::get('backup/download', 'BackupController@download');
+Route::get('backup/delete', 'BackupController@delete');
+// log
+Route::get('logs', 'LogController@log');
+Route::get('logsdel', 'LogController@logdel');

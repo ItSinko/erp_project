@@ -77,4 +77,14 @@ class User extends Authenticatable
     {
         return ($this->id == 1) ? true : false;
     }
+
+    public function department()
+    {
+        return $this->belongsTo('App\digidocu\Department');
+    }
+
+    public function documents()
+    {
+        return $this->hasMany('App\digidocu\Document');
+    }
 }

@@ -11,7 +11,7 @@
     <div class="col-12 col-sm-6 col-md-2">
         <a href="{{ route('dc.dashboard') }}">
             <div class="info-box">
-                <span class="info-box-icon"><img src="{{asset(config('settings.system_logo'))}}" alt="Document Image" /></span>
+                <span class="info-box-icon"><img src="{{asset('logo.png')}}" alt="Document Image" /></span>
                 <div class="info-box-content">
                     <span class="info-box-text">Dokumen SPA</span>
                 </div>
