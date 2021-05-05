@@ -141,6 +141,7 @@
                                                         <th>No Seri</th>
                                                         <th>Barcode</th>
                                                         <th>Hasil Cek</th>
+                                                        <th>Permasalahan</th>
                                                         <th>Keterangan</th>
                                                         <th>Tindak Lanjut</th>
                                                         <th>Aksi</th>
@@ -179,7 +180,7 @@
                                                         </td>
                                                         <td>
                                                             <div class="row">
-                                                                <div class="col-sm-6">
+                                                                <div class="col-sm-12">
                                                                     <div class="form-group clearfix">
                                                                         <div class="icheck-success d-inline checked">
                                                                             <input type="radio" name="hasil[]" id="ok" class="hasil" value="ok" checked>
@@ -191,7 +192,7 @@
                                                                 </div>
                                                             </div>
                                                             <div class="row">
-                                                                <div class="col-sm-6">
+                                                                <div class="col-sm-12">
                                                                     <div class="form-group clearfix">
                                                                         <div class="icheck-danger d-inline">
                                                                             <input type="radio" name="hasil[]" id="nok" value="nok" class="hasil">
@@ -200,6 +201,24 @@
                                                                             </label>
                                                                         </div>
                                                                     </div>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="form-group">
+                                                                <div class="select2-info">
+                                                                    <select class="select2 form-control pemeriksaan  @error('pemeriksaan') is-invalid @enderror" multiple="multiple" name="pemeriksaan[]" id="pemeriksaan" data-placeholder="Standar yang tidak sesuai" data-dropdown-css-class="select2-info" disabled>
+                                                                        @foreach($p as $i)
+                                                                        <optgroup label="{{$i->hal_yang_diperiksa}}">
+                                                                            @foreach($i->HasilIkPemeriksaanPengujian as $j)
+                                                                            <option value="{{$j->id}}">{{$j->standar_keberterimaan}}</option>
+                                                                            @endforeach
+                                                                        </optgroup>
+                                                                        @endforeach
+                                                                    </select>
+                                                                    @if ($errors->has('pemeriksaan'))
+                                                                    <span class="invalid-feedback" role="alert">{{$errors->first('pemeriksaan')}}</span>
+                                                                    @endif
                                                                 </div>
                                                             </div>
                                                         </td>
@@ -278,9 +297,12 @@
                 $(el).find('.hasil').attr('name', 'hasil[' + j + ']');
                 $(el).find('.tindak_lanjut').attr('name', 'tindak_lanjut[' + j + ']');
                 $(el).find('.tindak_lanjut').attr('id', 'tindak_lanjut' + j);
+                $(el).find('.pemeriksaan').attr('name', 'pemeriksaan[' + j + '][]');
+                $(el).find('.pemeriksaan').attr('id', 'pemeriksaan' + j);
                 $(el).find('textarea[id="keterangan"]').attr('name', 'keterangan[' + j + ']');
                 $('.tindak_lanjut').select2();
                 $('.no_seri').select2();
+                $('.pemeriksaan').select2();
             });
         }
 
@@ -322,7 +344,7 @@
                 </td>
                 <td>
                     <div class="row">
-                        <div class="col-sm-6">
+                        <div class="col-sm-12">
                             <div class="form-group clearfix">
                                 <div class="icheck-success d-inline checked">
                                     <input type="radio" name="hasil[]" id="ok" class="hasil" value="ok" checked>
@@ -334,7 +356,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-6">
+                        <div class="col-sm-12">
                             <div class="form-group clearfix">
                                 <div class="icheck-danger d-inline">
                                     <input type="radio" name="hasil[]" id="nok" value="nok" class="hasil">
@@ -343,6 +365,24 @@
                                     </label>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group">
+                        <div class="select2-info">
+                            <select class="select2 form-control pemeriksaan @error('pemeriksaan') is-invalid @enderror" multiple="multiple" name="pemeriksaan[]" id="pemeriksaan" data-placeholder="Standar yang tidak sesuai" data-dropdown-css-class="select2-info" disabled>
+                                @foreach($p as $i)
+                                <optgroup label="{{$i->hal_yang_diperiksa}}">
+                                    @foreach($i->HasilIkPemeriksaanPengujian as $j)
+                                    <option value="{{$j->id}}">{{$j->standar_keberterimaan}}</option>
+                                    @endforeach
+                                </optgroup>
+                                @endforeach
+                            </select>
+                            @if ($errors->has('pemeriksaan'))
+                            <span class="invalid-feedback" role="alert">{{$errors->first('pemeriksaan')}}</span>
+                            @endif
                         </div>
                     </div>
                 </td>
@@ -381,6 +421,7 @@
             if (this.value == 'ok') {
                 // $('select').select2('val', '');
                 $(this).closest('tr').find('select.tindak_lanjut').val('').trigger('change');
+                $(this).closest('tr').find("select.pemeriksaan").attr('disabled', true);
                 $(this).closest('tr').find("select.tindak_lanjut option[value='pengemasan']").attr('disabled', false);
                 $(this).closest('tr').find("select.tindak_lanjut option[value='perbaikan']").attr('disabled', true);
                 $(this).closest('tr').find("select.tindak_lanjut option[value='produk_spesialis']").attr('disabled', true);
@@ -388,6 +429,7 @@
             } else if (this.value == 'nok') {
                 // $('select').select2('val', '');
                 $(this).closest('tr').find('select.tindak_lanjut').val('').trigger('change');
+                $(this).closest('tr').find("select.pemeriksaan").attr('disabled', false);
                 $(this).closest('tr').find("select.tindak_lanjut option[value='pengemasan']").attr('disabled', true);
                 $(this).closest('tr').find("select.tindak_lanjut option[value='perbaikan']").attr('disabled', false);
                 $(this).closest('tr').find("select.tindak_lanjut option[value='produk_spesialis']").attr('disabled', false);

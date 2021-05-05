@@ -12,4 +12,9 @@ class HasilIkPemeriksaanPengujian extends Model
     {
         return $this->belongsTo(IkPemeriksaanPengujian::class, 'ik_pemeriksaan_id');
     }
+
+    public function HasilMonitoringProses()
+    {
+        return $this->belongsToMany(HasilMonitoringProses::class, 'monitoring_proses_ik_pengujians', 'hasil_ik_id', 'monitoring_id')->withPivot('keterangan')->withTimestamps();
+    }
 }

@@ -18,4 +18,9 @@ class HasilMonitoringProses extends Model
     {
         return $this->belongsTo(HasilPerakitan::class);
     }
+
+    public function HasilIkPemeriksaanPengujian()
+    {
+        return $this->belongsToMany(HasilIkPemeriksaanPengujian::class, 'monitoring_proses_ik_pengujians', 'monitoring_id', 'hasil_ik_id')->withPivot('keterangan')->withTimestamps();
+    }
 }

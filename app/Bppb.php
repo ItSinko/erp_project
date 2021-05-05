@@ -7,6 +7,8 @@ use App\Perakitan;
 use App\Pengemasan;
 use App\DetailProduk;
 use App\Divisi;
+use App\HasilMonitoringProses;
+use App\HasilIkPemeriksaanPengujian;
 
 class Bppb extends Model
 {
@@ -56,5 +58,39 @@ class Bppb extends Model
         }
 
         return $count;
+    }
+
+    public function PemeriksaanProsesPengujian()
+    {
+        return $this->hasMany(PemeriksaanProsesPengujian::class);
+    }
+
+    public function MonitoringProses()
+    {
+        return $this->hasMany(MonitoringProses::class);
+    }
+
+    public function countPemeriksaanProses($id)
+    {
+        $c = 0;
+        $mp = $this->MonitoringProses;
+        foreach ($mp as $i) {
+            $s = HasilMonitoringProses::whereHas('HasilIkPemeriksaanPengujian', function ($q) use ($id) {
+                $q->where('id', $id);
+            })->where('monitoring_proses_id', $i->id)->count();
+            $c = $c + $s;
+        }
+        return $c;
+    }
+
+    public function countMonitoringProses()
+    {
+        $c = 0;
+        $mp = $this->MonitoringProses;
+        foreach ($mp as $i) {
+            $s = HasilMonitoringProses::where('monitoring_proses_id', $i->id)->distinct()->get('hasil_perakitan_id')->count();
+            $c = $c + $s;
+        }
+        return $c;
     }
 }
