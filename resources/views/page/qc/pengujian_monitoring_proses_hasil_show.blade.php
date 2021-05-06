@@ -2,6 +2,14 @@
 
 @section('title', 'Beta Version')
 
+@section('adminlte_css')
+<style>
+    .dt-body-left {
+        text-align: left;
+    }
+</style>
+@stop
+
 @section('content_header')
 <section class="content-header">
     <div class="container-fluid">
@@ -91,6 +99,7 @@
                                 <th>No Seri</th>
                                 <th>Barcode</th>
                                 <th>Hasil</th>
+                                <th>Pemeriksaan</th>
                                 <th>Tindak Lanjut</th>
                                 <th>Keterangan</th>
                                 <th>Aksi</th>
@@ -100,6 +109,21 @@
 
                         </tbody>
                     </table>
+
+                    <div class="modal fade" id="deletemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                        <div class="modal-dialog modal-md" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header" style="background-color:#cc0000;">
+                                    <h4 class="modal-title" id="myModalLabel" style="color:white;">Hapus Laporan</h4>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                </div>
+                                <div class="modal-body" id="delete">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -112,6 +136,32 @@
 @section('adminlte_js')
 <script>
     $(function() {
+        $(document).on('click', '.deletemodal', function(event) {
+            event.preventDefault();
+            var href = $(this).attr('data-attr');
+            $.ajax({
+                url: '/template_form_delete',
+                beforeSend: function() {
+                    $('#loader').show();
+                },
+                // return the result
+                success: function(result) {
+                    $('#deletemodal').modal("show");
+                    $('#delete').html(result).show();
+                    $("#deleteform").attr("action", href);
+                },
+                complete: function() {
+                    $('#loader').hide();
+                },
+                error: function(jqXHR, testStatus, error) {
+                    console.log(error);
+                    alert("Page " + href + " cannot open. Error:" + error);
+                    $('#loader').hide();
+                },
+                timeout: 8000
+            })
+        });
+
         $('#example').DataTable({
             processing: true,
             serverSide: true,
@@ -135,6 +185,12 @@
                     name: 'hasil'
                 },
                 {
+                    data: 'pemeriksaan',
+                    name: 'pemeriksaan',
+                    className: 'dt-body-left',
+                    orderable: false
+                },
+                {
                     data: 'tindak_lanjut',
                     name: 'tindak_lanjut'
                 },
@@ -144,7 +200,9 @@
                 },
                 {
                     data: 'aksi',
-                    name: 'aksi'
+                    name: 'aksi',
+                    orderable: false,
+                    searchable: false
                 },
             ]
         });

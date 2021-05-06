@@ -3,21 +3,14 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
-                    <h2>Pemeriksaan Proses</h2>
+                    <h2>Pemeriksaan Proses Rusak</h2>
                     <table id="detaildata" class="table table-hover styled-table-small table-striped table-item" style="width:100%;">
                         <thead style="text-align: center;">
-                            <!-- <tr>
-                                <th colspan="20">
-                                    <a href="{{route('peminjaman.karyawan.create')}}" style="color: white;"><button type="button" class="btn btn-block btn-success btn-sm" style="width: 200px;"><i class="fas fa-plus"></i> &nbsp; Tambah</i></button></a>
-                                </th>
-                            </tr> -->
                             <tr>
                                 <th>No</th>
                                 <th>Tanggal</th>
-                                <th>No Pemeriksaan</th>
-                                <th>Jumlah Produksi</th>
-                                <th>Jumlah Sampling</th>
-                                <th>Aksi</th>
+                                <th>Operator QC</th>
+                                <th>No Seri</th>
                             </tr>
                         </thead>
                         <tbody style="text-align: center;">

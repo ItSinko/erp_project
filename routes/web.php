@@ -34,6 +34,7 @@ Route::post('/logout', function () {
 //COMMON
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/form-template', 'ItController@form_template')->name('form-template');
+    Route::get('/template_form_delete', 'ItController@template_form_delete')->name('template-form-delete');
 });
 
 
@@ -340,6 +341,11 @@ Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {
         Route::group(['prefix' => '/hasil'], function () {
             Route::get('/{id}', 'QCController@pengujian_monitoring_proses_hasil')->name('pengujian.monitoring_proses.hasil');
             Route::get('/show/{id}', 'QCController@pengujian_monitoring_proses_hasil_show')->name('pengujian.monitoring_proses.hasil.show');
+            Route::get('/create/{id}', 'QCController@pengujian_monitoring_proses_hasil_create')->name('pengujian.monitoring_proses.hasil.create');
+            Route::put('/store/{id}', 'QCController@pengujian_monitoring_proses_hasil_store')->name('pengujian.monitoring_proses.hasil.store');
+            Route::get('/edit/{id}', 'QCController@pengujian_monitoring_proses_hasil_edit')->name('pengujian.monitoring_proses.hasil.edit');
+            Route::put('/update/{id}', 'QCController@pengujian_monitoring_proses_hasil_update')->name('pengujian.monitoring_proses.hasil.update');
+            Route::delete('/delete/{id}', 'QCController@pengujian_monitoring_proses_hasil_delete')->name('pengujian.monitoring_proses.hasil.delete');
         });
 
         Route::group(['prefix' => '/laporan'], function () {
@@ -366,7 +372,8 @@ Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {
         Route::get('/hasil/{id}', 'QCController@pengujian_pemeriksaan_proses_hasil')->name('pengujian.pemeriksaan_proses.hasil');
         Route::get('/create/{id}', 'QCController@pengujian_pemeriksaan_proses_create')->name('pengujian.pemeriksaan_proses.create');
         Route::put('/store/{id}', 'QCController@pengujian_pemeriksaan_proses_store')->name('pengujian.pemeriksaan_proses.store');
-        Route::get('/not_ok/{bppb_id}/{ik_pengujian_id}', 'QCController@pengujian_pemeriksaan_proses_not_ok')->name('pengujian.pemeriksaan_proses.not_ok');
+        Route::get('/not_ok', 'QCController@pengujian_pemeriksaan_proses_not_ok')->name('pengujian.pemeriksaan_proses.not_ok');
+        Route::get('/not_ok/show/{bppb_id}/{ik_pengujian_id}', 'QCController@pengujian_pemeriksaan_proses_not_ok_show')->name('pengujian.pemeriksaan_proses.not_ok.show');
     });
 });
 
