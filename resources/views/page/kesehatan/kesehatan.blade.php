@@ -40,12 +40,102 @@
     </div>
   </div>
 </div>
-
 <!-- Modal Detail -->
-<div class="modal fade  bd-example-modal-lg" id="detail_mod" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade  bd-example-modal-lg" id="berat_mod" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog modal-lg" role="document">
     <div class="card-body">
-      <canvas id="berat_chart"></canvas>
+      <form method="post" action="/kesehatan_harian_mingguan_tensi/aksi_ubah">
+        {{ csrf_field() }}
+        {{ method_field('PUT')}}
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel">
+              <div class="data_detail_head"></div>
+            </h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          </div>
+          <div class="modal-body">
+            <div class="data_detail">
+              <table style="text-align: center;" class="table table-hover styled-table table-striped" width="100%" id="tabel_detail">
+                <h6>Pengecekan terakhir</h6>
+                <thead>
+                  <tr>
+                    <th>Tgl Pengecekan</th>
+                    <th>Tinggi</th>
+                    <th>Berat</th>
+                    <th>BMI</th>
+                    <th>Catatan</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      1 Januari 2021
+                    <td>
+                      100 cm
+                    </td>
+                    <td>
+                      25 Kg
+                    </td>
+                    <td>
+                      22.3
+                    </td>
+                    <td>
+                      Makan Terus
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <table style="text-align: center;" class="table table-hover styled-table table-striped" width="100%" id="tabel_detail">
+                <h6>Update pengecekan</h6>
+                <thead>
+                  <tr>
+                    <th>Tgl Pengecekan</th>
+                    <th>Tinggi</th>
+                    <th>Berat</th>
+                    <th>BMI</th>
+                    <th>Catatan</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <input type="date" class="form-control" id="tgl">
+                    </td>
+                    <td>
+                      <div class="input-group mb-3">
+                        <input type="text" class="form-control d-none" name="id" id="id">
+                        <input type="text" class="form-control" name="tinggi" id="tinggi">
+                        <div class="input-group-append">
+                          <span class="input-group-text">Cm</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="input-group mb-3">
+                        <input type="text" class="form-control" name="berat" id="berat">
+                        <div class="input-group-append">
+                          <span class="input-group-text">Kg</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <input type="text" class="form-control" readonly id="bmi">
+                      <small id="status_bmi" class="form-text text-muted"></small>
+                    </td>
+                    <td>
+                      <textarea type="text" class="form-control" name="catatan" id="catatan"></textarea>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-success rounded-pill" id="button_tambah" onclick="return confirm('Data akan di ubah ?');"><i class="fas fa-plus"></i>&nbsp;Update Data</button>
+          </div>
+        </div>
+      </form>
     </div>
   </div>
 </div>
@@ -110,23 +200,16 @@
     });
 
 
-
-
-    $('#tabel > tbody').on('click', '#edit', function() {
+    $('#tabel > tbody').on('click', '#berat', function() {
       var rows = tabel.rows($(this).parents('tr')).data();
       $('.data_detail_head').html(
         rows[0]['karyawan']['nama']
       );
-      $('input[id="id"]').val(rows[0]['id']);
-      $('input[id="tgl"]').val(rows[0]['tgl_cek']);
-      $('input[id="suhu_pagi"]').val(rows[0]['suhu_pagi']);
-      $('input[id="suhu_siang"]').val(rows[0]['suhu_siang']);
-      $('input[id="spo2"]').val(rows[0]['spo2']);
-      $('input[id="pr"]').val(rows[0]['pr']);
+      $('#berat_mod').modal('show');
+    })
+
+    $('#tabel > tbody').on('click', '#edit', function() {
       $('#detail_mod').modal('show');
-      $('#tambah_mod').on('hidden.bs.modal', function() {
-        $('#tambah_mod form')[0].reset();
-      });
     })
   });
 </script>
