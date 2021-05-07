@@ -187,7 +187,6 @@
                 {
                     data: 'pemeriksaan',
                     name: 'pemeriksaan',
-                    className: 'dt-body-left',
                     orderable: false
                 },
                 {

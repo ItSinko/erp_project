@@ -761,19 +761,38 @@ class QCController extends Controller
                 return $b;
             })
             ->addColumn('pemeriksaan', function ($s) {
-                $btn = "<small><ol>";
-                foreach ($s->HasilIkPemeriksaanPengujian as $i) {
-                    $btn .= "<li>" . $i->standar_keberterimaan . "</li>";
+                $btn = "";
+                if (count($s->HasilIkPemeriksaanPengujian) <=  0) {
+                    $btn .= '<i class="fas fa-check-circle" style="color:green;"></i>&nbsp;<small>Lolos</small>';
+                } else if (count($s->HasilIkPemeriksaanPengujian) > 0) {
+                    $btn = "<small><ol>";
+                    foreach ($s->HasilIkPemeriksaanPengujian as $i) {
+                        $btn .= "<li>" . $i->standar_keberterimaan . "</li>";
+                    }
+                    $btn .= "</ol></small>";
                 }
-                $btn .= "</ol></small>";
                 return $btn;
+            })
+            ->editColumn('keterangan', function ($s) {
+                if (empty($s->keterangan)) {
+                    return '<small class="text-muted">Tidak Ada</small>';
+                } else {
+                    return $s->keterangan;
+                }
             })
             ->addColumn('aksi', function ($s) {
-                $btn = '<a href = "/pengujian/monitoring_proses/hasil/edit/' . $s->id . '"><button class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-pencil-alt"></i></button></a>
+                $btn = "";
+                if ($s->status == "acc_perbaikan" || $s->status == "acc_analisa_perbaikan") {
+                    $btn = '<a href = "/pengujian/monitoring_proses/hasil/edit/' . $s->id . '"><button class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-pencil-alt"></i></button></a>
                 <a class="deletemodal" data-toggle="modal" data-target="#deletemodal" data-attr="/pengujian/monitoring_proses/hasil/delete/' . $s->id . '"><button class="btn btn-danger btn-sm m-1" style="border-radius:50%;"><i class="fas fa-trash"></i></button></a>';
+                } else if ($s->status == "req_perbaikan") {
+                    $btn = '<a class="deletemodal" data-toggle="modal" data-target="#deletemodal" data-attr="/pengujian/monitoring_proses/hasil/delete/' . $s->id . '"><button class="btn btn-danger btn-sm m-1" style="border-radius:50%;"><i class="fas fa-trash"></i></button></a>';
+                } else if ($s->status == "pengemasan") {
+                    $btn = '<i class="fas fa-check-circle" style="color:green;"></i>';
+                }
                 return $btn;
             })
-            ->rawColumns(['no_barcode', 'hasil', 'tindak_lanjut', 'pemeriksaan', 'aksi'])
+            ->rawColumns(['no_barcode', 'hasil', 'tindak_lanjut', 'pemeriksaan', 'aksi', 'keterangan'])
             ->make(true);
     }
 
@@ -837,6 +856,7 @@ class QCController extends Controller
         if ($v->fails()) {
             return redirect()->back()->withErrors($v);
         } else {
+
             $c = MonitoringProses::create([
                 'bppb_id' => $bppb_id,
                 'tanggal' => $request->tanggal_laporan,
@@ -849,14 +869,22 @@ class QCController extends Controller
                 if (!empty($request->no_seri)) {
                     $bool = true;
                     for ($i = 0; $i < count($request->no_seri); $i++) {
-
+                        $status = "";
+                        if ($request->tindak_lanjut[$i] == "perbaikan") {
+                            $status = "req_perbaikan";
+                        } else if ($request->tindak_lanjut[$i] == "produk_spesialis") {
+                            $status = "req_analisa_perbaikan";
+                        } else if ($request->tindak_lanjut[$i] == "pengemasan") {
+                            $status = "pengemasan";
+                        }
                         $cs = HasilMonitoringProses::create([
                             'monitoring_proses_id' => $c->id,
                             'hasil_perakitan_id' => $request->no_seri[$i],
                             'no_barcode' => $request->no_barcode[$i],
                             'hasil' => $request->hasil[$i],
                             'keterangan' => $request->keterangan[$i],
-                            'tindak_lanjut' => $request->tindak_lanjut[$i]
+                            'tindak_lanjut' => $request->tindak_lanjut[$i],
+                            'status' => $status
                         ]);
 
                         if ($cs) {
@@ -1371,7 +1399,7 @@ class QCController extends Controller
 
     public function pengujian_ik_pemeriksaan_create()
     {
-        $dp = DetailProduk::all();
+        $dp = DetailProduk::doesntHave('IkPemeriksaanPengujian')->get();
         return view('page.qc.pengujian_ik_pemeriksaan_create', ['dp' => $dp]);
     }
 

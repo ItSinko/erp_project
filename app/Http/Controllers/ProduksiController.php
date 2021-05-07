@@ -15,6 +15,7 @@ use App\User;
 use App\Bppb;
 use App\Produk;
 use App\Divisi;
+use App\HasilMonitoringProses;
 use App\Perakitan;
 use App\HasilPerakitan;
 use App\HasilPerakitanKaryawan;
@@ -25,7 +26,7 @@ use Carbon\Carbon;
 
 use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\UserLogController;
-
+use App\MonitoringProses;
 
 class ProduksiController extends Controller
 {
@@ -806,6 +807,127 @@ class ProduksiController extends Controller
         $hp->delete();
 
         return redirect()->back();
+    }
+
+    public function pengujian_perbaikan()
+    {
+        return view('page.produksi.pengujian_perbaikan_show');
+    }
+
+    public function pengujian_perbaikan_show()
+    {
+        $s = Bppb::with('MonitoringProses')->whereHas('MonitoringProses.HasilMonitoringProses', function ($q) {
+            $q->where('hasil', 'nok');
+        })->get();
+
+        return DataTables::of($s)
+            ->addIndexColumn()
+            ->addColumn('gambar', function ($s) {
+                $gambar = '<img class="product-img-small img-fluid"';
+                if (empty($s->DetailProduk->foto)) {
+                    $gambar .= 'src="{{url(\'assets/image/produk\')}}/noimage.png"';
+                } else if (!empty($s->DetailProduk->foto)) {
+                    $gambar .= 'src="{{asset(\'image/produk/\')}}/' . $s->DetailProduk->foto . '"';
+                }
+                $gambar .= 'title="' . $s->DetailProduk->nama . '">';
+                return $gambar;
+            })
+            ->addColumn('produk', function ($s) {
+                $btn = '<hgroup><h6 class="heading">' . $s->DetailProduk->nama . '</h6><div class="subheading text-muted">' . $s->DetailProduk->Produk->KelompokProduk->nama . '</div></hgroup>';
+                return $btn;
+            })
+            ->editColumn('jumlah', function ($s) {
+                $bppb_id = $s->id;
+                $count = HasilPerakitan::whereHas('Perakitan', function ($q) use ($bppb_id) {
+                    $q->where('bppb_id', $bppb_id);
+                })->whereDoesntHave('HasilMonitoringProses', function ($q) {
+                    $q->where('hasil', 'ok');
+                })->whereIn('status', ['acc_pemeriksaan_tertutup'])->count();
+                $btn = '<hgroup>
+                        <h6 class="heading">' . $s->jumlah . " " . $s->DetailProduk->satuan . '</h6>
+                        <div class="subheading"><small class="purple-text">Produksi saat ini: ' . $s->countHasilPerakitan() . ' ' . $s->DetailProduk->satuan . '</small></div>
+                        <div class="subheading"><small class="info-text">Dapat Diuji: ' . $count . ' ' . $s->DetailProduk->satuan . '</small></div>
+                        </hgroup>';
+                return $btn;
+            })
+            ->addColumn('aksi', function ($s) {
+                $btn = '<a href="/pengujian/perbaikan/bppb/' . $s->id . '"><button type="button" class="btn btn-sm btn-info m-1" style="border-radius:50%;"><i class="fas fa-search"></i></button></a>';
+                return $btn;
+            })
+            ->rawColumns(['gambar', 'produk', 'jumlah', 'aksi'])
+            ->make(true);
+    }
+
+    public function pengujian_perbaikan_bppb($id)
+    {
+        $b = Bppb::find($id);
+        return view('page.produksi.pengujian_perbaikan_bppb_show', ['id' => $id, 'b' => $b]);
+    }
+
+    public function pengujian_perbaikan_bppb_show($id)
+    {
+        $s = HasilMonitoringProses::whereHas('MonitoringProses', function ($q) use ($id) {
+            $q->where('bppb_id', $id);
+        })->where([['hasil', '=', 'nok'], ['tindak_lanjut', '=', 'perbaikan']])->get();
+
+        return DataTables::of($s)
+            ->addIndexColumn()
+            ->editColumn('hasil_perakitan_id', function ($s) {
+                $res = $s->HasilPerakitan->no_seri;
+                return $res;
+            })
+            ->editColumn('hasil', function ($s) {
+                $res = '<i class="fas fa-times-circle" style="color:red;"></i>';
+                return $res;
+            })
+            ->addColumn('karyawan', function ($s) {
+                $res = $s->MonitoringProses->Karyawan->nama;
+                return $res;
+            })
+            ->addColumn('pemeriksaan', function ($s) {
+                $res = "<small><ol>";
+                foreach ($s->HasilIkPemeriksaanPengujian as $i) {
+                    $res .= "<li>" . $i->standar_keberterimaan . "</li>";
+                }
+                $res .= "</ol></small>";
+                return $res;
+            })
+            ->addColumn('perbaikan', function ($s) {
+                $res = "";
+                if ($s->tindak_lanjut == "perbaikan") {
+                    if ($s->status == "req_perbaikan") {
+                        $res .= '<a href="/pengujian/perbaikan/status/' . $s->id . '/perbaikan_pengujian">
+                            <button type="button" class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-wrench"></i></button>
+                            <div><small>Perbaikan</small></div></a>';
+                    } else if ($s->status == "acc_perbaikan") {
+                        $res .= '<small class="info-text">Pengujian</small>';
+                    }
+                }
+                return $res;
+            })
+            ->rawColumns(['hasil', 'perbaikan', 'pemeriksaan'])
+            ->make(true);
+    }
+
+    public function pengujian_perbaikan_status($id, $status)
+    {
+        $u = HasilMonitoringProses::find($id);
+        if ($status == "perbaikan_pengujian") {
+            $u->status = "acc_perbaikan";
+            $u->save();
+
+            $c = HistoriHasilPerakitan::create([
+                "hasil_perakitan_id" => $u->hasil_perakitan_id,
+                "kegiatan" => $status,
+                "tanggal" => Carbon::now()->toDateString(),
+                "hasil" => "ok",
+                "keterangan" => "",
+                "tindak_lanjut" => "ok"
+            ]);
+            if ($c) {
+                return redirect()->back();
+            }
+        }
     }
 
     public function pengemasan()

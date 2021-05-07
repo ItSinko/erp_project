@@ -462,7 +462,7 @@ return [
         [
             'text'    => 'Pengujian',
             'icon'    => 'fab fa-searchengin',
-            'auth' => [23],
+            'auth' => [17, 23],
             'submenu' => [
                 [
                     'icon' => 'far fa-circle',
@@ -475,6 +475,12 @@ return [
                     'text' => 'IK Pemeriksaan',
                     'url'  => '/pengujian/ik_pemeriksaan',
                     'auth' => [23],
+                ],
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Laporan',
+                    'url'  => '/pengujian/perbaikan',
+                    'auth' => [17],
                 ],
             ],
         ],

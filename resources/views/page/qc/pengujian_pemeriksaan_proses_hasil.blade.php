@@ -36,6 +36,13 @@
                         </div>
 
                         <div class="row">
+                            <label for="no_seri" class="col-sm-6 col-form-label">Tanggal BPPB</label>
+                            <div class="col-sm-6 col-form-label" style="text-align:right;">
+                                {{date('d-m-y',strtotime($s->tanggal_bppb))}}
+                            </div>
+                        </div>
+
+                        <div class="row">
                             <label for="no_seri" class="col-sm-4 col-form-label">Produk</label>
                             <div class="col-sm-8 col-form-label" style="text-align:right;">
                                 {{$s->DetailProduk->nama}}
@@ -43,9 +50,16 @@
                         </div>
 
                         <div class="row">
-                            <label for="tanggal" class="col-sm-6 col-form-label text-muted">Ubah Pemeriksaan</label>
-                            <div class="col-sm-6 col-form-label" style="text-align:right;">
-                                <a href="{{ route('pengujian.monitoring_proses.laporan.edit', ['id' => $id]) }}"><button class="btn btn-warning rounded-pill"><i class="fas fa-edit"></i>&nbsp;Edit</button></a>
+                            <label for="no_seri" class="col-sm-5 col-form-label">Kelompok Produk</label>
+                            <div class="col-sm-7 col-form-label" style="text-align:right;">
+                                {{$s->DetailProduk->Produk->KelompokProduk->nama}}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <label for="no_seri" class="col-sm-5 col-form-label">Kategori Produk</label>
+                            <div class="col-sm-7 col-form-label" style="text-align:right;">
+                                {{$s->DetailProduk->Produk->KategoriProduk->nama}}
                             </div>
                         </div>
                     </div>

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CommonController;
 use App\Http\Controllers\GetController;
+use App\Http\Controllers\QCController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -331,6 +332,11 @@ Route::group(['prefix' => '/perakitan', 'middleware' => 'auth'], function () {
 Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {
     Route::get('/', 'QCController@pengujian')->name('pengujian');
     Route::get('/show', 'QCController@pengujian_show')->name('pengujian.show');
+    Route::get('/perbaikan', 'ProduksiController@pengujian_perbaikan')->name('pengujian.perbaikan');
+    Route::get('/perbaikan/show', 'ProduksiController@pengujian_perbaikan_show')->name('pengujian.perbaikan.show');
+    Route::get('/perbaikan/bppb/{id}', 'ProduksiController@pengujian_perbaikan_bppb')->name('pengujian.perbaikan.bppb');
+    Route::get('/perbaikan/bppb/show/{id}', 'ProduksiController@pengujian_perbaikan_bppb_show')->name('pengujian.perbaikan.bppb.show');
+    Route::get('/perbaikan/status/{id}/{status}', 'ProduksiController@pengujian_perbaikan_status')->name('pengujian.perbaikan.status');
 
     Route::group(['prefix' => '/monitoring_proses'], function () {
         Route::get('/', 'QCController@pengujian_monitoring_proses')->name('pengujian.monitoring_proses');
@@ -360,6 +366,7 @@ Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {
         Route::get('/', 'QCController@pengujian_ik_pemeriksaan')->name('pengujian.ik_pemeriksaan');
         Route::get('/show', 'QCController@pengujian_ik_pemeriksaan_show')->name('pengujian.ik_pemeriksaan.show');
         Route::get('/create', 'QCController@pengujian_ik_pemeriksaan_create')->name('pengujian.ik_pemeriksaan.create');
+        Route::get('/get_detail_produk_by_id/{id}', 'GetController@get_detail_produk_by_id');
         Route::post('/store', 'QCController@pengujian_ik_pemeriksaan_store')->name('pengujian.ik_pemeriksaan.store');
         Route::get('/detail/{id}', 'QCController@pengujian_ik_pemeriksaan_detail')->name('pengujian.ik_pemeriksaan.detail');
         Route::get('/hasil/edit/{id}', 'QCController@pengujian_ik_pemeriksaan_hasil_edit')->name('pengujian.ik_pemeriksaan.hasil.edit');

@@ -31,22 +31,22 @@
                         <h3>Info</h3>
                         <div class="form-horizontal">
                             <div class="row">
-                                <label for="no_bppb" class="col-sm-4 col-form-label" style="text-align:left;">No BPPB</label>
+                                <label for="no_bppb" class="col-sm-4 col-form-label text-muted" style="text-align:left;">No BPPB</label>
                                 <label class="col-sm-8 col-form-label" style="text-align:right;">{{$b->Bppb->no_bppb}}<label>
                             </div>
 
-                            <div class="form-group row">
-                                <label for="nama_produk" class="col-sm-4 col-form-label" style="text-align:right;">Nama Produk</label>
+                            <div class="row">
+                                <label for="nama_produk" class="col-sm-4 col-form-label text-muted" style="text-align:left;">Nama Produk</label>
                                 <label class="col-sm-8 col-form-label" style="text-align:right;">{{$b->Bppb->DetailProduk->nama}}<label>
                             </div>
 
-                            <div class="form-group row">
-                                <label for="jumlah" class="col-sm-4 col-form-label" style="text-align:right;">Jumlah Rencana Produksi</label>
-                                <label class="col-sm-8 col-form-label" style="text-align:right;">{{$b->Bppb->jumlah}}<label>
+                            <div class="row">
+                                <label for="jumlah" class="col-sm-8 col-form-label text-muted" style="text-align:left;">Jumlah Rencana Produksi</label>
+                                <label class="col-sm-4 col-form-label" style="text-align:right;">{{$b->Bppb->jumlah}} {{$b->Bppb->DetailProduk->satuan}}<label>
                             </div>
 
-                            <div class="form-group row">
-                                <label for="karyawan" class="col-sm-4 col-form-label" style="text-align:right;">Operator QC</label>
+                            <div class="row">
+                                <label for="karyawan" class="col-sm-4 col-form-label text-muted" style="text-align:left;">Operator QC</label>
                                 <label class="col-sm-8 col-form-label" style="text-align:right;">{{$b->Karyawan->nama}}<label>
                             </div>
                         </div>

@@ -183,7 +183,7 @@
                                                     <select class="select2 custom-select form-control tindak_lanjut  @error('tindak_lanjut') is-invalid @enderror " name="tindak_lanjut" id="tindak_lanjut" data-placeholder="Pilih Tindak Lanjut" data-dropdown-css-class="select2-info">
                                                         <option value="pengemasan" @if($s->tindak_lanjut == "pengemasan") checked @endif @if($s->hasil == "nok") disabled @endif>Pengemasan</option>
                                                         <option value="perbaikan" @if($s->tindak_lanjut == "perbaikan") checked @endif @if($s->hasil == "ok") disabled @endif>Perbaikan</option>
-                                                        <option value="produk_spesialis" @if($s->tindak_lanjut == "produk_spesialis") checked @endif @if($s->hasil == "ok") disabled @elseif($s->hasil == "nok" && $s->countStatus('perabaikan_pengujian') < 1) disabled @endif>Produk Spesialis</option>
+                                                        <option value="produk_spesialis" @if($s->tindak_lanjut == "produk_spesialis") checked @endif @if($s->hasil == "ok") disabled @elseif($s->hasil == "nok" && $s->countStatus('perbaikan_pengujian') < 1) disabled @endif>Produk Spesialis</option>
                                                     </select>
                                                     @if ($errors->has('pemeriksaan'))
                                                     <span class="invalid-feedback" role="alert">{{$errors->first('pemeriksaan')}}</span>
