@@ -52,6 +52,14 @@ class Karyawan extends Model
     {
         return $this->belongsTo('App\Divisi');
     }
+    public function kesehatan_mingguan_rapid()
+    {
+        return $this->hasMany('App\kesehatan_mingguan_rapid');
+    }
+    public function kesehatan_mingguan_tensi()
+    {
+        return $this->hasMany('App\kesehatan_mingguan_tensi');
+    }
     // public function DetailPeminjamanKaryawan()
     // {
     //     return $this->hasMany(DetailPeminjamanKaryawan::class);

@@ -135,7 +135,7 @@
                                     $('#date' + value['id'] + '').val($(this).val());
                                 });
                                 $('#tabel').append(`<tr> <td>` + no + `</td>
-                                <td><input id="date` + value[`id`] + `" type="date" class="form-control" readonly></td>
+                                <td><input id="date` + value[`id`] + `" type="date" class="form-control" name="tgl" readonly></td>
                                                          <td>` + value[`nama`] + `</td>
                                                          <td>    
                                                          <div class="input-group mb-3">

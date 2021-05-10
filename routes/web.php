@@ -55,8 +55,8 @@ Route::post('/kesehatan/aksi_tambah', 'KesehatanController@kesehatan_aksi_tambah
 Route::get('/kesehatan/ubah/{id}', 'KesehatanController@kesehatan_ubah');
 /* Get Data */
 Route::get('/kesehatan/data', 'KesehatanController@kesehatan_data');
+Route::get('/kesehatan/data/{karyawan_id}', 'KesehatanController@kesehatan_data_detail');
 Route::get('/kesehatan/detail', 'KesehatanController@kesehatan_detail');
-
 
 //Kesehatan Harian
 /* Tabel */
@@ -72,6 +72,25 @@ Route::get('/kesehatan_harian/data/karyawan/{id}', 'KesehatanController@kesehata
 Route::get('/kesehatan_harian/tambah/data/{id}', 'KesehatanController@kesehatan_harian_tambah_data');
 Route::get('/kesehatan_harian/detail/{id}', 'KesehatanController@kesehatan_harian_detail_data');
 
+//Kesehatan Mingguan
+Route::get('/kesehatan_mingguan', 'KesehatanController@kesehatan_mingguan');
+/* Tambah */
+Route::get('/kesehatan_mingguan/tambah', 'KesehatanController@kesehatan_mingguan_tambah');
+Route::post('/kesehatan_mingguan_tensi/aksi_tambah', 'KesehatanController@kesehatan_mingguan_tensi_aksi_tambah');
+Route::put('/kesehatan_mingguan_tensi/aksi_ubah', 'KesehatanController@kesehatan_mingguan_tensi_aksi_ubah');
+Route::put('/kesehatan_mingguan_rapid/aksi_ubah', 'KesehatanController@kesehatan_mingguan_rapid_aksi_ubah');
+Route::post('/kesehatan_mingguan_rapid/aksi_tambah', 'KesehatanController@kesehatan_mingguan_rapid_aksi_tambah');
+/* Get Data */
+Route::get('/kesehatan_mingguan_tensi/data', 'KesehatanController@kesehatan_mingguan_tensi_data');
+Route::get('/kesehatan_mingguan_rapid/data', 'KesehatanController@kesehatan_mingguan_rapid_data');
+/* Get Detail */
+Route::get('/kesehatan_mingguan/detail', 'KesehatanController@kesehatan_mingguan_detail');
+Route::get('/kesehatan_mingguan_tensi/detail/{karyawan_id}', 'KesehatanController@kesehatan_mingguan_tensi_detail_data');
+Route::get('/kesehatan_mingguan_rapid/detail/{karyawan_id}', 'KesehatanController@kesehatan_mingguan_rapid_detail_data');
+Route::get('/kesehatan_mingguan_tensi/detail/data/{karyawan_id}', 'KesehatanController@kesehatan_mingguan_tensi_detail_data_karyawan');
+
+//Kesehatan Bulanan
+Route::get('/kesehatan_bulanan', 'KesehatanController@kesehatan_bulanan');
 
 //JASA EKSPEDISI
 Route::group(['prefix' => '/jasa_eks', 'middleware' => 'auth'], function () {

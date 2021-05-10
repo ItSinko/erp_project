@@ -370,7 +370,6 @@
                 var value2 = parseFloat($('#tinggi').val()) || 0;
                 var sum = value1 / ((value2 / 100) * (value2 / 100))
                 $('#bmi').val(sum.toFixed(2));
-
                 if (sum >= 30) {
                     $('#status_bmi').text('Kegemukan (Obesitas)');
                 } else if (sum >= 25 || sum >= 29.9) {

@@ -7,6 +7,8 @@ use App\Divisi;
 use App\Karyawan;
 use App\Kesehatan_awal;
 use App\Kesehatan_harian;
+use App\kesehatan_mingguan_rapid;
+use App\kesehatan_mingguan_tensi;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -19,6 +21,12 @@ class KesehatanController extends Controller
     public function kesehatan()
     {
         return view('page.kesehatan.kesehatan');
+    }
+    public function kesehatan_data_detail($karyawan_id)
+    {
+        $data = Kesehatan_awal::with('karyawan')
+            ->where('karyawan_id', $karyawan_id)->get();
+        echo json_encode($data);
     }
     public function kesehatan_detail()
     {
@@ -34,7 +42,8 @@ class KesehatanController extends Controller
                 return $data->karyawan->divisi->nama;
             })
             ->addColumn('berat_kg', function ($data) {
-                return $data->berat . ' Kg';
+                $btn = '<br><div class="inline-flex"><button type="button" id="berat"  data-id="' . $data->id . '" class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;"><i class="fa fa-edit" aria-hidden="true"></i></button></div>';
+                return $data->berat . ' Kg' . $btn;
             })
             ->addColumn('tinggi_cm', function ($data) {
                 return $data->tinggi . ' Cm';
@@ -48,7 +57,8 @@ class KesehatanController extends Controller
                 $btn = $btn . ' <button type="button" class="btn btn-block btn-danger karyawan-img-small" style="border-radius:50%;" data-toggle="modal" data-target="#delete" ><i class="fas fa-trash"></i></button></div>';
                 return $btn;
             })
-            ->rawColumns(['button'])
+            ->rawColumns(['button', 'berat_kg'])
+
             ->make(true);
     }
     public function kesehatan_tambah()
@@ -252,6 +262,196 @@ class KesehatanController extends Controller
         $kesehatan_harian->save();
 
         if ($kesehatan_harian) {
+            return redirect()->back()->with('success', 'Berhasil menambahkan data');
+        } else {
+            return redirect()->back()->with('error', 'Gagal menambahkan data');
+        }
+    }
+    public function kesehatan_mingguan()
+    {
+        return view('page.kesehatan.kesehatan_mingguan');
+    }
+    public function kesehatan_mingguan_tambah()
+    {
+        $divisi = Divisi::all();
+        return view('page.kesehatan.kesehatan_mingguan_tambah', ['divisi' => $divisi]);
+    }
+    public function kesehatan_mingguan_tensi_aksi_tambah(Request $request)
+    {
+        $this->validate(
+            $request,
+            [
+                'divisi' => 'required',
+                'tgl_cek' => 'required',
+            ],
+            [
+                'divisi.required' => 'Divisi harus di pilih',
+                'tgl_cek.required' => 'Tanggal pengecekan harus dipilih',
+            ]
+        );
+
+        for ($i = 0; $i < count($request->karyawan_id); $i++) {
+            $kesehatan_mingguan_tensi = kesehatan_mingguan_tensi::create([
+                'karyawan_id' => $request->karyawan_id[$i],
+                'tgl_cek' => $request->tgl_cek,
+                'sistolik' => $request->sistolik[$i],
+                'diastolik' => $request->diastolik[$i],
+                'keterangan' => $request->keterangan[$i]
+            ]);
+        }
+
+        if ($kesehatan_mingguan_tensi) {
+            return redirect()->back()->with('success', 'Berhasil menambahkan data');
+        } else {
+            return redirect()->back()->with('error', 'Gagal menambahkan data');
+        }
+    }
+    public function kesehatan_mingguan_rapid_aksi_tambah(Request $request)
+    {
+        $this->validate(
+            $request,
+            [
+                'divisi' => 'required',
+                'tgl_cek' => 'required',
+            ],
+            [
+                'divisi.required' => 'Divisi harus di pilih',
+                'tgl_cek.required' => 'Tanggal pengecekan harus dipilih',
+            ]
+        );
+        for ($i = 0; $i < count($request->karyawan_id); $i++) {
+            $kesehatan_mingguan_rapid = kesehatan_mingguan_rapid::create([
+                'karyawan_id' => $request->karyawan_id[$i],
+                'tgl_cek' => $request->tgl_cek,
+                'hasil' => $request->hasil[$i],
+                'keterangan' => $request->keterangan[$i]
+            ]);
+        }
+
+        if ($kesehatan_mingguan_rapid) {
+            return redirect()->back()->with('success', 'Berhasil menambahkan data');
+        } else {
+            return redirect()->back()->with('error', 'Gagal menambahkan data');
+        }
+    }
+
+
+    public function kesehatan_mingguan_tensi_data()
+    {
+        $data = kesehatan_mingguan_tensi::with('karyawan')
+            ->orderBy('tgl_cek', 'DESC');
+
+        return datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('x', function ($data) {
+                return $data->karyawan->divisi->nama;
+            })
+            ->addColumn('sis', function ($data) {
+                return $data->sistolik . ' mmHg';
+            })
+            ->addColumn('dias', function ($data) {
+                return $data->diastolik . ' mmHg';
+            })
+            ->addColumn('button', function ($data) {
+
+                $btn = '<div class="inline-flex"><button type="button" id="edit_tensi" class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-edit"></i></button></div>';
+                $btn = $btn . ' <div class="inline-flex"><button type="button" class="btn btn-block btn-danger karyawan-img-small" style="border-radius:50%;" data-toggle="modal" data-target="#delete" ><i class="fas fa-trash"></i></button></div>';
+                return $btn;
+            })
+            ->rawColumns(['button'])
+            ->make(true);
+    }
+
+    public function kesehatan_mingguan_rapid_data()
+    {
+        $data = kesehatan_mingguan_rapid::with('karyawan')
+            ->orderBy('tgl_cek', 'DESC');
+
+        return datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('x', function ($data) {
+                return $data->karyawan->divisi->nama;
+            })
+            ->addColumn('button', function ($data) {
+                $btn = '<div class="inline-flex"><button type="button" id="edit_rapid"  class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-edit"></i></button></div>';
+                $btn = $btn . ' <div class="inline-flex"><button type="button" class="btn btn-block btn-danger karyawan-img-small" style="border-radius:50%;" data-toggle="modal" data-target="#delete" ><i class="fas fa-trash"></i></button></div>';
+                return $btn;
+            })
+            ->rawColumns(['button'])
+            ->make(true);
+    }
+
+    public function kesehatan_mingguan_detail()
+    {
+        $karyawan = Karyawan::all();
+        return view('page.kesehatan.kesehatan_mingguan_detail', ['karyawan' => $karyawan]);
+    }
+
+
+    public function kesehatan_mingguan_tensi_detail_data($karyawan_id)
+    {
+        $data = kesehatan_mingguan_tensi::where('karyawan_id', $karyawan_id);
+        return datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('sis', function ($data) {
+                return $data->sistolik . ' mmHg';
+            })
+            ->addColumn('dias', function ($data) {
+                return $data->diastolik . ' mmHg';
+            })
+            ->make(true);
+    }
+    public function kesehatan_mingguan_rapid_detail_data($karyawan_id)
+    {
+        $data = kesehatan_mingguan_rapid::where('karyawan_id', $karyawan_id);
+        return datatables::of($data)
+            ->addIndexColumn()
+            ->make(true);
+    }
+
+    public function kesehatan_mingguan_tensi_detail_data_karyawan($karyawan_id)
+    {
+        $data = kesehatan_mingguan_tensi::where('karyawan_id', $karyawan_id)->get();
+        $data2 = kesehatan_mingguan_rapid::where([['hasil', 'Non Reaktif'], ['karyawan_id', $karyawan_id]])->count();
+        $data3 = kesehatan_mingguan_rapid::where([['hasil', 'IgG'], ['karyawan_id', $karyawan_id]])->count();
+        $data4 = kesehatan_mingguan_rapid::where([['hasil', 'IgM'], ['karyawan_id', $karyawan_id]])->count();
+        $data5 = kesehatan_mingguan_rapid::where([['hasil', 'IgG-IgM '], ['karyawan_id', $karyawan_id]])->count();
+        $tgl = $data->pluck('tgl_cek');
+        $labels2 = $data->pluck('sistolik');
+        $labels3 = $data->pluck('diastolik');
+        return response()->json(compact('tgl', 'labels2', 'labels3', 'data2', 'data3', 'data4', 'data5'));
+    }
+
+    public function kesehatan_bulanan()
+    {
+        return view('page.kesehatan.kesehatan_bulanan');
+    }
+
+    public function kesehatan_mingguan_tensi_aksi_ubah(Request $request)
+    {
+        $id = $request->id;
+        $kesehatan_mingguan_tensi = kesehatan_mingguan_tensi::find($id);
+        $kesehatan_mingguan_tensi->sistolik = $request->sistolik;
+        $kesehatan_mingguan_tensi->diastolik = $request->diastolik;
+        $kesehatan_mingguan_tensi->keterangan = $request->catatan;
+        $kesehatan_mingguan_tensi->save();
+
+        if ($kesehatan_mingguan_tensi) {
+            return redirect()->back()->with('success', 'Berhasil menambahkan data');
+        } else {
+            return redirect()->back()->with('error', 'Gagal menambahkan data');
+        }
+    }
+
+    public function kesehatan_mingguan_rapid_aksi_ubah(Request $request)
+    {
+        $id = $request->id;
+        $kesehatan_mingguan_rapid = kesehatan_mingguan_rapid::find($id);
+        $kesehatan_mingguan_rapid->hasil = $request->hasil;
+        $kesehatan_mingguan_rapid->keterangan = $request->catatan;
+        $kesehatan_mingguan_rapid->save();
+
+        if ($kesehatan_mingguan_rapid) {
             return redirect()->back()->with('success', 'Berhasil menambahkan data');
         } else {
             return redirect()->back()->with('error', 'Gagal menambahkan data');
