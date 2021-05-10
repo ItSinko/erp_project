@@ -69,11 +69,16 @@ Route::get('/kesehatan_harian/detail/{id}', 'KesehatanController@kesehatan_haria
 
 //Kesehatan Mingguan
 Route::get('/kesehatan_mingguan', 'KesehatanController@kesehatan_mingguan');
+/* Tambah */
 Route::get('/kesehatan_mingguan/tambah', 'KesehatanController@kesehatan_mingguan_tambah');
 Route::post('/kesehatan_mingguan_tensi/aksi_tambah', 'KesehatanController@kesehatan_mingguan_tensi_aksi_tambah');
+Route::put('/kesehatan_mingguan_tensi/aksi_ubah', 'KesehatanController@kesehatan_mingguan_tensi_aksi_ubah');
+Route::put('/kesehatan_mingguan_rapid/aksi_ubah', 'KesehatanController@kesehatan_mingguan_rapid_aksi_ubah');
 Route::post('/kesehatan_mingguan_rapid/aksi_tambah', 'KesehatanController@kesehatan_mingguan_rapid_aksi_tambah');
+/* Get Data */
 Route::get('/kesehatan_mingguan_tensi/data', 'KesehatanController@kesehatan_mingguan_tensi_data');
 Route::get('/kesehatan_mingguan_rapid/data', 'KesehatanController@kesehatan_mingguan_rapid_data');
+/* Get Detail */
 Route::get('/kesehatan_mingguan/detail', 'KesehatanController@kesehatan_mingguan_detail');
 Route::get('/kesehatan_mingguan_tensi/detail/{karyawan_id}', 'KesehatanController@kesehatan_mingguan_tensi_detail_data');
 Route::get('/kesehatan_mingguan_rapid/detail/{karyawan_id}', 'KesehatanController@kesehatan_mingguan_rapid_detail_data');

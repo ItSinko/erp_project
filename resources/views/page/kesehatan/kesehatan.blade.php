@@ -55,82 +55,62 @@
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           </div>
           <div class="modal-body">
-            <div class="data_detail">
-              <table style="text-align: center;" class="table table-hover styled-table table-striped" width="100%" id="tabel_detail">
-                <h6>Pengecekan terakhir</h6>
-                <thead>
-                  <tr>
-                    <th>Tgl Pengecekan</th>
-                    <th>Tinggi</th>
-                    <th>Berat</th>
-                    <th>BMI</th>
-                    <th>Catatan</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      1 Januari 2021
-                    <td>
-                      100 cm
-                    </td>
-                    <td>
-                      25 Kg
-                    </td>
-                    <td>
-                      22.3
-                    </td>
-                    <td>
-                      Makan Terus
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <table style="text-align: center;" class="table table-hover styled-table table-striped" width="100%" id="tabel_detail">
-                <h6>Update pengecekan</h6>
-                <thead>
-                  <tr>
-                    <th>Tgl Pengecekan</th>
-                    <th>Tinggi</th>
-                    <th>Berat</th>
-                    <th>BMI</th>
-                    <th>Catatan</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      <input type="date" class="form-control" id="tgl">
-                    </td>
-                    <td>
-                      <div class="input-group mb-3">
-                        <input type="text" class="form-control d-none" name="id" id="id">
-                        <input type="text" class="form-control" name="tinggi" id="tinggi">
-                        <div class="input-group-append">
-                          <span class="input-group-text">Cm</span>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <div class="input-group mb-3">
-                        <input type="text" class="form-control" name="berat" id="berat">
-                        <div class="input-group-append">
-                          <span class="input-group-text">Kg</span>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <input type="text" class="form-control" readonly id="bmi">
-                      <small id="status_bmi" class="form-text text-muted"></small>
-                    </td>
-                    <td>
-                      <textarea type="text" class="form-control" name="catatan" id="catatan"></textarea>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            <!-- /.card-header -->
+            <!-- form start -->
+            <form role="form">
+              <div class="card-body">
+                <div class="form-group">
+                  <label for="lemak" style="text-align:right;">Tgl Cek</label>
+                  <input type="date" class="form-control" name="tgl_cek" id="lemak" placeholder="Masukkan jumlah lemak">
+                </div>
+                <div class="form-group">
+                  <label for="keterangan" style=" text-align:right;">Tinggi Badan</label>
+                  <div class="input-group mb-3">
+                    <input type="number" class="form-control" name="tinggi" id="tinggi" readonly>
+                    <div class="input-group-append">
+                      <span class="input-group-text">Cm</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="keterangan" style=" text-align:right;">Berat Badan</label>
+                  <div class="input-group mb-3">
+                    <input type="number" class="form-control" name="berat" id="berat" required>
+                    <div class="input-group-append">
+                      <span class="input-group-text">Kg</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="lemak" style="text-align:right;">Lemak</label>
+                  <input type="text" class="form-control" name="lemak" id="lemak" placeholder="Masukkan jumlah lemak">
+                </div>
+                <div class="form-group">
+                  <label for="lemak" style="text-align:right;">Kandungan Air</label>
+                  <input type="text" class="form-control" name="lemak" placeholder="Masukkan jumlah kandungan air">
+                </div>
+                <div class="form-group">
+                  <label for="lemak" style="text-align:right;">Massa Otot</label>
+                  <input type="text" class="form-control" name="otot" placeholder="Masukkan jumlah massa otot">
+                </div>
+                <div class="form-group">
+                  <label for="lemak" style="text-align:right;">Tulang</label>
+                  <input type="text" class="form-control" name="tulang" placeholder="Masukkan jumlah tulang">
+                </div>
+                <div class="form-group">
+                  <label for="lemak" style="text-align:right;">Kalori</label>
+                  <input type="text" class="form-control" name="kalori" placeholder="Masukkan jumlah kalori">
+                </div>
+                <!-- <div class="form-group">
+                  <label for="lemak" style="text-align:right;">Body Mass Index</label>
+                  <input type="text" class="form-control" id="bmi" readonly>
+                </div>
+                <small id="status_bmi" class="form-text text-muted"></small> -->
+              </div>
+            </form>
           </div>
+          <!-- /.card -->
+
           <div class="modal-footer">
             <button class="btn btn-success rounded-pill" id="button_tambah" onclick="return confirm('Data akan di ubah ?');"><i class="fas fa-plus"></i>&nbsp;Update Data</button>
           </div>
@@ -198,18 +178,29 @@
         }
       ]
     });
-
-
     $('#tabel > tbody').on('click', '#berat', function() {
       var rows = tabel.rows($(this).parents('tr')).data();
       $('.data_detail_head').html(
         rows[0]['karyawan']['nama']
       );
-      $('#berat_mod').modal('show');
-    })
+      $('input[id="tinggi"]').val(rows[0]['tinggi']);
 
-    $('#tabel > tbody').on('click', '#edit', function() {
-      $('#detail_mod').modal('show');
+      var value1 = $('.modal-body input[id=berat]').val();
+      var value2 = rows[0]['tinggi'];
+
+      var sum = value1 / ((value2 / 100) * (value2 / 100))
+      $('#bmi').val(sum.toFixed(2));
+      if (sum >= 30) {
+        $('#status_bmi').text('Kegemukan (Obesitas)');
+      } else if (sum >= 25 || sum >= 29.9) {
+        $('#status_bmi').text('Kelebihan Berat Badan');
+      } else if (sum >= 18.5 || sum >= 24.9) {
+        $('#status_bmi').text('Normal (Ideal)');
+      } else {
+        $('#status_bmi').text('Kekurangan Berat Badan');
+      }
+
+      $('#berat_mod').modal('show');
     })
   });
 </script>

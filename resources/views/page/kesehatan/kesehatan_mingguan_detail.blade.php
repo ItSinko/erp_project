@@ -275,11 +275,13 @@
         data: {
             labels: [],
             datasets: [{
-                label: ['Reaktif', 'Non Reaktif'],
+                label: ['Non Reaktif', 'IgG', 'IgM', 'IgG-IgM'],
                 data: [],
                 borderWidth: 3,
                 backgroundColor: ['rgb(255, 99, 132)',
                     'rgb(54, 162, 235)',
+                    'rgb(102, 204, 0)',
+                    'rgb(255, 102, 78)',
                 ],
                 hoverOffset: 4,
                 borderColor: 'white',
@@ -308,8 +310,8 @@
                     tensi_diastolik_chart.data.datasets[0].data = data.labels3;
                     tensi_diastolik_chart.update();
 
-                    rapid_chart.data.labels = ['Reaktif', 'Non Reaktif'];
-                    rapid_chart.data.datasets[0].data = [data.data2, data.data3];
+                    rapid_chart.data.labels = ['Non Reaktif', 'IgG', 'IgM', 'IgG-IgM'];
+                    rapid_chart.data.datasets[0].data = [data.data2, data.data3, data.data4, data.data5];
                     rapid_chart.update();
                 },
                 error: function(data) {

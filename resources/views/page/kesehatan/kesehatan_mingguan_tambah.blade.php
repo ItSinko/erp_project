@@ -319,15 +319,21 @@
                                                         </label>
                                                     </div>
                                                     <div class="icheck-warning d-inline col-sm-4">
-                                                        <input type="radio" name="hasil[` + x + `]" value="Reaktif">
+                                                        <input type="radio" name="hasil[` + x + `]" value="IgG">
                                                         <label for="sample">
-                                                            IcG
+                                                            IgG
                                                         </label>
                                                     </div>
                                                     <div class="icheck-warning d-inline col-sm-4">
-                                                        <input type="radio" name="hasil[` + x + `]" value="Reaktif">
+                                                        <input type="radio" name="hasil[` + x + `]" value="IgM">
                                                         <label for="sample">
                                                             IgM
+                                                        </label>
+                                                    </div>
+                                                    <div class="icheck-warning d-inline col-sm-4">
+                                                        <input type="radio" name="hasil[` + x + `]" value="IgG-IgM">
+                                                        <label for="sample">
+                                                        IgG-IgM
                                                         </label>
                                                     </div>
                                                         </td>

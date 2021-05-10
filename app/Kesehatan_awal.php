@@ -12,6 +12,10 @@ class Kesehatan_awal extends Model
 
     public function Karyawan()
     {
-        return $this->belongsTo('App\Karyawan');
+        return $this->belongsTo('App\Karyawan', 'karyawan_id');
+    }
+    public function Berat_karyawan()
+    {
+        return $this->hasMany('App\berat_karyawan');
     }
 }
