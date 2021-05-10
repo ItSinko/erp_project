@@ -15,7 +15,7 @@
                                 <th>No</th>
                                 <th>Tanggal</th>
                                 <th>Operator</th>
-                                <th>Jumlah</th>
+                                <th>Jumlah Produksi</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>

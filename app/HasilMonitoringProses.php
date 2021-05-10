@@ -18,4 +18,21 @@ class HasilMonitoringProses extends Model
     {
         return $this->belongsTo(HasilPerakitan::class);
     }
+
+    public function HasilIkPemeriksaanPengujian()
+    {
+        return $this->belongsToMany(HasilIkPemeriksaanPengujian::class, 'monitoring_proses_ik_pengujians', 'monitoring_id', 'hasil_ik_id')->withPivot('keterangan')->withTimestamps();
+    }
+
+    public function countStatus($status)
+    {
+        $k = $this->id;
+        $u = HasilMonitoringProses::find($k);
+        $h = HistoriHasilPerakitan::where([
+            ['hasil_perakitan_id', '=', $u->hasil_perakitan_id],
+            ['kegiatan', '=', $status]
+        ])->count();
+
+        return $h;
+    }
 }

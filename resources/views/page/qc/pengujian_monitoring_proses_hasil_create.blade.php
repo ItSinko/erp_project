@@ -25,7 +25,35 @@
     <div class="container-fluid">
         <div class="row">
             <!-- left column -->
-            <div class="col-md-12">
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h3>Info</h3>
+                        <div class="form-horizontal">
+                            <div class="row">
+                                <label for="no_bppb" class="col-sm-4 col-form-label text-muted" style="text-align:left;">No BPPB</label>
+                                <label class="col-sm-8 col-form-label" style="text-align:right;">{{$b->Bppb->no_bppb}}<label>
+                            </div>
+
+                            <div class="row">
+                                <label for="nama_produk" class="col-sm-4 col-form-label text-muted" style="text-align:left;">Nama Produk</label>
+                                <label class="col-sm-8 col-form-label" style="text-align:right;">{{$b->Bppb->DetailProduk->nama}}<label>
+                            </div>
+
+                            <div class="row">
+                                <label for="jumlah" class="col-sm-8 col-form-label text-muted" style="text-align:left;">Jumlah Rencana Produksi</label>
+                                <label class="col-sm-4 col-form-label" style="text-align:right;">{{$b->Bppb->jumlah}} {{$b->Bppb->DetailProduk->satuan}}<label>
+                            </div>
+
+                            <div class="row">
+                                <label for="karyawan" class="col-sm-4 col-form-label text-muted" style="text-align:left;">Operator QC</label>
+                                <label class="col-sm-8 col-form-label" style="text-align:right;">{{$b->Karyawan->nama}}<label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9">
                 @if(session()->has('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     <strong><i class="fas fa-check"></i></strong> {{session()->get('success')}}
@@ -50,66 +78,16 @@
                 @endif
                 <div class="card">
                     <div class="card-header bg-success">
-                        <h3 class="card-title" style="color:white;"><i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;Tambahkan Monitoring Proses</h3>
+                        <h3 class="card-title" style="color:white;"><i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;Tambahkan Hasil Monitoring Proses</h3>
                     </div>
                     <div class="card-body">
-
-                        <div class="col-md-12">
-                            <form action="{{ route('pengujian.monitoring_proses.store', ['bppb_id' => $bppb_id]) }}" method="post" enctype="multipart/form-data">
-                                {{ csrf_field() }}
-                                {{ method_field('PUT') }}
-                                <h3>Info BPPB</h3>
+                        <form action="{{ route('pengujian.monitoring_proses.hasil.store', ['id' => $id]) }}" method="post" enctype="multipart/form-data">
+                            {{ csrf_field() }}
+                            {{ method_field('PUT') }}
+                            <div class="col-md-12">
                                 <div class="form-horizontal">
-                                    <div class="form-group row">
-                                        <label for="no_bppb" class="col-sm-4 col-form-label" style="text-align:right;">No BPPB</label>
-                                        <div class="col-sm-8">
-                                            <input type="text" class="form-control" name="no_bppb" id="no_bppb" value="{{$b->no_bppb}}" style="width: 50%;" readonly>
-
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label for="nama_produk" class="col-sm-4 col-form-label" style="text-align:right;">Nama Produk</label>
-                                        <div class="col-sm-8">
-                                            <input type="text" class="form-control" name="nama_produk" id="nama_produk" value="{{old('nama_produk', $b->DetailProduk->nama)}}" style="width: 50%;" readonly>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label for="jumlah" class="col-sm-4 col-form-label" style="text-align:right;">Jumlah Rencana Produksi</label>
-                                        <div class="col-sm-8">
-                                            <input type="text" class="form-control" name="jumlah" id="jumlah" value="{{old('jumlah', $b->jumlah)}}" style="width: 10%;" readonly>
-                                        </div>
-                                    </div>
-
                                     <h3>Data Monitoring Proses</h3>
                                     <div class="form-horizontal">
-                                        <div class="form-group row">
-                                            <label for="tanggal_laporan" class="col-sm-4 col-form-label" style="text-align:right;">Tanggal Laporan</label>
-                                            <div class="col-sm-8">
-                                                <input type="date" class="form-control  @error('tanggal_laporan') is-invalid @enderror " name="tanggal_laporan" id="tanggal_laporan" value="{{old('tanggal_laporan')}}" style="width: 20%;">
-                                                @if ($errors->has('tanggal_laporan'))
-                                                <span class="invalid-feedback" role="alert">{{$errors->first('tanggal_laporan')}}</span>
-                                                @endif
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group row">
-                                            <label for="karyawan_id" class="col-sm-4 col-form-label" style="text-align:right;">Karyawan</label>
-                                            <div class="col-sm-5">
-                                                <div class="select2-info">
-                                                    <select class="select2 custom-select form-control @error('karyawan_id') is-invalid @enderror karyawan_id" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;" name="karyawan_id" id="karyawan_id">
-                                                        @foreach($kry as $i)
-                                                        <option value="{{$i->id}}">{{$i->nama}}</option>
-                                                        @endforeach
-                                                    </select>
-                                                    @if ($errors->has('karyawan_id'))
-                                                    <span class="invalid-feedback" role="alert">{{$errors->first('karyawan_id')}}</span>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
-
                                         <div class="form-group row">
                                             <label for="brc" class="col-sm-4 col-form-label" style="text-align:right;">Barcode</label>
                                             <div class="col-sm-1 col-form-label">
@@ -249,7 +227,7 @@
                                         </div>
                                     </div>
                                 </div>
-                        </div>
+                            </div>
                     </div>
                     <div class="card-footer">
                         <span>

@@ -2,17 +2,25 @@
 
 @section('title', 'Beta Version')
 
+@section('adminlte_css')
+<style>
+    .dt-body-left {
+        text-align: left;
+    }
+</style>
+@endsection
+
 @section('content_header')
 <section class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>Pengemasan</h1>
+                <h1>Pengujian</h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item active">Pengemasan</li>
+                    <li class="breadcrumb-item active">Pengujian</li>
                 </ol>
             </div>
         </div>
@@ -23,19 +31,51 @@
 @section('content')
 <section class="content">
     <div class="row">
-        <div class="col-12">
+        <div class="col-3">
             <div class="card">
                 <div class="card-body">
+                    <h4>Info</h4><br>
+                    <div class="form-horizontal">
+                        <div class="row">
+                            <label for="no_seri" class="col-sm-6 col-form-label">No BPPB</label>
+                            <div class="col-sm-6 col-form-label" style="text-align:right;">
+                                {{$b->no_bppb}}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <label for="no_seri" class="col-sm-4 col-form-label">Produk</label>
+                            <div class="col-sm-8 col-form-label" style="text-align:right;">
+                                {{$b->DetailProduk->nama}}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <label for="tanggal" class="col-sm-6 col-form-label">Tanggal Laporan</label>
+                            <div class="col-sm-6 col-form-label" style="text-align:right;">
+                                {{date("d-m-Y", strtotime($b->tanggal_bppb))}}
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-9">
+            <div class="card">
+                <div class="card-body">
+                    <h4>Monitoring Proses</h4><br>
                     <table id="example" class="table table-hover styled-table">
                         <thead style="text-align: center;">
                             <tr>
                                 <th>No</th>
-                                <th>No BPPB</th>
-                                <th>Gambar</th>
-                                <th>Tipe dan Nama</th>
-                                <th>Jumlah Permintaan</th>
-                                <th>Laporan</th>
-                                <th>Aksi</th>
+                                <th>No Seri</th>
+                                <th>Karyawan</th>
+                                <th>Hasil</th>
+                                <th>Pemeriksaan</th>
+                                <th>Perbaikan</th>
                             </tr>
                         </thead>
                         <tbody style="text-align:center;">
@@ -44,26 +84,39 @@
                         <tfoot style="text-align:center;">
                             <tr>
                                 <th>No</th>
-                                <th>No BPPB</th>
-                                <th>Gambar</th>
-                                <th>Tipe dan Nama</th>
-                                <th>Jumlah Permintaan</th>
-                                <th>Laporan</th>
-                                <th>Aksi</th>
+                                <th>No Seri</th>
+                                <th>Karyawan</th>
+                                <th>Hasil</th>
+                                <th>Pemeriksaan</th>
+                                <th>Perbaikan</th>
                             </tr>
                         </tfoot>
                     </table>
                 </div>
             </div>
 
-            <div class="modal fade" id="detailmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal fade" id="monitoringprosesmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                 <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header" style="background-color:	#006400;">
-                            <h4 class="modal-title" id="myModalLabel" style="color:white;">Detail</h4>
+                            <h4 class="modal-title" id="myModalLabel" style="color:white;">Laporan</h4>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         </div>
-                        <div class="modal-body" id="detail">
+                        <div class="modal-body" id="monitoringproses">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="pemeriksaanprosesmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header" style="background-color:	#006400;">
+                            <h4 class="modal-title" id="myModalLabel" style="color:white;">Laporan</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        </div>
+                        <div class="modal-body" id="pemeriksaanproses">
 
                         </div>
                     </div>
@@ -95,93 +148,40 @@
 @section('adminlte_js')
 <script>
     $(function() {
-        $(document).on('click', '.detailmodal', function(event) {
-            event.preventDefault();
-            var href = $(this).attr('data-attr');
-            var dataid = $(this).attr('data-id');
-            $.ajax({
-                url: "/pengemasan/laporan",
-                beforeSend: function() {
-                    $('#loader').show();
-                },
-                // return the result
-                success: function(result) {
-                    $('#detailmodal').modal("show");
-                    $('#detail').html(result).show();
-                    console.log(result);
-                    $('#detaildata').DataTable({
-                        processing: true,
-                        serverSide: true,
-                        ajax: href,
-                        columns: [{
-                                data: 'DT_RowIndex',
-                                name: 'DT_RowIndex',
-                                orderable: false,
-                                searchable: false
-                            }, {
-                                data: 'tanggal',
-                                name: 'tanggal'
-                            },
-                            {
-                                data: 'operator',
-                                name: 'operator'
-                            },
-                            {
-                                data: 'aksi',
-                                name: 'aksi',
-                                orderable: false,
-                                searchable: false
-                            },
-                        ]
-                    });
-                },
-                complete: function() {
-                    $('#loader').hide();
-                },
-                error: function(jqXHR, testStatus, error) {
-                    console.log(error);
-                    alert("Page " + href + " cannot open. Error:" + error);
-                    $('#loader').hide();
-                },
-                timeout: 8000
-            })
-        });
-
         $('#example').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('pengemasan.show') }}",
+            ajax: "{{ route('pengujian.perbaikan.bppb.show', ['id' => $id]) }}",
             columns: [{
                     data: 'DT_RowIndex',
                     name: 'DT_RowIndex',
                     orderable: false,
                     searchable: false
                 }, {
-                    data: 'no_bppb',
-                    name: 'no_bppb'
+                    data: 'hasil_perakitan_id',
+                    name: 'hasil_perakitan_id'
                 },
                 {
-                    data: 'gambar',
-                    name: 'gambar'
+                    data: 'karyawan',
+                    name: 'karyawan'
                 },
                 {
-                    data: 'produk',
-                    name: 'produk'
+                    data: 'hasil',
+                    name: 'hasil'
                 },
                 {
-                    data: 'jumlah',
-                    name: 'jumlah'
-                },
-                {
-                    data: 'laporan',
-                    name: 'laporan'
-                },
-                {
-                    data: 'aksi',
-                    name: 'aksi',
+                    data: 'pemeriksaan',
+                    name: 'pemeriksaan',
+                    className: 'dt-body-left',
                     orderable: false,
                     searchable: false
                 },
+                {
+                    data: 'perbaikan',
+                    name: 'perbaikan',
+                    orderable: false,
+                    searchable: false
+                }
             ]
         });
 

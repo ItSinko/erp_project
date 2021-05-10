@@ -28,4 +28,9 @@ class DetailProduk extends Model
     {
         return $this->hasMany(IkPemeriksaanPengujian::class);
     }
+
+    public function CekPengemasan()
+    {
+        return $this->hasMany(CekPengemasan::class);
+    }
 }

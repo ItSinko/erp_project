@@ -7,12 +7,12 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>Pengemasan</h1>
+                <h1>Pengujian</h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item active">Pengemasan</li>
+                    <li class="breadcrumb-item active">Pengujian</li>
                 </ol>
             </div>
         </div>
@@ -33,8 +33,7 @@
                                 <th>No BPPB</th>
                                 <th>Gambar</th>
                                 <th>Tipe dan Nama</th>
-                                <th>Jumlah Permintaan</th>
-                                <th>Laporan</th>
+                                <th>Jumlah</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -47,8 +46,7 @@
                                 <th>No BPPB</th>
                                 <th>Gambar</th>
                                 <th>Tipe dan Nama</th>
-                                <th>Jumlah Permintaan</th>
-                                <th>Laporan</th>
+                                <th>Jumlah</th>
                                 <th>Aksi</th>
                             </tr>
                         </tfoot>
@@ -56,14 +54,28 @@
                 </div>
             </div>
 
-            <div class="modal fade" id="detailmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal fade" id="monitoringprosesmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                 <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header" style="background-color:	#006400;">
-                            <h4 class="modal-title" id="myModalLabel" style="color:white;">Detail</h4>
+                            <h4 class="modal-title" id="myModalLabel" style="color:white;">Laporan</h4>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         </div>
-                        <div class="modal-body" id="detail">
+                        <div class="modal-body" id="monitoringproses">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="pemeriksaanprosesmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header" style="background-color:	#006400;">
+                            <h4 class="modal-title" id="myModalLabel" style="color:white;">Laporan</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        </div>
+                        <div class="modal-body" id="pemeriksaanproses">
 
                         </div>
                     </div>
@@ -95,19 +107,19 @@
 @section('adminlte_js')
 <script>
     $(function() {
-        $(document).on('click', '.detailmodal', function(event) {
+        $(document).on('click', '.monitoringprosesmodal', function(event) {
             event.preventDefault();
             var href = $(this).attr('data-attr');
             var dataid = $(this).attr('data-id');
             $.ajax({
-                url: "/pengemasan/laporan",
+                url: "{{route('pengujian.monitoring_proses')}}",
                 beforeSend: function() {
                     $('#loader').show();
                 },
                 // return the result
                 success: function(result) {
-                    $('#detailmodal').modal("show");
-                    $('#detail').html(result).show();
+                    $('#monitoringprosesmodal').modal("show");
+                    $('#monitoringproses').html(result).show();
                     console.log(result);
                     $('#detaildata').DataTable({
                         processing: true,
@@ -125,6 +137,70 @@
                             {
                                 data: 'operator',
                                 name: 'operator'
+                            },
+                            {
+                                data: 'jumlah',
+                                name: 'jumlah'
+                            },
+                            {
+                                data: 'aksi',
+                                name: 'aksi',
+                                orderable: false,
+                                searchable: false
+                            },
+                        ]
+                    });
+                },
+                complete: function() {
+                    $('#loader').hide();
+                },
+                error: function(jqXHR, testStatus, error) {
+                    console.log(error);
+                    alert("Page " + href + " cannot open. Error:" + error);
+                    $('#loader').hide();
+                },
+                timeout: 8000
+            })
+        });
+
+        $(document).on('click', '.pemeriksaanprosesmodal', function(event) {
+            event.preventDefault();
+            var href = $(this).attr('data-attr');
+            var dataid = $(this).attr('data-id');
+            $.ajax({
+                url: "{{route('pengujian.pemeriksaan_proses')}}",
+                beforeSend: function() {
+                    $('#loader').show();
+                },
+                // return the result
+                success: function(result) {
+                    $('#pemeriksaanprosesmodal').modal("show");
+                    $('#pemeriksaanproses').html(result).show();
+                    console.log(result);
+                    $('#detaildata').DataTable({
+                        processing: true,
+                        serverSide: true,
+                        ajax: href,
+                        columns: [{
+                                data: 'DT_RowIndex',
+                                name: 'DT_RowIndex',
+                                orderable: false,
+                                searchable: false
+                            }, {
+                                data: 'tanggal',
+                                name: 'tanggal'
+                            },
+                            {
+                                data: 'no_pemeriksaan',
+                                name: 'no_pemeriksaan'
+                            },
+                            {
+                                data: 'jumlah_produksi',
+                                name: 'jumlah_produksi'
+                            },
+                            {
+                                data: 'jumlah_sampling',
+                                name: 'jumlah_sampling'
                             },
                             {
                                 data: 'aksi',
@@ -150,7 +226,7 @@
         $('#example').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('pengemasan.show') }}",
+            ajax: "{{ route('pengujian.perbaikan.show') }}",
             columns: [{
                     data: 'DT_RowIndex',
                     name: 'DT_RowIndex',
@@ -171,10 +247,6 @@
                 {
                     data: 'jumlah',
                     name: 'jumlah'
-                },
-                {
-                    data: 'laporan',
-                    name: 'laporan'
                 },
                 {
                     data: 'aksi',

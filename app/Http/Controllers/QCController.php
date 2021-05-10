@@ -14,6 +14,10 @@ use App\HasilMonitoringProses;
 use App\PemeriksaanRakit;
 use App\IkPemeriksaanPengujian;
 use App\HasilIkPemeriksaanPengujian;
+use App\PemeriksaanProsesPengujian;
+use App\HasilPemeriksaanProsesPengujian;
+use App\Http\Controllers\NotifikasiController;
+use App\Http\Controllers\UserLogController;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -21,6 +25,17 @@ use Yajra\DataTables\Facades\DataTables;
 
 class QCController extends Controller
 {
+    protected $NotifikasiController;
+    protected $UserLogController;
+
+    public function __construct(
+        NotifikasiController $NotifikasiController,
+        UserLogController $UserLogController
+    ) {
+        $this->NotifikasiController = $NotifikasiController;
+        $this->UserLogController = $UserLogController;
+    }
+
     public function perakitan_pemeriksaan()
     {
         return view('page.qc.perakitan_pemeriksaan_show');
@@ -646,7 +661,7 @@ class QCController extends Controller
                 $btn = '<a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Klik untuk melihat laporan"><i class="fas fa-ellipsis-h"></i></a>';
                 $btn .= '<div class="dropdown-menu" aria-labelledby="dropdownMenuLink1">';
                 $btn .= '<a class="dropdown-item monitoringprosesmodal" data-toggle="modal" data-target="#monitoringprosesmodal" data-attr="/pengujian/monitoring_proses/show/' . $s->id . '" data-id="' . $s->id . '"><span style="color: black;"><i class="fas fa-eye" aria-hidden="true"></i>&nbsp;Monitoring Proses</span></a>';
-                $btn .= '<a class="dropdown-item monitoringprosesmodal" data-toggle="modal" data-target="#monitoringprosesmodal" data-attr="/pengujian/pemeriksaan_proses/show/' . $s->id . '" data-id="' . $s->id . '"><span style="color: black;"><i class="fas fa-eye" aria-hidden="true"></i>&nbsp;Pemeriksaan Proses</span></a>';
+                $btn .= '<a class="dropdown-item" href="/pengujian/pemeriksaan_proses/hasil/' . $s->id . '"><span style="color: black;"><i class="fas fa-eye" aria-hidden="true"></i>&nbsp;Pemeriksaan Proses</span></a>';
                 $btn .= '<a class="dropdown-item luplkpmodal" data-toggle="modal" data-target="#luplkpmodal" data-attr="/produk/detail/show/' . $s->id . '" data-id="' . $s->id . '"><span style="color: black;"><i class="fas fa-eye" aria-hidden="true"></i>&nbsp;LUP dan LKP</span></a>';
                 return $btn;
             })
@@ -654,7 +669,6 @@ class QCController extends Controller
                 $btn = '<a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Klik untuk melihat laporan"><i class="fas fa-plus-circle" aria-hidden="true"></i></a>';
                 $btn .= '<div class="dropdown-menu" aria-labelledby="dropdownMenuLink2">';
                 $btn .= '<a class="dropdown-item" href="/pengujian/monitoring_proses/create/' . $s->id . '"><span style="color: black;"><i class="fas fa-plus" aria-hidden="true"></i>&nbsp;Monitoring Proses</span></a>';
-                $btn .= '<a class="dropdown-item" href="/pengujian/pemeriksaan_proses/create/' . $s->id . '"><span style="color: black;"><i class="fas fa-plus" aria-hidden="true"></i>&nbsp;Pemeriksaan Proses</span></a>';
                 $btn .= '<a class="dropdown-item luplkpmodal" data-toggle="modal" data-target="#luplkpmodal" data-attr="/produk/detail/show/' . $s->id . '" data-id="' . $s->id . '"><span style="color: black;"><i class="fas fa-plus" aria-hidden="true"></i>&nbsp;LUP dan LKP</span></a>';
                 return $btn;
             })
@@ -695,7 +709,8 @@ class QCController extends Controller
                 return $btn;
             })
             ->addColumn('aksi', function ($s) {
-                $btn = '<a href = "/pengujian/monitoring_proses/hasil/' . $s->id . '"><button class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-eye"></i></button></a>
+                $btn = '<a href = "/pengujian/monitoring_proses/hasil/create/' . $s->id . '"><button class="btn btn-success btn-sm m-1" style="border-radius:50%;"><i class="fas fa-plus"></i></button></a>
+                        <a href = "/pengujian/monitoring_proses/hasil/' . $s->id . '"><button class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-eye"></i></button></a>
                         <a href = "/pengujian/monitoring_proses/laporan/edit/' . $s->id . '"><button class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-pencil-alt"></i></button></a>';
                 return $btn;
             })
@@ -720,7 +735,7 @@ class QCController extends Controller
             ->editColumn('no_barcode', function ($s) {
                 $b = "";
                 if ($s->no_barcode == "") {
-                    $b = '<span class="text-muted">Tidak Tersedia</span>';
+                    $b = '<small class="text-muted">Tidak Tersedia</small>';
                 } else {
                     $b = $s->no_barcode;
                 }
@@ -742,28 +757,60 @@ class QCController extends Controller
                 } else {
                     $b .= '<i class="fas fa-times-circle" style="color:red;"></i><br>';
                 }
-                $b .= ucfirst($s->tindak_lanjut);
+                $b .= "<small>" . ucfirst($s->tindak_lanjut) . "</small>";
                 return $b;
             })
-            ->addColumn('aksi', function ($s) {
-                $btn = '<a href = "/pengujian/monitoring_proses/laporan/edit' . $s->id . '"><button class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-pencil-alt"></i></button></a>
-                <a href = "/pengujian/monitoring_proses/laporan/delete' . $s->id . '"><button class="btn btn-danger btn-sm m-1" style="border-radius:50%;"><i class="fas fa-trash"></i></button></a>';
+            ->addColumn('pemeriksaan', function ($s) {
+                $btn = "";
+                if (count($s->HasilIkPemeriksaanPengujian) <=  0) {
+                    $btn .= '<i class="fas fa-check-circle" style="color:green;"></i>&nbsp;<small>Lolos</small>';
+                } else if (count($s->HasilIkPemeriksaanPengujian) > 0) {
+                    $btn = "<small><ol>";
+                    foreach ($s->HasilIkPemeriksaanPengujian as $i) {
+                        $btn .= "<li>" . $i->standar_keberterimaan . "</li>";
+                    }
+                    $btn .= "</ol></small>";
+                }
                 return $btn;
             })
-            ->rawColumns(['no_barcode', 'hasil', 'tindak_lanjut', 'aksi'])
+            ->editColumn('keterangan', function ($s) {
+                if (empty($s->keterangan)) {
+                    return '<small class="text-muted">Tidak Ada</small>';
+                } else {
+                    return $s->keterangan;
+                }
+            })
+            ->addColumn('aksi', function ($s) {
+                $btn = "";
+                if ($s->status == "acc_perbaikan" || $s->status == "acc_analisa_perbaikan") {
+                    $btn = '<a href = "/pengujian/monitoring_proses/hasil/edit/' . $s->id . '"><button class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-pencil-alt"></i></button></a>
+                <a class="deletemodal" data-toggle="modal" data-target="#deletemodal" data-attr="/pengujian/monitoring_proses/hasil/delete/' . $s->id . '"><button class="btn btn-danger btn-sm m-1" style="border-radius:50%;"><i class="fas fa-trash"></i></button></a>';
+                } else if ($s->status == "req_perbaikan") {
+                    $btn = '<a class="deletemodal" data-toggle="modal" data-target="#deletemodal" data-attr="/pengujian/monitoring_proses/hasil/delete/' . $s->id . '"><button class="btn btn-danger btn-sm m-1" style="border-radius:50%;"><i class="fas fa-trash"></i></button></a>';
+                } else if ($s->status == "pengemasan") {
+                    $btn = '<i class="fas fa-check-circle" style="color:green;"></i>';
+                }
+                return $btn;
+            })
+            ->rawColumns(['no_barcode', 'hasil', 'tindak_lanjut', 'pemeriksaan', 'aksi', 'keterangan'])
             ->make(true);
     }
 
     public function pengujian_monitoring_proses_create($bppb_id)
     {
         $b = Bppb::find($bppb_id);
+        // $s = HasilPerakitan::whereHas('Perakitan', function ($q) use ($bppb_id) {
+        //     $q->where('bppb_id', $bppb_id);
+        // })->whereDoesntHave('HasilMonitoringProses', function ($q) {
+        //     $q->where('hasil', 'ok');
+        // })->whereIn('status', ['acc_pemeriksaan_tertutup'])->get();
         $s = HasilPerakitan::whereHas('Perakitan', function ($q) use ($bppb_id) {
             $q->where('bppb_id', $bppb_id);
-        })->whereDoesntHave('HasilMonitoringProses', function ($q) {
-            $q->where('hasil', 'ok');
-        })->whereIn('status', ['acc_pemeriksaan_tertutup'])->get();
+        })->doesntHave('HasilMonitoringProses')->whereIn('status', ['acc_pemeriksaan_tertutup'])->get();
+
         $k = Karyawan::whereNotIn('jabatan', ['direktur', 'manager'])->get();
-        return view('page.qc.pengujian_monitoring_proses_create', ['bppb_id' => $bppb_id, 'kry' => $k, 's' => $s, 'b' => $b]);
+        $p = IkPemeriksaanPengujian::where('detail_produk_id', '=', $b->detail_produk_id)->get();
+        return view('page.qc.pengujian_monitoring_proses_create', ['bppb_id' => $bppb_id, 'kry' => $k, 's' => $s, 'b' => $b, 'p' => $p]);
     }
 
     public function pengujian_monitoring_proses_store(Request $request, $bppb_id)
@@ -809,6 +856,7 @@ class QCController extends Controller
         if ($v->fails()) {
             return redirect()->back()->withErrors($v);
         } else {
+
             $c = MonitoringProses::create([
                 'bppb_id' => $bppb_id,
                 'tanggal' => $request->tanggal_laporan,
@@ -821,18 +869,41 @@ class QCController extends Controller
                 if (!empty($request->no_seri)) {
                     $bool = true;
                     for ($i = 0; $i < count($request->no_seri); $i++) {
-
-                        $cs  = HasilMonitoringProses::create([
+                        $status = "";
+                        if ($request->tindak_lanjut[$i] == "perbaikan") {
+                            $status = "req_perbaikan";
+                        } else if ($request->tindak_lanjut[$i] == "produk_spesialis") {
+                            $status = "req_analisa_perbaikan";
+                        } else if ($request->tindak_lanjut[$i] == "pengemasan") {
+                            $status = "pengemasan";
+                        }
+                        $cs = HasilMonitoringProses::create([
                             'monitoring_proses_id' => $c->id,
                             'hasil_perakitan_id' => $request->no_seri[$i],
                             'no_barcode' => $request->no_barcode[$i],
                             'hasil' => $request->hasil[$i],
                             'keterangan' => $request->keterangan[$i],
-                            'tindak_lanjut' => $request->tindak_lanjut[$i]
+                            'tindak_lanjut' => $request->tindak_lanjut[$i],
+                            'status' => $status
                         ]);
 
-                        if (!$cs) {
-                            $bool = false;
+                        if ($cs) {
+                            $u = HasilMonitoringProses::find($cs->id);
+                            $u->HasilIkPemeriksaanPengujian()->sync($request->pemeriksaan[$i]);
+                            $up = $u->save();
+
+                            $chhp = HistoriHasilPerakitan::create([
+                                'hasil_perakitan_id' => $request->no_seri[$i],
+                                'kegiatan' => 'pemeriksaan_pengujian',
+                                'tanggal' => Carbon::now()->toDateString(),
+                                'hasil' => $request->hasil[$i],
+                                'keterangan' => $request->keterangan[$i],
+                                'tindak_lanjut' => $request->tindak_lanjut[$i]
+                            ]);
+
+                            if (!$up) {
+                                $bool = false;
+                            }
                         }
                     }
                     if ($bool == true) {
@@ -852,7 +923,7 @@ class QCController extends Controller
         $s = MonitoringProses::find($id);
         $bppb_id = $s->bppb_id;
         $kry = Karyawan::whereNotIn('jabatan', ['direktur', 'manager', 'asisten manager'])->get();
-
+        $p = IkPemeriksaanPengujian::where('detail_produk_id', '=', $s->Bppb->detail_produk_id)->get();
         $ns = HasilPerakitan::whereHas('Perakitan', function ($q) use ($bppb_id) {
             $q->where('bppb_id', $bppb_id);
         })
@@ -862,7 +933,7 @@ class QCController extends Controller
                 $q->where('monitoring_proses_id', $id);
             })->get();
 
-        return view('page.qc.pengujian_monitoring_proses_laporan_edit', ['id' => $id, 's' => $s, 'kry' => $kry, 'ns' => $ns]);
+        return view('page.qc.pengujian_monitoring_proses_laporan_edit', ['id' => $id, 's' => $s, 'kry' => $kry, 'ns' => $ns, 'p' => $p]);
     }
 
     public function pengujian_monitoring_proses_laporan_update($id, Request $request)
@@ -926,6 +997,7 @@ class QCController extends Controller
                             $u->hasil = $request->hasil[$i];
                             $u->tindak_lanjut = $request->tindak_lanjut[$i];
                             $u->keterangan = $request->keterangan[$i];
+                            $u->HasilIkPemeriksaanPengujian()->sync($request->pemeriksaan[$i]);
                             $us = $u->save();
 
                             if (!$us) {
@@ -945,7 +1017,6 @@ class QCController extends Controller
                                 $bool = false;
                             } else if ($cs) {
                                 $hpid[$v] = $cs->id;
-                                echo json_encode($hpid);
                             }
                         }
                         $v++;
@@ -966,20 +1037,333 @@ class QCController extends Controller
         }
     }
 
+    public function pengujian_monitoring_proses_hasil_create($id)
+    {
+        $b = MonitoringProses::find($id);
+        $bs = $b->bppb_id;
+        $s = HasilPerakitan::whereHas('Perakitan', function ($q) use ($bs) {
+            $q->where('bppb_id', $bs);
+        })->doesntHave('HasilMonitoringProses')
+            ->whereIn('status', ['acc_pemeriksaan_tertutup'])->get();
+        $p = IkPemeriksaanPengujian::where('detail_produk_id', '=', $b->Bppb->detail_produk_id)->get();
+        return view('page.qc.pengujian_monitoring_proses_hasil_create', ['id' => $id, 's' => $s, 'b' => $b, 'p' => $p]);
+    }
+
+    public function pengujian_monitoring_proses_hasil_store(Request $request, $id)
+    {
+        $v = [];
+        if ($request->brc == "tidak") {
+            $v = Validator::make(
+                $request->all(),
+                [
+                    'no_seri' => 'required',
+                    'tindak_lanjut' => 'required',
+                ],
+                [
+                    'no_seri.*.required' => "No Seri harus diisi",
+                    'tindak_lanjut.required' => "Tindak Lanjut harus dipilih",
+                ]
+            );
+        } else if ($request->brc == "ya") {
+            $v = Validator::make(
+                $request->all(),
+                [
+                    'no_seri' => 'required',
+                    'tindak_lanjut' => 'required',
+                    'no_barcode.*' => 'required',
+                ],
+                [
+                    'no_seri.*.required' => "No Seri harus diisi",
+                    'tindak_lanjut.required' => "Tindak Lanjut harus dipilih",
+                    'no_barcode.*.required' => "No Barcode harus diisi",
+                ]
+            );
+        }
+
+        if ($v->fails()) {
+            return redirect()->back()->withErrors($v);
+        } else {
+            if (!empty($request->no_seri)) {
+                $bool = true;
+                for ($i = 0; $i < count($request->no_seri); $i++) {
+
+                    $cs = HasilMonitoringProses::create([
+                        'monitoring_proses_id' => $id,
+                        'hasil_perakitan_id' => $request->no_seri[$i],
+                        'no_barcode' => $request->no_barcode[$i],
+                        'hasil' => $request->hasil[$i],
+                        'keterangan' => $request->keterangan[$i],
+                        'tindak_lanjut' => $request->tindak_lanjut[$i]
+                    ]);
+
+                    if ($cs) {
+                        $u = HasilMonitoringProses::find($cs->id);
+                        $u->HasilIkPemeriksaanPengujian()->sync($request->pemeriksaan[$i]);
+                        $up = $u->save();
+
+                        $chhp = HistoriHasilPerakitan::create([
+                            'hasil_perakitan_id' => $request->no_seri[$i],
+                            'kegiatan' => 'pemeriksaan_pengujian',
+                            'tanggal' => Carbon::now()->toDateString(),
+                            'hasil' => $request->hasil[$i],
+                            'keterangan' => $request->keterangan[$i],
+                            'tindak_lanjut' => $request->tindak_lanjut[$i]
+                        ]);
+
+                        if (!$up) {
+                            $bool = false;
+                        }
+                    }
+                }
+                if ($bool == true) {
+                    return redirect()->back()->with('success', "Berhasil menambahkan Produk");
+                } else if ($bool == false) {
+                    return redirect()->back()->with('error', "Gagal menambahkan Produk");
+                }
+            }
+        }
+    }
+
+    public function pengujian_monitoring_proses_hasil_edit($id)
+    {
+        $s = HasilMonitoringProses::find($id);
+        $m = $s->MonitoringProses->Bppb->DetailProduk->id;
+        // $p = HasilIkPemeriksaanPengujian::whereHas('IkPemeriksaanPengujian', function ($q) use ($m) {
+        //     $q->where('detail_produk_id', $m);
+        // })->get();
+
+        $p = IkPemeriksaanPengujian::where('detail_produk_id', $m)->get();
+
+        return view('page.qc.pengujian_monitoring_proses_hasil_edit', ['id' => $id, 's' => $s, 'p' => $p]);
+    }
+
+    public function pengujian_monitoring_proses_hasil_update($id, Request $request)
+    {
+        $v = [];
+        if ($request->brc == "tidak") {
+            $v = Validator::make(
+                $request->all(),
+                [
+                    'tindak_lanjut' => 'required',
+                    'hasil' => 'required',
+
+                ],
+                [
+                    'hasil.required' => "Hasil harus dipilih",
+                    'tindak_lanjut.required' => "Tindak Lanjut harus dipilih",
+                ]
+            );
+        } else if ($request->brc == "ya") {
+            $v = Validator::make(
+                $request->all(),
+                [
+                    'tindak_lanjut' => 'required',
+                    'hasil' => 'required',
+                    'no_barcode' => 'required',
+                ],
+                [
+                    'hasil.required' => "Hasil harus dipilih",
+                    'tindak_lanjut.required' => "Tindak Lanjut harus dipilih",
+                    'no_barcode.required' => "No Barcode harus diisi",
+                ]
+            );
+        }
+
+        if ($v->fails()) {
+            return redirect()->back()->withErrors($v);
+        } else {
+            $u = HasilMonitoringProses::find($id);
+            $u->HasilIkPemeriksaanPengujian()->sync($request->pemeriksaan);
+            $u->tindak_lanjut = $request->tindak_lanjut;
+            $u->hasil = $request->hasil;
+            $u->keterangan = $request->keterangan;
+            $u->no_barcode = $request->no_barcode;
+            $u->save();
+
+            if ($u) {
+                $chhp = HistoriHasilPerakitan::create([
+                    'hasil_perakitan_id' => $u->hasil_perakitan_id,
+                    'kegiatan' => 'pemeriksaan_pengujian',
+                    'tanggal' => Carbon::now()->toDateString(),
+                    'hasil' => $request->hasil,
+                    'keterangan' => $request->keterangan,
+                    'tindak_lanjut' => $request->tindak_lanjut
+                ]);
+                if ($chhp) {
+                    return redirect()->back()->with('success', "Berhasil mengubah Pemeriksaan");
+                } else {
+                    return redirect()->back()->with('error', "Gagal mengubah Pemeriksaan");
+                }
+            }
+        }
+    }
+
     public function pengujian_monitoring_proses_hasil_delete($id, Request $request)
     {
         $p = HasilMonitoringProses::where('id', $id)->first();
         $this->UserLogController->create(Auth::user()->id, "Hasil Monitoring Proses " . $p->HasilPerakitan->no_seri . ", untuk BPPB " . $p->MonitoringProses->Bppb->no_bppb, 'Hasil Monitoring Proses', 'Hapus', $request->keterangan_log);
-
         $hp = HasilMonitoringProses::find($id);
         $hp->delete();
 
         return redirect()->back();
     }
 
+    public function pengujian_pemeriksaan_proses()
+    {
+        return view('page.qc.pengujian_pemeriksaan_proses_show');
+    }
+
+    public function pengujian_pemeriksaan_proses_show($id)
+    {
+        $s = PemeriksaanProsesPengujian::where('bppb_id', $id)->get();
+        return DataTables::of($s)
+            ->addIndexColumn()
+            ->editColumn('tanggal', function ($s) {
+                return Carbon::createFromFormat('Y-m-d', $s->tanggal)->format('d-m-Y');
+            })
+            ->addColumn('aksi', function ($s) use ($id) {
+                $btn = '<a href = "/pengujian/pemeriksaan_proses/hasil/' . $id . '"><button class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-eye"></i></button></a>
+                <a href = "/pengujian/pemeriksaan_proses/hasil/edit/' . $s->id . '"><button class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-pencil-alt"></i></button></a>
+                <a href = "/pengujian/pemeriksaan_proses/hasil/delete/' . $s->id . '"><button class="btn btn-danger btn-sm m-1" style="border-radius:50%;"><i class="fas fa-trash"></i></button></a>';
+                return $btn;
+            })
+            ->rawColumns(['aksi'])
+            ->make(true);
+    }
+
+    public function pengujian_pemeriksaan_proses_hasil($id)
+    {
+        $s = Bppb::find($id);
+        $p = IkPemeriksaanPengujian::where('detail_produk_id', $id)->get();
+
+        return view('page.qc.pengujian_pemeriksaan_proses_hasil', ['id' => $id, 's' => $s, 'p' => $p]);
+    }
+
+    public function pengujian_pemeriksaan_proses_create($id)
+    {
+        $b = Bppb::find($id);
+        $bppbid = $b->DetailProduk->id;
+        $s = IkPemeriksaanPengujian::where('detail_produk_id', $bppbid)->get();
+
+        return view('page.qc.pengujian_pemeriksaan_proses_create', ['id' => $id, 's' => $s, 'b' => $b]);
+    }
+
+    public function pengujian_pemeriksaan_proses_store($id, Request $request)
+    {
+        $v = Validator::make(
+            $request->all(),
+            [
+                'no_pemeriksaan' => 'required',
+                'tanggal' => 'required',
+                'jumlah_produksi' => 'required',
+                'jumlah_sampling' => 'required',
+            ],
+            [
+                'no_pemeriksaan.required' => "No Pemeriksaan harus diisi",
+                'tanggal.required' => "Tanggal harus diisi",
+                'jumlah_produksi.required' => "Jumlah Produksi harus diisi",
+                'jumlah_sampling.required' => "Jumlah Sampling harus diisi",
+            ]
+        );
+        if ($v->fails()) {
+            return redirect()->back()->withErrors($v);
+        } else {
+            $c = PemeriksaanProsesPengujian::create([
+                'bppb_id' => $id,
+                'no_pemeriksaan' => $request->no_pemeriksaan,
+                'tanggal' => $request->tanggal,
+                'jumlah_produksi' => $request->jumlah_produksi,
+                'jumlah_sampling' => $request->jumlah_sampling
+            ]);
+            if ($c) {
+                if (!empty($request->hasil_ik_id)) {
+                    $bool = true;
+                    for ($j = 0; $j < count($request->hasil_ik_id); $j++) {
+                        $cs = HasilPemeriksaanProsesPengujian::create([
+                            'pemeriksaan_id' => $c->id,
+                            'hasil_ik_id' => $request->hasil_ik_id[$j],
+                            'hasil_ok' => $request->hasil_ok[$j],
+                            'hasil_nok' => $request->hasil_nok[$j],
+                            'karantina' => $request->karantina[$j],
+                            'perbaikan' => $request->perbaikan[$j],
+                            'keterangan' => $request->keterangan[$j]
+                        ]);
+
+                        if (!$cs) {
+                            $bool = false;
+                        }
+                    }
+
+                    if ($bool == true) {
+                        return redirect()->back()->with('success', "Berhasil menambahkan Pemeriksaan Proses");
+                    } else if ($bool == false) {
+                        return redirect()->back()->with('error', "Gagal menambahkan Pemeriksaan Proses");
+                    }
+                }
+            } else {
+                return redirect()->back()->with('error', "Gagal menambahkan Pemeriksaan Proses");
+            }
+        }
+    }
+
+    public function pengujian_pemeriksaan_proses_not_ok()
+    {
+        return view('page.qc.pengujian_pemeriksaan_proses_not_ok_show');
+    }
+
+    public function pengujian_pemeriksaan_proses_not_ok_show($bppb_id, $ik_pengujian_id)
+    {
+        $s = HasilMonitoringProses::whereHas('HasilIkPemeriksaanPengujian', function ($q) use ($ik_pengujian_id) {
+            $q->where('id', $ik_pengujian_id);
+        })->whereHas('MonitoringProses', function ($q) use ($bppb_id) {
+            $q->where('bppb_id', $bppb_id);
+        })->get();
+
+        return DataTables::of($s)
+            ->addIndexColumn()
+            ->addColumn('karyawan', function ($s) {
+                return $s->MonitoringProses->Karyawan->nama;
+            })
+            ->addColumn('tanggal', function ($s) {
+                return Carbon::createFromFormat('Y-m-d', $s->MonitoringProses->tanggal)->format('d-m-Y');
+            })
+            ->addColumn('no_seri', function ($s) {
+                return $s->HasilPerakitan->no_seri;
+            })
+            ->make(true);
+    }
+
+    public function pengujian_pemeriksaan_proses_edit($id)
+    {
+        return view('page.qc.pengujian_pemeriksaan_proses_edit', ['id' => $id]);
+    }
+
+    public function pengujian_pemeriksaan_proses_update($id, Request $request)
+    {
+        $bool = true;
+        for ($j = 0; $j < count($request->hasil_ik_id); $j++) {
+            $u = HasilPemeriksaanProsesPengujian::find($request->id[$j]);
+            $u->hasil_ok = $request->hasil_ok[$j];
+            $u->hasil_nok = $request->hasil_nok[$j];
+            $u->karantina = $request->karantina[$j];
+            $u->perbaikan = $request->perbaikan[$j];
+            $u->keterangan = $request->keterangan[$j];
+            $us = $u->save();
+
+            if (!$us) {
+                $bool = false;
+            }
+        }
+
+        if ($bool == true) {
+            return redirect()->back()->with('success', "Berhasil mengubah Pemeriksaan Proses");
+        } else if ($bool == false) {
+            return redirect()->back()->with('error', "Gagal mengubah Pemeriksaan Proses");
+        }
+    }
+
     public function pengujian_ik_pemeriksaan()
     {
-<<<<<<< HEAD
         return view('page.qc.pengujian_ik_pemeriksaan_show');
     }
 
@@ -1015,51 +1399,76 @@ class QCController extends Controller
 
     public function pengujian_ik_pemeriksaan_create()
     {
-        $dp = DetailProduk::all();
+        $dp = DetailProduk::doesntHave('IkPemeriksaanPengujian')->get();
         return view('page.qc.pengujian_ik_pemeriksaan_create', ['dp' => $dp]);
     }
 
     public function pengujian_ik_pemeriksaan_store(Request $request)
     {
-        $bool = true;
-        for ($i = 0; $i < count($request->hal_yang_diperiksa); $i++) {
-            $c = IkPemeriksaanPengujian::create([
-                'detail_produk_id' => $request->detail_produk_id,
-                'hal_yang_diperiksa' => $request->hal_yang_diperiksa[$i]
-            ]);
+        $v = Validator::make(
+            $request->all(),
+            [
+                'detail_produk_id' => 'required',
+                'hal_yang_diperiksa' => 'required',
+                'standar_keberterimaan' => 'required'
+            ],
+            [
+                'detail_produk_id.required' => "Produksi harus dipilih",
+                'hal_yang_diperiksa.required' => "Hal yang diperiksa harus diisi",
+                'standar_keberterimaan.required' => "Standar Keberterimaan harus diisi",
+            ]
+        );
+        if ($v->fails()) {
+            return redirect()->back()->withErrors($v);
+        } else {
+            $bool = true;
+            for ($i = 0; $i < count($request->hal_yang_diperiksa); $i++) {
+                $c = IkPemeriksaanPengujian::create([
+                    'detail_produk_id' => $request->detail_produk_id,
+                    'hal_yang_diperiksa' => $request->hal_yang_diperiksa[$i]
+                ]);
 
-            if ($c) {
-                echo $c->id;
-                for ($j = 0; $j < count($request->standar_keberterimaan[$i]); $j++) {
-                    $cs = HasilIkPemeriksaanPengujian::create([
-                        'ik_pemeriksaan_id' => $c->id,
-                        'standar_keberterimaan' => $request->standar_keberterimaan[$i][$j]
-                    ]);
+                if ($c) {
+                    echo $c->id;
+                    for ($j = 0; $j < count($request->standar_keberterimaan[$i]); $j++) {
+                        $cs = HasilIkPemeriksaanPengujian::create([
+                            'ik_pemeriksaan_id' => $c->id,
+                            'standar_keberterimaan' => $request->standar_keberterimaan[$i][$j]
+                        ]);
 
-                    if (!$cs) {
-                        $bool = false;
+                        if (!$cs) {
+                            $bool = false;
+                        }
                     }
+                } else if (!$c) {
+                    $bool = false;
                 }
-            } else if (!$c) {
-                $bool = false;
             }
-        }
 
-        if ($bool == true) {
-            return redirect()->back()->with('success', "Berhasil menambahkan Pengujian");
-        } else if ($bool == false) {
-            return redirect()->back()->with('error', "Gagal menambahkan Pengujian");
+            if ($bool == true) {
+                return redirect()->back()->with('success', "Berhasil menambahkan Pengujian");
+            } else if ($bool == false) {
+                return redirect()->back()->with('error', "Gagal menambahkan Pengujian");
+            }
         }
     }
 
     public function pengujian_ik_pemeriksaan_detail($id)
     {
         $s = IkPemeriksaanPengujian::where('detail_produk_id', $id)->get();
-        return view('page.qc.pengujian_ik_pemeriksaan_detail_show', ['id' => $id, 's' => $s]);
-=======
-        $dp = DetailProduk::all();
-        return view('page.qc.pengujian_ik_pemeriksaan', ['dp' => $dp]);
->>>>>>> fe6949fb8fcf1caf0f4993ccf51f5b05e494eee5
+        $sp = DetailProduk::find($id);
+        return view('page.qc.pengujian_ik_pemeriksaan_detail_show', ['id' => $id, 's' => $s, 'sp' => $sp]);
+    }
+
+    public function pengujian_ik_pemeriksaan_hasil_edit($id)
+    {
+        $s = IkPemeriksaanPengujian::find($id);
+        return view('page.qc.pengujian_ik_pemersikaan_detail_edit', ['id' => $id, 's' => $s]);
+    }
+
+    public function pengujian_ik_pemeriksaan_hasil_create($id)
+    {
+        return view('page.qc.pengujian_ik_pemeriksaan', ['id' => $id]);
     }
 
     public function tambah_pemeriksaan_rakit($id)

@@ -3,7 +3,7 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
-                    <h2>Monitoring Proses</h2>
+                    <h2>Laporan Pengemasan</h2>
                     <table id="detaildata" class="table table-hover styled-table-small table-striped table-item" style="width:100%;">
                         <thead style="text-align: center;">
                             <!-- <tr>
@@ -15,7 +15,6 @@
                                 <th>No</th>
                                 <th>Tanggal</th>
                                 <th>Operator</th>
-                                <th>Jumlah</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>

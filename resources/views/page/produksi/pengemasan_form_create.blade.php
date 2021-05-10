@@ -7,7 +7,7 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>Pengujian</h1>
+                <h1>Pengemasan</h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
@@ -48,11 +48,11 @@
                     </button>
                 </div>
                 @endif
-                <form action="{{route('pengujian.ik_pemeriksaan.store')}}" method="post" enctype="multipart/form-data">
+                <form action="{{route('pengemasan.form.store')}}" method="post" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <div class="card">
                         <div class="card-header bg-success">
-                            <h3 class="card-title" style="color:white;"><i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;Tambahkan Monitoring Proses</h3>
+                            <h3 class="card-title" style="color:white;"><i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;Tambahkan Pengemasan Produk</h3>
                         </div>
                         <div class="card-body">
 
@@ -91,15 +91,15 @@
                                         </div>
                                     </div>
 
-                                    <h3>Data Pemeriksaan</h3>
+                                    <h3>Perlengkapan Pengemasan</h3>
                                     <div class="form-horizontal">
 
                                         <div id="formpemeriksaan">
                                             <div class="form-group row">
-                                                <label for="hal_yang_diperiksa_add" class="col-sm-5 col-form-label" style="text-align:right;">Hal yang diperiksa</label>
+                                                <label for="perlengkapan_add" class="col-sm-5 col-form-label" style="text-align:right;">Perlengkapan</label>
                                                 <div class="col-sm-4">
-                                                    <textarea name="hal_yang_diperiksa_add" id="hal_yang_diperiksa_add" class="form-control"></textarea>
-                                                    <small id="hal_yang_diperiksa_msg"></small>
+                                                    <textarea name="perlengkapan_add" id="perlengkapan_add" class="form-control"></textarea>
+                                                    <small id="perlengkapan_msg"></small>
                                                 </div>
                                                 <div class="col-sm-2 col-form-label" style="text-align:left;">
 
@@ -111,14 +111,14 @@
                                                     <thead style="text-align:center;">
                                                         <tr>
                                                             <th>No</th>
-                                                            <th>Pemeriksaan</th>
+                                                            <th>Nama Barang</th>
                                                             <th>Aksi</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody style="text-align: center;">
                                                         <td>1</td>
-                                                        <td><textarea name="standar_keberterimaan_add[]" id="standar_keberterimaan_add" class="form-control standar_keberterimaan" style="width: 50%;"></textarea>
-                                                            <small id="standar_keberterimaan_msg"></small>
+                                                        <td><textarea name="nama_barang_add[]" id="nama_barang_add" class="form-control nama_barang" style="width: 50%;"></textarea>
+                                                            <small id="nama_barang_msg"></small>
                                                         </td>
                                                         <td><button type="button" class="btn btn-success btn-sm m-1 tambahitem" style="border-radius:50%;" id="tambahitem"><i class="fas fa-plus-circle"></i></button></td>
                                                     </tbody>
@@ -138,7 +138,7 @@
                     </div>
                     <div class="card">
                         <div class="card-header bg-success">
-                            <h3 class="card-title" style="color:white;"><i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;Data Pemeriksaan Proses</h3>
+                            <h3 class="card-title" style="color:white;"><i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;Data Pengemasan</h3>
                         </div>
                         <div class="card-body">
                             <div class="col-md-12">
@@ -147,8 +147,8 @@
                                         <thead>
                                             <tr>
                                                 <th>No</th>
-                                                <th>Hal yang diperiksa</th>
-                                                <th>Standar Keberterimaan</th>
+                                                <th>Perlengkapan</th>
+                                                <th>Nama Barang</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -183,7 +183,7 @@
             console.log(detail_produk_id);
             if (detail_produk_id) {
                 $.ajax({
-                    url: 'get_detail_produk_by_id/' + detail_produk_id,
+                    url: '/pengemasan/form/create/get_detail_produk_by_id/' + detail_produk_id,
                     type: "GET",
                     dataType: "json",
                     success: function(data) {
@@ -216,8 +216,8 @@
         // $("#aksi2").on('click', function() {
         //     var rowCount1 = $('#tableitems12 tbody tr').length;
         //     var x = `<tr><td class="personal"></td>
-        //         <td class="personal"><textarea name="hal_yang_diperiksa[]" id="hal_yang_diperiksa" class="form-control"></textarea></td>
-        //         <td><textarea name="standar_keberterimaan[]" id="standar_keberterimaan" class="form-control"></textarea></td>
+        //         <td class="personal"><textarea name="perlengkapan[]" id="perlengkapan" class="form-control"></textarea></td>
+        //         <td><textarea name="nama_barang[]" id="nama_barang" class="form-control"></textarea></td>
         //         <td><button type = "button" class="btn btn-sm btn-success" style="border-radius: 50%;" id="aksi"><i class="fas fa-plus"></i></button></td>
         //         <td class="personal"><button type="button" class="btn btn-sm btn-danger" style="border-radius: 50%;" id="delaksi2"><i class="fas fa-times"></i></button></td>
         //         </tr>`;
@@ -230,7 +230,7 @@
             $t.find("tr").each(function(ind, el) {
                 $(el).find("td:eq(0)").html(++c);
                 var j = c - 1;
-                $(el).find('input[id="standar_keberterimaan"]').attr('name', 'standar_keberterimaan[][' + j + ']');
+                $(el).find('input[id="nama_barang"]').attr('name', 'nama_barang[][' + j + ']');
             });
         }
 
@@ -240,8 +240,8 @@
         //         console.log(c);
         //         $(el).find("td:eq(0)").html(++c);
         //         var j = c - 1;
-        //         $(el).find('textarea[id="hal_yang_diperiksa"]').attr('name', 'hal_yang_diperiksa[' + j + ']');
-        //         $(el).find('.standar_keberterimaan').attr('name', 'standar_keberterimaan[' + j + '][]');
+        //         $(el).find('textarea[id="perlengkapan"]').attr('name', 'perlengkapan[' + j + ']');
+        //         $(el).find('.nama_barang').attr('name', 'nama_barang[' + j + '][]');
         //     });
         // }
 
@@ -249,8 +249,8 @@
         $('.tambahitem').click(function(e) {
             $('.tableitem tr:last').after(`<tr class="personal">
                 <td></td>
-                <td><textarea name="standar_keberterimaan_add[]" id="standar_keberterimaan_add" class="form-control standar_keberterimaan" style="width: 50%;"></textarea>
-                <small id="standar_keberterimaan_msg"></small></td>
+                <td><textarea name="nama_barang_add[]" id="nama_barang_add" class="form-control nama_barang" style="width: 50%;"></textarea>
+                <small id="nama_barang_msg"></small></td>
                 <td><button type="button" class="btn btn-danger btn-sm m-1" style="border-radius:50%;" id="closetable" ><i class="fas fa-times-circle"></i></button></td>
             </tr>`);
             numberRows($(".tableitem"));
@@ -258,62 +258,71 @@
 
 
         $('#tambahpemeriksaan').on('click', function() {
-            var hal_yg_diperiksa = $('textarea[name="hal_yang_diperiksa_add"]').val();
-            var standar_keberterimaan_arr = [];
+            var perlengkapan = $('textarea[name="perlengkapan_add"]').val();
+            var nama_barang_arr = [];
             var sk = [];
             var bool = true;
-            $("textarea[name='standar_keberterimaan_add[]']").each(function() {
+            $("textarea[name='nama_barang_add[]']").each(function() {
                 sk.push($(this).val());
                 if ($(this).val() == "") {
                     bool = false;
                 }
             });
-            if (bool == true && hal_yg_diperiksa != null) {
+            if (bool == true && perlengkapan !== "") {
+                console.log(perlengkapan);
                 var first = true;
                 var data = "";
                 data += `<tr>
                 <td rowspan = "` + sk.length + `">` + (numrows + 1) + `</td>
-                <td rowspan = "` + sk.length + `"><textarea id="hal_yang_diperiksa" name="hal_yang_diperiksa[` + numrows + `]" class="form-control" hidden> ` + hal_yg_diperiksa + ` </textarea>` + hal_yg_diperiksa + `</td>`;
+                <td rowspan = "` + sk.length + `"><textarea id="perlengkapan" name="perlengkapan[` + numrows + `]" class="form-control" hidden> ` + perlengkapan + ` </textarea>` + perlengkapan + `</td>`;
                 for (var j = 0; j < sk.length; j++) {
                     if (first == true) {
-                        data += `<td><textarea id="standar_keberterimaan" name="standar_keberterimaan[` + numrows + `][]" class="form-control standar_keberterimaan" hidden>` + sk[j] + `</textarea>` + sk[j] + `</td>
+                        data += `<td><textarea id="nama_barang" name="nama_barang[` + numrows + `][]" class="form-control nama_barang" hidden>` + sk[j] + `</textarea>` + sk[j] + `</td>
                              </tr>`;
                         first = false;
                     } else if (first == false) {
-                        data += `<tr><td><textarea id="standar_keberterimaan" name="standar_keberterimaan[` + numrows + `][]" class="form-control standar_keberterimaan" hidden>` + sk[j] + `</textarea>` + sk[j] + `</td>
+                        data += `<tr><td><textarea id="nama_barang" name="nama_barang[` + numrows + `][]" class="form-control nama_barang" hidden>` + sk[j] + `</textarea>` + sk[j] + `</td>
                     </tr>`;
                     }
                 }
                 numrows++;
                 $('#tableitems tr:last').after(data);
-                $('textarea[name="hal_yang_diperiksa_add"]').val("");
-                $('textarea[id="standar_keberterimaan_add"]').val("");
+                $('textarea[name="perlengkapan_add"]').val("");
+                $('textarea[id="nama_barang_add"]').val("");
                 $("#tableitem").find("tr:gt(1)").remove();
 
-                $('#hal_yang_diperiksa_msg').removeClass("invalid-feedback");
-                $('textarea[name="hal_yang_diperiksa_add"]').removeClass("is-invalid");
-                $('#hal_yang_diperiksa_msg').html("");
+                $('#perlengkapan_msg').removeClass("invalid-feedback");
+                $('textarea[name="perlengkapan_add"]').removeClass("is-invalid");
+                $('#perlengkapan_msg').html("");
 
-                $('#standar_keberterimaan_msg').removeClass("invalid-feedback");
-                $('textarea[id="standar_keberterimaan_add"]').removeClass("is-invalid");
-                $('#standar_keberterimaan_msg').html("");
-            } else if (bool == false || hal_yg_diperiksa == null) {
-                if (hal_yg_diperiksa == null && bool == true) {
-                    $('#hal_yang_diperiksa_msg').addClass("invalid-feedback");
-                    $('textarea[name="hal_yang_diperiksa_add"]').addClass("is-invalid");
-                    $('#hal_yang_diperiksa_msg').html("Harus Diisi");
-                } else if (hal_yg_diperiksa != null && bool == false) {
-                    $('#standar_keberterimaan_msg').addClass("invalid-feedback");
-                    $('textarea[id="standar_keberterimaan_add"]').addClass("is-invalid");
-                    $('#standar_keberterimaan_msg').html("Harus Diisi");
+                $('#nama_barang_msg').removeClass("invalid-feedback");
+                $('textarea[id="nama_barang_add"]').removeClass("is-invalid");
+                $('#nama_barang_msg').html("");
+            } else if (bool == false || perlengkapan === "") {
+                if (perlengkapan === "" && bool == true) {
+                    $('#perlengkapan_msg').addClass("invalid-feedback");
+                    $('textarea[name="perlengkapan_add"]').addClass("is-invalid");
+                    $('#perlengkapan_msg').html("Harus Diisi");
+
+                    $('#nama_barang_msg').removeClass("invalid-feedback");
+                    $('textarea[id="nama_barang_add"]').removeClass("is-invalid");
+                    $('#nama_barang_msg').html("");
+                } else if (perlengkapan !== "" && bool == false) {
+                    $('#perlengkapan_msg').removeClass("invalid-feedback");
+                    $('textarea[name="perlengkapan_add"]').removeClass("is-invalid");
+                    $('#perlengkapan_msg').html("");
+
+                    $('#nama_barang_msg').addClass("invalid-feedback");
+                    $('textarea[id="nama_barang_add"]').addClass("is-invalid");
+                    $('#nama_barang_msg').html("Harus Diisi");
                 } else {
-                    $('#hal_yang_diperiksa_msg').addClass("invalid-feedback");
-                    $('textarea[name="hal_yang_diperiksa_add"]').addClass("is-invalid");
-                    $('#hal_yang_diperiksa_msg').html("Harus Diisi");
+                    $('#perlengkapan_msg').addClass("invalid-feedback");
+                    $('textarea[name="perlengkapan_add"]').addClass("is-invalid");
+                    $('#perlengkapan_msg').html("Harus Diisi");
 
-                    $('#standar_keberterimaan_msg').addClass("invalid-feedback");
-                    $('textarea[id="standar_keberterimaan_add"]').addClass("is-invalid");
-                    $('#standar_keberterimaan_msg').html("Harus Diisi");
+                    $('#nama_barang_msg').addClass("invalid-feedback");
+                    $('textarea[id="nama_barang_add"]').addClass("is-invalid");
+                    $('#nama_barang_msg').html("Harus Diisi");
                 }
             }
             // numberRows1($("#tableitems"));

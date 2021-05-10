@@ -115,7 +115,7 @@
                                 <label for="brc" class="col-sm-4 col-form-label" style="text-align:right;">Barcode</label>
                                 <div class="col-sm-1 col-form-label">
                                     <div class="icheck-primary d-inline">
-                                        <input type="radio" id="brc_ya" name="brc" value="ya" @if(!is_null($s->HasilMonitoringProses->pluck('no_barcode'))) checked @endif>
+                                        <input type="radio" id="brc_ya" name="brc" value="ya" @if (!is_null($s->HasilMonitoringProses->pluck('no_barcode'))) checked @endif>
                                         <label for="brc_ya">
                                             Buat
                                         </label>
@@ -123,7 +123,7 @@
                                 </div>
                                 <div class="col-sm-2 col-form-label">
                                     <div class="icheck-primary d-inline">
-                                        <input type="radio" id="brc_tidak" name="brc" value="tidak" @if(is_null($s->HasilMonitoringProses->pluck('no_barcode'))) checked @endif>
+                                        <input type="radio" id="brc_tidak" name="brc" value="tidak" @if (is_null($s->HasilMonitoringProses->pluck('no_barcode'))) checked @endif>
                                         <label for="brc_tidak">
                                             Tidak
                                         </label>
@@ -213,6 +213,24 @@
                                             </td>
                                             <td>
                                                 <div class="form-group">
+                                                    <div class="select2-info">
+                                                        <select class="select2 form-control pemeriksaan @error('pemeriksaan') is-invalid @enderror" multiple="multiple" name="pemeriksaan[{{$loop->iteration - 1}}][]" id="pemeriksaan{{$loop->iteration - 1}}" data-placeholder="Standar yang tidak sesuai" data-dropdown-css-class="select2-info" @if($j->hasil == "ok") disabled @endif>
+                                                            @foreach($p as $z)
+                                                            <optgroup label="{{$z->hal_yang_diperiksa}}">
+                                                                @foreach($z->HasilIkPemeriksaanPengujian as $x)
+                                                                <option value="{{$x->id}}" @if($j->HasilIkPemeriksaanPengujian->contains('id', $x->id)) selected @endif>{{$x->standar_keberterimaan}}</option>
+                                                                @endforeach
+                                                            </optgroup>
+                                                            @endforeach
+                                                        </select>
+                                                        @if ($errors->has('pemeriksaan'))
+                                                        <span class="invalid-feedback" role="alert">{{$errors->first('pemeriksaan')}}</span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group">
                                                     <div class="input-group">
                                                         <textarea class="form-control @error('keterangan') is-invalid @enderror" name="keterangan[{{$loop->iteration - 1}}]" id="keterangan"></textarea>
                                                     </div>
@@ -285,6 +303,8 @@
                 $(el).find('input[id="mpid"]').attr('name', 'mpid[' + j + ']');
                 $(el).find('.no_seri').attr('name', 'no_seri[' + j + ']');
                 $(el).find('.no_seri').attr('id', 'no_seri[' + j + ']');
+                $(el).find('.pemeriksaan').attr('name', 'pemeriksaan[' + j + '][]');
+                $(el).find('.pemeriksaan').attr('id', 'pemeriksaan' + j);
                 $(el).find('.hasil').attr('id', 'ok' + j);
                 $(el).find('.hasil').attr('id', 'nok' + j);
                 $(el).find('.hasil').attr('name', 'hasil[' + j + ']');
@@ -293,6 +313,7 @@
                 $(el).find('textarea[id="keterangan"]').attr('name', 'keterangan[' + j + ']');
                 $('.tindak_lanjut').select2();
                 $('.no_seri').select2();
+                $('.pemeriksaan').select2();
             });
         }
 
@@ -363,6 +384,24 @@
                 </td>
                 <td>
                     <div class="form-group">
+                        <div class="select2-info">
+                            <select class="select2 form-control pemeriksaan @error('pemeriksaan') is-invalid @enderror" multiple="multiple" name="pemeriksaan[][]" id="pemeriksaan" data-placeholder="Standar yang tidak sesuai" data-dropdown-css-class="select2-info" disabled>
+                                @foreach($p as $i)
+                                <optgroup label="{{$i->hal_yang_diperiksa}}">
+                                    @foreach($i->HasilIkPemeriksaanPengujian as $j)
+                                    <option value="{{$j->id}}">{{$j->standar_keberterimaan}}</option>
+                                    @endforeach
+                                </optgroup>
+                                @endforeach
+                            </select>
+                            @if ($errors->has('pemeriksaan'))
+                            <span class="invalid-feedback" role="alert">{{$errors->first('pemeriksaan')}}</span>
+                            @endif
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group">
                         <div class="input-group">
                             <textarea class="form-control @error('keterangan') is-invalid @enderror" name="keterangan[]" id="keterangan"></textarea>
                         </div>
@@ -396,6 +435,7 @@
             if (this.value == 'ok') {
                 // $('select').select2('val', '');
                 $(this).closest('tr').find('select.tindak_lanjut').val('').trigger('change');
+                $(this).closest('tr').find("select.pemeriksaan").attr('disabled', true);
                 $(this).closest('tr').find("select.tindak_lanjut option[value='pengemasan']").attr('disabled', false);
                 $(this).closest('tr').find("select.tindak_lanjut option[value='perbaikan']").attr('disabled', true);
                 $(this).closest('tr').find("select.tindak_lanjut option[value='produk_spesialis']").attr('disabled', true);
@@ -403,6 +443,7 @@
             } else if (this.value == 'nok') {
                 // $('select').select2('val', '');
                 $(this).closest('tr').find('select.tindak_lanjut').val('').trigger('change');
+                $(this).closest('tr').find("select.pemeriksaan").attr('disabled', false);
                 $(this).closest('tr').find("select.tindak_lanjut option[value='pengemasan']").attr('disabled', true);
                 $(this).closest('tr').find("select.tindak_lanjut option[value='perbaikan']").attr('disabled', false);
                 $(this).closest('tr').find("select.tindak_lanjut option[value='produk_spesialis']").attr('disabled', false);

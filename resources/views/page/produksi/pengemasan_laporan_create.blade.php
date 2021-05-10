@@ -7,7 +7,7 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>Pengujian</h1>
+                <h1>Pengemasan</h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
@@ -50,12 +50,12 @@
                 @endif
                 <div class="card">
                     <div class="card-header bg-success">
-                        <h3 class="card-title" style="color:white;"><i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;Tambahkan Monitoring Proses</h3>
+                        <h3 class="card-title" style="color:white;"><i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;Tambahkan Pengemasan</h3>
                     </div>
                     <div class="card-body">
 
                         <div class="col-md-12">
-                            <form action="{{ route('pengujian.monitoring_proses.store', ['bppb_id' => $bppb_id]) }}" method="post" enctype="multipart/form-data">
+                            <form action="{{ route('pengemasan.laporan.store', ['bppb_id' => $id]) }}" method="post" enctype="multipart/form-data">
                                 {{ csrf_field() }}
                                 {{ method_field('PUT') }}
                                 <h3>Info BPPB</h3>
@@ -82,7 +82,7 @@
                                         </div>
                                     </div>
 
-                                    <h3>Data Monitoring Proses</h3>
+                                    <h3>Data Pengemasan</h3>
                                     <div class="form-horizontal">
                                         <div class="form-group row">
                                             <label for="tanggal_laporan" class="col-sm-4 col-form-label" style="text-align:right;">Tanggal Laporan</label>
@@ -134,17 +134,26 @@
                                         </div>
 
                                         <div class="form-group row">
-                                            <table id="tableitem" class="table table-hover">
+                                            <table id="tableitem" class="table table-hover table-bordered">
                                                 <thead style="text-align: center;">
                                                     <tr>
-                                                        <th>No</th>
-                                                        <th>No Seri</th>
-                                                        <th>Barcode</th>
-                                                        <th>Hasil Cek</th>
-                                                        <th>Permasalahan</th>
-                                                        <th>Keterangan</th>
-                                                        <th>Tindak Lanjut</th>
-                                                        <th>Aksi</th>
+                                                        <th rowspan="2">No</th>
+                                                        <th rowspan="2">No Seri</th>
+                                                        <th rowspan="2">Barcode</th>
+                                                        <th rowspan="2">Kondisi Unit</th>
+                                                        @foreach($cp as $cps)
+                                                        <th colspan="{{count($cps->DetailCekPengemasan)}}">{{$cps->perlengkapan}}</th>
+                                                        @endforeach
+                                                        <th rowspan="2">Keterangan</th>
+                                                        <th rowspan="2">Tindak Lanjut</th>
+                                                        <th rowspan="2">Aksi</th>
+                                                    </tr>
+                                                    <tr>
+                                                        @foreach($cp as $cps)
+                                                        @foreach($cps->DetailCekPengemasan as $i)
+                                                        <th>{{$i->nama_barang}}</th>
+                                                        @endforeach
+                                                        @endforeach
                                                     </tr>
                                                 </thead>
                                                 <tbody style="text-align:center;">
@@ -153,10 +162,10 @@
                                                         <td>
                                                             <div class="form-group">
                                                                 <div class="select2-info">
-                                                                    <select class="select2 form-control @error('no_seri') is-invalid @enderror no_seri" data-placeholder="Pilih No Seri" data-dropdown-css-class="select2-info" style="width: 100%;" name="no_seri[]" id="no_seri">
+                                                                    <select class="select2 form-control @error('no_seri') is-invalid @enderror no_seri" data-placeholder="Pilih No Seri" data-dropdown-css-class="select2-info" style="width: 100%;" name="no_seri[0]" id="no_seri">
                                                                         <option value=""></option>
                                                                         @foreach($s as $i)
-                                                                        <option value="{{$i->id}}">{{$i->no_seri}} @if($i->status == "rej_pemeriksaan_terbuka" || $i->status == "rej_pemeriksaan_tertutup") * @endif
+                                                                        <option value="{{$i->HasilPerakitan->id}}">{{$i->HasilPerakitan->no_seri}}
                                                                         </option>
                                                                         @endforeach
                                                                     </select>
@@ -170,7 +179,7 @@
                                                         <td>
                                                             <div class="form-group">
                                                                 <div class="input-group">
-                                                                    <input type="text" class="form-control @error('no_barcode') is-invalid @enderror barcode" name="no_barcode[]" id="no_barcode">
+                                                                    <input type="text" class="form-control @error('no_barcode') is-invalid @enderror barcode" name="no_barcode[0]" id="no_barcode">
                                                                 </div>
                                                                 @if ($errors->has('no_barcode'))
                                                                 <span class="invalid-feedback" role="alert">{{$errors->first('no_barcode')}}</span>
@@ -183,7 +192,7 @@
                                                                 <div class="col-sm-12">
                                                                     <div class="form-group clearfix">
                                                                         <div class="icheck-success d-inline checked">
-                                                                            <input type="radio" name="hasil[]" id="ok" class="hasil" value="ok" checked>
+                                                                            <input type="radio" name="kondisi_unit[0]" id="ok" class="kondisi_unit" value="ok" checked>
                                                                             <label for="ok">
                                                                                 <i class="fas fa-check-circle" style="color:green;"></i>
                                                                             </label>
@@ -195,7 +204,7 @@
                                                                 <div class="col-sm-12">
                                                                     <div class="form-group clearfix">
                                                                         <div class="icheck-danger d-inline">
-                                                                            <input type="radio" name="hasil[]" id="nok" value="nok" class="hasil">
+                                                                            <input type="radio" name="kondisi_unit[0]" id="nok" value="nok" class="kondisi_unit">
                                                                             <label for="nok">
                                                                                 <i class="fas fa-times-circle" style="color:red;"></i>
                                                                             </label>
@@ -204,34 +213,47 @@
                                                                 </div>
                                                             </div>
                                                         </td>
+                                                        @foreach($cp as $cps)
+                                                        @php ($k = $loop->iteration - 1); @endphp
+                                                        @foreach($cps->DetailCekPengemasan as $i)
                                                         <td>
-                                                            <div class="form-group">
-                                                                <div class="select2-info">
-                                                                    <select class="select2 form-control pemeriksaan  @error('pemeriksaan') is-invalid @enderror" multiple="multiple" name="pemeriksaan[]" id="pemeriksaan" data-placeholder="Standar yang tidak sesuai" data-dropdown-css-class="select2-info" disabled>
-                                                                        @foreach($p as $i)
-                                                                        <optgroup label="{{$i->hal_yang_diperiksa}}">
-                                                                            @foreach($i->HasilIkPemeriksaanPengujian as $j)
-                                                                            <option value="{{$j->id}}">{{$j->standar_keberterimaan}}</option>
-                                                                            @endforeach
-                                                                        </optgroup>
-                                                                        @endforeach
-                                                                    </select>
-                                                                    @if ($errors->has('pemeriksaan'))
-                                                                    <span class="invalid-feedback" role="alert">{{$errors->first('pemeriksaan')}}</span>
-                                                                    @endif
+                                                            <div class="row">
+                                                                <div class="col-sm-12">
+                                                                    <div class="form-group clearfix">
+                                                                        <div class="icheck-success d-inline checked">
+                                                                            <input type="radio" name="detail_cek_pengemasan[0][{{$k}}][{{$loop->iteration - 1}}]" id="detail_cek_pengemasan0{{$k}}{{$loop->iteration - 1}}" class="detail_cek_pengemasan" value="{{$i->id}}" checked>
+                                                                            <label for="detail_cek_pengemasan0{{$k}}{{$loop->iteration - 1}}">
+                                                                                <i class="fas fa-check-circle" style="color:green;"></i>
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-sm-12">
+                                                                    <div class="form-group clearfix">
+                                                                        <div class="icheck-danger d-inline">
+                                                                            <input type="radio" name="detail_cek_pengemasan[0][{{$k}}][{{$loop->iteration - 1}}]" id="nok0{{$k}}{{$loop->iteration - 1}}" value="nok" class="detail_cek_pengemasan">
+                                                                            <label for="nok0{{$k}}{{$loop->iteration - 1}}">
+                                                                                <i class="fas fa-times-circle" style="color:red;"></i>
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </td>
+                                                        @endforeach
+                                                        @endforeach
                                                         <td>
                                                             <div class="form-group">
                                                                 <div class="input-group">
-                                                                    <textarea class="form-control @error('keterangan') is-invalid @enderror" name="keterangan[]" id="keterangan"></textarea>
+                                                                    <textarea class="form-control @error('keterangan') is-invalid @enderror" name="keterangan[0]" id="keterangan"></textarea>
                                                                 </div>
                                                             </div>
                                                         </td>
                                                         <td>
-                                                            <select class="select2 custom-select form-control tindak_lanjut  @error('tindak_lanjut') is-invalid @enderror " name="tindak_lanjut[]" id="tindak_lanjut" data-placeholder="Pilih Tindak Lanjut" data-dropdown-css-class="select2-info" style="width: 80%;">
-                                                                <option value="pengemasan">Pengemasan</option>
+                                                            <select class="select2 custom-select form-control tindak_lanjut  @error('tindak_lanjut') is-invalid @enderror " name="tindak_lanjut[0]" id="tindak_lanjut0" data-placeholder="Pilih Tindak Lanjut" data-dropdown-css-class="select2-info" style="width: 80%;">
+                                                                <option value="ok">OK</option>
                                                                 <option value="perbaikan" disabled>Perbaikan</option>
                                                                 <option value="produk_spesialis" disabled>Produk Spesialis</option>
                                                             </select>
@@ -272,6 +294,7 @@
 <script>
     $(function() {
         var rdb = "";
+        var add = 0;
         $('input[type="radio"][name="brc"]').on("change", function() {
             if (this.value == 'ya') {
                 $('.barcode').attr('readonly', false);
@@ -283,130 +306,140 @@
             }
         });
 
-
         function numberRows($t) {
-            var c = 0 - 1;
+            var c = 0 - 2;
             $t.find("tr").each(function(ind, el) {
                 $(el).find("td:eq(0)").html(++c);
-                var j = c - 1;
-                $(el).find('input[id="no_barcode"]').attr('name', 'no_barcode[' + j + ']');
-                $(el).find('.no_seri').attr('name', 'no_seri[' + j + ']');
-                $(el).find('.no_seri').attr('id', 'no_seri[' + j + ']');
-                $(el).find('.hasil').attr('id', 'ok' + j);
-                $(el).find('.hasil').attr('id', 'nok' + j);
-                $(el).find('.hasil').attr('name', 'hasil[' + j + ']');
-                $(el).find('.tindak_lanjut').attr('name', 'tindak_lanjut[' + j + ']');
-                $(el).find('.tindak_lanjut').attr('id', 'tindak_lanjut' + j);
-                $(el).find('.pemeriksaan').attr('name', 'pemeriksaan[' + j + '][]');
-                $(el).find('.pemeriksaan').attr('id', 'pemeriksaan' + j);
-                $(el).find('textarea[id="keterangan"]').attr('name', 'keterangan[' + j + ']');
+                // var j = c - 1;
+                // $(el).find('input[id="no_barcode"]').attr('name', 'no_barcode[' + j + ']');
+                // $(el).find('.no_seri').attr('name', 'no_seri[' + j + ']');
+                // $(el).find('.no_seri').attr('id', 'no_seri[' + j + ']');
+                // $(el).find('.kondisi_unit').attr('id', 'ok' + j);
+                // $(el).find('.kondisi_unit').attr('id', 'nok' + j);
+                // $(el).find('.kondisi_unit').attr('name', 'kondisi_unit[' + j + ']');
+                // $(el).find('.tindak_lanjut').attr('name', 'tindak_lanjut[' + j + ']');
+                // $(el).find('.tindak_lanjut').attr('id', 'tindak_lanjut' + j);
+                // $(el).find('textarea[id="keterangan"]').attr('name', 'keterangan[' + j + ']');
                 $('.tindak_lanjut').select2();
                 $('.no_seri').select2();
-                $('.pemeriksaan').select2();
             });
         }
 
         $('#tambahitem').click(function(e) {
-            var data = `<tr>
-                <td></td>
-                <td>
-                    <div class="form-group">
-                        <div class="select2-info">
-                            <select class="select2 custom-select form-control @error('no_seri') is-invalid @enderror no_seri" data-placeholder="Pilih No Seri" data-dropdown-css-class="select2-info" style="width: 100%;" name="no_seri[]" id="no_seri">
+            add++;
+            var data = `
+            <tr>
+            <td></td>
+            <td>
+                <div class="form-group">
+                    <div class="select2-info">
+                        <select class="select2 form-control @error('no_seri') is-invalid @enderror no_seri" data-placeholder="Pilih No Seri" data-dropdown-css-class="select2-info" style="width: 100%;" name="no_seri[` + add + `]" id="no_seri` + add + `">
                             <option value=""></option>
                             @foreach($s as $i)
-                            <option value="{{$i->id}}">
-                            {{$i->no_seri}}@if($i->status == "rej_pemeriksaan_terbuka" || $i->status == "rej_pemeriksaan_tertutup") * @endif 
+                            <option value="{{$i->HasilPerakitan->id}}">{{$i->HasilPerakitan->no_seri}}
                             </option>
                             @endforeach
-                            </select>
-                            @if ($errors->has('no_seri'))
-                            <span class="invalid-feedback" role="alert">{{$errors->first('no_seri.*')}}</span>
-                            @endif
-                            <span id="no_seri-message[]" role="alert"></span>
-                        </div>
+                        </select>
+                        @if ($errors->has('no_seri'))
+                        <span class="invalid-feedback" role="alert">{{$errors->first('no_seri.*')}}</span>
+                        @endif
+                        <span id="no_seri-message[]" role="alert"></span>
                     </div>
-                </td>
-                <td>
-                    <div class="form-group">
-                        <div class="input-group">
-                            <input type="text" class="form-control @error('no_barcode') is-invalid @enderror barcode" name="no_barcode[]" id="no_barcode"`;
+                </div>
+            </td>
+            <td>
+                <div class="form-group">
+                    <div class="input-group">
+                        <input type="text" class="form-control @error('no_barcode') is-invalid @enderror barcode" name="no_barcode[` + add + `]" id="no_barcode" `;
             if (rdb == 'tidak') {
                 data += `readonly`;
             }
             data += `>
-                        </div>
-                        @if ($errors->has('no_barcode'))
-                        <span class="invalid-feedback" role="alert">{{$errors->first('no_barcode')}}</span>
-                        @endif
-                        <span id="no_barcode-message[]" role="alert"></span>
                     </div>
-                </td>
-                <td>
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="form-group clearfix">
-                                <div class="icheck-success d-inline checked">
-                                    <input type="radio" name="hasil[]" id="ok" class="hasil" value="ok" checked>
-                                    <label for="ok">
-                                        <i class="fas fa-check-circle" style="color:green;"></i>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="form-group clearfix">
-                                <div class="icheck-danger d-inline">
-                                    <input type="radio" name="hasil[]" id="nok" value="nok" class="hasil">
-                                    <label for="nok">
-                                        <i class="fas fa-times-circle" style="color:red;"></i>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    <div class="form-group">
-                        <div class="select2-info">
-                            <select class="select2 form-control pemeriksaan @error('pemeriksaan') is-invalid @enderror" multiple="multiple" name="pemeriksaan[]" id="pemeriksaan" data-placeholder="Standar yang tidak sesuai" data-dropdown-css-class="select2-info" disabled>
-                                @foreach($p as $i)
-                                <optgroup label="{{$i->hal_yang_diperiksa}}">
-                                    @foreach($i->HasilIkPemeriksaanPengujian as $j)
-                                    <option value="{{$j->id}}">{{$j->standar_keberterimaan}}</option>
-                                    @endforeach
-                                </optgroup>
-                                @endforeach
-                            </select>
-                            @if ($errors->has('pemeriksaan'))
-                            <span class="invalid-feedback" role="alert">{{$errors->first('pemeriksaan')}}</span>
-                            @endif
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    <div class="form-group">
-                        <div class="input-group">
-                            <textarea class="form-control @error('keterangan') is-invalid @enderror" name="keterangan[]" id="keterangan"></textarea>
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    <select class="select2 custom-select form-control  @error('tindak_lanjut') is-invalid @enderror tindak_lanjut" name="tindak_lanjut[]" id="tindak_lanjut" data-placeholder="Pilih Tindak Lanjut" data-dropdown-css-class="select2-info" style="width: 80%;">
-                        <option value="pengemasan">Pengemasan</option>
-                        <option value="perbaikan" disabled>Perbaikan</option>
-                        <option value="produk_spesialis" disabled>Produk Spesialis</option>
-                    </select>
-                    @if ($errors->has('tindak_lanjut'))
-                    <span class="invalid-feedback" role="alert">{{$errors->first('tindak_lanjut')}}</span>
+                    @if ($errors->has('no_barcode'))
+                    <span class="invalid-feedback" role="alert">{{$errors->first('no_barcode')}}</span>
                     @endif
-                </td>
-                <td>
-                    <button type="button" class="btn btn-danger karyawan-img-small" style="border-radius:50%;" id="closetable"><i class="fas fa-times-circle"></i></button>
-                </td>
-            </tr>`;
+                    <span id="no_barcode-message[]" role="alert"></span>
+                </div>
+            </td>
+            <td>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group clearfix">
+                            <div class="icheck-success d-inline checked">
+                                <input type="radio" name="kondisi_unit[` + add + `]" id="ok" class="kondisi_unit" value="baik" checked>
+                                <label for="ok">
+                                    <i class="fas fa-check-circle" style="color:green;"></i>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group clearfix">
+                            <div class="icheck-danger d-inline">
+                                <input type="radio" name="kondisi_unit[` + add + `]" id="nok" value="tidak" class="kondisi_unit">
+                                <label for="nok">
+                                    <i class="fas fa-times-circle" style="color:red;"></i>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+            @foreach($cp as $cps)
+            @php ($k = $loop->iteration - 1); @endphp
+            @foreach($cps->DetailCekPengemasan as $i)
+            <td>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group clearfix">
+                            <div class="icheck-success d-inline checked">
+                                <input type="radio" name="detail_cek_pengemasan[` + add + `][{{$k}}][{{$loop->iteration - 1}}]" id="detail_cek_pengemasan` + add + `{{$k}}{{$loop->iteration - 1}}" class="detail_cek_pengemasan" value="{{$i->id}}" checked>
+                                <label for="detail_cek_pengemasan` + add + `{{$k}}{{$loop->iteration - 1}}">
+                                    <i class="fas fa-check-circle" style="color:green;"></i>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group clearfix">
+                            <div class="icheck-danger d-inline">
+                                <input type="radio" name="detail_cek_pengemasan[` + add + `][{{$k}}][{{$loop->iteration - 1}}]" id="nok` + add + `{{$k}}{{$loop->iteration - 1}}" value="nok" class="detail_cek_pengemasan">
+                                <label for="nok` + add + `{{$k}}{{$loop->iteration - 1}}">
+                                    <i class="fas fa-times-circle" style="color:red;"></i>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+            @endforeach
+            @endforeach
+            <td>
+                <div class="form-group">
+                    <div class="input-group">
+                        <textarea class="form-control @error('keterangan') is-invalid @enderror" name="keterangan[` + add + `]" id="keterangan"></textarea>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <select class="select2 custom-select form-control tindak_lanjut  @error('tindak_lanjut') is-invalid @enderror " name="tindak_lanjut[` + add + `]" id="tindak_lanjut` + add + `" data-placeholder="Pilih Tindak Lanjut" data-dropdown-css-class="select2-info" style="width: 80%;">
+                    <option value="ok">OK</option>
+                    <option value="perbaikan" disabled>Perbaikan</option>
+                    <option value="produk_spesialis" disabled>Produk Spesialis</option>
+                </select>
+                @if ($errors->has('tindak_lanjut'))
+                <span class="invalid-feedback" role="alert">{{$errors->first('tindak_lanjut')}}</span>
+                @endif
+            </td>
+            <td>
+                <button type="button" class="btn btn-danger karyawan-img-small" style="border-radius:50%;" id="closetable"><i class="fas fa-times-circle"></i></button>
+            </td>
+        </tr>`;
             $('#tableitem tr:last').after(data);
             numberRows($("#tableitem"));
         });
@@ -416,25 +449,23 @@
             numberRows($("#tableitem"));
         });
 
-        $('#tableitem').on('change', '.hasil', function(e) {
-            var hasil = $(this).closest('tr').find('.hasil');
+        $('#tableitem').on('change', '.kondisi_unit', function(e) {
+            var kondisi_unit = $(this).closest('tr').find('.kondisi_unit');
             if (this.value == 'ok') {
                 // $('select').select2('val', '');
                 $(this).closest('tr').find('select.tindak_lanjut').val('').trigger('change');
-                $(this).closest('tr').find("select.pemeriksaan").attr('disabled', true);
-                $(this).closest('tr').find("select.tindak_lanjut option[value='pengemasan']").attr('disabled', false);
+                $(this).closest('tr').find("select.tindak_lanjut option[value='ok']").attr('disabled', false);
                 $(this).closest('tr').find("select.tindak_lanjut option[value='perbaikan']").attr('disabled', true);
                 $(this).closest('tr').find("select.tindak_lanjut option[value='produk_spesialis']").attr('disabled', true);
 
             } else if (this.value == 'nok') {
                 // $('select').select2('val', '');
                 $(this).closest('tr').find('select.tindak_lanjut').val('').trigger('change');
-                $(this).closest('tr').find("select.pemeriksaan").attr('disabled', false);
-                $(this).closest('tr').find("select.tindak_lanjut option[value='pengemasan']").attr('disabled', true);
+                $(this).closest('tr').find("select.tindak_lanjut option[value='ok']").attr('disabled', true);
                 $(this).closest('tr').find("select.tindak_lanjut option[value='perbaikan']").attr('disabled', false);
                 $(this).closest('tr').find("select.tindak_lanjut option[value='produk_spesialis']").attr('disabled', false);
             }
         });
-    })
+    });
 </script>
 @stop

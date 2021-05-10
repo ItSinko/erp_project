@@ -27,6 +27,12 @@ class HasilPerakitan extends Model
         return $this->hasMany(HasilMonitoringProses::class);
     }
 
+    public function HasilPengemasan()
+    {
+        return $this->hasMany(HasilPengemasan::class);
+    }
+
+
     public function countStatus($status)
     {
         $k = $this->id;

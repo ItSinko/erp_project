@@ -14,7 +14,13 @@ class CreatePemeriksaanProsesPengujiansTable extends Migration
     public function up()
     {
         Schema::create('pemeriksaan_proses_pengujians', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
+            $table->bigInteger('bppb_id')->nullable()->unsigned();
+            $table->foreign('bppb_id')->references('id')->on('bppbs')->onDelete('set null');
+            $table->string('no_pemeriksaan', '50')->nullable();
+            $table->date('tanggal');
+            $table->integer('jumlah_produksi')->nullable();
+            $table->integer('jumlah_sampling')->nullable();
             $table->timestamps();
         });
     }
