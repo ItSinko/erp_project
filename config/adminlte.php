@@ -277,23 +277,23 @@ return [
         [
             'text' => 'Kesehatan',
             'icon' => 'fas fa-table',
-            'auth' => [26],
+            'auth' => [28],
             'submenu' => [
                 [
                     'icon' => 'far fa-circle',
                     'text' => 'Cek Awal',
-                    'auth' => [26],
+                    'auth' => [28],
                     'submenu' => [
                         [
                             'icon' => 'far fa-circle',
                             'text' => 'Data',
-                            'auth' => [26],
+                            'auth' => [28],
                             'url'  => '/kesehatan',
                         ],
                         [
                             'icon' => 'far fa-circle',
                             'text' => 'Detail',
-                            'auth' => [26],
+                            'auth' => [28],
                             'url'  => '/kesehatan/detail',
                         ]
                     ],
@@ -301,18 +301,18 @@ return [
                 [
                     'icon' => 'far fa-circle',
                     'text' => 'Cek Harian',
-                    'auth' => [26],
+                    'auth' => [28],
                     'submenu' => [
                         [
                             'icon' => 'far fa-circle',
                             'text' => 'Data',
-                            'auth' => [26],
+                            'auth' => [28],
                             'url'  => '/kesehatan_harian',
                         ],
                         [
                             'icon' => 'far fa-circle',
                             'text' => 'Detail',
-                            'auth' => [26],
+                            'auth' => [28],
                             'url'  => '/kesehatan_harian/detail',
                         ]
                     ],
@@ -320,18 +320,18 @@ return [
                 [
                     'icon' => 'far fa-circle',
                     'text' => 'Cek Mingguan',
-                    'auth' => [26],
+                    'auth' => [28],
                     'submenu' => [
                         [
                             'icon' => 'far fa-circle',
                             'text' => 'Data',
-                            'auth' => [26],
+                            'auth' => [28],
                             'url'  => '/kesehatan_mingguan',
                         ],
                         [
                             'icon' => 'far fa-circle',
                             'text' => 'Detail',
-                            'auth' => [26],
+                            'auth' => [28],
                             'url'  => '/kesehatan_mingguan/detail',
                         ]
                     ],
@@ -339,12 +339,12 @@ return [
                 [
                     'icon' => 'far fa-circle',
                     'text' => 'Cek Bulanan',
-                    'auth' => [26],
+                    'auth' => [28],
                     'submenu' => [
                         [
                             'icon' => 'far fa-circle',
                             'text' => 'Data',
-                            'auth' => [26],
+                            'auth' => [28],
                             'url'  => '/kesehatan_bulanan',
                         ],
                     ],
@@ -523,7 +523,7 @@ return [
             'text'    => 'Pengujian',
             'icon'    => 'fab fa-searchengin',
             'url' => '/pengujian',
-            'auth' => [17],
+            'auth' => [23],
         ],
         [
             'text'    => 'Pengemasan',

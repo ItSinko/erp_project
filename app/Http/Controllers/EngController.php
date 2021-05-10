@@ -68,4 +68,11 @@ class EngController extends Controller
         return datatables::of($data)->addIndexColumn()->make(true);
         // return $result;
     }
+
+    // function DC SPA
+    public function index()
+    {
+        $document = [];
+        return view('page.engineering.home', compact('documents', 'activities', 'tagCounts', 'documentCounts', 'filesCounts'));
+    }
 }

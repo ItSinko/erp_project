@@ -180,7 +180,25 @@
           data: 'siang'
         },
         {
-          data: 'sp'
+          data: 'spo2',
+          render: function(data) {
+            $l = '<br><span class="badge bg-danger">Rendah</span>';
+            $n = '<br><span class="badge bg-success">Normal</span>';
+            $w = '<br><span class="badge bg-warning">Tinggi</span>';
+            console.log(data);
+
+
+            if (data > 100) {
+              return data + ' %' + $w;
+            } else if (data < 59) {
+              return data + ' %' + $l;
+            } else if (data >= 60 || data <= 100) {
+              return data + ' %' + $n;
+            } else {
+              return 'gf';
+            }
+
+          }
         },
         {
           data: 'prx'
