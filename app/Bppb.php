@@ -60,6 +60,23 @@ class Bppb extends Model
         return $count;
     }
 
+    public function countRencanaPengemasan()
+    {
+        $count = 0;
+        $k = $this->MonitoringProses;
+
+        foreach ($k as $l) {
+            $m = HasilMonitoringProses::where(
+                [
+                    ['status', '=', 'pengemasan'],
+                    ['monitoring_proses_id', '=', $l->id]
+                ]
+            )->count();
+            $count = $count + $m;
+        }
+        return $count;
+    }
+
     public function PemeriksaanProsesPengujian()
     {
         return $this->hasMany(PemeriksaanProsesPengujian::class);

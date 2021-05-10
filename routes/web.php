@@ -389,9 +389,16 @@ Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {
 //PENGEMASAN
 Route::group(['prefix' => '/pengemasan', 'middleware' => 'auth'], function () {
     Route::get('/', 'ProduksiController@pengemasan')->name('pengemasan');
+    Route::get('/form', 'ProduksiController@pengemasan_form')->name('pengemasan.form');
+    Route::get('/form/show', 'ProduksiController@pengemasan_form_show')->name('pengemasan.form.show');
+    Route::get('/form/create', 'ProduksiController@pengemasan_form_create')->name('pengemasan.form.create');
+    Route::post('/form/store', 'ProduksiController@pengemasan_form_store')->name('pengemasan.form.store');
+    Route::get('/form/create/get_detail_produk_by_id/{id}', 'GetController@get_detail_produk_by_id');
     Route::get('/show', 'ProduksiController@pengemasan_show')->name('pengemasan.show');
-    Route::get('/laporan/{id}', 'ProduksiController@pengemasan_laporan')->name('pengemasan.laporan');
+    Route::get('/laporan', 'ProduksiController@pengemasan_laporan')->name('pengemasan.laporan');
     Route::get('/laporan/show/{id}', 'ProduksiController@pengemasan_laporan_show')->name('pengemasan.laporan.show');
+    Route::get('/laporan/create/{bppb_id}', 'ProduksiController@pengemasan_laporan_create')->name('pengemasan.laporan.create');
+    Route::put('/laporan/store/{bppb_id}', 'ProduksiController@pengemasan_laporan_store')->name('pengemasan.laporan.store');
 });
 
 

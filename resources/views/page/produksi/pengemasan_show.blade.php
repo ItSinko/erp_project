@@ -29,16 +29,11 @@
                     <table id="example" class="table table-hover styled-table">
                         <thead style="text-align: center;">
                             <tr>
-                                <th colspan="12">
-                                    <a href="{{route('perakitan.create')}}" style="color: white;"><button type="button" class="btn btn-block btn-success btn-sm" style="width: 200px;"><i class="fas fa-plus"></i> &nbsp; Tambah Pengemasan BPPB</i></button></a>
-                                </th>
-                            </tr>
-                            <tr>
                                 <th>No</th>
                                 <th>No BPPB</th>
                                 <th>Gambar</th>
                                 <th>Tipe dan Nama</th>
-                                <th>Jumlah</th>
+                                <th>Jumlah Permintaan</th>
                                 <th>Laporan</th>
                                 <th>Aksi</th>
                             </tr>
@@ -52,7 +47,7 @@
                                 <th>No BPPB</th>
                                 <th>Gambar</th>
                                 <th>Tipe dan Nama</th>
-                                <th>Jumlah</th>
+                                <th>Jumlah Permintaan</th>
                                 <th>Laporan</th>
                                 <th>Aksi</th>
                             </tr>
@@ -105,7 +100,7 @@
             var href = $(this).attr('data-attr');
             var dataid = $(this).attr('data-id');
             $.ajax({
-                url: href,
+                url: "/pengemasan/laporan",
                 beforeSend: function() {
                     $('#loader').show();
                 },
@@ -117,7 +112,7 @@
                     $('#detaildata').DataTable({
                         processing: true,
                         serverSide: true,
-                        ajax: "/perakitan/laporan/show/" + dataid,
+                        ajax: href,
                         columns: [{
                                 data: 'DT_RowIndex',
                                 name: 'DT_RowIndex',
@@ -128,12 +123,8 @@
                                 name: 'tanggal'
                             },
                             {
-                                data: 'jumlah',
-                                name: 'jumlah'
-                            },
-                            {
-                                data: 'status',
-                                name: 'status'
+                                data: 'operator',
+                                name: 'operator'
                             },
                             {
                                 data: 'aksi',

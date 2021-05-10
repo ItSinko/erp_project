@@ -503,6 +503,12 @@ return [
                 ],
                 [
                     'icon' => 'far fa-circle',
+                    'text' => 'Form Produk',
+                    'url'  => '/pengemasan/form',
+                    'auth' => [17],
+                ],
+                [
+                    'icon' => 'far fa-circle',
                     'text' => 'IK Pemeriksaan',
                     'url'  => '/pengemasan/ik_pemeriksaan',
                     'auth' => [23],
