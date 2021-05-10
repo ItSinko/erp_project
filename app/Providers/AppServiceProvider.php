@@ -29,13 +29,5 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         View::composer('adminlte.page', AdminLteComposer::class);
-
-        Schema::defaultStringLength(191);
-        // requests number
-        $numReq = count(User::where('status', false)->get());
-        View::share('requests', $numReq);
-        // trash noti
-        $trash = count(Document::where('isExpire', 2)->get());
-        View::share('trashfull', $trash);
     }
 }

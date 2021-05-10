@@ -18,7 +18,7 @@
   <div class="modal-content">
     <h4>Bantuan</h4>
     <p>
-      Aplikasi ini berfungsi memudahkan penyimpanan file
+      Aplikasi ini berfungsi memudahkan penyimpanan file. Jika terjadi masalah silahkan hubungi pihak IT
     </p>
   </div>
   <div class="modal-footer">

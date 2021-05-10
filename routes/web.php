@@ -388,13 +388,22 @@ Route::group(['prefix' => '/pengemasan', 'middleware' => 'auth'], function () {
 
 // DOCUMENT CONTROL
 Route::group(['prefix' => 'dc', 'middleware' => 'auth'], function () {
-    Route::view('/dash', 'page.dokumen_spa.dashboard');
-    Route::get('/', 'dc_controller\HomeController@index')->name('dc.dashboard');
-    Route::resource('/documents', 'dc_controller\DocumentController');
-    Route::get('/eng', 'dc_controller\DocumentController@eng');
+    Route::get('/dashboard', 'digidocu\DocumentsController@dashboard')->name('dc.dashboard');
+    Route::get('/dep_doc/{id?}', 'digidocu\DocumentsController@dep_doc')->name('dc.dep_doc');
+    // documents
+    Route::resource('documents', 'digidocu\DocumentsController');
+    Route::get('documents/download/{id}', 'DocumentsController@download');
+    Route::get('documents/open/{id}', 'digidocu\DocumentsController@open');
+    Route::get('mydocuments', 'digidocu\DocumentsController@mydocuments');
+    Route::get('/trash', 'DocumentsController@trash');
+    Route::get('documents/restore/{id}', 'DocumentsController@restore');
+    Route::delete('documentsDeleteMulti', 'DocumentsController@deleteMulti');
 });
 
 // ARI Controller Temporary
+
+Route::get('/doc/test', 'digidocu\DocumentsController@test');
+
 //GUDANG
 Route::get('/gudang', 'GudangController@index')->name('gudang');
 Route::get('/gudang/data', 'GudangController@get_data')->name('gudang.data');
@@ -404,7 +413,8 @@ Route::get('/gudang/data', 'GudangController@get_data')->name('gudang.data');
 Route::get('/ppic', 'PpicController@index');
 Route::post('/schedule/create', 'PpicController@calendar_create')->name('schedule.create');
 Route::post('/schedule/delete', 'PpicController@calendar_delete')->name('schedule.delete');
-Route::get('test', 'PpicController@test')->name('schedule.test');
+Route::get('/bom', 'PpicController@bom');
+Route::get('get_bom', 'PpicController@get_bom');
 
 // Eng
 Route::view('/eng', 'page.engineering.index');
@@ -417,40 +427,3 @@ Route::get('test_spa', 'EngController@index');
 Route::get('/chat', 'ChatController@index');
 Route::get('/message', 'ChatController@fetchMessages');
 Route::post('/message', 'ChatController@sendMessage');
-
-// users
-Route::resource('users', 'UsersController');
-// departments
-Route::resource('departments', 'DepartmentsController');
-// categories
-Route::resource('categories', 'CategoriesController');
-Route::delete('categoriesDeleteMulti', 'CategoriesController@deleteMulti');
-// documents
-Route::resource('documents', 'digidocu\DocumentsController');
-Route::get('documents/download/{id}', 'DocumentsController@download');
-Route::get('documents/open/{id}', 'DocumentsController@open');
-Route::get('mydocuments', 'DocumentsController@mydocuments');
-Route::get('/trash', 'DocumentsController@trash');
-Route::get('documents/restore/{id}', 'DocumentsController@restore');
-Route::delete('documentsDeleteMulti', 'DocumentsController@deleteMulti');
-// search
-Route::post('/search', 'DocumentsController@search');
-// sort
-Route::post('/sort', 'DocumentsController@sort');
-// shared
-Route::resource('shared', 'ShareController');
-// roles and permissions
-Route::resource('roles', 'RolesController');
-// profile
-Route::resource('profile', 'ProfileController');
-Route::patch('profile', 'ProfileController@changePassword');
-// registeration requests
-Route::resource('requests', 'RequestsController');
-// backup
-Route::get('backup', 'BackupController@index');
-Route::get('backup/create', 'BackupController@create');
-Route::get('backup/download', 'BackupController@download');
-Route::get('backup/delete', 'BackupController@delete');
-// log
-Route::get('logs', 'LogController@log');
-Route::get('logsdel', 'LogController@logdel');

@@ -13,13 +13,21 @@
   $('#modal1').modal();
   // modal for help
   $('#modal2').modal();
+  // modal for add
+  $('#modal-add').modal();
   // DELETE using link
   $(function() {
     $('.data-delete').on('click', function(e) {
+      console.log(e);
       if (!confirm('Are you sure you want to delete?')) return;
       e.preventDefault();
+      console.log($(this).data('form'))
       $('#form-delete-' + $(this).data('form')).submit();
     });
+  });
+  // delete right click
+  $(function() {
+
   });
   // SHARE using link
   $(function() {

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('page.dokumen_spa.layout.app')
 
 @section('content')
 <style media="screen">
@@ -6,6 +6,7 @@
     display: flex;
     justify-content: center;
   }
+
   .btn-circle {
     width: 56px;
     height: 56px;
@@ -15,6 +16,7 @@
     padding-top: 16px;
     margin: auto 5px;
   }
+
   .btn-circle i:hover {
     color: #000;
     transition: 0.5s all;
@@ -23,24 +25,18 @@
 <div class="row">
   <div class="section">
     <div class="col m1 hide-on-med-and-down">
-      @include('inc.sidebar')
+      @include('page.dokumen_spa.layout.sidebar')
     </div>
     <div class="col m11 s12">
       <div class="row">
         <h3 class="flow-text"><i class="material-icons">info</i> Document Information</h3>
         <div class="btn-icons">
           {!! Form::open() !!}
-          <a href="/documents/{{ $doc->id }}/edit" class="btn-circle teal waves-effect waves-light tooltipped" data-position="left" data-delay="50" data-tooltip="Edit this"><i class="material-icons">mode_edit</i></a>
-          <a href="/documents/open/{{ $doc->id }}" class="btn-circle blue darken-3 waves-effect waves-light tooltipped" data-position="top" data-delay="50" data-tooltip="Open this"><i class="material-icons">open_with</i></a>
-          {!! Form::close() !!}
-          <!-- SHARE using link -->
-          {!! Form::open(['action' => ['ShareController@update', $doc->id], 'method' => 'PATCH', 'id' => 'form-share-documents-' . $doc->id]) !!}
-          @can('shared')
-          <a href="#" class="btn-circle purple waves-effect waves-light data-share tooltipped" data-position="top" data-delay="50" data-tooltip="Share this" data-form="documents-{{ $doc->id }}"><i class="material-icons">share</i></a>
-          @endcan
+          <a href="/dc/documents/{{ $doc->id }}/edit" class="btn-circle teal waves-effect waves-light tooltipped" data-position="left" data-delay="50" data-tooltip="Edit this"><i class="material-icons">mode_edit</i></a>
+          <a href="/dc/documents/open/{{ $doc->id }}" class="btn-circle blue darken-3 waves-effect waves-light tooltipped" data-position="top" data-delay="50" data-tooltip="Open this"><i class="material-icons">open_with</i></a>
           {!! Form::close() !!}
           <!-- DELETE using link -->
-          {!! Form::open(['action' => ['DocumentsController@destroy', $doc->id],
+          {!! Form::open(['action' => ['digidocu\DocumentsController@destroy', $doc->id],
           'method' => 'DELETE', 'id' => 'form-delete-documents-' . $doc->id]) !!}
           @can('delete')
           <a href="#" class="btn-circle red waves-effect waves-light data-delete tooltipped" data-position="right" data-delay="50" data-tooltip="Delete this" data-form="documents-{{ $doc->id }}"><i class="material-icons">delete</i></a>
@@ -51,15 +47,15 @@
       <div class="col s12 m11">
         <div class="card horizontal hoverable">
           <div class="card-image hide-on-med-and-down">
-            <img src="/storage/images/sideytu1.jpg" height="650px">
+            <img src="{{ asset('assets/image/logo/file.jpg')}}" height="650px">
           </div>
           <div class="card-stacked">
             <div class="card-content">
               @if($doc->isExpire == 2)
-                <h5 class="red-text">
-                  <i class="material-icons">error_outline</i> This Document Has Expired!
-                </h5>
-                <p class="red-text">Please consider disposal or restoration of this document.</p>
+              <h5 class="red-text">
+                <i class="material-icons">error_outline</i> This Document Has Expired!
+              </h5>
+              <p class="red-text">Please consider disposal or restoration of this document.</p>
               @endif
               <ul class="collapsible" data-collapsible="accordion">
                 <li>
@@ -76,7 +72,7 @@
                 </li>
                 <li>
                   <div class="collapsible-header"><i class="material-icons">group</i>Department</div>
-                  <div class="collapsible-body"><span class="teal-text">{{ $doc->user->department['dptName'] }}</span></div>
+                  <div class="collapsible-body"><span class="teal-text">{{ auth()->user()->divisi->nama }}</span></div>
                 </li>
                 <li>
                   <div class="collapsible-header"><i class="material-icons">class</i>Category</div>
@@ -95,9 +91,9 @@
                   <div class="collapsible-body">
                     <span class="teal-text">
                       @if($doc->isExpire)
-                        {{ $doc->expires_at }}
+                      {{ $doc->expires_at }}
                       @else
-                        No Expiration is set
+                      No Expiration is set
                       @endif
                     </span>
                   </div>

@@ -7,13 +7,38 @@ use Illuminate\Http\Request;
 use App\digidocu\Document;
 use App\digidocu\Category;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 use DB;
+
+// Add
+use App\Divisi;
 
 class DocumentsController extends Controller
 {
+  private $path;
+
   public function __construct()
   {
     return $this->middleware('auth');
+  }
+
+  public function dashboard()
+  {
+    return view('page.dokumen_spa.dashboard');
+  }
+
+  public function dep_doc(Request $request, $id = null)
+  {
+    $general = true;
+    if ($id == null) {
+      $data = Divisi::all()->where('id', '>', 5);
+      return view('page.dokumen_spa.documents.index', compact('data', 'general'));
+    } else {
+      $department = Divisi::where('id', $id)->first();
+      $title = $department->nama;
+      $data = Storage::disk('doc_spa')->directories('/' . $department->nama);
+      return view('page.dokumen_spa.documents.index', compact('data', 'general', 'title'));
+    }
   }
 
   /**
@@ -21,25 +46,28 @@ class DocumentsController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function index()
+  public function index(Request $request)
   {
-    if (auth()->user()->hasRole('Root')) {
-      // get all
-      $docs = Document::where('isExpire', '!=', 2)->get();
-    } else {
-      // get user's docs
-      // $user_id = auth()->user()->id;
-
-      // $docs = Document::where('user_id',$user_id)->get();
-
-      // get docs in dept
-      $dept_id = auth()->user()->department_id;
-
-      $docs = Document::where('isExpire', '!=', 2)->where('department_id', $dept_id)->where('user_id', '!=', auth()->user()->id)->get();
-    }
+    $docs = Document::all();
     $filetype = null;
 
-    return view('page.dokumen_spa.documents.index', compact('docs', 'filetype'));
+    $department = $request->input('department');
+    $folder = $request->input('folder');
+
+    $this->path = $department . '/' . $folder;
+
+    $title = $this->path;
+    $general = false;
+    $arr = [];
+    foreach ($docs as $d) {
+      if (strpos($d->file,  $department . '/' . $folder) === false) {
+        continue;
+      }
+      array_push($arr, $d);
+    }
+    $docs = $arr;
+
+    return view('page.dokumen_spa.documents.index', compact('docs', 'filetype', 'general', 'title'));
   }
 
   // my documents
@@ -50,7 +78,7 @@ class DocumentsController extends Controller
 
     $docs = Document::where('user_id', $user_id)->get();
 
-    return view('documents.mydocuments', compact('docs'));
+    return view('page.dokumen_spa.documents.mydocuments', compact('docs'));
   }
 
   /**
@@ -60,9 +88,27 @@ class DocumentsController extends Controller
    */
   public function create()
   {
-    $categories = Category::pluck('name', 'id')->all();
+    if (auth()->user()->divisi->nama == 'Super Admin') {
+      $data = Storage::disk('doc_spa')->allDirectories('/');
+      $arr = [];
+      foreach ($data as $d) {
+        $arr[$d] = $d;
+      }
+      $data = $arr;
+    } else {
+      $data = Storage::disk('doc_spa')->directories(auth()->user()->divisi->nama);
+      $arr = [];
+      foreach ($data as $d) {
+        $i = strpos($d, '/');
+        $d = substr($d, $i + 1);
+        $i = strpos($d, '/');
+        if ($i) $d = substr($d, 0, $i);
+        $arr[$d] = $d;
+      }
+      $data = $arr;
+    }
 
-    return view('documents.create', compact('categories'));
+    return view('page.dokumen_spa.documents.create', compact('data'));
   }
 
   /**
@@ -76,12 +122,13 @@ class DocumentsController extends Controller
     $this->validate($request, [
       'name' => 'required|string|max:255',
       'description' => 'required|string|max:255',
+      'folder' => 'required',
       'file' => 'required|max:50000',
     ]);
 
     // get the data of uploaded user
     $user_id = auth()->user()->id;
-    $department_id = auth()->user()->department_id;
+    $department_id = auth()->user()->divisi_id;
 
     // handle file upload
     if ($request->hasFile('file')) {
@@ -94,7 +141,7 @@ class DocumentsController extends Controller
       // filename to store
       $fileNameToStore = $filename . '_' . time() . '.' . $extension;
       // upload file
-      $path = $request->file('file')->storeAs('public/files/' . $user_id, $fileNameToStore);
+      $path = $request->file('file')->storeAs('/' . $request->input('folder'), $fileNameToStore);
     }
 
     $doc = new Document;
@@ -122,11 +169,11 @@ class DocumentsController extends Controller
     // save to db
     $doc->save();
     // add Category
-    $doc->categories()->sync($request->category_id);
+    // $doc->categories()->sync($request->category_id);
 
-    \Log::addToLog('New Document, ' . $request->input('name') . ' was uploaded');
+    // Log::addToLog('New Document, ' . $request->input('name') . ' was uploaded');
 
-    return redirect('/documents')->with('success', 'File Uploaded');
+    return redirect('/dc/dep_doc')->with('success', 'File Uploaded');
   }
 
   /**
@@ -139,7 +186,7 @@ class DocumentsController extends Controller
   {
     $doc = Document::findOrFail($id);
 
-    return view('documents.show', compact('doc'));
+    return view('page.dokumen_spa.documents.show', compact('doc'));
   }
 
   /**
@@ -204,7 +251,7 @@ class DocumentsController extends Controller
     // delete associated categories
     $doc->categories()->detach();
 
-    \Log::addToLog('Document ID ' . $id . ' was deleted');
+    // \Log::addToLog('Document ID ' . $id . ' was deleted');
 
     return redirect('/documents')->with('success', 'Deleted!');
   }
@@ -224,24 +271,25 @@ class DocumentsController extends Controller
   public function open($id)
   {
     $doc = Document::findOrFail($id);
-    $path = Storage::disk('local')->getDriver()->getAdapter()->applyPathPrefix($doc->file);
-    $type = $doc->mimetype;
+    // $path = Storage::disk('local')->getDriver()->getAdapter()->applyPathPrefix($doc->file);
+    // $type = $doc->mimetype;
 
-    \Log::addToLog('Document ID ' . $id . ' was viewed');
+    // \Log::addToLog('Document ID ' . $id . ' was viewed');
 
-    if (
-      $type == 'application/pdf' || $type == 'image/jpeg' ||
-      $type == 'image/png' || $type == 'image/jpg' || $type == 'image/gif'
-    ) {
-      return response()->file($path, ['Content-Type' => $type]);
-    } elseif (
-      $type == 'video/mp4' || $type == 'audio/mpeg' ||
-      $type == 'audio/mp3' || $type == 'audio/x-m4a'
-    ) {
-      return view('documents.play', compact('doc'));
-    } else {
-      return response()->file($path, ['Content-Type' => $type]);
-    }
+    // if (
+    //   $type == 'application/pdf' || $type == 'image/jpeg' ||
+    //   $type == 'image/png' || $type == 'image/jpg' || $type == 'image/gif'
+    // ) {
+    //   return response()->file($path, ['Content-Type' => $type]);
+    // } elseif (
+    //   $type == 'video/mp4' || $type == 'audio/mpeg' ||
+    //   $type == 'audio/mp3' || $type == 'audio/x-m4a'
+    // ) {
+    //   return view('documents.play', compact('doc'));
+    // } else {
+    //   return response()->file($path, ['Content-Type' => $type]);
+    // }
+    return response()->file('../storage/app/' . $doc->file);
   }
 
   // download file

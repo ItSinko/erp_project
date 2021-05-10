@@ -12,6 +12,6 @@ class Category extends Model
 
     public function documents()
     {
-        return $this->belongsToMany('App\Document');
+        return $this->belongsToMany('App\digidocu\Document');
     }
 }

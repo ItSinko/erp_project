@@ -1,22 +1,14 @@
-@extends('layouts.base')
+@extends('adminlte.page')
+
+@section('title', 'Beta Version')
+
+@section('content_header')
+<h1 id="page_header" class="m-0 text-dark">PPIC BOM</h1>
+@stop
 
 @section('content')
-<div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <div class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1 class="m-0 text-dark">Bill of Material</h1>
-                </div>
-            </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
-    </div>
-    <!-- /.content-header -->
-
-    <!-- Main content -->
-    <section class="content">
-
+<div class="row">
+    <div class="col-12">
         <!-- Default box -->
         <div class="card">
             <div class="card-header">
@@ -36,16 +28,16 @@
                 <span id="card">Nothing</span>
             </div>
         </div>
-    </section>
+    </div>
 </div>
 @endsection
 
-@push('script')
+@section('adminlte_js')
 <script>
     $(document).ready(function() {
         $("#input").change(function() {
             var value = $("#input").val();
-            // alert(value);
+            alert(value);
             if (value == "Choose...") $("#card").html("");
             else {
                 $.ajax({
@@ -70,4 +62,4 @@
         });
     })
 </script>
-@endpush
+@stop

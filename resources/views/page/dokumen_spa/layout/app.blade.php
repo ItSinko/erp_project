@@ -52,8 +52,6 @@
       @include('page.dokumen_spa.layout.navbar')
       @yield('content')
       <!-- Floating Button -->
-      @if(Auth::guest())
-      @else
       <div class="fixed-action-btn">
         <a href="#" class="btn btn-floating btn-large tooltipped" data-position="left" data-delay="50" data-tooltip="Quick Access">
           <i class="large material-icons">explore</i>
@@ -67,7 +65,6 @@
           </li>
         </ul>
       </div>
-      @endif
     </div>
   </main>
   @include('page.dokumen_spa.layout.footer')

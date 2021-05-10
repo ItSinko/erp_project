@@ -9,12 +9,12 @@
       <div class="divider"></div>
     </div>
     <div class="section">
-      <a href="/documents">
-        <div class="col m4 s6">
+      <a href="/dc/dep_doc">
+        <div class="col m8 s6">
           <div class="card hoverable indigo lighten-1 white-text">
             <div class="card-content">
               <p class="center"><i class="large material-icons">folder</i></p>
-              <h4 class="center-align flow-text">Documents<span class="new badge white-text">336</span></h4>
+              <h4 class="center-align flow-text">Documents</h4>
             </div>
           </div>
         </div>
@@ -24,7 +24,7 @@
           <div class="card hoverable indigo lighten-1 white-text">
             <div class="card-content">
               <p class="center"><i class="large material-icons">person</i></p>
-              <h4 class="center-align flow-text">Users<span class="new badge white-text">45</span></h4>
+              <h4 class="center-align flow-text">Users</h4>
             </div>
           </div>
         </div>
@@ -55,16 +55,6 @@
             <div class="card-content">
               <p class="center"><i class="large material-icons">view_list</i></p>
               <h4 class="center-align flow-text">Logs</h4>
-            </div>
-          </div>
-        </div>
-      </a>
-      <a href="/categories">
-        <div class="col m4 s6">
-          <div class="card hoverable indigo lighten-1 white-text">
-            <div class="card-content">
-              <p class="center"><i class="large material-icons">class</i></p>
-              <h4 class="center-align flow-text">Categories</h4>
             </div>
           </div>
         </div>

@@ -470,7 +470,12 @@ return [
             'icon' => 'fas fa-table',
             'auth' => [24]
         ],
-
+        [
+            'text' => 'BOM',
+            'url'  => '/bom',
+            'icon' => 'fas fa-table',
+            'auth' => [24]
+        ],
         [
             'header' => 'PRODUKSI',
             'auth' => [17, 23]

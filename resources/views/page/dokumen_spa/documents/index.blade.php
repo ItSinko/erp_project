@@ -64,23 +64,76 @@
   .unshow {
     display: none;
   }
+
+  form {
+    display: inline;
+  }
 </style>
 <div class="row">
   <div class="section">
     <div class="col m1 hide-on-med-and-down">
+      @include('page.dokumen_spa.layout.sidebar')
     </div>
     <div class="col m11 s12">
       <div class="row">
-        <h3 class="flow-text"><i class="material-icons">folder</i> Documents
+        <h3 class="flow-text"><i class="material-icons">folder</i>
+          @if (isset($title))
+          {{ $title }}
+          @else
+          Dokumen
+          @endif
+          @if (!$general)
           <button class="btn red waves-effect waves-light right tooltipped delete_all" data-url="{{ url('documentsDeleteMulti') }}" data-position="left" data-delay="50" data-tooltip="Delete Selected Documents"><i class="material-icons">delete</i></button>
-          @can('upload')
-          <a href="/documents/create" class="btn waves-effect waves-light right tooltipped" data-position="left" data-delay="50" data-tooltip="Upload New Document"><i class="material-icons">file_upload</i></a>
-          @endcan
+          <a href="/dc/documents/create" class="btn waves-effect waves-light right tooltipped" data-position="left" data-delay="50" data-tooltip="Upload New Document"><i class="material-icons">file_upload</i></a>
+          <a href="#modal-add"><button class="btn green waves-effect waves-light right tooltipped" data-position="left" data-delay="50" data-tooltip="Tambah folder"><i class="material-icons">add</i></button></a>
+          <div id="modal-add" class="modal modal-fixed-footer">
+            <div class="modal-content">
+              <h4>Tambah Folder</h4>
+              <p>
+                Fitur tambah folder
+              </p>
+            </div>
+            <div class="modal-footer">
+              <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">OK</a>
+            </div>
+          </div>
+          @endif
         </h3>
         <div class="divider"></div>
       </div>
       <div class="card z-depth-2">
         <div class="card-content">
+          @if ($general)
+          <div class="row">
+            @foreach($data as $d)
+            <div class="col m2 s6">
+              <div class="card hoverable indigo lighten-5 task">
+                @if (isset($d->id))
+                <a href="/dc/dep_doc/{{$d->id}}">
+                  <div class="card-content2 center">
+                    <i class="material-icons">folder_open</i>
+                    <h6>{{ $d->nama }}</h6>
+                  </div>
+                </a>
+                @else
+                @php
+                $i = strpos($d, '/');
+                $d = substr($d, $i+1);
+                $i = strpos($d, '/');
+                if ($i) $d = substr($d, 0, $i);
+                @endphp
+                <a href="/dc/documents?department={{urlencode($title)}}&folder={{urlencode($d)}}">
+                  <div class="card-content2 center">
+                    <i class="material-icons">folder_open</i>
+                    <h6>{{ $d }}</h6>
+                  </div>
+                </a>
+                @endif
+              </div>
+            </div>
+            @endforeach
+          </div>
+          @else
           <!-- Switch -->
           <div class="switch" style="margin-bottom: 2em;">
             <label>
@@ -124,7 +177,7 @@
                 <div class="card hoverable indigo lighten-5 task" data-id="{{ $doc->id }}">
                   <input type="checkbox" class="filled-in sub_chk" id="chk_{{$doc->id}}" data-id="{{$doc->id}}">
                   <label for="chk_{{$doc->id}}"></label>
-                  <a href="/documents/{{ $doc->id }}">
+                  <a href="/dc/documents/{{ $doc->id }}">
                     <div class="card-content2 center">
                       @if(strpos($doc->mimetype, "image") !== false)
                       <i class="material-icons">image</i>
@@ -162,7 +215,6 @@
                     <th></th>
                     <th>File Name</th>
                     <th>Owner</th>
-                    <th>Department</th>
                     <th>Uploaded At</th>
                     <th>Expires At</th>
                     <th>Actions</th>
@@ -178,7 +230,6 @@
                     </td>
                     <td>{{ $doc->name }}</td>
                     <td>{{ $doc->user->name }}</td>
-                    <td>{{ $doc->user->department['dptName'] }}</td>
                     <td>{{ $doc->created_at->toDayDateTimeString() }}</td>
                     <td>
                       @if($doc->isExpire)
@@ -188,36 +239,23 @@
                       @endif
                     </td>
                     <td>
-                      @can('read')
                       {!! Form::open() !!}
                       <a href="documents/{{ $doc->id }}" class="tooltipped" data-position="left" data-delay="50" data-tooltip="View Details"><i class="material-icons">visibility</i></a>
                       {!! Form::close() !!}
                       {!! Form::open() !!}
                       <a href="documents/open/{{ $doc->id }}" class="tooltipped" data-position="left" data-delay="50" data-tooltip="Open"><i class="material-icons">open_with</i></a>
                       {!! Form::close() !!}
-                      @endcan
                       {!! Form::open() !!}
-                      @can('download')
                       <a href="documents/download/{{ $doc->id }}" class="tooltipped" data-position="left" data-delay="50" data-tooltip="Download"><i class="material-icons">file_download</i></a>
-                      @endcan
                       {!! Form::close() !!}
-                      <!-- SHARE using link -->
-                      {!! Form::open(['action' => ['ShareController@update', $doc->id], 'method' => 'PATCH', 'id' => 'form-share-documents-' . $doc->id]) !!}
-                      @can('shared')
-                      <a href="" class="data-share tooltipped" data-position="left" data-delay="50" data-tooltip="Share" data-form="documents-{{ $doc->id }}"><i class="material-icons">share</i></a>
-                      @endcan
                       {!! Form::close() !!}
                       {!! Form::open() !!}
-                      @can('edit')
                       <a href="documents/{{ $doc->id }}/edit" class="tooltipped" data-position="left" data-delay="50" data-tooltip="Edit"><i class="material-icons">mode_edit</i></a>
-                      @endcan
                       {!! Form::close() !!}
                       <!-- DELETE using link -->
-                      {!! Form::open(['action' => ['DocumentsController@destroy', $doc->id],
+                      {!! Form::open(['action' => ['digidocu\DocumentsController@destroy', $doc->id],
                       'method' => 'DELETE', 'id' => 'form-delete-documents-' . $doc->id]) !!}
-                      @can('delete')
                       <a href="" class="data-delete tooltipped" data-position="left" data-delay="50" data-tooltip="Delete" data-form="documents-{{ $doc->id }}"><i class="material-icons">delete</i></a>
-                      @endcan
                       {!! Form::close() !!}
                     </td>
                   </tr>
@@ -233,11 +271,13 @@
               </table>
             </div>
           </div>
+          @endif
         </div>
       </div>
     </div>
   </div>
 </div>
+
 <!-- right click menu -->
 <div id="context-menu" class="context-menu">
   <ul class="context-menu_items">
@@ -254,13 +294,13 @@
       </a>
     </li>
     <li class="context-menu_item">
-      <a href="documents/15/edit" class="context-menu_link" data-action="Edit">
+      <a href="dc/documents/15/edit" class="context-menu_link" data-action="Edit">
         <i class="material-icons">edit</i>
         <p>Edit</p>
       </a>
     </li>
     <li class="context-menu_item">
-      <a href="#" class="context-menu_link" data-action="Delete">
+      <a href="/dc/documents/" class="context-menu_link" data-action="Delete" id="right-delete">
         <i class="material-icons">delete</i>
         <p>Delete</p>
       </a>
