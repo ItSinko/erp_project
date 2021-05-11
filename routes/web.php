@@ -39,14 +39,6 @@ Route::group(['middleware' => 'auth'], function () {
 });
 
 
-//Karyawan
-Route::group(['prefix' => '/karyawan', 'middleware' => 'auth'], function () {
-    Route::get('/', 'CommonController@karyawan');   /* Tabel */
-    Route::get('/tambah', 'CommonController@karyawan_tambah');
-    //KARYAWAN PEMINJAMAN
-    Route::get('/peminjaman', 'ItController@karyawan_peminjaman')->name('karyawan.peminjaman');
-    Route::get('/peminjaman/show', 'ItController@karyawan_peminjaman_show')->name('karyawan.peminjaman.show');
-});
 //Kesehatan
 /* Tabel */
 Route::get('/kesehatan', 'KesehatanController@kesehatan');
@@ -93,6 +85,14 @@ Route::get('/kesehatan_mingguan_tensi/detail/data/{karyawan_id}', 'KesehatanCont
 
 //Kesehatan Bulanan
 Route::get('/kesehatan_bulanan', 'KesehatanController@kesehatan_bulanan');
+//Karyawan
+Route::group(['prefix' => '/karyawan', 'middleware' => 'auth'], function () {
+    Route::get('/', 'CommonController@karyawan');   /* Tabel */
+    Route::get('/tambah', 'CommonController@karyawan_tambah');
+    //KARYAWAN PEMINJAMAN
+    Route::get('/peminjaman', 'ItController@karyawan_peminjaman')->name('karyawan.peminjaman');
+    Route::get('/peminjaman/show', 'ItController@karyawan_peminjaman_show')->name('karyawan.peminjaman.show');
+});
 
 //JASA EKSPEDISI
 Route::group(['prefix' => '/jasa_eks', 'middleware' => 'auth'], function () {
