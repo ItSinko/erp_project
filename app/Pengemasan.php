@@ -12,6 +12,11 @@ class Pengemasan extends Model
         return $this->belongsTo(Bppb::class);
     }
 
+    public function Karyawan()
+    {
+        return $this->belongsTo(Karyawan::class);
+    }
+
     public function User()
     {
         return $this->belongsTo(User::class, 'pic_id');
