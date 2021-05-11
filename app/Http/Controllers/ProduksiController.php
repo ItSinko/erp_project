@@ -1112,6 +1112,14 @@ class ProduksiController extends Controller
         }
     }
 
+    public function pengemasan_hasil($id)
+    {
+        $s = Pengemasan::find($id);
+        $hp = HasilPengemasan::where('pengemasan_id', $id)->get();
+        $c = CekPengemasan::where('detail_produk_id', $s->Bppb->DetailProduk->id)->get();
+        return view('page.produksi.pengemasan_hasil_show', ['id' => $id, 's' => $s, 'c' => $c, 'hp' => $hp]);
+    }
+
     public function pengemasan_form()
     {
         return view('page.produksi.pengemasan_form_show');
