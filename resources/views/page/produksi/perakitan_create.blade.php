@@ -112,7 +112,6 @@
 
                   <h3>Hasil Perakitan</h3>
                   <div class="form-horizontal">
-                    <!-- <div class="card-body"> -->
 
                     <div class="form-group row">
                       <label for="tanggal_laporan" class="col-sm-4 col-form-label" style="text-align:right;">Tanggal Laporan</label>

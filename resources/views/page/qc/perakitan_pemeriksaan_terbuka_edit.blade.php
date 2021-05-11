@@ -49,7 +49,7 @@
                 @endif
                 <div class="card">
                     <div class="card-header bg-warning">
-                        <h3 class="card-title"><i class="fas fa-pencil-alt" aria-hidden="true"></i>&nbsp;Ubah Pemeriksaan Terbuka</h3>
+                        <h3 class="card-title"><i class="fas fa-pencil-alt" aria-hidden="true"></i>&nbsp;Pemeriksaan Terbuka</h3>
                     </div>
                     <div class="card-body">
                         <div class="col-md-12">
@@ -87,7 +87,7 @@
 
                                     <div class="form-group row">
                                         <label for="kondisi_fisik_bahan_baku" class="col-sm-4 col-form-label" style="text-align:right;">Kondisi Bahan Baku</label>
-                                        <div class="col-sm-2 col-form-label">
+                                        <div class="col-sm-1 col-form-label">
                                             <div class="icheck-primary d-inline">
                                                 <input type="radio" id="kondisi_fisik_bahan_baku_ok" name="kondisi_fisik_bahan_baku" value="ok" checked>
                                                 <label for="kondisi_fisik_bahan_baku_ok">
@@ -111,7 +111,7 @@
                                     <div class="form-group row">
                                         <label for="divisi_id" class="col-sm-4 col-form-label" style="text-align:right;">Kondisi Saat Proses Perakitan</label>
 
-                                        <div class="col-sm-2 col-form-label">
+                                        <div class="col-sm-1 col-form-label">
                                             <div class="icheck-primary d-inline">
                                                 <input type="radio" id="kondisi_saat_proses_perakitan_ok" name="kondisi_saat_proses_perakitan" value="ok" checked>
                                                 <label for="kondisi_saat_proses_perakitan_ok">
@@ -136,7 +136,7 @@
                                     <div class="form-group row">
                                         <label for="hasil_terbuka" class="col-sm-4 col-form-label" style="text-align:right;">Hasil</label>
 
-                                        <div class="col-sm-2 col-form-label">
+                                        <div class="col-sm-1 col-form-label">
                                             <div class="icheck-primary d-inline">
                                                 <input type="radio" id="hasil_terbuka_ok" name="hasil_terbuka" value="ok" checked>
                                                 <label for="hasil_terbuka_ok">

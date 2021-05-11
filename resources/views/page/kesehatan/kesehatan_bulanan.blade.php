@@ -28,13 +28,13 @@
     <div class="card">
       <div class="card-body">
         <div class='table-responsive'>
-          <h2>Kesehatan Mingguan</h2>
+          <h2>Kesehatan Bulanan</h2>
           <div class="form-group row">
             <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Data</label>
             <div class="col-sm-8">
               <select type="text" class="form-control @error('form') is-invalid @enderror select2" name="form" style="width:45%;" id="form">
                 <option value="0">Pilih Data</option>
-                <option value="tensi">Pengukuran Tensi</option>
+                <option value="tensi">Pengukuran Berat Badan</option>
                 <option value="rapid">Pengecekan Covid</option>
               </select>
             </div>

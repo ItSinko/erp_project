@@ -8,8 +8,12 @@ use App\Karyawan;
 use App\Perakitan;
 use App\HasilPerakitan;
 use App\HistoriHasilPerakitan;
+use App\MonitoringProses;
+use App\HasilMonitoringProses;
 use App\PemeriksaanRakit;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 
 class QCController extends Controller
@@ -283,7 +287,6 @@ class QCController extends Controller
         $h->status = $status;
         $u = $h->save();
 
-
         if ($u) {
             $c = HistoriHasilPerakitan::create([
                 'hasil_perakitan_id' => $id,
@@ -532,6 +535,132 @@ class QCController extends Controller
             // })
             ->rawColumns(['operator', 'aksi', 'kondisi_fisik_bahan_baku', 'kondisi_saat_proses_perakitan', 'tindak_lanjut_terbuka', 'kondisi_setelah_proses', 'hasil_terbuka', 'hasil_tertutup', 'fungsi', 'tindak_lanjut_tertutup'])
             ->make(true);
+    }
+
+    public function pengujian()
+    {
+        return view('page.qc.pengujian_show');
+    }
+
+    public function pengujian_show()
+    {
+        $s = Bppb::with('Perakitan')->whereHas('Perakitan.HasilPerakitan', function ($q) {
+            $q->whereIn('status', ['rej_pemeriksaan_terbuka', 'rej_pemeriksaan_tertutup', 'acc_pemeriksaan_tertutup'])->whereNotIn('tindak_lanjut_terbuka', ['operator']);
+        })->get();
+        return DataTables::of($s)
+            ->addIndexColumn()
+            ->addColumn('gambar', function ($s) {
+                $gambar = '<img class="product-img-small img-fluid"';
+                if (empty($s->DetailProduk->foto)) {
+                    $gambar .= 'src="{{url(\'assets/image/produk\')}}/noimage.png"';
+                } else if (!empty($s->DetailProduk->foto)) {
+                    $gambar .= 'src="{{asset(\'image/produk/\')}}/' . $s->DetailProduk->foto . '"';
+                }
+                $gambar .= 'title="' . $s->DetailProduk->nama . '">';
+                return $gambar;
+            })
+            ->addColumn('produk', function ($s) {
+                $btn = '<hgroup><h6 class="heading">' . $s->DetailProduk->nama . '</h6><div class="subheading text-muted">' . $s->DetailProduk->Produk->KelompokProduk->nama . '</div></hgroup>';
+                return $btn;
+            })
+            ->editColumn('jumlah', function ($s) {
+                $bppb_id = $s->id;
+                $count = HasilPerakitan::whereHas('Perakitan', function ($q) use ($bppb_id) {
+                    $q->where('bppb_id', $bppb_id);
+                })->whereDoesntHave('HasilMonitoringProses', function ($q) {
+                    $q->where('hasil', 'ok');
+                })->whereIn('status', ['rej_pemeriksaan_terbuka', 'rej_pemeriksaan_tertutup', 'acc_pemeriksaan_tertutup'])->whereNotIn('tindak_lanjut_terbuka', ['operator'])->count();
+                $btn = '<hgroup>
+                        <h6 class="heading">' . $s->jumlah . " " . $s->DetailProduk->satuan . '</h6>
+                        <div class="subheading "><small class="purple-text">Produksi saat ini: ' . $s->countHasilPerakitan() . ' ' . $s->DetailProduk->satuan . '</small></div>
+                        <div class="subheading "><small class="info-text">Dapat Diuji: ' . $count . ' ' . $s->DetailProduk->satuan . '</small></div>
+                        </hgroup>';
+                return $btn;
+            })
+            ->addColumn('laporan', function ($s) {
+                $btn = '<a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Klik untuk melihat laporan"><i class="fas fa-ellipsis-h"></i></a>';
+                $btn .= '<div class="dropdown-menu" aria-labelledby="dropdownMenuLink1">';
+                $btn .= '<a class="dropdown-item monitoringprosesmodal" data-toggle="modal" data-target="#monitoringprosesmodal" data-attr="/produk/detail/show/' . $s->id . '" data-id="' . $s->id . '"><span style="color: black;"><i class="fas fa-eye" aria-hidden="true"></i>&nbsp;Monitoring Proses</span></a>';
+                $btn .= '<a class="dropdown-item luplkpmodal" data-toggle="modal" data-target="#luplkpmodal" data-attr="/produk/detail/show/' . $s->id . '" data-id="' . $s->id . '"><span style="color: black;"><i class="fas fa-eye" aria-hidden="true"></i>&nbsp;LUP dan LKP</span></a>';
+                return $btn;
+            })
+            ->addColumn('aksi', function ($s) {
+                $btn = '<a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Klik untuk melihat laporan"><i class="fas fa-plus-circle" aria-hidden="true"></i></a>';
+                $btn .= '<div class="dropdown-menu" aria-labelledby="dropdownMenuLink2">';
+                $btn .= '<a class="dropdown-item monitoringprosesmodal" href="/pengujian/monitoring_proses/create/' . $s->id . '"><span style="color: black;"><i class="fas fa-plus" aria-hidden="true"></i>&nbsp;Monitoring Proses</span></a>';
+                $btn .= '<a class="dropdown-item luplkpmodal" data-toggle="modal" data-target="#luplkpmodal" data-attr="/produk/detail/show/' . $s->id . '" data-id="' . $s->id . '"><span style="color: black;"><i class="fas fa-plus" aria-hidden="true"></i>&nbsp;LUP dan LKP</span></a>';
+                return $btn;
+            })
+            ->rawColumns(['gambar', 'produk', 'jumlah', 'laporan', 'aksi'])
+            ->make(true);
+    }
+
+    public function pengujian_monitoring_proses_create($bppb_id)
+    {
+        $b = Bppb::find($bppb_id);
+        $s = HasilPerakitan::whereHas('Perakitan', function ($q) use ($bppb_id) {
+            $q->where('bppb_id', $bppb_id);
+        })->whereDoesntHave('HasilMonitoringProses', function ($q) {
+            $q->where('hasil', 'ok');
+        })->whereIn('status', ['rej_pemeriksaan_terbuka', 'rej_pemeriksaan_tertutup', 'acc_pemeriksaan_tertutup'])->whereNotIn('tindak_lanjut_terbuka', ['operator'])->get();
+        $k = Karyawan::whereNotIn('jabatan', ['direktur', 'manager'])->get();
+        return view('page.qc.pengujian_monitoring_proses_create', ['bppb_id' => $bppb_id, 'kry' => $k, 's' => $s, 'b' => $b]);
+    }
+
+    public function pengujian_monitoring_proses_store(Request $request, $bppb_id)
+    {
+        $v = Validator::make(
+            $request->all(),
+            [
+                'tanggal_laporan' => 'required',
+                'karyawan_id' => 'required',
+                'no_seri.*' => 'required',
+                'tindak_lanjut.*' => 'required',
+            ],
+            [
+                'tanggal_laporan.required' => "Tanggal harus diisi",
+                'no_seri.*.required' => "No Seri harus diisi",
+                'karyawan_id.required' => "Karyawan harus dipilih",
+                'tindak_lanjut.*.required' => "Tindak Lanjut harus dipilih",
+            ]
+        );
+        if ($v->fails()) {
+            return redirect()->back()->withErrors($v);
+        } else {
+            $c = MonitoringProses::create([
+                'bppb_id' => $bppb_id,
+                'tanggal' => $request->tanggal_laporan,
+                'karyawan_id' => $request->karyawan_id,
+                'user_id' => Auth::user()->id
+            ]);
+
+            if ($c) {
+                if (!empty($request->no_seri)) {
+                    $bool = true;
+                    for ($i = 0; $i < count($request->no_seri); $i++) {
+                        $cs  = HasilMonitoringProses::create([
+                            'monitoring_proses_id' => $c->id,
+                            'hasil_perakitan_id' => $request->no_seri[$i],
+                            'no_barcode' => $request->no_barcode[$i],
+                            'hasil' => $request->hasil[$i],
+                            'keterangan' => $request->keterangan[$i],
+                            'tindak_lanjut' => $request->tindak_lanjut[$i]
+                        ]);
+
+                        if (!$cs) {
+                            $bool = false;
+                        }
+                    }
+                    if ($bool == true) {
+                        return redirect()->back()->with('success', "Berhasil menambahkan Produk");
+                    } else if ($bool == false) {
+                        return redirect()->back()->with('error', "Gagal menambahkan Produk");
+                    }
+                }
+            } else {
+                return redirect()->back()->with('error', "Gagal menambahkan Produk");
+            }
+        }
     }
 
     public function tambah_pemeriksaan_rakit($id)

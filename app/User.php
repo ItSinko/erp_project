@@ -21,7 +21,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'divisi_id', 'nama', 'username', 'email', 'password', 'foto'
     ];
 
     /**
@@ -70,5 +70,10 @@ class User extends Authenticatable
     public function PeminjamanAlat()
     {
         return $this->hasMany(PeminjamanAlat::class);
+    }
+
+    public function getIsSuperAdminAttribute()
+    {
+        return ($this->id == 1) ? true : false;
     }
 }
