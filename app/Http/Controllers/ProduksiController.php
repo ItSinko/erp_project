@@ -32,6 +32,8 @@ use App\DetailCekPengemasan;
 use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\UserLogController;
 use App\MonitoringProses;
+use App\PartEng;
+use App\PerbaikanProduksi;
 
 class ProduksiController extends Controller
 {
@@ -783,17 +785,32 @@ class ProduksiController extends Controller
         $hp->status = $status;
         $u = $hp->save();
         if ($u) {
-            if ($status == "perbaikan_pemeriksaan_terbuka") {
-                $c = HistoriHasilPerakitan::create([
-                    "hasil_perakitan_id" => $id,
-                    "kegiatan" => $status,
-                    "tanggal" => Carbon::now()->toDateString(),
-                    "hasil" => "ok",
-                    "keterangan" => "",
-                    "tindak_lanjut" => "ok"
+            if ($status == "perbaikan_pemeriksaan_terbuka" || $status == "perbaikan_pemeriksaan_tertutup") {
+                $cs = PerbaikanProduksi::create([
+                    "bppb_id" => $hp->Perakitan->Bppb->id,
+                    "tanggal_permintaan" => Carbon::now()->toDateString(),
+                    "status" => "req_perbaikan",
+                    "ketidaksesuaian_proses" => "perakitan"
                 ]);
-                if ($c) {
-                    return redirect()->back();
+
+                if ($cs) {
+                    $p = PerbaikanProduksi::find($cs->id);
+                    $p->HasilPerakitan()->syncWithoutDetaching([$id]);
+                    $p->save();
+                }
+
+                if ($status == "perbaikan_pemeriksaan_terbuka") {
+                    $c = HistoriHasilPerakitan::create([
+                        "hasil_perakitan_id" => $id,
+                        "kegiatan" => $status,
+                        "tanggal" => Carbon::now()->toDateString(),
+                        "hasil" => "ok",
+                        "keterangan" => "",
+                        "tindak_lanjut" => "ok"
+                    ]);
+                    if ($c) {
+                        return redirect()->back();
+                    }
                 }
             } else {
                 return redirect()->back();
@@ -1209,5 +1226,66 @@ class ProduksiController extends Controller
                 return redirect()->back()->with('error', "Gagal menambahkan Perlengkapan Pengemasan");
             }
         }
+    }
+
+    public function perbaikan_produksi()
+    {
+        return view('page.produksi.perbaikan_produksi_show');
+    }
+
+    public function perbaikan_produksi_show()
+    {
+        $s = PerbaikanProduksi::with('Bppb', 'Karyawan')->get();
+        return DataTables::of($s)
+            ->addIndexColumn()
+            ->editColumn('bppb_id', function ($s) {
+                return $s->Bppb->no_bppb;
+            })
+            ->editColumn('karyawan_id', function ($s) {
+                if (!empty($s->karyawan_id)) {
+                    return $s->Karyawan->nama;
+                } else {
+                    return "Belum Ada";
+                }
+            })
+            ->editColumn('ketidaksesuaian_proses', function ($s) {
+                return ucfirst(str_replace("_", " ", $s->ketidaksesuaian_proses));
+            })
+            ->editColumn('sebab_ketidaksesuaian', function ($s) {
+                if (!empty($s->sebab_ketidaksesuaian)) {
+                    return ucfirst(str_replace("_", " ", $s->sebab_ketidaksesuaian));
+                } else {
+                    return "Belum Ada";
+                }
+            })
+            ->addColumn('produk', function ($s) {
+                $btn = '<hgroup>
+                        <h6 class="heading">' . $s->Bppb->DetailProduk->nama . '</h6>
+                        <div class="subheading text-muted">' . $s->Bppb->DetailProduk->Produk->KelompokProduk->nama . '</div>
+                        </hgroup>';
+                return $btn;
+            })
+            ->addColumn('aksi', function ($s) {
+                $btn = '<a href = "/perbaikan/produksi/detail/' . $s->id . '"><button class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-eye"></i></button></a>
+                <a href = "/perbaikan/produksi/edit/' . $s->id . '"><button class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-pencil-alt"></i></button></a>
+                <a href = "/perbaikan/produksi/delete/' . $s->id . '"><button class="btn btn-danger btn-sm m-1" style="border-radius:50%;"><i class="fas fa-trash"></i></button></a>';
+                return $btn;
+            })
+            ->rawColumns(['produk', 'aksi'])
+            ->make(true);
+    }
+
+    public function perbaikan_produksi_edit($id)
+    {
+        $s = PerbaikanProduksi::find($id);
+        $dp = $s->Bppb->detail_produk_id;
+        $p = PartEng::whereHas(
+            'BillOfMaterial',
+            function ($q) use ($dp) {
+                $q->where('detail_produk_id', $dp);
+            }
+        )->get();
+        $k = Karyawan::whereNotIn('jabatan', ['direktur', 'manager'])->get();
+        return view('page.produksi.perbaikan_produksi_edit', ['s' => $s, 'p' => $p, 'k' => $k]);
     }
 }

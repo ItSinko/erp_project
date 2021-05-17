@@ -110,4 +110,9 @@ class Bppb extends Model
         }
         return $c;
     }
+
+    public function PerbaikanProduksi()
+    {
+        return $this->hasMany(PerbaikanProduksi::class);
+    }
 }

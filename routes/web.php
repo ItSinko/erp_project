@@ -386,7 +386,7 @@ Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {
 
 
 
-//PENGEMASAN
+// PENGEMASAN
 Route::group(['prefix' => '/pengemasan', 'middleware' => 'auth'], function () {
     Route::get('/', 'ProduksiController@pengemasan')->name('pengemasan');
     Route::get('/form', 'ProduksiController@pengemasan_form')->name('pengemasan.form');
@@ -403,6 +403,12 @@ Route::group(['prefix' => '/pengemasan', 'middleware' => 'auth'], function () {
     Route::get('/hasil/show/{id}', 'ProduksiController@pengemasan_hasil_show')->name('pengemasan.hasil.show');
 });
 
+
+// PERBAIKAN
+Route::group(['prefix' => '/perbaikan', 'middleware' => 'auth'], function () {
+    Route::get('/produksi', 'ProduksiController@perbaikan_produksi')->name('perbaikan.produksi');
+    Route::get('/produksi/show', 'ProduksiController@perbaikan_produksi_show')->name('perbaikan.produksi.show');
+});
 
 // DOCUMENT CONTROL
 Route::group(['prefix' => 'dc', 'middleware' => 'auth'], function () {
