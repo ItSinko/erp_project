@@ -182,16 +182,32 @@ class KesehatanController extends Controller
                 return $data->karyawan->divisi->nama;
             })
             ->addColumn('pagi', function ($data) {
-                return $data->suhu_pagi . ' °C';
+                if ($data->suhu_pagi != NULL) {
+                    return $data->suhu_pagi;
+                } else {
+                    return '0 %';
+                }
             })
             ->addColumn('siang', function ($data) {
-                return $data->suhu_siang . ' °C';
+                if ($data->suhu_siang != NULL) {
+                    return $data->suhu_siang;
+                } else {
+                    return '0 %';
+                }
             })
             ->addColumn('sp', function ($data) {
-                return $data->spo2 . ' %';
+                if ($data->spo2 != NULL) {
+                    return $data->spo2;
+                } else {
+                    return '0 %';
+                }
             })
             ->addColumn('prx', function ($data) {
-                return $data->pr . ' bpm';
+                if ($data->pr != NULL) {
+                    return $data->pr;
+                } else {
+                    return '0 %';
+                }
             })
             ->addColumn('button', function ($data) {
 
