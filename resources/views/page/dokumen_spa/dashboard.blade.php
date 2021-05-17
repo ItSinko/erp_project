@@ -9,7 +9,7 @@
       <div class="divider"></div>
     </div>
     <div class="section">
-      <a href="/dc/dep_doc">
+      <a href="/dc/documents">
         <div class="col m8 s6">
           <div class="card hoverable indigo lighten-1 white-text">
             <div class="card-content">

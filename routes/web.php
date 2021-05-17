@@ -5,6 +5,7 @@ use App\Http\Controllers\GetController;
 use App\Http\Controllers\QCController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -464,7 +465,12 @@ Route::group(['prefix' => 'dc', 'middleware' => 'auth'], function () {
 
 // ARI Controller Temporary
 
-Route::get('/doc/test', 'digidocu\DocumentsController@test');
+Route::get('/doc/test', function (Request $request) {
+    $query = parse_url($request->fullUrl())['query'];
+    $result = [];
+    parse_str($query, $result);
+    dd($result);
+});
 
 //GUDANG
 Route::get('/gudang', 'GudangController@index')->name('gudang');

@@ -48,26 +48,36 @@ class DocumentsController extends Controller
    */
   public function index(Request $request)
   {
+    $query = parse_url($request->fullUrl())['query'];
+    $query_arr = [];
+    parse_str($query, $query_arr);
+
     $docs = Document::all();
     $filetype = null;
 
-    $department = $request->input('department');
-    $folder = $request->input('folder');
-
-    $this->path = $department . '/' . $folder;
-
-    $title = $this->path;
-    $general = false;
-    $arr = [];
-    foreach ($docs as $d) {
-      if (strpos($d->file,  $department . '/' . $folder) === false) {
-        continue;
-      }
-      array_push($arr, $d);
+    $path = '';
+    $level = count($query_arr);
+    foreach ($query_arr as $d) {
+      $path .= $d . '/';
     }
-    $docs = $arr;
 
-    return view('page.dokumen_spa.documents.index', compact('docs', 'filetype', 'general', 'title'));
+    $title = '/' . $path;
+    $general = false;
+    // $arr = [];
+    // foreach ($docs as $d) {
+    //   if (strpos($d->file,  $path) === false) {
+    //     continue;
+    //   }
+    //   array_push($arr, $d);
+    // }
+    // $docs = $arr;
+
+    $folder = Storage::disk('doc_spa')->directories($path);
+    $docs = Storage::disk('doc_spa')->files($path);
+    $docs += $folder;
+
+    dd($folder);
+    return view('page.dokumen_spa.documents.index', compact('docs', 'filetype', 'general', 'title', "query", "level"));
   }
 
   // my documents

@@ -60,7 +60,7 @@ return [
 
         'doc_spa' => [
             'driver' => 'local',
-            'root' => storage_path('app'),
+            'root' => storage_path('app/digidocu'),
             'url' => env('APP_URL') . '/doc_spa',
             'visibility' => 'public',
         ],
