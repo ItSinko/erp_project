@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Pengemasan extends Model
 {
-    protected $fillable = ['bppb_id', 'pic_id', 'tanggal', 'status'];
+    protected $fillable = ['bppb_id', 'pic_id', 'karyawan_id', 'tanggal', 'status'];
     public function Bppb()
     {
         return $this->belongsTo(Bppb::class);
