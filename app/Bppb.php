@@ -53,8 +53,8 @@ class Bppb extends Model
         $k = $this->Pengemasan;
 
         foreach ($k as $l) {
-            $m = Pengemasan::find($l->id);
-            $count = $count + $m->HasilPengemasan->count();
+            $m = HasilPengemasan::where('pengemasan_id', $l->id)->count();
+            $count = $count + $m;
         }
 
         return $count;

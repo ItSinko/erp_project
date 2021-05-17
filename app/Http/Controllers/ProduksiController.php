@@ -25,6 +25,7 @@ use App\KelompokProduk;
 use App\KategoriProduk;
 use Carbon\Carbon;
 use App\Pengemasan;
+use App\HasilPengemasan;
 use App\CekPengemasan;
 use App\DetailCekPengemasan;
 
@@ -79,7 +80,7 @@ class ProduksiController extends Controller
                 return $btn;
             })
             ->editColumn('jumlah', function ($s) {
-                $btn = '<hgroup><h6 class="heading">' . $s->jumlah . " " . $s->DetailProduk->satuan . '</h6><div class="subheading "><small class="purple-text">Produksi saat ini: ' . $s->countHasilPerakitan() . ' ' . $s->DetailProduk->satuan . '</small></div></hgroup>';
+                $btn = '<hgroup><h6 class="heading">' . $s->jumlah . " " . $s->DetailProduk->satuan . '</h6><div class="subheading "><small class="purple-text">Perakitan: ' . $s->countHasilPerakitan() . ' ' . $s->DetailProduk->satuan . '</small></div></hgroup>';
                 return $btn;
             })
             ->addColumn('laporan', function ($s) {
@@ -849,8 +850,7 @@ class ProduksiController extends Controller
                 })->whereIn('status', ['acc_pemeriksaan_tertutup'])->count();
                 $btn = '<hgroup>
                         <h6 class="heading">' . $s->jumlah . " " . $s->DetailProduk->satuan . '</h6>
-                        <div class="subheading"><small class="purple-text">Produksi saat ini: ' . $s->countHasilPerakitan() . ' ' . $s->DetailProduk->satuan . '</small></div>
-                        <div class="subheading"><small class="info-text">Dapat Diuji: ' . $count . ' ' . $s->DetailProduk->satuan . '</small></div>
+                        <div class="subheading"><small class="info-text">Pengujian: ' . $count . ' ' . $s->DetailProduk->satuan . '</small></div>
                         </hgroup>';
                 return $btn;
             })
@@ -964,7 +964,7 @@ class ProduksiController extends Controller
                 return $btn;
             })
             ->editColumn('jumlah', function ($s) {
-                $btn = '<hgroup><h6 class="heading">' . $s->jumlah . " " . $s->DetailProduk->satuan . '</h6><div class="subheading "><small class="text-muted">Pengemasan: <span class="info-text" style="border-radius:50%;"><b>' . $s->countRencanaPengemasan() . ' ' . $s->DetailProduk->satuan . '</b></span></small></div></hgroup>';
+                $btn = '<hgroup><h6 class="heading">' . $s->jumlah . " " . $s->DetailProduk->satuan . '</h6><div class="subheading "><small class="success-text">Pengemasan: <b>' . $s->countRencanaPengemasan() . ' ' . $s->DetailProduk->satuan . '</b></small></div></hgroup>';
                 return $btn;
             })
             ->addColumn('laporan', function ($s) {
@@ -1006,14 +1006,14 @@ class ProduksiController extends Controller
             ->addColumn('aksi', function ($s) {
                 $btn = "";
                 $c = CekPengemasan::where('detail_produk_id', $s->Bppb->DetailProduk->id)->get();
-                if ($s->jumlah > $s->countHasilPengemasan() && $c > 0) {
-                    $btn = '<a href="/pengemasan/laporan/create/' . $s->id . '">';
-                    $btn .= '<button type="button" class="rounded-pill btn btn-sm btn-primary">';
-                    $btn .= '<span style="color:white;"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Tambah Laporan</a></span></button></a>';
-                } else if ($s->jumlah <= $s->countHasilPengemasan() || $c <= 0) {
-                    $btn = '<button type="button" class="rounded-pill btn btn-sm btn-secondary" disabled>
-                      <span style="color:white;"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Tambah Laporan</a></span>
-                    </button>';
+                if (($s->Bppb->jumlah > $s->Bppb->countHasilPengemasan()) && count($c) > 0) {
+                    $btn .= '<a href = "/pengemasan/hasil/create/' . $s->id . '"><button class="btn btn-success btn-sm m-1" style="border-radius:50%;"><i class="fas fa-plus"></i></button></a>
+                    <a href = "/pengemasan/hasil/' . $s->id . '"><button class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-eye"></i></button></a>
+                    <a href = "/pengemasan/hasil/edit/' . $s->id . '"><button class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-pencil-alt"></i></button></a>';
+                } else if (($s->Bppb->jumlah <= $s->Bppb->countHasilPengemasan()) || count($c) <= 0) {
+                    $btn .= '<button class="btn btn-secondary btn-sm m-1" style="border-radius:50%;" disabled><i class="fas fa-plus"></i></button>
+                    <a href = "/pengemasan/hasil/' . $s->id . '"><button class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-eye"></i></button></a>
+                   <button class="btn btn-secondary btn-sm m-1" style="border-radius:50%;" disabled><i class="fas fa-pencil-alt"></i></button>';
                 }
                 return $btn;
             })
@@ -1030,6 +1030,94 @@ class ProduksiController extends Controller
             $q->where('bppb_id', $id);
         })->whereIn('status', ['pengemasan'])->doesntHave('HasilPerakitan.HasilPengemasan')->get();
         return view('page.produksi.pengemasan_laporan_create', ['id' => $id, 'b' => $b, 'cp' => $cp, 'kry' => $kry, 's' => $s]);
+    }
+
+    public function pengemasan_laporan_store(Request $request, $id)
+    {
+        $v = Validator::make(
+            $request->all(),
+            [
+                'karyawan_id' => 'required',
+                'tanggal_laporan' => 'required',
+                'no_seri' => 'required',
+                'hasil' => 'required',
+                'tindak_lanjut' => 'required'
+
+            ],
+            [
+                'karyawan_id.required' => 'Operator harus dipilih',
+                'tanggal_laporan.reqired' => 'Tanggal Laporan harus diisi',
+                'no_seri.required' => 'No Seri harus diisi',
+                'hasil' => 'required',
+                'tindak_lanjut' => 'required'
+            ]
+        );
+
+        if ($v->fails()) {
+            return redirect()->back()->withErrors($v);
+        } else {
+            $c = Pengemasan::create([
+                'bppb_id' => $id,
+                'pic_id' => Auth::user()->id,
+                'karyawan_id' => $request->karyawan_id,
+                'tanggal' => $request->tanggal_laporan
+            ]);
+
+            if (!empty($request->no_seri)) {
+                $bool = true;
+                for ($i = 0; $i < count($request->no_seri); $i++) {
+                    $status = "";
+                    if ($request->tindak_lanjut == "ok") {
+                        $status = 'ok';
+                    } else if ($request->tindak_lanjut == "perbaikan") {
+                        $status = 'req_perbaikan';
+                    } else {
+                        $status = 'req_pengujian';
+                    }
+                    $cs = HasilPengemasan::create([
+                        'pengemasan_id' => $c->id,
+                        'hasil_perakitan_id' => $request->no_seri[$i],
+                        'no_barcode' => $request->no_barcode[$i],
+                        'hasil' => $request->hasil[$i],
+                        'keterangan' => $request->keterangan[$i],
+                        'tindak_lanjut' => $request->tindak_lanjut[$i],
+                        'status' => $status
+                    ]);
+
+                    $arrdcp = [];
+                    $j = 0;
+                    for ($z = 0; $z < count($request->detail_cek_pengemasan[$i]); $z++) {
+                        if ($request->detail_cek_pengemasan[$i][$z] !== "nok") {
+                            $arrdcp[$j] = $request->detail_cek_pengemasan[$i][$z];
+                            $j++;
+                        }
+                    }
+                    echo json_encode($arrdcp);
+                    if ($cs) {
+                        $k = HasilPengemasan::find($cs->id);
+                        $k->DetailCekPengemasan()->sync($arrdcp, false);
+                        $u = $k->save();
+
+                        if (!$u) {
+                            $bool = false;
+                        }
+                    }
+                }
+            }
+            if ($bool == true) {
+                return redirect()->back()->with('success', "Berhasil menambahkan Pengemasan");
+            } else if ($bool == false) {
+                return redirect()->back()->with('error', "Gagal menambahkan Pengemasan");
+            }
+        }
+    }
+
+    public function pengemasan_hasil($id)
+    {
+        $s = Pengemasan::find($id);
+        $hp = HasilPengemasan::where('pengemasan_id', $id)->get();
+        $c = CekPengemasan::where('detail_produk_id', $s->Bppb->DetailProduk->id)->get();
+        return view('page.produksi.pengemasan_hasil_show', ['id' => $id, 's' => $s, 'c' => $c, 'hp' => $hp]);
     }
 
     public function pengemasan_form()

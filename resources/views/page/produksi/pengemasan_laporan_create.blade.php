@@ -144,6 +144,7 @@
                                                         @foreach($cp as $cps)
                                                         <th colspan="{{count($cps->DetailCekPengemasan)}}">{{$cps->perlengkapan}}</th>
                                                         @endforeach
+                                                        <th rowspan="2">Hasil</th>
                                                         <th rowspan="2">Keterangan</th>
                                                         <th rowspan="2">Tindak Lanjut</th>
                                                         <th rowspan="2">Aksi</th>
@@ -213,16 +214,16 @@
                                                                 </div>
                                                             </div>
                                                         </td>
+                                                        @php ($k = 0); @endphp
                                                         @foreach($cp as $cps)
-                                                        @php ($k = $loop->iteration - 1); @endphp
                                                         @foreach($cps->DetailCekPengemasan as $i)
                                                         <td>
                                                             <div class="row">
                                                                 <div class="col-sm-12">
                                                                     <div class="form-group clearfix">
                                                                         <div class="icheck-success d-inline checked">
-                                                                            <input type="radio" name="detail_cek_pengemasan[0][{{$k}}][{{$loop->iteration - 1}}]" id="detail_cek_pengemasan0{{$k}}{{$loop->iteration - 1}}" class="detail_cek_pengemasan" value="{{$i->id}}" checked>
-                                                                            <label for="detail_cek_pengemasan0{{$k}}{{$loop->iteration - 1}}">
+                                                                            <input type="radio" name="detail_cek_pengemasan[0][{{$k}}]" id="detail_cek_pengemasan0{{$k}}" class="detail_cek_pengemasan" value="{{$i->id}}" checked>
+                                                                            <label for="detail_cek_pengemasan0{{$k}}">
                                                                                 <i class="fas fa-check-circle" style="color:green;"></i>
                                                                             </label>
                                                                         </div>
@@ -233,8 +234,8 @@
                                                                 <div class="col-sm-12">
                                                                     <div class="form-group clearfix">
                                                                         <div class="icheck-danger d-inline">
-                                                                            <input type="radio" name="detail_cek_pengemasan[0][{{$k}}][{{$loop->iteration - 1}}]" id="nok0{{$k}}{{$loop->iteration - 1}}" value="nok" class="detail_cek_pengemasan">
-                                                                            <label for="nok0{{$k}}{{$loop->iteration - 1}}">
+                                                                            <input type="radio" name="detail_cek_pengemasan[0][{{$k}}]" id="nok0{{$k}}" value="nok" class="detail_cek_pengemasan">
+                                                                            <label for="nok0{{$k}}">
                                                                                 <i class="fas fa-times-circle" style="color:red;"></i>
                                                                             </label>
                                                                         </div>
@@ -242,8 +243,35 @@
                                                                 </div>
                                                             </div>
                                                         </td>
+                                                        @php ($k++); @endphp
                                                         @endforeach
                                                         @endforeach
+                                                        <td>
+                                                            <div class="row">
+                                                                <div class="col-sm-12">
+                                                                    <div class="form-group clearfix">
+                                                                        <div class="icheck-success d-inline checked">
+                                                                            <input type="radio" name="hasil[0]" id="ok" class="hasil" value="ok" checked>
+                                                                            <label for="ok">
+                                                                                <i class="fas fa-check-circle" style="color:green;"></i>
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-sm-12">
+                                                                    <div class="form-group clearfix">
+                                                                        <div class="icheck-danger d-inline">
+                                                                            <input type="radio" name="hasil[0]" id="nok" value="nok" class="hasil">
+                                                                            <label for="nok">
+                                                                                <i class="fas fa-times-circle" style="color:red;"></i>
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </td>
                                                         <td>
                                                             <div class="form-group">
                                                                 <div class="input-group">
@@ -388,8 +416,8 @@
                     </div>
                 </div>
             </td>
+            @php ($k = 0); @endphp
             @foreach($cp as $cps)
-            @php ($k = $loop->iteration - 1); @endphp
             @foreach($cps->DetailCekPengemasan as $i)
             <td>
                 <div class="row">
@@ -417,8 +445,35 @@
                     </div>
                 </div>
             </td>
+            @php ($k++); @endphp
             @endforeach
             @endforeach
+            <td>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group clearfix">
+                            <div class="icheck-success d-inline checked">
+                                <input type="radio" name="hasil[` + add + `]" id="ok" class="hasil" value="ok" checked>
+                                <label for="ok">
+                                    <i class="fas fa-check-circle" style="color:green;"></i>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group clearfix">
+                            <div class="icheck-danger d-inline">
+                                <input type="radio" name="hasil[` + add + `]" id="nok" value="nok" class="hasil">
+                                <label for="nok">
+                                    <i class="fas fa-times-circle" style="color:red;"></i>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
             <td>
                 <div class="form-group">
                     <div class="input-group">
@@ -449,8 +504,8 @@
             numberRows($("#tableitem"));
         });
 
-        $('#tableitem').on('change', '.kondisi_unit', function(e) {
-            var kondisi_unit = $(this).closest('tr').find('.kondisi_unit');
+        $('#tableitem').on('change', '.hasil', function(e) {
+            var hasil = $(this).closest('tr').find('.hasil');
             if (this.value == 'ok') {
                 // $('select').select2('val', '');
                 $(this).closest('tr').find('select.tindak_lanjut').val('').trigger('change');

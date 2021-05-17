@@ -652,8 +652,7 @@ class QCController extends Controller
                 })->whereIn('status', ['acc_pemeriksaan_tertutup'])->count();
                 $btn = '<hgroup>
                         <h6 class="heading">' . $s->jumlah . " " . $s->DetailProduk->satuan . '</h6>
-                        <div class="subheading "><small class="purple-text">Produksi saat ini: ' . $s->countHasilPerakitan() . ' ' . $s->DetailProduk->satuan . '</small></div>
-                        <div class="subheading "><small class="info-text">Dapat Diuji: ' . $count . ' ' . $s->DetailProduk->satuan . '</small></div>
+                        <div class="subheading "><small class="info-text">Pengujian: ' . $count . ' ' . $s->DetailProduk->satuan . '</small></div>
                         </hgroup>';
                 return $btn;
             })
