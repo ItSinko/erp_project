@@ -254,7 +254,7 @@ return [
         ],
         [
             'header' => 'DATA MASTER',
-            'auth'   => [26, 14, 24]
+            'auth'   => [26, 14]
         ],
         [
             'text' => 'Penjualan Produk',
@@ -406,7 +406,64 @@ return [
         ],
         [
             'header' => 'MASTER DATA',
-            'auth' => [14, 17, 26, 23]
+            'auth' => [14, 17, 26, 23, 24]
+        ],
+        [
+            'text'  =>  'Stok',
+            'icon'  =>  'fas fa-table',
+            'auth'  => [24],
+            'submenu'   =>  [
+                [
+                    'text'  =>  'Gudang',
+                    'icon'  =>  'far fa-circle',
+                    'url'   =>  '#'
+                ],
+                [
+                    'text'  =>  'RND',
+                    'icon'  =>  'far fa-circle',
+                    'url'   =>  '#'
+                ],
+            ]
+        ],
+        [
+            'text'  =>  'Laporan',
+            'icon'  =>  'fas fa-table',
+            'auth'  => [24],
+            'submenu'   =>  [
+                [
+                    'text'  =>  'Pembelian',
+                    'icon'  =>  'far fa-circle',
+                    'url'   =>  '#'
+                ],
+                [
+                    'text'  =>  'Perakitan dan Pengemasan',
+                    'icon'  =>  'far fa-circle',
+                    'url'   =>  '#'
+                ],
+                [
+                    'text'  =>  'Pemeriksaan, Pengujian, dan Pemeriksaan Pengemasan QA',
+                    'icon'  =>  'far fa-circle',
+                    'url'   =>  '#'
+                ],
+
+                [
+                    'text'  =>  'Kerja GK',
+                    'icon'  =>  'far fa-circle',
+                    'url'   =>  '#'
+                ],
+
+                [
+                    'text'  =>  'Penjualan',
+                    'icon'  =>  'far fa-circle',
+                    'url'   =>  '#'
+                ],
+
+                [
+                    'text'  =>  'Marketing',
+                    'icon'  =>  'far fa-circle',
+                    'url'   =>  '#'
+                ],
+            ]
         ],
         [
             'text' => 'Produk',
@@ -476,6 +533,10 @@ return [
                 ],
 
             ],
+        ],
+        [
+            'header'    =>  'PPIC',
+            'auth'  =>  [24]
         ],
         [
             'text' => 'Jadwal Produksi',

@@ -3,16 +3,12 @@
 @section('title', 'Beta Version')
 
 @section('content_header')
-<h1 id="page_header" class="m-0 text-dark">PPIC Scheduler</h1>
+<h1 id="page_header" class="m-0 text-dark">Jadwal Produksi</h1>
 @stop
 
 @section('adminlte_css')
 <link href='{{ asset("vendor/fullcalendar/main.css") }}' rel='stylesheet' />
 <style>
-    #calendar td.day-off {
-        background-color: #627070;
-    }
-
     #calendar {
         padding: 20px;
     }
@@ -21,7 +17,51 @@
 
 @section('content')
 <div class="row">
-    <div class="col-12">
+    <div class="col-md-3">
+        <div class="sticky-top mb-3">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Daftar Produksi</h4>
+                </div>
+                <div class="card-body">
+                    <!-- the events -->
+                    <div id="external-events">
+                        <p>daftar kosong</p>
+                    </div>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Produksi Barang</h3>
+                </div>
+                <div class="card-body">
+                    <div class="btn-group" style="width: 100%; margin-bottom: 10px;">
+                        <!--<button type="button" id="color-chooser-btn" class="btn btn-info btn-block dropdown-toggle" data-toggle="dropdown">Color <span class="caret"></span></button>-->
+                        <ul class="fc-color-picker" id="color-chooser">
+                            <li><a class="text-primary" href="#"><i class="fas fa-square"></i></a></li>
+                            <li><a class="text-warning" href="#"><i class="fas fa-square"></i></a></li>
+                            <li><a class="text-success" href="#"><i class="fas fa-square"></i></a></li>
+                            <li><a class="text-danger" href="#"><i class="fas fa-square"></i></a></li>
+                            <li><a class="text-muted" href="#"><i class="fas fa-square"></i></a></li>
+                        </ul>
+                    </div>
+                    <!-- /btn-group -->
+                    <div class="input-group">
+                        <input id="new-event" type="text" class="form-control" placeholder="Event Title">
+
+                        <div class="input-group-append">
+                            <button id="add-new-event" type="button" class="btn btn-primary">Tambah</button>
+                        </div>
+                        <!-- /btn-group -->
+                    </div>
+                    <!-- /input-group -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9">
         <div class="card">
             <div class="card-body">
                 <div id='calendar'></div>
@@ -35,37 +75,42 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header text-center">
-                <h4 class="modal-title w-100 font-weight-bold">Select Date</h4>
+                <h4 class="modal-title w-100 font-weight-bold">Pilih Tanggal</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body mx-3">
                 <div class="form-group row">
-                    <label for="activity" class="col-sm-2 col-form-label">Activity</label>
+                    <label for="activity" class="col-sm-2 col-form-label">Produksi</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="activity" placeholder="name" autocomplete="off">
+                        <select name="" id="activity" class="form-control select2" data-placeholder="Pilih Produk...">
+                            <option value=""></option>
+                            @foreach($produk as $d)
+                            <option value="{{ $d->nama }}">{{ $d->nama }}</option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="days" class="col-sm-2 col-form-label">Days</label>
+                    <label for="days" class="col-sm-2 col-form-label">Jumlah Hari</label>
                     <div class="col-sm-10">
                         <input type="number" class="form-control" id="days" placeholder="number of days" min="1" autocomplete="off" readonly>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
-                        <label for="date_start">Date start</label>
+                        <label for="date_start">Tanggal Mulai</label>
                         <input type="date" class="form-control" id="date_start" autocomplete="off">
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="date_end">Date end</label>
+                        <label for="date_end">Tanggal Berhenti</label>
                         <input type="date" class="form-control" id="date_end" autocomplete="off">
                     </div>
                 </div>
             </div>
             <div class="modal-footer d-flex justify-content-center">
-                <button type="submit" class="btn btn-default" id="save">Save</button>
+                <button type="submit" class="btn btn-default" id="save">Simpan</button>
             </div>
         </div>
     </div>
@@ -74,8 +119,8 @@
 
 @section('adminlte_js')
 <script src="{{ asset('vendor/fullcalendar/main.js') }}"></script>
+<script src="{{ asset('vendor/fullcalendar/locales-all.js') }}"></script>
 <script src="{{ asset('vendor/bootbox/bootbox.js') }}"></script>
-<script src="{{ asset('vendor/popper/intro.js') }}"></script>
 <script>
     var initial_date = JSON.parse($('#date').html()); // load event from database
 
@@ -95,13 +140,35 @@
     $(document).ready(function() {
         var start_date, end_date;
 
-        var calendarEl = $('#calendar')[0];
+        var Calendar = FullCalendar.Calendar;
+        var Draggable = FullCalendar.Draggable;
+
+        var calendarEl = document.getElementById('calendar');
+        var containerEl = document.getElementById('external-events');
+
+        new Draggable(containerEl, {
+            itemSelector: '.external-event',
+            eventData: function(eventEl) {
+                console.log(eventEl);
+                return {
+                    title: eventEl.innerText,
+                    backgroundColor: window.getComputedStyle(eventEl, null).getPropertyValue('background-color'),
+                    borderColor: window.getComputedStyle(eventEl, null).getPropertyValue('background-color'),
+                    textColor: window.getComputedStyle(eventEl, null).getPropertyValue('color'),
+                };
+            }
+        })
+
         var calendar = new FullCalendar.Calendar(calendarEl, {
             locale: 'id',
+            weekNumbers: true,
             weekends: false,
             selectable: true,
+            editable: true,
+            droppable: true,
             events: initial_date,
             select: function(info) {
+                console.log(info);
                 $('#date_form').modal();
                 $('#date_start').val(info.startStr);
                 $('#date_end').val(info.endStr);
@@ -128,10 +195,10 @@
                 if (endDay == 6 && startDay != 0)
                     days = days - 1
 
-
                 $('#days').val(days);
             },
             eventClick: function(event_info) {
+                console.log(event_info);
                 bootbox.confirm({
                     centerVertical: true,
                     message: "Do you want delete this event?",
@@ -165,9 +232,81 @@
                         }
                     }
                 });
+            },
+            drop: function(info) {
+                // if so, remove the element from the "Draggable Events" list
+                console.log(info);
+                info.draggedEl.parentNode.removeChild(info.draggedEl);
+                var result = new Date();
+                var start = new Date(info.dateStr);
+                result = [result.getFullYear(), result.getMonth(), result.getDate()].join('-');
+                console.log(result);
+                var data = {
+                    title: info.draggedEl.innerText,
+                    start: info.dateStr,
+                    end: result,
+                }
+                console.log(data);
+                $.ajax({
+                    url: "{{ route('schedule.create') }}",
+                    method: "POST",
+                    data: {
+                        title: info.draggedEl.innerText,
+                        start: info.dateStr,
+                        end: result,
+                    },
+                    success: function(result) {
+                        console.log(result);
+                        calendar.addEvent({
+                            id: result.id,
+                            title: result.title,
+                            start: result.start,
+                            end: result.end,
+                        });
+                        $('#date_form').modal('hide');
+                        $('#activity').val('');
+                    }
+                });
             }
         });
         calendar.render();
+
+        /* ADDING EVENTS */
+        var currColor = '#3c8dbc' //Red by default
+        //Color chooser button
+        var colorChooser = $('#color-chooser-btn')
+        $('#color-chooser > li > a').click(function(e) {
+            e.preventDefault()
+            //Save color
+            currColor = $(this).css('color')
+            //Add color effect to button
+            $('#add-new-event').css({
+                'background-color': currColor,
+                'border-color': currColor
+            })
+        });
+        $('#add-new-event').click(function(e) {
+            $('#external-events > p').remove();
+            e.preventDefault()
+            //Get value and make sure it is not null
+            var val = $('#new-event').val()
+            if (val.length == 0) {
+                return
+            }
+
+            //Create events
+            var event = $('<div />')
+            event.css({
+                'background-color': currColor,
+                'border-color': currColor,
+                'color': '#fff'
+            }).addClass('external-event')
+            event.html(val)
+            $('#external-events').prepend(event);
+
+            //Remove event from text input
+            $('#new-event').val('')
+        });
 
         $('#date_end').click(function() {
             alert('change end date');
@@ -195,21 +334,18 @@
                         start: $('#date_start').val(),
                         end: $('#date_end').val(),
                     },
-                    success: function($data) {
-                        console.log($data);
+                    success: function(result) {
+                        console.log(result);
                         calendar.addEvent({
-                            title: $('#activity').val(),
-                            start: $('#date_start').val(),
-                            end: $('#date_end').val(),
-                            extendedProps: {
-                                'data-toggle': 'tooltip',
-                                'title': "Tooltip on test",
-                            },
+                            id: result.id,
+                            title: result.title,
+                            start: result.start,
+                            end: result.end,
                         });
                         $('#date_form').modal('hide');
                         $('#activity').val('');
                     }
-                })
+                });
             } else {
                 $('#activity').css('border', '2px solid red');
                 setTimeout(() => {
@@ -217,10 +353,6 @@
                 }, 1000);
             }
         });
-
-        // $('save').click(function(){
-
-        // });
 
         $(document).keypress(function(e) {
             var key = e.which;

@@ -30,7 +30,8 @@ class PPICController extends Controller
     {
         $date = Event::toBase()->get();
         $date = json_encode($date);
-        return view('page.ppic.jadwal_produksi', ['date' => $date]);
+        $produk = Produk::select('nama')->get();
+        return view('page.ppic.jadwal_produksi', compact('date', 'produk'));
     }
 
     public function ppic()
@@ -47,8 +48,9 @@ class PPICController extends Controller
             'end' => $request->end,
         ];
 
-        // return json_encode($data);
         Event::create($data);
+        $result = Event::latest()->first();
+        return $result;
     }
 
     public function calendar_delete(Request $request)
