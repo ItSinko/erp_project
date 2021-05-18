@@ -23,44 +23,7 @@
 @section('content')
 <section class="content">
     <div class="row">
-        <div class="col-3">
-            <div class="card">
-                <div class="card-body">
-                    <h3><i class="fas fa-info-circle"></i>&nbsp;Informasi</h3><br>
-                    <div class="form-horizontal">
-                        <div class="row">
-                            <label for="no_seri" class="col-sm-6 col-form-label">No BPPB</label>
-                            <div class="col-sm-6 col-form-label" style="text-align:right;">
-                                {{$s->Bppb->no_bppb}}
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <label for="no_seri" class="col-sm-4 col-form-label">Produk</label>
-                            <div class="col-sm-8 col-form-label" style="text-align:right;">
-                                {{$s->Bppb->DetailProduk->nama}}
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <label for="no_seri" class="col-sm-7 col-form-label">Ketidaksesuaian Proses</label>
-                            <div class="col-sm-5 col-form-label" style="text-align:right;">
-                                {{ucfirst(str_replace('_', ' ', $s->ketidaksesuaian_proses))}}
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <label for="no_seri" class="col-sm-7 col-form-label">Tanggal Permintaan</label>
-                            <div class="col-sm-5 col-form-label" style="text-align:right;">
-                                {{$s->tanggal_permintaan}}
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-9">
+        <div class="col-12">
             @if(session()->has('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 <strong><i class="fas fa-check"></i></strong> {{session()->get('success')}}
@@ -84,21 +47,53 @@
             </div>
             @endif
             <div class="card">
-                <div class="card-header bg-warning">
-                    <div class="card-title"><i class="fas fa-edit"></i>&nbsp;Perbaikan</div>
+                <div class="card-header bg-success">
+                    <div class="card-title"><i class="fas fa-plus-circle"></i>&nbsp;Perbaikan</div>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <form action="{{route('perbaikan.produksi.update', ['id' => $id])}}" method="post">
+                    <form action="{{route('perbaikan.produksi.store', ['id' => $s->Perakitan->Bppb->id])}}" method="post">
                         {{ csrf_field() }}
                         {{ method_field('PUT') }}
+                        <h3>BPPB</h3>
+                        <div class="form-group row">
+                            <label for="no_bppb" class="col-sm-4 col-form-label" style="text-align:right;">BPPB</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" name="no_bppb" id="no_bppb" value="{{old('no_bppb', $s->Perakitan->Bppb->no_bppb)}}" style="width: 30%;" readonly>
+                                @if ($errors->has('no_bppb'))
+                                <span class="invalid-feedback" role="alert">{{$errors->first('no_bppb')}}</span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="nama_produk" class="col-sm-4 col-form-label" style="text-align:right;">Produk</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" name="nama_produk" id="nama_produk" value="{{old('nama_produk', $s->Perakitan->Bppb->DetailProduk->nama)}}" style="width: 50%;" readonly>
+                                @if ($errors->has('nama_produk'))
+                                <span class="invalid-feedback" role="alert">{{$errors->first('nama_produk')}}</span>
+                                @endif
+                            </div>
+                        </div>
+
+
                         <h3>Produk</h3>
                         <div class="form-group row">
                             <label for="nomor" class="col-sm-4 col-form-label" style="text-align:right;">Nomor</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" name="nomor" id="nomor" value="{{old('nomor', $s->nomor)}}" style="width: 50%;">
+                                <input type="text" class="form-control" name="nomor" id="nomor" value="{{old('nomor')}}" style="width: 50%;">
                                 @if ($errors->has('nomor'))
                                 <span class="invalid-feedback" role="alert">{{$errors->first('nomor')}}</span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="tanggal_permintaan" class="col-sm-4 col-form-label" style="text-align:right;">Tanggal Permintaan</label>
+                            <div class="col-sm-8">
+                                <input type="date" class="form-control" name="tanggal_permintaan" id="tanggal_permintaan" value="{{old('tanggal_permintaan')}}" style="width: 25%;">
+                                @if ($errors->has('tanggal_permintaan'))
+                                <span class="invalid-feedback" role="alert">{{$errors->first('tanggal_permintaan')}}</span>
                                 @endif
                             </div>
                         </div>
@@ -107,9 +102,9 @@
                             <label for="hasil_perakitan_id" class="col-sm-4 col-form-label" style="text-align:right;">No Seri</label>
                             <div class="col-sm-5">
                                 <div class="select2-info">
-                                    <select class="select2 form-control @error('hasil_perakitan_id') is-invalid @enderror hasil_perakitan_id" multiple="multiple" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;" name="hasil_perakitan_id[]" id="hasil_perakitan_id">
+                                    <select class="select2 form-control @error('hasil_perakitan_id') is-invalid @enderror hasil_perakitan_id" multiple="multiple" data-placeholder="Pilih No Seri" data-dropdown-css-class="select2-info" style="width: 100%;" name="hasil_perakitan_id[]" id="hasil_perakitan_id">
                                         @foreach($hp as $i)
-                                        <option value="{{$i->id}}" @if($s->HasilPerakitan->contains('id', $i->id))
+                                        <option value="{{$i->id}}" @if($id==$i->id))
                                             selected
                                             @endif
                                             >{{$i->no_seri}}</option>
@@ -125,7 +120,7 @@
                         <div class="form-group row">
                             <label for="kondisi_produk" class="col-sm-4 col-form-label" style="text-align:right;">Kondisi Produk</label>
                             <div class="col-sm-8">
-                                <textarea class="form-control" name="kondisi_produk" id="kondisi_produk">{{old('kondisi_produk', $s->kondisi_produk)}}</textarea>
+                                <textarea class="form-control" name="kondisi_produk" id="kondisi_produk"></textarea>
                                 @if ($errors->has('kondisi_produk'))
                                 <span class="invalid-feedback" role="alert">{{$errors->first('kondisi_produk')}}</span>
                                 @endif
@@ -133,10 +128,41 @@
                         </div>
 
                         <div class="form-group row">
+                            <label for="ketidaksesuaian_proses" class="col-sm-4 col-form-label" style="text-align:right;">Ketidaksesuaian Proses</label>
+                            <div class="col-sm-2 col-form-label">
+                                <div class="icheck-primary d-inline">
+                                    <input type="radio" id="ketidaksesuaian_proses_perakitan" name="ketidaksesuaian_proses" value="perakitan" @if($proses=='perakitan' ) checked @else disabled @endif>
+                                    <label for="ketidaksesuaian_proses_perakitan">
+                                        Perakitan
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-2 col-form-label">
+                                <div class="icheck-primary d-inline">
+                                    <input type="radio" id="ketidaksesuaian_proses_pengujian" name="ketidaksesuaian_proses" value="pengujian" @if($proses=='pengujian' ) checked @else disabled @endif>
+                                    <label for="ketidaksesuaian_proses_pengujian">
+                                        Pengujian
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-2 col-form-label">
+                                <div class="icheck-primary d-inline">
+                                    <input type="radio" id="ketidaksesuaian_proses_pengemasan" name="ketidaksesuaian_proses" value="pengemasan" @if($proses=='pengemasan' ) checked @else disabled @endif>
+                                    <label for="ketidaksesuaian_proses_pengemasan">
+                                        Pengemasan
+                                    </label>
+                                </div>
+                            </div>
+                            @if ($errors->has('ketidaksesuaian_proses'))
+                            <span class="invalid-feedback" role="alert">{{$errors->first('ketidaksesuaian_proses')}}</span>
+                            @endif
+                        </div>
+
+                        <div class="form-group row">
                             <label for="sebab_ketidaksesuaian" class="col-sm-4 col-form-label" style="text-align:right;">Sebab Ketidaksesuaian</label>
                             <div class="col-sm-2 col-form-label">
                                 <div class="icheck-primary d-inline">
-                                    <input type="radio" id="sebab_ketidaksesuaian_operator" name="sebab_ketidaksesuaian" value="operator" @if($s->sebab_ketidaksesuaian == "operator") checked @endif>
+                                    <input type="radio" id="sebab_ketidaksesuaian_operator" name="sebab_ketidaksesuaian" value="operator" checked>
                                     <label for="sebab_ketidaksesuaian_operator">
                                         Operator
                                     </label>
@@ -144,7 +170,7 @@
                             </div>
                             <div class="col-sm-2 col-form-label">
                                 <div class="icheck-primary d-inline">
-                                    <input type="radio" id="sebab_ketidaksesuaian_bahan_baku" name="sebab_ketidaksesuaian" value="bahan_baku" @if($s->sebab_ketidaksesuaian == "bahan_baku") checked @endif>
+                                    <input type="radio" id="sebab_ketidaksesuaian_bahan_baku" name="sebab_ketidaksesuaian" value="bahan_baku">
                                     <label for="sebab_ketidaksesuaian_bahan_baku">
                                         Bahan Baku
                                     </label>
@@ -159,7 +185,7 @@
                         <div class="form-group row">
                             <label for="tanggal_pengerjaan" class="col-sm-4 col-form-label" style="text-align:right;">Tanggal Pengerjaan</label>
                             <div class="col-sm-8">
-                                <input type="date" class="form-control" name="tanggal_pengerjaan" id="tanggal_pengerjaan" value="{{old('tanggal_pengerjaan', $s->tanggal_pengerjaan)}}" style="width: 25%;">
+                                <input type="date" class="form-control" name="tanggal_pengerjaan" id="tanggal_pengerjaan" value="{{old('tanggal_pengerjaan')}}" style="width: 25%;">
                                 @if ($errors->has('tanggal_pengerjaan'))
                                 <span class="invalid-feedback" role="alert">{{$errors->first('tanggal_pengerjaan')}}</span>
                                 @endif
@@ -188,7 +214,7 @@
                         <div class="form-group row">
                             <label for="analisa" class="col-sm-4 col-form-label" style="text-align:right;">Analisa</label>
                             <div class="col-sm-8">
-                                <textarea class="form-control" name="analisa" id="analisa">{{old('analisa', $s->analisa)}}</textarea>
+                                <textarea class="form-control" name="analisa" id="analisa"></textarea>
                                 @if ($errors->has('analisa'))
                                 <span class="invalid-feedback" role="alert">{{$errors->first('analisa')}}</span>
                                 @endif
@@ -198,7 +224,7 @@
                         <div class="form-group row">
                             <label for="realisasi_pengerjaan" class="col-sm-4 col-form-label" style="text-align:right;">Realisasi Pengerjaan</label>
                             <div class="col-sm-8">
-                                <textarea class="form-control" name="realisasi_pengerjaan" id="realisasi_pengerjaan">{{old('realisasi_pengerjaan', $s->realisasi_pengerjaan)}}</textarea>
+                                <textarea class="form-control" name="realisasi_pengerjaan" id="realisasi_pengerjaan"></textarea>
                                 @if ($errors->has('realisasi_pengerjaan'))
                                 <span class="invalid-feedback" role="alert">{{$errors->first('realisasi_pengerjaan')}}</span>
                                 @endif
@@ -238,7 +264,7 @@
                         <button type="button" class="btn btn-block btn-danger btn-rounded" style="width:200px;float:left;"><i class="fas fa-times"></i>&nbsp;Batal</button>
                     </span>
                     <span>
-                        <button type="submit" class="btn btn-block btn-warning btn-rounded" style="width:200px;float:right;"><i class="fas fa-edit"></i>&nbsp;Simpan Perubahan</button>
+                        <button type="submit" class="btn btn-block btn-warning btn-rounded" style="width:200px;float:right;"><i class="fas fa-plus-circle"></i>&nbsp;Tambah Data</button>
                     </span>
                 </div>
                 </form>
@@ -254,4 +280,19 @@
     </div>
     <!-- /.row -->
 </section>
+@endsection
+
+@section('adminlte_js')
+<script>
+    $(function() {
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+
+        today = yyyy + '-' + mm + '-' + dd;
+        $('input[name="tanggal_pengerjaan"]').val(today);
+        $('#tanggal_permintaan').val(today);
+    });
+</script>
 @endsection

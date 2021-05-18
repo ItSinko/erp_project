@@ -586,7 +586,6 @@ return [
                 ],
             ],
         ],
-<<<<<<< HEAD
         [
             'text'    => 'Perbaikan',
             'icon'    => 'fas fa-wrench',
@@ -594,8 +593,6 @@ return [
             'auth' => [17],
         ],
 
-=======
->>>>>>> 6f57023c453d2bb3311789df6c108721596b0922
         ['header' => 'LOGOUT'],
         [
             'text' => 'Logout',

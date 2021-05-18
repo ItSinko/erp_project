@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PerbaikanProduksi extends Model
 {
-    protected $fillable = ['bppb_id', 'karyawan_id', 'kondisi_produksi', 'ketidaksesuaian_proses', 'sebab_ketidaksesuaian', 'tanggal_permintaan', 'nomor', 'tanggal_pengerjaan', 'analisa', 'realisasi_pengerjaan', 'status'];
+    protected $fillable = ['bppb_id', 'karyawan_id', 'kondisi_produk', 'ketidaksesuaian_proses', 'sebab_ketidaksesuaian', 'tanggal_permintaan', 'nomor', 'tanggal_pengerjaan', 'analisa', 'realisasi_pengerjaan', 'status'];
 
     public function Bppb()
     {

@@ -19,7 +19,7 @@ class CreatePerbaikanProduksisTable extends Migration
             $table->foreign('bppb_id')->references('id')->on('bppbs')->onDelete('set null');
             $table->bigInteger('karyawan_id')->nullable()->unsigned();
             $table->foreign('karyawan_id')->references('id')->on('karyawans')->onDelete('set null');
-            $table->text('kondisi_produksi')->nullable();
+            $table->text('kondisi_produk')->nullable();
             $table->enum('ketidaksesuaian_proses', ['perakitan', 'pengujian', 'pengemasan']);
             $table->enum('sebab_ketidaksesuaian', ['bahan_baku', 'operator'])->nullable();
             $table->date('tanggal_permintaan');
