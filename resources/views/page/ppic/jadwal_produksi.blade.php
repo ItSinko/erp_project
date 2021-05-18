@@ -57,15 +57,117 @@
                         <!-- /btn-group -->
                     </div>
                     <!-- /input-group -->
+                    <div class="input-group" style="margin-top: 5px;">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Status</span>
+                        </div>
+                        <select name="status" id="status" class="form-control">
+                            <option value=""></option>
+                            <option value="acc">ACC</option>
+                            <option value="not_acc">Penyusunan</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="col-md-9">
+        <div class="alert alert-info alert-dismissible" id="status_info" style="display: none;">
+            <h5><i class="icon fas fa-info"></i> Status </h5>
+            Proses penyusunan jadwal
+        </div>
+        <div class="alert alert-success alert-dismissible" id="status_success" style="display: none;">
+            <h5><i class="icon fas fa-check"></i> Status</h5>
+            Jadwal telah Ditetapkan
+        </div>
         <div class="card">
             <div class="card-body">
                 <div id='calendar'></div>
-                <div id="date" hidden>{{ $date }}</div> <!-- catch data from controller -->
+                <div id="date" hidden>{{ $event }}</div> <!-- catch data from controller -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">List View</h3>
+
+                <div class="card-tools">
+                    <div class="input-group input-group-sm" style="width: 150px;">
+                        <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive p-0" style="height: 600px;">
+                <table class="table table-head-fixed text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>Produk</th>
+                            <th>Tanggal Mulai</th>
+                            <th>Tanggal Selesai</th>
+                            <th>Status</th>
+                            <th>Progress</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($date as $d)
+                        <tr>
+                            <td>{{$d->title}}</td>
+                            <td>{{$d->start}}</td>
+                            <td>{{$d->end}}</td>
+                            <td>On Progress</td>
+                            <td>
+                                <div class="progress progress-xs">
+                                    <div class="progress-bar progress-bar-danger" style="width: 55%"></div>
+                                </div>
+                                <span class="badge bg-danger">55%</span>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Table View</h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <table class="table table-bordered center">
+                    <thead>
+                        <tr>
+                            <th style="width: 10%">Produk</th>
+                            @for ($i = 1; $i <= date('t'); $i++) <th>{{$i}}</th>
+                                @endfor
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($date as $d)
+                        <tr>
+                            <td>{{$d->title}}</td>
+                            @for ($i = 1; $i <= date('t'); $i++) @php $start=date('d', strtotime($d->start));
+                                $end = date('d', strtotime($d->end));
+                                @endphp
+                                @if ($i >= $start && $i <= $end) <td style="background: yellow;">
+                                    </td>
+                                    @else
+                                    <td></td>
+                                    @endif
+                                    @endfor
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -360,6 +462,19 @@
                 $('#save').trigger("click");
             }
         });
+
+        $('#status').on('change', function() {
+            if ($('#status').val() == 'acc') {
+                $('#status_info').hide();
+                $('#status_success').show();
+            } else if ($('#status').val() == 'not_acc') {
+                $('#status_info').show();
+                $('#status_success').hide();
+            } else {
+                $('#status_info').hide();
+                $('#status_success').hide();
+            }
+        })
     });
 </script>
 @stop

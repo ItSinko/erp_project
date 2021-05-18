@@ -28,10 +28,19 @@ class PPICController extends Controller
 
     public function index()
     {
-        $date = Event::toBase()->get();
-        $date = json_encode($date);
+        $date = Event::toBase()->orderBy('start', 'asc')->get();
+        $event = json_encode($date);
         $produk = Produk::select('nama')->get();
-        return view('page.ppic.jadwal_produksi', compact('date', 'produk'));
+        $arr = [];
+        $today = date('m');
+        foreach ($date as $d) {
+            $temp = strtotime($d->start);
+            if ($today == date('m', $temp)) {
+                array_push($arr, $d);
+            }
+        }
+        $date = $arr;
+        return view('page.ppic.jadwal_produksi', compact('event', 'produk', 'date'));
     }
 
     public function ppic()
