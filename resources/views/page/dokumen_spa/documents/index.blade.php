@@ -82,10 +82,13 @@
           @else
           Dokumen
           @endif
-          @if (!$general)
           <button class="btn red waves-effect waves-light right tooltipped delete_all" data-url="{{ url('documentsDeleteMulti') }}" data-position="left" data-delay="50" data-tooltip="Delete Selected Documents"><i class="material-icons">delete</i></button>
           <a href="/dc/documents/create" class="btn waves-effect waves-light right tooltipped" data-position="left" data-delay="50" data-tooltip="Upload New Document"><i class="material-icons">file_upload</i></a>
-          <a href="#modal-add"><button class="btn green waves-effect waves-light right tooltipped" data-position="left" data-delay="50" data-tooltip="Tambah folder"><i class="material-icons">add</i></button></a>
+          <a href="#modal-add">
+            <button class="btn green waves-effect waves-light right tooltipped" data-position="left" data-delay="50" data-tooltip="Tambah folder">
+              <i class="material-icons">add</i>
+            </button>
+          </a>
           <div id="modal-add" class="modal modal-fixed-footer">
             <div class="modal-content">
               <h4>Tambah Folder</h4>
@@ -97,181 +100,61 @@
               <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">OK</a>
             </div>
           </div>
-          @endif
         </h3>
         <div class="divider"></div>
       </div>
       <div class="card z-depth-2">
         <div class="card-content">
-          @if ($general)
           <div class="row">
-            @foreach($data as $d)
+            @foreach($folder as $d)
             <div class="col m2 s6">
               <div class="card hoverable indigo lighten-5 task">
-                @if (isset($d->id))
-                <a href="/dc/dep_doc/{{$d->id}}">
-                  <div class="card-content2 center">
-                    <i class="material-icons">folder_open</i>
-                    <h6>{{ $d->nama }}</h6>
-                  </div>
-                </a>
-                @else
                 @php
-                $i = strpos($d, '/');
-                $d = substr($d, $i+1);
-                $i = strpos($d, '/');
-                if ($i) $d = substr($d, 0, $i);
+                $pos = strrpos($d, '/');
+                $name = substr($d, $pos);
+
+                $arr_query = preg_split('#/#', $d);
+                $query = http_build_query($arr_query);
                 @endphp
-                <a href="/dc/documents?department={{urlencode($title)}}&folder={{urlencode($d)}}">
+                <a href="/dc/documents?{{ $query }}">
                   <div class="card-content2 center">
                     <i class="material-icons">folder_open</i>
-                    <h6>{{ $d }}</h6>
+                    <h6>{{ $name }}</h6>
                   </div>
                 </a>
-                @endif
+              </div>
+            </div>
+            @endforeach
+            @foreach($docs as $doc)
+            <div class="col m2 s6" id="tr_{{$doc->id}}">
+              <div class="card hoverable indigo lighten-5 task" data-id="{{ $doc->id }}">
+                <input type="checkbox" class="filled-in sub_chk" id="chk_{{$doc->id}}" data-id="{{$doc->id}}">
+                <label for="chk_{{$doc->id}}"></label>
+                <a href="/dc/documents/{{ $doc->id }}">
+                  <div class="card-content2 center">
+                    @if(strpos($doc->mimetype, "image") !== false)
+                    <i class="material-icons">image</i>
+                    @elseif(strpos($doc->mimetype, "video") !== false)
+                    <i class="material-icons">ondemand_video</i>
+                    @elseif(strpos($doc->mimetype, "audio") !== false)
+                    <i class="material-icons">music_video</i>
+                    @elseif(strpos($doc->mimetype,"text") !== false)
+                    <i class="material-icons">description</i>
+                    @elseif(strpos($doc->mimetype,"application/pdf") !== false)
+                    <i class="material-icons">picture_as_pdf</i>
+                    @elseif(strpos($doc->mimetype, "application/vnd.openxmlformats-officedocument") !== false)
+                    <i class="material-icons">library_books</i>
+                    @else
+                    <i class="material-icons">folder_open</i>
+                    @endif
+                    <h6>{{ $doc->name }}</h6>
+                    <p>{{ $doc->filesize }}</p>
+                  </div>
+                </a>
               </div>
             </div>
             @endforeach
           </div>
-          @else
-          <!-- Switch -->
-          <div class="switch" style="margin-bottom: 2em;">
-            <label>
-              Grid View
-              <input type="checkbox">
-              <span class="lever"></span>
-              Table View
-            </label>
-          </div>
-          <!-- FOLDER View -->
-          <div id="folderView">
-            <div class="row">
-              <form action="/sort" method="post" id="sort-form">
-                {{ csrf_field() }}
-                <div class="input-field col m2 s12">
-                  <select name="filetype" id="sort">
-                    <option value="" disabled selected>Choose</option>
-                    <option value="image/jpeg" @if($filetype==='image/jpeg' ) selected @endif>Image</option>
-                    <option value="video/mp4" @if($filetype==='video/mp4' ) selected @endif>Video</option>
-                    <option value="audio/mpeg" @if($filetype==='audio/mpeg' ) selected @endif>Audio</option>
-                    <option value="application/vnd.openxmlformats-officedocument.wordprocessingml.document">Word Documents</option>
-                    <option value="">Others</option>
-                  </select>
-                  <label>Sort By File Type</label>
-                </div>
-              </form>
-              <form action="/search" method="post" id="search-form">
-                {{ csrf_field() }}
-                <div class="input-field col m4 s12 right">
-                  <i class="material-icons prefix">search</i>
-                  <input type="text" name="search" id="search" placeholder="Search Here ...">
-                  <label for="search"></label>
-                </div>
-              </form>
-            </div>
-            <br>
-            <div class="row">
-              @if(count($docs) > 0)
-              @foreach($docs as $doc)
-              <div class="col m2 s6" id="tr_{{$doc->id}}">
-                <div class="card hoverable indigo lighten-5 task" data-id="{{ $doc->id }}">
-                  <input type="checkbox" class="filled-in sub_chk" id="chk_{{$doc->id}}" data-id="{{$doc->id}}">
-                  <label for="chk_{{$doc->id}}"></label>
-                  <a href="/dc/documents/{{ $doc->id }}">
-                    <div class="card-content2 center">
-                      @if(strpos($doc->mimetype, "image") !== false)
-                      <i class="material-icons">image</i>
-                      @elseif(strpos($doc->mimetype, "video") !== false)
-                      <i class="material-icons">ondemand_video</i>
-                      @elseif(strpos($doc->mimetype, "audio") !== false)
-                      <i class="material-icons">music_video</i>
-                      @elseif(strpos($doc->mimetype,"text") !== false)
-                      <i class="material-icons">description</i>
-                      @elseif(strpos($doc->mimetype,"application/pdf") !== false)
-                      <i class="material-icons">picture_as_pdf</i>
-                      @elseif(strpos($doc->mimetype, "application/vnd.openxmlformats-officedocument") !== false)
-                      <i class="material-icons">library_books</i>
-                      @else
-                      <i class="material-icons">folder_open</i>
-                      @endif
-                      <h6>{{ $doc->name }}</h6>
-                      <p>{{ $doc->filesize }}</p>
-                    </div>
-                  </a>
-                </div>
-              </div>
-              @endforeach
-              @else
-              <h5 class="teal-text">No Document has been uploaded</h5>
-              @endif
-            </div>
-          </div>
-          <!-- TABLE View -->
-          <div id="tableView" class="unshow">
-            <div class="row">
-              <table class="bordered centered highlight responsive-table" id="myDataTable">
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th>File Name</th>
-                    <th>Owner</th>
-                    <th>Uploaded At</th>
-                    <th>Expires At</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @if(count($docs) > 0)
-                  @foreach($docs as $doc)
-                  <tr id="tr_{{$doc->id}}">
-                    <td>
-                      <input type="checkbox" id="chk_{{ $doc->id }}" class="sub_chk" data-id="{{$doc->id}}">
-                      <label for="chk_{{ $doc->id }}"></label>
-                    </td>
-                    <td>{{ $doc->name }}</td>
-                    <td>{{ $doc->user->name }}</td>
-                    <td>{{ $doc->created_at->toDayDateTimeString() }}</td>
-                    <td>
-                      @if($doc->isExpire)
-                      {{ $doc->expires_at }}
-                      @else
-                      No Expiration
-                      @endif
-                    </td>
-                    <td>
-                      {!! Form::open() !!}
-                      <a href="documents/{{ $doc->id }}" class="tooltipped" data-position="left" data-delay="50" data-tooltip="View Details"><i class="material-icons">visibility</i></a>
-                      {!! Form::close() !!}
-                      {!! Form::open() !!}
-                      <a href="documents/open/{{ $doc->id }}" class="tooltipped" data-position="left" data-delay="50" data-tooltip="Open"><i class="material-icons">open_with</i></a>
-                      {!! Form::close() !!}
-                      {!! Form::open() !!}
-                      <a href="documents/download/{{ $doc->id }}" class="tooltipped" data-position="left" data-delay="50" data-tooltip="Download"><i class="material-icons">file_download</i></a>
-                      {!! Form::close() !!}
-                      {!! Form::close() !!}
-                      {!! Form::open() !!}
-                      <a href="documents/{{ $doc->id }}/edit" class="tooltipped" data-position="left" data-delay="50" data-tooltip="Edit"><i class="material-icons">mode_edit</i></a>
-                      {!! Form::close() !!}
-                      <!-- DELETE using link -->
-                      {!! Form::open(['action' => ['digidocu\DocumentsController@destroy', $doc->id],
-                      'method' => 'DELETE', 'id' => 'form-delete-documents-' . $doc->id]) !!}
-                      <a href="" class="data-delete tooltipped" data-position="left" data-delay="50" data-tooltip="Delete" data-form="documents-{{ $doc->id }}"><i class="material-icons">delete</i></a>
-                      {!! Form::close() !!}
-                    </td>
-                  </tr>
-                  @endforeach
-                  @else
-                  <tr>
-                    <td colspan="6">
-                      <h5 class="teal-text">No Document has been uploaded</h5>
-                    </td>
-                  </tr>
-                  @endif
-                </tbody>
-              </table>
-            </div>
-          </div>
-          @endif
         </div>
       </div>
     </div>
