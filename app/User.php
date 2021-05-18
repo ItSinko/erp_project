@@ -5,7 +5,6 @@ namespace App;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Spatie\Permission\Traits\HasRoles;
 use App\Divisi;
 use App\Notification;
 use App\Perakitan;
@@ -14,7 +13,7 @@ use App\PeminjamanAlat;
 
 class User extends Authenticatable
 {
-    use Notifiable, HasRoles;
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -43,7 +42,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function messages()
+    public function Messages()
     {
         return $this->hasMany(Message::class);
     }
@@ -76,5 +75,15 @@ class User extends Authenticatable
     public function getIsSuperAdminAttribute()
     {
         return ($this->id == 1) ? true : false;
+    }
+
+    public function department()
+    {
+        return $this->belongsTo('App\digidocu\Department');
+    }
+
+    public function documents()
+    {
+        return $this->hasMany('App\digidocu\Document');
     }
 }

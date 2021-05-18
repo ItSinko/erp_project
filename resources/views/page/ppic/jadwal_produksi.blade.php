@@ -102,56 +102,34 @@
             selectable: true,
             events: initial_date,
             select: function(info) {
-                // $('#date_form').modal('show');
+                $('#date_form').modal();
+                $('#date_start').val(info.startStr);
+                $('#date_end').val(info.endStr);
 
-                var test = bootbox.dialog({
-                    title: "Select Date",
-                    size: 'large',
-                    message: `
-                    <div class="form-group row">
-                        <label for="activity" class="col-sm-2 col-form-label">Activity</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="activity" placeholder="name" autocomplete="off"">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="days" class="col-sm-2 col-form-label">Days</label>
-                        <div class="col-sm-10">
-                            <input type="number" class="form-control" id="days" placeholder="number of days" min="1" autocomplete="off" readonly>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="date_start">Date start</label>
-                            <input type="date" class="form-control" id="date_start" autocomplete="off">
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="date_end">Date end</label>
-                            <input type="date" class="form-control" id="date_end" autocomplete="off">
-                        </div>
-                    </div>`,
-                    centerVertical: true,
-                    buttons: {
-                        save: {
-                            label: "Save",
-                            id: "save",
-                            className: "btn-secondary",
-                        }
-                    },
-                    callback: function() {
-                        start_date = info.startStr;
-                        end_date = info.endStr;
-                        console.log(start_date);
-                        $('#date_start').val(info.startStr);
-                        console.log($('#date_start').val());
-                        $('#date_end').val(info.endStr);
-                        date1 = new Date(start_date);
-                        date2 = new Date(end_date);
-                        $('#days').val(difference(date1, date2));
-                        alert($('#date_start').val());
-                    }
+                var date1 = new Date(info.startStr);
+                var date2 = new Date(info.endStr);
 
-                });
+                var days = difference(date1, date2);
+                var weeks = Math.floor(days / 7);
+                days = days - (weeks * 2);
+
+                var startDay = date1.getDay();
+                var endDay = date2.getDay();
+
+                // Remove weekend not previously removed.   
+                if (startDay - endDay > 1)
+                    days = days - 2;
+
+                // Remove start day if span starts on Sunday but ends before Saturday
+                if (startDay == 0 && endDay != 6)
+                    days = days - 1
+
+                // Remove end day if span ends on Saturday but starts after Sunday
+                if (endDay == 6 && startDay != 0)
+                    days = days - 1
+
+
+                $('#days').val(days);
             },
             eventClick: function(event_info) {
                 bootbox.confirm({
@@ -191,7 +169,8 @@
         });
         calendar.render();
 
-        $('#date_end').change(function() {
+        $('#date_end').click(function() {
+            alert('change end date');
             date1 = new Date(start_date);
             end_date = this.value;
             date2 = new Date(end_date);
@@ -213,15 +192,15 @@
                     method: "POST",
                     data: {
                         title: $('#activity').val(),
-                        start: start_date,
-                        end: end_date,
+                        start: $('#date_start').val(),
+                        end: $('#date_end').val(),
                     },
-                    success: function() {
-                        console.log('success');
+                    success: function($data) {
+                        console.log($data);
                         calendar.addEvent({
                             title: $('#activity').val(),
-                            start: start_date,
-                            end: end_date,
+                            start: $('#date_start').val(),
+                            end: $('#date_end').val(),
                             extendedProps: {
                                 'data-toggle': 'tooltip',
                                 'title': "Tooltip on test",

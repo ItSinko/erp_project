@@ -46,18 +46,24 @@ class PPICController extends Controller
             'start' => $request->start,
             'end' => $request->end,
         ];
+
+        // return json_encode($data);
         Event::create($data);
     }
 
     public function calendar_delete(Request $request)
     {
-        Event::destroy($request->id);
+        if ($request->id != "") Event::destroy($request->id);
     }
 
-    public function test()
+    public function bom()
     {
-        $list = Event::toBase()->get();
-        return json_encode($list);
+        $list = Produk::all();
+        return view('page.ppic.bom', compact('list'));
+    }
+
+    public function get_bom()
+    {
     }
 
     public function bppb()

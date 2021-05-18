@@ -223,7 +223,6 @@ return [
     | https://github.com/jeroennoten/Laravel-AdminLTE/wiki/8.-Menu-Configuration
     |
     */
-
     'menu' => [
         [
             'text' => 'search',
@@ -276,14 +275,81 @@ return [
             'auth' => [26]
         ],
         [
-            'text' => 'Karyawan',
-            'url'  => '/karyawan',
+            'text' => 'Kesehatan',
             'icon' => 'fas fa-table',
-            'auth' => [26]
-        ],
-        [
-            'header' => 'KESEHATAN',
-            'auth'   => [26]
+            'auth' => [28],
+            'submenu' => [
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Cek Awal',
+                    'auth' => [28],
+                    'submenu' => [
+                        [
+                            'icon' => 'far fa-circle',
+                            'text' => 'Data',
+                            'auth' => [28],
+                            'url'  => '/kesehatan',
+                        ],
+                        [
+                            'icon' => 'far fa-circle',
+                            'text' => 'Detail',
+                            'auth' => [28],
+                            'url'  => '/kesehatan/detail',
+                        ]
+                    ],
+                ],
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Cek Harian',
+                    'auth' => [28],
+                    'submenu' => [
+                        [
+                            'icon' => 'far fa-circle',
+                            'text' => 'Data',
+                            'auth' => [28],
+                            'url'  => '/kesehatan_harian',
+                        ],
+                        [
+                            'icon' => 'far fa-circle',
+                            'text' => 'Detail',
+                            'auth' => [28],
+                            'url'  => '/kesehatan_harian/detail',
+                        ]
+                    ],
+                ],
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Cek Mingguan',
+                    'auth' => [28],
+                    'submenu' => [
+                        [
+                            'icon' => 'far fa-circle',
+                            'text' => 'Data',
+                            'auth' => [28],
+                            'url'  => '/kesehatan_mingguan',
+                        ],
+                        [
+                            'icon' => 'far fa-circle',
+                            'text' => 'Detail',
+                            'auth' => [28],
+                            'url'  => '/kesehatan_mingguan/detail',
+                        ]
+                    ],
+                ],
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Cek Bulanan',
+                    'auth' => [28],
+                    'submenu' => [
+                        [
+                            'icon' => 'far fa-circle',
+                            'text' => 'Data',
+                            'auth' => [28],
+                            'url'  => '/kesehatan_bulanan',
+                        ],
+                    ],
+                ]
+            ],
         ],
         [
             'header' => 'TRANSAKSI',
@@ -417,7 +483,12 @@ return [
             'icon' => 'fas fa-table',
             'auth' => [24]
         ],
-
+        [
+            'text' => 'BOM',
+            'url'  => '/bom',
+            'icon' => 'fas fa-table',
+            'auth' => [24]
+        ],
         [
             'header' => 'PRODUKSI',
             'auth' => [17, 23]
@@ -515,6 +586,7 @@ return [
                 ],
             ],
         ],
+<<<<<<< HEAD
         [
             'text'    => 'Perbaikan',
             'icon'    => 'fas fa-wrench',
@@ -522,6 +594,8 @@ return [
             'auth' => [17],
         ],
 
+=======
+>>>>>>> 6f57023c453d2bb3311789df6c108721596b0922
         ['header' => 'LOGOUT'],
         [
             'text' => 'Logout',
@@ -552,7 +626,6 @@ return [
         JeroenNoten\LaravelAdminLte\Menu\Filters\LangFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\DataFilter::class,
     ],
-
     /*
     |--------------------------------------------------------------------------
     | Plugins Initialization
@@ -564,7 +637,6 @@ return [
     | https://github.com/jeroennoten/Laravel-AdminLTE/wiki/9.-Other-Configuration
     |
     */
-
     'plugins' => [
         'Datatables' => [
             'active' => true,
@@ -616,6 +688,16 @@ return [
                 ],
             ],
         ],
+        'Chartjs' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/charts/chart.js',
+                ]
+            ],
+        ],
     ],
 
     /*
@@ -628,6 +710,5 @@ return [
     | For detailed instructions you can look the livewire here:
     | https://github.com/jeroennoten/Laravel-AdminLTE/wiki/9.-Other-Configuration
     */
-
     'livewire' => false,
 ];

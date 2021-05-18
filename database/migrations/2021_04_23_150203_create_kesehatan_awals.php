@@ -15,12 +15,21 @@ class CreateKesehatanAwals extends Migration
     {
         Schema::create('kesehatan_awals', function (Blueprint $table) {
             $table->id();
-            $table->integer('fk_karyawan');
-            $table->integer('tinggi')->nullable();
-            $table->string('buta_warna')->nullable();
-            $table->string('medical')->nullable();
-            $table->string('rapid')->nullable();
-            $table->string('hasil_rapid')->nullable();
+            $table->integer('karyawan_id');
+            $table->string('vaksin');
+            $table->string('ket_vaksin')->nullable();
+            $table->double('tinggi');
+            $table->double('berat');
+            $table->double('lemak')->nullable();
+            $table->double('kandungan_air')->nullable();
+            $table->double('otot')->nullable();
+            $table->double('tulang')->nullable();
+            $table->double('kalori')->nullable();
+            $table->string('status_mata')->nullable();
+            $table->string('tes_covid')->nullable();
+            $table->string('hasil_covid')->nullable();
+            $table->string('file_covid')->nullable();
+            $table->string('file_mcu')->nullable();
             $table->timestamps();
         });
     }

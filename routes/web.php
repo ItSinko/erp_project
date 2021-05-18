@@ -5,6 +5,7 @@ use App\Http\Controllers\GetController;
 use App\Http\Controllers\QCController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,6 +40,52 @@ Route::group(['middleware' => 'auth'], function () {
 });
 
 
+//Kesehatan
+/* Tabel */
+Route::get('/kesehatan', 'KesehatanController@kesehatan');
+/* Tambah */
+Route::get('/kesehatan/tambah', 'KesehatanController@kesehatan_tambah');
+Route::post('/kesehatan/aksi_tambah', 'KesehatanController@kesehatan_aksi_tambah');
+/* Ubah */
+Route::get('/kesehatan/ubah/{id}', 'KesehatanController@kesehatan_ubah');
+/* Get Data */
+Route::get('/kesehatan/data', 'KesehatanController@kesehatan_data');
+Route::get('/kesehatan/data/{karyawan_id}', 'KesehatanController@kesehatan_data_detail');
+Route::get('/kesehatan/detail', 'KesehatanController@kesehatan_detail');
+
+//Kesehatan Harian
+/* Tabel */
+Route::get('/kesehatan_harian', 'KesehatanController@kesehatan_harian');
+Route::get('/kesehatan_harian/detail', 'KesehatanController@kesehatan_harian_detail');
+/* Tambah */
+Route::get('/kesehatan_harian/tambah', 'KesehatanController@kesehatan_harian_tambah');
+Route::post('/kesehatan_harian/aksi_tambah', 'KesehatanController@kesehatan_harian_aksi_tambah');
+Route::put('/kesehatan_harian/aksi_ubah', 'KesehatanController@kesehatan_harian_aksi_ubah');
+/* Get Data */
+Route::get('/kesehatan_harian/data', 'KesehatanController@kesehatan_harian_data');
+Route::get('/kesehatan_harian/data/karyawan/{id}', 'KesehatanController@kesehatan_harian_detail_data_karyawan');
+Route::get('/kesehatan_harian/tambah/data/{id}', 'KesehatanController@kesehatan_harian_tambah_data');
+Route::get('/kesehatan_harian/detail/{id}', 'KesehatanController@kesehatan_harian_detail_data');
+
+//Kesehatan Mingguan
+Route::get('/kesehatan_mingguan', 'KesehatanController@kesehatan_mingguan');
+/* Tambah */
+Route::get('/kesehatan_mingguan/tambah', 'KesehatanController@kesehatan_mingguan_tambah');
+Route::post('/kesehatan_mingguan_tensi/aksi_tambah', 'KesehatanController@kesehatan_mingguan_tensi_aksi_tambah');
+Route::put('/kesehatan_mingguan_tensi/aksi_ubah', 'KesehatanController@kesehatan_mingguan_tensi_aksi_ubah');
+Route::put('/kesehatan_mingguan_rapid/aksi_ubah', 'KesehatanController@kesehatan_mingguan_rapid_aksi_ubah');
+Route::post('/kesehatan_mingguan_rapid/aksi_tambah', 'KesehatanController@kesehatan_mingguan_rapid_aksi_tambah');
+/* Get Data */
+Route::get('/kesehatan_mingguan_tensi/data', 'KesehatanController@kesehatan_mingguan_tensi_data');
+Route::get('/kesehatan_mingguan_rapid/data', 'KesehatanController@kesehatan_mingguan_rapid_data');
+/* Get Detail */
+Route::get('/kesehatan_mingguan/detail', 'KesehatanController@kesehatan_mingguan_detail');
+Route::get('/kesehatan_mingguan_tensi/detail/{karyawan_id}', 'KesehatanController@kesehatan_mingguan_tensi_detail_data');
+Route::get('/kesehatan_mingguan_rapid/detail/{karyawan_id}', 'KesehatanController@kesehatan_mingguan_rapid_detail_data');
+Route::get('/kesehatan_mingguan_tensi/detail/data/{karyawan_id}', 'KesehatanController@kesehatan_mingguan_tensi_detail_data_karyawan');
+
+//Kesehatan Bulanan
+Route::get('/kesehatan_bulanan', 'KesehatanController@kesehatan_bulanan');
 //Karyawan
 Route::group(['prefix' => '/karyawan', 'middleware' => 'auth'], function () {
     Route::get('/', 'CommonController@karyawan');   /* Tabel */
@@ -412,10 +459,27 @@ Route::group(['prefix' => '/perbaikan', 'middleware' => 'auth'], function () {
 
 // DOCUMENT CONTROL
 Route::group(['prefix' => 'dc', 'middleware' => 'auth'], function () {
-    Route::get('/home', 'dc_controller\HomeController@index')->name('admin.dashboard');
+    Route::get('/dashboard', 'digidocu\DocumentsController@dashboard')->name('dc.dashboard');
+    Route::get('/dep_doc/{id?}', 'digidocu\DocumentsController@dep_doc')->name('dc.dep_doc');
+    // documents
+    Route::resource('documents', 'digidocu\DocumentsController');
+    Route::get('documents/download/{id}', 'DocumentsController@download');
+    Route::get('documents/open/{id}', 'digidocu\DocumentsController@open');
+    Route::get('mydocuments', 'digidocu\DocumentsController@mydocuments');
+    Route::get('/trash', 'DocumentsController@trash');
+    Route::get('documents/restore/{id}', 'DocumentsController@restore');
+    Route::delete('documentsDeleteMulti', 'DocumentsController@deleteMulti');
 });
 
 // ARI Controller Temporary
+
+Route::get('/doc/test', function (Request $request) {
+    $query = parse_url($request->fullUrl())['query'];
+    $result = [];
+    parse_str($query, $result);
+    dd($result);
+});
+
 //GUDANG
 Route::get('/gudang', 'GudangController@index')->name('gudang');
 Route::get('/gudang/data', 'GudangController@get_data')->name('gudang.data');
@@ -425,7 +489,8 @@ Route::get('/gudang/data', 'GudangController@get_data')->name('gudang.data');
 Route::get('/ppic', 'PpicController@index');
 Route::post('/schedule/create', 'PpicController@calendar_create')->name('schedule.create');
 Route::post('/schedule/delete', 'PpicController@calendar_delete')->name('schedule.delete');
-Route::get('test', 'PpicController@test')->name('schedule.test');
+Route::get('/bom', 'PpicController@bom');
+Route::get('get_bom', 'PpicController@get_bom');
 
 // Eng
 Route::view('/eng', 'page.engineering.index');
