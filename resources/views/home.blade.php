@@ -29,3 +29,7 @@
     </div>
 </div>
 @stop
+
+@section('adminlte_js')
+<script src="{{ asset('js/notif.js') }}"></script>
+@stop

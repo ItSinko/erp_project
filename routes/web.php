@@ -507,3 +507,9 @@ Route::get('test_spa', 'EngController@index');
 Route::get('/chat', 'ChatController@index');
 Route::get('/message', 'ChatController@fetchMessages');
 Route::post('/message', 'ChatController@sendMessage');
+
+Route::get('/notif', function () {
+    event(new App\Events\PpicEvent("ppic message"));
+
+    return "messege sent";
+})->middleware('auth');
