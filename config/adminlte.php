@@ -647,6 +647,13 @@ return [
                 ],
             ],
         ],
+        [
+            'text'    => 'Perbaikan',
+            'icon'    => 'fas fa-wrench',
+            'url' => '/perbaikan/produksi',
+            'auth' => [17],
+        ],
+
         ['header' => 'LOGOUT'],
         [
             'text' => 'Logout',

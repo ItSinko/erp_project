@@ -433,7 +433,7 @@ Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {
 
 
 
-//PENGEMASAN
+// PENGEMASAN
 Route::group(['prefix' => '/pengemasan', 'middleware' => 'auth'], function () {
     Route::get('/', 'ProduksiController@pengemasan')->name('pengemasan');
     Route::get('/form', 'ProduksiController@pengemasan_form')->name('pengemasan.form');
@@ -450,6 +450,16 @@ Route::group(['prefix' => '/pengemasan', 'middleware' => 'auth'], function () {
     Route::get('/hasil/show/{id}', 'ProduksiController@pengemasan_hasil_show')->name('pengemasan.hasil.show');
 });
 
+
+// PERBAIKAN
+Route::group(['prefix' => '/perbaikan', 'middleware' => 'auth'], function () {
+    Route::get('/produksi', 'ProduksiController@perbaikan_produksi')->name('perbaikan.produksi');
+    Route::get('/produksi/show', 'ProduksiController@perbaikan_produksi_show')->name('perbaikan.produksi.show');
+    Route::get('/produksi/create/{id}/{proses}', 'ProduksiController@perbaikan_produksi_create')->name('perbaikan.produksi.create');
+    Route::put('/produksi/store/{id}', 'ProduksiController@perbaikan_produksi_store')->name('perbaikan.produksi.store');
+    Route::get('/produksi/edit/{id}', 'ProduksiController@perbaikan_produksi_edit')->name('perbaikan.produksi.edit');
+    Route::put('/produksi/update/{id}', 'ProduksiController@perbaikan_produksi_update')->name('perbaikan.produksi.update');
+});
 
 // DOCUMENT CONTROL
 Route::group(['prefix' => 'dc', 'middleware' => 'auth'], function () {

@@ -15,6 +15,11 @@ class PartEng extends Model
 
     public function BillOfMaterial()
     {
-        $this->hasMany(BillOfMaterial::class);
+        return $this->hasMany(BillOfMaterial::class);
+    }
+
+    public function PerbaikanProduksi()
+    {
+        return $this->belongsToMany(PerbaikanProduksi::class, 'perbaikan_produksi_parts');
     }
 }
