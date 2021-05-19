@@ -108,12 +108,16 @@
                             <div class="col-sm-5">
                                 <div class="select2-info">
                                     <select class="select2 form-control @error('hasil_perakitan_id') is-invalid @enderror hasil_perakitan_id" multiple="multiple" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;" name="hasil_perakitan_id[]" id="hasil_perakitan_id">
+
                                         @foreach($hp as $i)
-                                        <option value="{{$i->id}}" @if($s->HasilPerakitan->contains('id', $i->id))
-                                            selected
-                                            @endif
-                                            >{{$i->no_seri}}</option>
+                                        @if($s->ketidaksesuaian_proses == "perakitan")
+                                        <option value="{{$i->id}}" @if($s->HasilPerakitan->contains('id', $i->id)) selected @endif>{{$i->no_seri}}</option>
+                                        @elseif($s->ketidaksesuaian_proses == "pengujian" || $s->ketidaksesuaian_proses == "pengemasan")
+                                        <option value="{{$i->HasilPerakitan->id}}" @if($s->HasilPerakitan->contains('id', $i->HasilPerakitan->id)) selected @endif>{{$i->HasilPerakitan->no_seri}}</option>
+                                        @endif
                                         @endforeach
+
+
                                     </select>
                                     @if ($errors->has('hasil_perakitan_id'))
                                     <span class="invalid-feedback" role="alert">{{$errors->first('hasil_perakitan_id.*')}}</span>

@@ -52,7 +52,7 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <form action="{{route('perbaikan.produksi.store', ['id' => $s->Perakitan->Bppb->id])}}" method="post">
+                    <form action="{{ route('perbaikan.produksi.store', ['id' => $s->Perakitan->Bppb->id]) }}" method="post">
                         {{ csrf_field() }}
                         {{ method_field('PUT') }}
                         <h3>BPPB</h3>
@@ -104,10 +104,11 @@
                                 <div class="select2-info">
                                     <select class="select2 form-control @error('hasil_perakitan_id') is-invalid @enderror hasil_perakitan_id" multiple="multiple" data-placeholder="Pilih No Seri" data-dropdown-css-class="select2-info" style="width: 100%;" name="hasil_perakitan_id[]" id="hasil_perakitan_id">
                                         @foreach($hp as $i)
-                                        <option value="{{$i->id}}" @if($id==$i->id))
-                                            selected
-                                            @endif
-                                            >{{$i->no_seri}}</option>
+                                        @if($proses == 'perakitan')
+                                        <option value="{{$i->id}}" @if($id==$i->id)) selected @endif>{{$i->no_seri}}</option>
+                                        @elseif($proses == 'pengujian' || $proses == "pengemasan")
+                                        <option value="{{$i->HasilPerakitan->id}}" @if($id==$i->HasilPerakitan->id)) selected @endif>{{$i->HasilPerakitan->no_seri}}</option>
+                                        @endif
                                         @endforeach
                                     </select>
                                     @if ($errors->has('hasil_perakitan_id'))

@@ -15,7 +15,7 @@ class UpdateColumnStatusInHistoriHasilPerakitansTable extends Migration
     public function up()
     {
         Schema::table('histori_hasil_perakitans', function (Blueprint $table) {
-            DB::statement("ALTER TABLE histori_hasil_perakitans MODIFY COLUMN tindak_lanjut ENUM('ok','operator','perbaikan','karantina','ps','aging','pengemasan') NULL");
+            DB::statement("ALTER TABLE histori_hasil_perakitans MODIFY COLUMN tindak_lanjut ENUM('ok','operator','perbaikan','karantina','ps','aging','pengemasan', 'pengujian') NULL");
         });
     }
 

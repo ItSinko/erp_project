@@ -60,7 +60,12 @@
                         <div class="row form-group">
                             <label for="tanggal" class="col-sm-6 col-form-label">Operator QC</label>
                             <div class="col-sm-6 col-form-label" style="text-align:right;">
+
+                                @if (empty($s->Karyawan))
+                                <span class="text-muted">tidak tersedia</span>
+                                @elseif(!empty($s->Karyawan))
                                 {{$s->Karyawan->nama}}
+                                @endif
                             </div>
                         </div>
                         <div class="row">
