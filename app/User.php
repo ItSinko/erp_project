@@ -42,7 +42,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function messages()
+    public function Messages()
     {
         return $this->hasMany(Message::class);
     }
@@ -75,5 +75,15 @@ class User extends Authenticatable
     public function getIsSuperAdminAttribute()
     {
         return ($this->id == 1) ? true : false;
+    }
+
+    public function department()
+    {
+        return $this->belongsTo('App\digidocu\Department');
+    }
+
+    public function documents()
+    {
+        return $this->hasMany('App\digidocu\Document');
     }
 }

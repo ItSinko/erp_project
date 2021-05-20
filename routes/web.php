@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\CommonController;
 use App\Http\Controllers\GetController;
+use App\Http\Controllers\QCController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +36,7 @@ Route::post('/logout', function () {
 //COMMON
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/form-template', 'ItController@form_template')->name('form-template');
+    Route::get('/template_form_delete', 'ItController@template_form_delete')->name('template-form-delete');
 });
 
 
@@ -391,29 +394,104 @@ Route::group(['prefix' => '/perakitan', 'middleware' => 'auth'], function () {
 });
 
 //PENGUJIAN
-Route::get('/pengujian', 'QCController@pengujian')->name('pengujian');
-Route::get('/pengujian/show', 'QCController@pengujian_show')->name('pengujian.show');
-Route::get('/pengujian/monitoring_proses/show/{bppb_id}', 'QCController@pengujian_monitoring_proses_show')->name('pengujian.monitoring_proses.show');
-Route::get('/pengujian/monitoring_proses/create/{bppb_id}', 'QCController@pengujian_monitoring_proses_create')->name('pengujian.monitoring_proses.create');
-Route::put('/pengujian/monitoring_proses/store/{bppb_id}', 'QCController@pengujian_monitoring_proses_store')->name('pengujian.monitoring_proses.store');
-Route::get('/pengujian/monitoring_proses/laporan/edit/{id}', 'QCController@pengujian_monitoring_proses_edit')->name('pengujian.monitoring_proses.edit');
-Route::put('/pengujian/monitoring_proses/laporan/update/{id}', 'QCController@pengujian_monitoring_proses_update')->name('pengujian.monitoring_proses.update');
+Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {
+    Route::get('/', 'QCController@pengujian')->name('pengujian');
+    Route::get('/show', 'QCController@pengujian_show')->name('pengujian.show');
+    Route::get('/perbaikan', 'ProduksiController@pengujian_perbaikan')->name('pengujian.perbaikan');
+    Route::get('/perbaikan/show', 'ProduksiController@pengujian_perbaikan_show')->name('pengujian.perbaikan.show');
+    Route::get('/perbaikan/bppb/{id}', 'ProduksiController@pengujian_perbaikan_bppb')->name('pengujian.perbaikan.bppb');
+    Route::get('/perbaikan/bppb/show/{id}', 'ProduksiController@pengujian_perbaikan_bppb_show')->name('pengujian.perbaikan.bppb.show');
+    Route::get('/perbaikan/status/{id}/{status}', 'ProduksiController@pengujian_perbaikan_status')->name('pengujian.perbaikan.status');
+
+    Route::group(['prefix' => '/monitoring_proses'], function () {
+        Route::get('/', 'QCController@pengujian_monitoring_proses')->name('pengujian.monitoring_proses');
+        Route::get('/show/{bppb_id}', 'QCController@pengujian_monitoring_proses_show')->name('pengujian.monitoring_proses.show');
+        Route::get('/create/{bppb_id}', 'QCController@pengujian_monitoring_proses_create')->name('pengujian.monitoring_proses.create');
+        Route::put('/store/{bppb_id}', 'QCController@pengujian_monitoring_proses_store')->name('pengujian.monitoring_proses.store');
+
+        Route::group(['prefix' => '/hasil'], function () {
+            Route::get('/{id}', 'QCController@pengujian_monitoring_proses_hasil')->name('pengujian.monitoring_proses.hasil');
+            Route::get('/show/{id}', 'QCController@pengujian_monitoring_proses_hasil_show')->name('pengujian.monitoring_proses.hasil.show');
+            Route::get('/create/{id}', 'QCController@pengujian_monitoring_proses_hasil_create')->name('pengujian.monitoring_proses.hasil.create');
+            Route::put('/store/{id}', 'QCController@pengujian_monitoring_proses_hasil_store')->name('pengujian.monitoring_proses.hasil.store');
+            Route::get('/edit/{id}', 'QCController@pengujian_monitoring_proses_hasil_edit')->name('pengujian.monitoring_proses.hasil.edit');
+            Route::put('/update/{id}', 'QCController@pengujian_monitoring_proses_hasil_update')->name('pengujian.monitoring_proses.hasil.update');
+            Route::delete('/delete/{id}', 'QCController@pengujian_monitoring_proses_hasil_delete')->name('pengujian.monitoring_proses.hasil.delete');
+        });
+
+        Route::group(['prefix' => '/laporan'], function () {
+            Route::get('/create/{id}', 'QCController@pengujian_monitoring_proses_laporan_create')->name('pengujian.monitoring_proses.laporan.create');
+            Route::put('/store/{id}', 'QCController@pengujian_monitoring_proses_laporan_store')->name('pengujian.monitoring_proses.laporan.store');
+            Route::get('/edit/{id}', 'QCController@pengujian_monitoring_proses_laporan_edit')->name('pengujian.monitoring_proses.laporan.edit');
+            Route::put('/update/{id}', 'QCController@pengujian_monitoring_proses_laporan_update')->name('pengujian.monitoring_proses.laporan.update');
+        });
+    });
+
+    Route::group(['prefix' => '/ik_pemeriksaan'], function () {
+        Route::get('/', 'QCController@pengujian_ik_pemeriksaan')->name('pengujian.ik_pemeriksaan');
+        Route::get('/show', 'QCController@pengujian_ik_pemeriksaan_show')->name('pengujian.ik_pemeriksaan.show');
+        Route::get('/create', 'QCController@pengujian_ik_pemeriksaan_create')->name('pengujian.ik_pemeriksaan.create');
+        Route::get('/get_detail_produk_by_id/{id}', 'GetController@get_detail_produk_by_id');
+        Route::post('/store', 'QCController@pengujian_ik_pemeriksaan_store')->name('pengujian.ik_pemeriksaan.store');
+        Route::get('/detail/{id}', 'QCController@pengujian_ik_pemeriksaan_detail')->name('pengujian.ik_pemeriksaan.detail');
+        Route::get('/hasil/edit/{id}', 'QCController@pengujian_ik_pemeriksaan_hasil_edit')->name('pengujian.ik_pemeriksaan.hasil.edit');
+        Route::put('/hasil/update/{id}', 'QCController@pengujian_ik_pemeriksaan_hasil_update')->name('pengujian.ik_pemeriksaan.hasil.update');
+    });
+
+    Route::group(['prefix' => '/pemeriksaan_proses'], function () {
+        Route::get('/', 'QCController@pengujian_pemeriksaan_proses')->name('pengujian.pemeriksaan_proses');
+        Route::get('/show/{id}', 'QCController@pengujian_pemeriksaan_proses_show')->name('pengujian.pemeriksaan_proses.show');
+        Route::get('/hasil/{id}', 'QCController@pengujian_pemeriksaan_proses_hasil')->name('pengujian.pemeriksaan_proses.hasil');
+        Route::get('/create/{id}', 'QCController@pengujian_pemeriksaan_proses_create')->name('pengujian.pemeriksaan_proses.create');
+        Route::put('/store/{id}', 'QCController@pengujian_pemeriksaan_proses_store')->name('pengujian.pemeriksaan_proses.store');
+        Route::get('/not_ok', 'QCController@pengujian_pemeriksaan_proses_not_ok')->name('pengujian.pemeriksaan_proses.not_ok');
+        Route::get('/not_ok/show/{bppb_id}/{ik_pengujian_id}', 'QCController@pengujian_pemeriksaan_proses_not_ok_show')->name('pengujian.pemeriksaan_proses.not_ok.show');
+    });
+});
+
+
 
 //PENGEMASAN
 Route::group(['prefix' => '/pengemasan', 'middleware' => 'auth'], function () {
     Route::get('/', 'ProduksiController@pengemasan')->name('pengemasan');
+    Route::get('/form', 'ProduksiController@pengemasan_form')->name('pengemasan.form');
+    Route::get('/form/show', 'ProduksiController@pengemasan_form_show')->name('pengemasan.form.show');
+    Route::get('/form/create', 'ProduksiController@pengemasan_form_create')->name('pengemasan.form.create');
+    Route::post('/form/store', 'ProduksiController@pengemasan_form_store')->name('pengemasan.form.store');
+    Route::get('/form/create/get_detail_produk_by_id/{id}', 'GetController@get_detail_produk_by_id');
     Route::get('/show', 'ProduksiController@pengemasan_show')->name('pengemasan.show');
-    Route::get('/laporan/{id}', 'ProduksiController@pengemasan_laporan')->name('pengemasan.laporan');
+    Route::get('/laporan', 'ProduksiController@pengemasan_laporan')->name('pengemasan.laporan');
     Route::get('/laporan/show/{id}', 'ProduksiController@pengemasan_laporan_show')->name('pengemasan.laporan.show');
+    Route::get('/laporan/create/{bppb_id}', 'ProduksiController@pengemasan_laporan_create')->name('pengemasan.laporan.create');
+    Route::put('/laporan/store/{bppb_id}', 'ProduksiController@pengemasan_laporan_store')->name('pengemasan.laporan.store');
+    Route::get('/hasil/{id}', 'ProduksiController@pengemasan_hasil')->name('pengemasan.hasil');
+    Route::get('/hasil/show/{id}', 'ProduksiController@pengemasan_hasil_show')->name('pengemasan.hasil.show');
 });
 
 
 // DOCUMENT CONTROL
 Route::group(['prefix' => 'dc', 'middleware' => 'auth'], function () {
-    Route::get('/home', 'dc_controller\HomeController@index')->name('admin.dashboard');
+    Route::get('/dashboard', 'digidocu\DocumentsController@dashboard')->name('dc.dashboard');
+    Route::get('/dep_doc/{id?}', 'digidocu\DocumentsController@dep_doc')->name('dc.dep_doc');
+    // documents
+    Route::resource('documents', 'digidocu\DocumentsController');
+    Route::get('documents/download/{id}', 'DocumentsController@download');
+    Route::get('documents/open/{id}', 'digidocu\DocumentsController@open');
+    Route::get('mydocuments', 'digidocu\DocumentsController@mydocuments');
+    Route::get('/trash', 'DocumentsController@trash');
+    Route::get('documents/restore/{id}', 'DocumentsController@restore');
+    Route::delete('documentsDeleteMulti', 'DocumentsController@deleteMulti');
 });
 
 // ARI Controller Temporary
+
+Route::get('/doc/test', function (Request $request) {
+    $query = parse_url($request->fullUrl())['query'];
+    $result = [];
+    parse_str($query, $result);
+    dd($result);
+});
+
 //GUDANG
 Route::get('/gudang', 'GudangController@index')->name('gudang');
 Route::get('/gudang/data', 'GudangController@get_data')->name('gudang.data');
@@ -423,7 +501,8 @@ Route::get('/gudang/data', 'GudangController@get_data')->name('gudang.data');
 Route::get('/ppic', 'PpicController@index');
 Route::post('/schedule/create', 'PpicController@calendar_create')->name('schedule.create');
 Route::post('/schedule/delete', 'PpicController@calendar_delete')->name('schedule.delete');
-Route::get('test', 'PpicController@test')->name('schedule.test');
+Route::get('/bom', 'PpicController@bom');
+Route::get('get_bom', 'PpicController@get_bom');
 
 // Eng
 Route::view('/eng', 'page.engineering.index');

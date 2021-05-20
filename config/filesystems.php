@@ -58,6 +58,13 @@ return [
             'visibility' => 'public',
         ],
 
+        'doc_spa' => [
+            'driver' => 'local',
+            'root' => storage_path('app/digidocu'),
+            'url' => env('APP_URL') . '/doc_spa',
+            'visibility' => 'public',
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

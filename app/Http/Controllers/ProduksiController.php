@@ -14,7 +14,9 @@ use App\Karyawan;
 use App\User;
 use App\Bppb;
 use App\Produk;
+use App\DetailProduk;
 use App\Divisi;
+use App\HasilMonitoringProses;
 use App\Perakitan;
 use App\HasilPerakitan;
 use App\HasilPerakitanKaryawan;
@@ -22,10 +24,14 @@ use App\HistoriHasilPerakitan;
 use App\KelompokProduk;
 use App\KategoriProduk;
 use Carbon\Carbon;
+use App\Pengemasan;
+use App\HasilPengemasan;
+use App\CekPengemasan;
+use App\DetailCekPengemasan;
 
 use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\UserLogController;
-
+use App\MonitoringProses;
 
 class ProduksiController extends Controller
 {
@@ -74,7 +80,7 @@ class ProduksiController extends Controller
                 return $btn;
             })
             ->editColumn('jumlah', function ($s) {
-                $btn = '<hgroup><h6 class="heading">' . $s->jumlah . " " . $s->DetailProduk->satuan . '</h6><div class="subheading "><small class="purple-text">Produksi saat ini: ' . $s->countHasilPerakitan() . ' ' . $s->DetailProduk->satuan . '</small></div></hgroup>';
+                $btn = '<hgroup><h6 class="heading">' . $s->jumlah . " " . $s->DetailProduk->satuan . '</h6><div class="subheading "><small class="purple-text">Perakitan: ' . $s->countHasilPerakitan() . ' ' . $s->DetailProduk->satuan . '</small></div></hgroup>';
                 return $btn;
             })
             ->addColumn('laporan', function ($s) {
@@ -508,6 +514,7 @@ class ProduksiController extends Controller
                 if (!empty($request->no_seri)) {
                     for ($i = 0; $i < count($request->no_seri); $i++) {
                         if (!empty($request->id[$i])) {
+
                             $hp = HasilPerakitan::find($request->id[$i]);
                             $hp->tanggal = $request->tanggals[$i];
                             $hp->no_seri = $request->no_seri[$i];
@@ -807,22 +814,18 @@ class ProduksiController extends Controller
         return redirect()->back();
     }
 
-    public function pengemasan()
+    public function pengujian_perbaikan()
     {
-        return view('page.produksi.pengemasan_show');
+        return view('page.produksi.pengujian_perbaikan_show');
     }
 
-    public function pengemasan_show()
+    public function pengujian_perbaikan_show()
     {
-        $p = array();
-        if (Auth::user()->Divisi->nama == "Produksi") {
-            $p = Bppb::has('pengemasan')->get();
-        } else if (Auth::user()->Divisi->nama == "Quality Control") {
-            $p = Bppb::whereHas('pengemasan', function ($query) {
-                $query->whereNotIn('status', ['dibuat']);
-            })->get();
-        }
-        return DataTables::of($p)
+        $s = Bppb::with('MonitoringProses')->whereHas('MonitoringProses.HasilMonitoringProses', function ($q) {
+            $q->where('hasil', 'nok');
+        })->get();
+
+        return DataTables::of($s)
             ->addIndexColumn()
             ->addColumn('gambar', function ($s) {
                 $gambar = '<img class="product-img-small img-fluid"';
@@ -839,13 +842,135 @@ class ProduksiController extends Controller
                 return $btn;
             })
             ->editColumn('jumlah', function ($s) {
-                $btn = '<hgroup><h6 class="heading">' . $s->jumlah . " " . $s->DetailProduk->satuan . '</h6><div class="subheading "><small class="purple-text">Produksi saat ini: ' . $s->countHasilPerakitan() . ' ' . $s->DetailProduk->satuan . '</small></div></hgroup>';
+                $bppb_id = $s->id;
+                $count = HasilPerakitan::whereHas('Perakitan', function ($q) use ($bppb_id) {
+                    $q->where('bppb_id', $bppb_id);
+                })->whereDoesntHave('HasilMonitoringProses', function ($q) {
+                    $q->where('hasil', 'ok');
+                })->whereIn('status', ['acc_pemeriksaan_tertutup'])->count();
+                $btn = '<hgroup>
+                        <h6 class="heading">' . $s->jumlah . " " . $s->DetailProduk->satuan . '</h6>
+                        <div class="subheading"><small class="info-text">Pengujian: ' . $count . ' ' . $s->DetailProduk->satuan . '</small></div>
+                        </hgroup>';
+                return $btn;
+            })
+            ->addColumn('aksi', function ($s) {
+                $btn = '<a href="/pengujian/perbaikan/bppb/' . $s->id . '">
+                <button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-search"></i></button>
+                <div><small>Lihat Laporan</small></div></a>';
+                return $btn;
+            })
+            ->rawColumns(['gambar', 'produk', 'jumlah', 'aksi'])
+            ->make(true);
+    }
+
+    public function pengujian_perbaikan_bppb($id)
+    {
+        $b = Bppb::find($id);
+        return view('page.produksi.pengujian_perbaikan_bppb_show', ['id' => $id, 'b' => $b]);
+    }
+
+    public function pengujian_perbaikan_bppb_show($id)
+    {
+        $s = HasilMonitoringProses::whereHas('MonitoringProses', function ($q) use ($id) {
+            $q->where('bppb_id', $id);
+        })->where([['hasil', '=', 'nok'], ['tindak_lanjut', '=', 'perbaikan']])->get();
+
+        return DataTables::of($s)
+            ->addIndexColumn()
+            ->editColumn('hasil_perakitan_id', function ($s) {
+                $res = $s->HasilPerakitan->no_seri;
+                return $res;
+            })
+            ->editColumn('hasil', function ($s) {
+                $res = '<i class="fas fa-times-circle" style="color:red;"></i>';
+                return $res;
+            })
+            ->addColumn('karyawan', function ($s) {
+                $res = $s->MonitoringProses->Karyawan->nama;
+                return $res;
+            })
+            ->addColumn('pemeriksaan', function ($s) {
+                $res = "<small><ol>";
+                foreach ($s->HasilIkPemeriksaanPengujian as $i) {
+                    $res .= "<li>" . $i->standar_keberterimaan . "</li>";
+                }
+                $res .= "</ol></small>";
+                return $res;
+            })
+            ->addColumn('perbaikan', function ($s) {
+                $res = "";
+                if ($s->tindak_lanjut == "perbaikan") {
+                    if ($s->status == "req_perbaikan") {
+                        $res .= '<a href="/pengujian/perbaikan/status/' . $s->id . '/perbaikan_pengujian">
+                            <button type="button" class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-wrench"></i></button>
+                            <div><small>Perbaikan</small></div></a>';
+                    } else if ($s->status == "acc_perbaikan") {
+                        $res .= '<small class="info-text">Pengujian</small>';
+                    }
+                }
+                return $res;
+            })
+            ->rawColumns(['hasil', 'perbaikan', 'pemeriksaan'])
+            ->make(true);
+    }
+
+    public function pengujian_perbaikan_status($id, $status)
+    {
+        $u = HasilMonitoringProses::find($id);
+        if ($status == "perbaikan_pengujian") {
+            $u->status = "acc_perbaikan";
+            $u->save();
+
+            $c = HistoriHasilPerakitan::create([
+                "hasil_perakitan_id" => $u->hasil_perakitan_id,
+                "kegiatan" => $status,
+                "tanggal" => Carbon::now()->toDateString(),
+                "hasil" => "ok",
+                "keterangan" => "",
+                "tindak_lanjut" => "ok"
+            ]);
+            if ($c) {
+                return redirect()->back();
+            }
+        }
+    }
+
+    public function pengemasan()
+    {
+        return view('page.produksi.pengemasan_show');
+    }
+
+    public function pengemasan_show()
+    {
+        $s = Bppb::with('MonitoringProses')->whereHas('MonitoringProses.HasilMonitoringProses', function ($q) {
+            $q->whereIn('status', ['pengemasan']);
+        })->get();
+
+        return DataTables::of($s)
+            ->addIndexColumn()
+            ->addColumn('gambar', function ($s) {
+                $gambar = '<img class="product-img-small img-fluid"';
+                if (empty($s->DetailProduk->foto)) {
+                    $gambar .= 'src="{{url(\'assets/image/produk\')}}/noimage.png"';
+                } else if (!empty($s->DetailProduk->foto)) {
+                    $gambar .= 'src="{{asset(\'image/produk/\')}}/' . $s->DetailProduk->foto . '"';
+                }
+                $gambar .= 'title="' . $s->DetailProduk->nama . '">';
+                return $gambar;
+            })
+            ->addColumn('produk', function ($s) {
+                $btn = '<hgroup><h6 class="heading">' . $s->DetailProduk->nama . '</h6><div class="subheading text-muted">' . $s->DetailProduk->Produk->KelompokProduk->nama . '</div></hgroup>';
+                return $btn;
+            })
+            ->editColumn('jumlah', function ($s) {
+                $btn = '<hgroup><h6 class="heading">' . $s->jumlah . " " . $s->DetailProduk->satuan . '</h6><div class="subheading "><small class="success-text">Pengemasan: <b>' . $s->countRencanaPengemasan() . ' ' . $s->DetailProduk->satuan . '</b></small></div></hgroup>';
                 return $btn;
             })
             ->addColumn('laporan', function ($s) {
-                $btn = '<a class="detailmodal" data-toggle="modal" data-target="#detailmodal" data-attr="/pengemasan/laporan/' . $s->id . '" data-id="' . $s->id . '">';
-                $btn .= '<button type="button" class="rounded-pill btn btn-sm btn-info">';
-                $btn .= '<span style="color:white;"><i class="fa fa-search" aria-hidden="true"></i>&nbsp;Detail Laporan</span></button></a>';
+                $btn = '<a class="detailmodal" data-toggle="modal" data-target="#detailmodal" data-attr="/pengemasan/laporan/show/' . $s->id . '" data-id="' . $s->id . '">
+                            <button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-search"></i></button>
+                            <div><small>Lihat Laporan</small></div></a>';
                 return $btn;
             })
             ->addColumn('aksi', function ($s) {
@@ -867,9 +992,222 @@ class ProduksiController extends Controller
 
     public function pengemasan_laporan()
     {
+        return view('page.produksi.pengemasan_laporan_show');
     }
 
-    public function pengemasan_laporan_show()
+    public function pengemasan_laporan_show($id)
     {
+        $s = Pengemasan::where('bppb_id', $id)->get();
+        return DataTables::of($s)
+            ->addIndexColumn()
+            ->addColumn('operator', function ($s) {
+                return $s->Karyawan->nama;
+            })
+            ->addColumn('aksi', function ($s) {
+                $btn = "";
+                $c = CekPengemasan::where('detail_produk_id', $s->Bppb->DetailProduk->id)->get();
+                if (($s->Bppb->jumlah > $s->Bppb->countHasilPengemasan()) && count($c) > 0) {
+                    $btn .= '<a href = "/pengemasan/hasil/create/' . $s->id . '"><button class="btn btn-success btn-sm m-1" style="border-radius:50%;"><i class="fas fa-plus"></i></button></a>
+                    <a href = "/pengemasan/hasil/' . $s->id . '"><button class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-eye"></i></button></a>
+                    <a href = "/pengemasan/hasil/edit/' . $s->id . '"><button class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-pencil-alt"></i></button></a>';
+                } else if (($s->Bppb->jumlah <= $s->Bppb->countHasilPengemasan()) || count($c) <= 0) {
+                    $btn .= '<button class="btn btn-secondary btn-sm m-1" style="border-radius:50%;" disabled><i class="fas fa-plus"></i></button>
+                    <a href = "/pengemasan/hasil/' . $s->id . '"><button class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-eye"></i></button></a>
+                   <button class="btn btn-secondary btn-sm m-1" style="border-radius:50%;" disabled><i class="fas fa-pencil-alt"></i></button>';
+                }
+                return $btn;
+            })
+            ->rawColumns(['aksi'])
+            ->make(true);
+    }
+
+    public function pengemasan_laporan_create($id)
+    {
+        $b = Bppb::find($id);
+        $cp = CekPengemasan::where('detail_produk_id', $b->detail_produk_id)->with('DetailCekPengemasan')->get();
+        $kry = Karyawan::whereNotIn('jabatan', ['direktur', 'manager', 'supervisor'])->get();
+        $s = HasilMonitoringProses::whereHas('MonitoringProses', function ($q) use ($id) {
+            $q->where('bppb_id', $id);
+        })->whereIn('status', ['pengemasan'])->doesntHave('HasilPerakitan.HasilPengemasan')->get();
+        return view('page.produksi.pengemasan_laporan_create', ['id' => $id, 'b' => $b, 'cp' => $cp, 'kry' => $kry, 's' => $s]);
+    }
+
+    public function pengemasan_laporan_store(Request $request, $id)
+    {
+        $v = Validator::make(
+            $request->all(),
+            [
+                'karyawan_id' => 'required',
+                'tanggal_laporan' => 'required',
+                'no_seri' => 'required',
+                'hasil' => 'required',
+                'tindak_lanjut' => 'required'
+
+            ],
+            [
+                'karyawan_id.required' => 'Operator harus dipilih',
+                'tanggal_laporan.reqired' => 'Tanggal Laporan harus diisi',
+                'no_seri.required' => 'No Seri harus diisi',
+                'hasil' => 'required',
+                'tindak_lanjut' => 'required'
+            ]
+        );
+
+        if ($v->fails()) {
+            return redirect()->back()->withErrors($v);
+        } else {
+            $c = Pengemasan::create([
+                'bppb_id' => $id,
+                'pic_id' => Auth::user()->id,
+                'karyawan_id' => $request->karyawan_id,
+                'tanggal' => $request->tanggal_laporan
+            ]);
+
+            if (!empty($request->no_seri)) {
+                $bool = true;
+                for ($i = 0; $i < count($request->no_seri); $i++) {
+                    $status = "";
+                    if ($request->tindak_lanjut == "ok") {
+                        $status = 'ok';
+                    } else if ($request->tindak_lanjut == "perbaikan") {
+                        $status = 'req_perbaikan';
+                    } else {
+                        $status = 'req_pengujian';
+                    }
+                    $cs = HasilPengemasan::create([
+                        'pengemasan_id' => $c->id,
+                        'hasil_perakitan_id' => $request->no_seri[$i],
+                        'no_barcode' => $request->no_barcode[$i],
+                        'hasil' => $request->hasil[$i],
+                        'keterangan' => $request->keterangan[$i],
+                        'tindak_lanjut' => $request->tindak_lanjut[$i],
+                        'status' => $status
+                    ]);
+
+                    $arrdcp = [];
+                    $j = 0;
+                    for ($z = 0; $z < count($request->detail_cek_pengemasan[$i]); $z++) {
+                        if ($request->detail_cek_pengemasan[$i][$z] !== "nok") {
+                            $arrdcp[$j] = $request->detail_cek_pengemasan[$i][$z];
+                            $j++;
+                        }
+                    }
+                    echo json_encode($arrdcp);
+                    if ($cs) {
+                        $k = HasilPengemasan::find($cs->id);
+                        $k->DetailCekPengemasan()->sync($arrdcp, false);
+                        $u = $k->save();
+
+                        if (!$u) {
+                            $bool = false;
+                        }
+                    }
+                }
+            }
+            if ($bool == true) {
+                return redirect()->back()->with('success', "Berhasil menambahkan Pengemasan");
+            } else if ($bool == false) {
+                return redirect()->back()->with('error', "Gagal menambahkan Pengemasan");
+            }
+        }
+    }
+
+    public function pengemasan_hasil($id)
+    {
+        $s = Pengemasan::find($id);
+        $hp = HasilPengemasan::where('pengemasan_id', $id)->get();
+        $c = CekPengemasan::where('detail_produk_id', $s->Bppb->DetailProduk->id)->get();
+        return view('page.produksi.pengemasan_hasil_show', ['id' => $id, 's' => $s, 'c' => $c, 'hp' => $hp]);
+    }
+
+    public function pengemasan_form()
+    {
+        return view('page.produksi.pengemasan_form_show');
+    }
+
+    public function pengemasan_form_show()
+    {
+        $s = DetailProduk::has('CekPengemasan')->with('Produk')->get();
+
+        return DataTables::of($s)
+            ->addIndexColumn()
+            ->addColumn('gambar', function ($s) {
+                $gambar = '<img class="product-img-small img-fluid"';
+                if (empty($s->foto)) {
+                    $gambar .= 'src="{{url(\'assets/image/produk\')}}/noimage.png"';
+                } else if (!empty($s->foto)) {
+                    $gambar .= 'src="{{asset(\'image/produk/\')}}/' . $s->foto . '"';
+                }
+                $gambar .= 'title="' . $s->nama . '">';
+                return $gambar;
+            })
+            ->addColumn('produk', function ($s) {
+                $btn = '<hgroup><h6 class="heading">' . $s->nama . '</h6><div class="subheading text-muted">' . $s->Produk->KelompokProduk->nama . '</div></hgroup>';
+                return $btn;
+            })
+            ->addColumn('aksi', function ($s) {
+                $btn = '<a href = "/pengemasan/form/detail/' . $s->id . '"><button class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-eye"></i></button></a>
+                <a href = "/pengemasan/form/edit/' . $s->id . '"><button class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-pencil-alt"></i></button></a>
+                <a href = "/pengemasan/form/delete/' . $s->id . '"><button class="btn btn-danger btn-sm m-1" style="border-radius:50%;"><i class="fas fa-trash"></i></button></a>';
+                return $btn;
+            })
+            ->rawColumns(['gambar', 'produk', 'aksi'])
+            ->make(true);
+    }
+
+    public function pengemasan_form_create()
+    {
+        $dp = DetailProduk::doesntHave('CekPengemasan')->get();
+        return view('page.produksi.pengemasan_form_create', ['dp' => $dp]);
+    }
+
+    public function pengemasan_form_store(Request $request)
+    {
+        $v = Validator::make(
+            $request->all(),
+            [
+                'detail_produk_id' => 'required',
+                'perlengkapan' => 'required',
+                'nama_barang' => 'required'
+            ],
+            [
+                'detail_produk_id.required' => "Produk harus dipilih",
+                'perlengkapan.required' => "Perlengkapan harus diisi",
+                'nama_barang.required' => "Nama Barang harus diisi",
+            ]
+        );
+        if ($v->fails()) {
+            return redirect()->back()->withErrors($v);
+        } else {
+            $bool = true;
+            for ($i = 0; $i < count($request->perlengkapan); $i++) {
+                $c = CekPengemasan::create([
+                    'detail_produk_id' => $request->detail_produk_id,
+                    'perlengkapan' => $request->perlengkapan[$i]
+                ]);
+
+                if ($c) {
+                    echo $c->id;
+                    for ($j = 0; $j < count($request->nama_barang[$i]); $j++) {
+                        $cs = DetailCekPengemasan::create([
+                            'cek_pengemasan_id' => $c->id,
+                            'nama_barang' => $request->nama_barang[$i][$j]
+                        ]);
+
+                        if (!$cs) {
+                            $bool = false;
+                        }
+                    }
+                } else if (!$c) {
+                    $bool = false;
+                }
+            }
+
+            if ($bool == true) {
+                return redirect()->back()->with('success', "Berhasil menambahkan Perlengkapan Pengemasan");
+            } else if ($bool == false) {
+                return redirect()->back()->with('error', "Gagal menambahkan Perlengkapan Pengemasan");
+            }
+        }
     }
 }

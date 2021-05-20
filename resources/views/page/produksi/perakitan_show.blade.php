@@ -38,7 +38,7 @@
                 <th>No BPPB</th>
                 <th>Gambar</th>
                 <th>Tipe dan Nama</th>
-                <th>Jumlah</th>
+                <th>Jumlah Permintaan</th>
                 <th>Laporan</th>
                 <th>Aksi</th>
               </tr>
@@ -52,7 +52,7 @@
                 <th>No BPPB</th>
                 <th>Gambar</th>
                 <th>Tipe dan Nama</th>
-                <th>Jumlah</th>
+                <th>Jumlah Permintaan</th>
                 <th>Laporan</th>
                 <th>Aksi</th>
               </tr>

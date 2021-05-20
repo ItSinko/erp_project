@@ -66,7 +66,7 @@ class GetController extends Controller
 
     public function get_detail_produk_by_id($id)
     {
-        $s = DetailProduk::with('Produk')->where('id', $id)->get();
+        $s = DetailProduk::with('Produk')->with("produk.kelompokproduk", "produk.kategoriproduk")->where('id', $id)->get();
         echo json_encode($s);
     }
 

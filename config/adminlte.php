@@ -432,7 +432,7 @@ return [
         ],
         [
             'header' => 'MASTER DATA',
-            'auth' => [14, 17, 26]
+            'auth' => [14, 17, 26, 23]
         ],
         [
             'text' => 'Produk',
@@ -443,7 +443,7 @@ return [
         [
             'text' => 'Data Karyawan',
             'icon' => 'fas fa-users',
-            'auth' => [14, 17],
+            'auth' => [14, 17, 23],
             'submenu' => [
                 [
                     'icon' => 'far fa-circle',
@@ -509,10 +509,15 @@ return [
             'icon' => 'fas fa-table',
             'auth' => [24]
         ],
-
+        [
+            'text' => 'BOM',
+            'url'  => '/bom',
+            'icon' => 'fas fa-table',
+            'auth' => [24]
+        ],
         [
             'header' => 'PRODUKSI',
-            'auth' => [17]
+            'auth' => [17, 23]
         ],
         [
             'text'    => 'Jadwal Kerja Produksi',
@@ -539,8 +544,14 @@ return [
                 ],
                 [
                     'icon' => 'far fa-circle',
-                    'text' => 'Pemeriksaan',
+                    'text' => 'Laporan',
                     'url'  => '/perakitan/pemeriksaan',
+                    'auth' => [23],
+                ],
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'IK Pemeriksaan',
+                    'url'  => '/perakitan/ik_pemeriksaan',
                     'auth' => [23],
                 ],
             ],
@@ -548,8 +559,27 @@ return [
         [
             'text'    => 'Pengujian',
             'icon'    => 'fab fa-searchengin',
-            'url' => '/pengujian',
-            'auth' => [23],
+            'auth' => [17, 23],
+            'submenu' => [
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Laporan',
+                    'url'  => '/pengujian',
+                    'auth' => [23],
+                ],
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'IK Pemeriksaan',
+                    'url'  => '/pengujian/ik_pemeriksaan',
+                    'auth' => [23],
+                ],
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Laporan',
+                    'url'  => '/pengujian/perbaikan',
+                    'auth' => [17],
+                ],
+            ],
         ],
         [
             'text'    => 'Pengemasan',
@@ -564,8 +594,20 @@ return [
                 ],
                 [
                     'icon' => 'far fa-circle',
-                    'text' => 'Pemeriksaan',
+                    'text' => 'Laporan',
                     'url'  => '/pengemasan/pemeriksaan',
+                    'auth' => [23],
+                ],
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Form Produk',
+                    'url'  => '/pengemasan/form',
+                    'auth' => [17],
+                ],
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'IK Pemeriksaan',
+                    'url'  => '/pengemasan/ik_pemeriksaan',
                     'auth' => [23],
                 ],
             ],

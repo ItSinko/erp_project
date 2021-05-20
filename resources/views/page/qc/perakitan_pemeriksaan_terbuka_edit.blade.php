@@ -24,7 +24,51 @@
     <div class="container-fluid">
         <div class="row">
             <!-- left column -->
-            <div class="col-md-12">
+            <div class="col-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h3><i class="fas fa-info-circle"></i>&nbsp;Informasi</h3><br>
+                        <div class="form-horizontal">
+                            <div class="row">
+                                <label for="no_seri" class="col-sm-6 col-form-label">No BPPB</label>
+                                <div class="col-sm-6 col-form-label" style="text-align:right;">
+                                    {{$s->Perakitan->Bppb->no_bppb}}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <label for="no_seri" class="col-sm-4 col-form-label">Produk</label>
+                                <div class="col-sm-8 col-form-label" style="text-align:right;">
+                                    {{$s->Perakitan->Bppb->DetailProduk->nama}}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <label for="no_seri" class="col-sm-8 col-form-label">Jumlah Perakitan</label>
+                                <div class="col-sm-4 col-form-label" style="text-align:right;">
+                                    {{$s->Perakitan->Bppb->countHasilPerakitan()}} {{$s->Perakitan->Bppb->DetailProduk->satuan}}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <label for="no_seri" class="col-sm-8 col-form-label">Tanggal Laporan</label>
+                                <div class="col-sm-4 col-form-label" style="text-align:right;">
+                                    {{$s->tanggal}}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <label for="no_seri" class="col-sm-4 col-form-label">Operator</label>
+                                <div class="col-sm-8 col-form-label" style="text-align:right;">
+                                    {{ $s->Perakitan->Karyawan->pluck('nama')->implode(', ') }}
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9">
                 @if(session()->has('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     <strong><i class="fas fa-check"></i></strong> {{session()->get('success')}}
@@ -56,42 +100,21 @@
                             <form action="{{ route('perakitan.pemeriksaan.terbuka.update', ['id' => $id]) }}" method="post">
                                 {{ csrf_field() }}
                                 {{ method_field('PUT') }}
-                                <h3>Detail Produk</h3>
-                                <div class="form-horizontal">
-                                    <div class="form-group row">
-                                        <label for="no_seri" class="col-sm-4 col-form-label" style="text-align:right;">No Seri : </label>
-                                        <div class="col-sm-8 col-form-label">
-                                            {{$s->no_seri}}
-                                        </div>
-                                    </div>
 
-                                    <div class="form-group row">
-                                        <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;">Tanggal : </label>
-                                        <div class="col-sm-8 col-form-label">
-                                            {{$s->tanggal}} {{$s->countStatus('perbaikan_pemeriksaan_terbuka')}}
-                                        </div>
-                                    </div>
 
-                                    <div class="form-group row">
-                                        <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;">Operator : </label>
-                                        <div class="col-sm-8 col-form-label">
-                                            @foreach($s->Perakitan->Karyawan as $i)
-                                            {{$i->nama}}<br>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <h3>Pemeriksaan</h3>
+                                <hgroup>
+                                    <h3 class="card-heading">Pemeriksaan</h3>
+                                    <h6 class="card-subheading text-muted ">Pemeriksaan ke-{{$s->countStatus('pemeriksaan_terbuka') + 1}}</h6>
+                                </hgroup>
                                 <div class="form-horizontal">
 
                                     <div class="form-group row">
-                                        <label for="kondisi_fisik_bahan_baku" class="col-sm-4 col-form-label" style="text-align:right;">Kondisi Bahan Baku</label>
+                                        <label for="kondisi_fisik_bahan_baku" class="col-sm-5 col-form-label" style="text-align:right;">Kondisi Bahan Baku</label>
                                         <div class="col-sm-1 col-form-label">
                                             <div class="icheck-primary d-inline">
                                                 <input type="radio" id="kondisi_fisik_bahan_baku_ok" name="kondisi_fisik_bahan_baku" value="ok" checked>
                                                 <label for="kondisi_fisik_bahan_baku_ok">
-                                                    OK
+                                                    Baik
                                                 </label>
                                             </div>
                                         </div>
@@ -99,7 +122,7 @@
                                             <div class="icheck-primary d-inline">
                                                 <input type="radio" id="kondisi_fisik_bahan_baku_nok" name="kondisi_fisik_bahan_baku" value="nok">
                                                 <label for="kondisi_fisik_bahan_baku_nok">
-                                                    NOK
+                                                    Tidak
                                                 </label>
                                             </div>
                                         </div>
@@ -109,13 +132,13 @@
                                     </div>
 
                                     <div class="form-group row">
-                                        <label for="divisi_id" class="col-sm-4 col-form-label" style="text-align:right;">Kondisi Saat Proses Perakitan</label>
+                                        <label for="divisi_id" class="col-sm-5 col-form-label" style="text-align:right;">Kondisi Saat Proses Perakitan</label>
 
                                         <div class="col-sm-1 col-form-label">
                                             <div class="icheck-primary d-inline">
                                                 <input type="radio" id="kondisi_saat_proses_perakitan_ok" name="kondisi_saat_proses_perakitan" value="ok" checked>
                                                 <label for="kondisi_saat_proses_perakitan_ok">
-                                                    OK
+                                                    Baik
                                                 </label>
                                             </div>
                                         </div>
@@ -124,7 +147,7 @@
                                             <div class="icheck-primary d-inline">
                                                 <input type="radio" id="kondisi_saat_proses_perakitan_nok" name="kondisi_saat_proses_perakitan" value="nok">
                                                 <label for="kondisi_saat_proses_perakitan_nok">
-                                                    NOK
+                                                    Tidak
                                                 </label>
                                             </div>
                                         </div>
@@ -134,13 +157,13 @@
                                     </div>
 
                                     <div class="form-group row">
-                                        <label for="hasil_terbuka" class="col-sm-4 col-form-label" style="text-align:right;">Hasil</label>
+                                        <label for="hasil_terbuka" class="col-sm-5 col-form-label" style="text-align:right;">Hasil</label>
 
                                         <div class="col-sm-1 col-form-label">
                                             <div class="icheck-primary d-inline">
                                                 <input type="radio" id="hasil_terbuka_ok" name="hasil_terbuka" value="ok" checked>
                                                 <label for="hasil_terbuka_ok">
-                                                    OK
+                                                    Baik
                                                 </label>
                                             </div>
                                         </div>
@@ -149,7 +172,7 @@
                                             <div class="icheck-primary d-inline">
                                                 <input type="radio" id="hasil_terbuka_nok" name="hasil_terbuka" value="nok">
                                                 <label for="hasil_terbuka_nok">
-                                                    NOK
+                                                    Tidak Baik
                                                 </label>
                                             </div>
                                         </div>
@@ -159,8 +182,8 @@
                                     </div>
 
                                     <div class="form-group row">
-                                        <label for="kelompok_produk_id" class="col-sm-4 col-form-label" style="text-align:right;">Tindak Lanjut</label>
-                                        <div class="col-sm-8">
+                                        <label for="kelompok_produk_id" class="col-sm-5 col-form-label" style="text-align:right;">Tindak Lanjut</label>
+                                        <div class="col-sm-7">
                                             <select class="form-control select2 select2-info @error('tindak_lanjut_terbuka') is-invalid @enderror" data-dropdown-css-class="select2-info" style="width: 30%;" data-placeholder="Pilih Tindak Lanjut" name="tindak_lanjut_terbuka" id="tindak_lanjut_terbuka">
                                                 <option value=""></option>
                                                 <option value="ok">OK</option>
@@ -176,9 +199,12 @@
 
 
                                     <div class="form-group row">
-                                        <label for="divisi_id" class="col-sm-4 col-form-label" style="text-align:right;">Keterangan</label>
-                                        <div class="col-sm-8">
-                                            <textarea name="keterangan_tindak_lanjut_terbuka" id="keterangan_tindak_lanjut_terbuka" class="form-control" disabled></textarea>
+                                        <label for="divisi_id" class="col-sm-5 col-form-label" style="text-align:right;">Keterangan</label>
+                                        <div class="col-sm-7">
+                                            <textarea name="keterangan_tindak_lanjut_terbuka" id="keterangan_tindak_lanjut_terbuka" class="form-control @error('keterangan_tindak_lanjut_terbuka') is-invalid @enderror" disabled></textarea>
+                                            @if ($errors->has('keterangan_tindak_lanjut_terbuka'))
+                                            <span class="invalid-feedback" role="alert">{{$errors->first('keterangan_tindak_lanjut_terbuka')}}</span>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
