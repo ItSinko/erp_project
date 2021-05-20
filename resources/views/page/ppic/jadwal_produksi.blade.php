@@ -26,7 +26,11 @@
                 <div class="card-body">
                     <!-- the events -->
                     <div id="external-events">
-                        <p>daftar kosong</p>
+                        <ul>
+                            @foreach($date as $d)
+                            <li>{{$d->title}}</li>
+                            @endforeach
+                        </ul>
                     </div>
                 </div>
                 <!-- /.card-body -->
@@ -38,7 +42,6 @@
                 </div>
                 <div class="card-body">
                     <div class="btn-group" style="width: 100%; margin-bottom: 10px;">
-                        <!--<button type="button" id="color-chooser-btn" class="btn btn-info btn-block dropdown-toggle" data-toggle="dropdown">Color <span class="caret"></span></button>-->
                         <ul class="fc-color-picker" id="color-chooser">
                             <li><a class="text-primary" href="#"><i class="fas fa-square"></i></a></li>
                             <li><a class="text-warning" href="#"><i class="fas fa-square"></i></a></li>
@@ -183,6 +186,15 @@
                 </button>
             </div>
             <div class="modal-body mx-3">
+                <div class="btn-group" style="width: 100%; margin-bottom: 10px;">
+                    <ul class="fc-color-picker" id="color-chooser">
+                        <li><a class="text-primary" href="#"><i class="fas fa-square"></i></a></li>
+                        <li><a class="text-warning" href="#"><i class="fas fa-square"></i></a></li>
+                        <li><a class="text-success" href="#"><i class="fas fa-square"></i></a></li>
+                        <li><a class="text-danger" href="#"><i class="fas fa-square"></i></a></li>
+                        <li><a class="text-muted" href="#"><i class="fas fa-square"></i></a></li>
+                    </ul>
+                </div>
                 <div class="form-group row">
                     <label for="activity" class="col-sm-2 col-form-label">Produksi</label>
                     <div class="col-sm-10">
@@ -283,7 +295,7 @@
                 days = days - (weeks * 2);
 
                 var startDay = date1.getDay();
-                var endDay = date2.getDay();
+                var endDay = date2.getDay() - 1;
 
                 // Remove weekend not previously removed.   
                 if (startDay - endDay > 1)
@@ -376,13 +388,13 @@
         /* ADDING EVENTS */
         var currColor = '#3c8dbc' //Red by default
         //Color chooser button
-        var colorChooser = $('#color-chooser-btn')
         $('#color-chooser > li > a').click(function(e) {
-            e.preventDefault()
+            e.preventDefault();
             //Save color
-            currColor = $(this).css('color')
+            currColor = $(this).css('color');
+            console.log(currColor);
             //Add color effect to button
-            $('#add-new-event').css({
+            $('#activity').css({
                 'background-color': currColor,
                 'border-color': currColor
             })
