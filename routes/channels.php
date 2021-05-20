@@ -22,6 +22,6 @@ Broadcast::channel('chat', function ($user) {
     return Auth::check();
 });
 
-Broadcast::channel('notif', function ($user) {
+Broadcast::channel('message-events', function ($user) {
     return true;
 });

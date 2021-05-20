@@ -509,7 +509,11 @@ Route::get('/message', 'ChatController@fetchMessages');
 Route::post('/message', 'ChatController@sendMessage');
 
 Route::get('/notif', function () {
-    event(new App\Events\PpicEvent("ppic message"));
+    event(new App\Events\RealTimeMessage(Auth::user(), "event message"));
 
     return "messege sent";
 })->middleware('auth');
+
+Route::get('/welcome', function () {
+    return view('welcome');
+});

@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -10,7 +11,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class RealTimeMessage
+class RealTimeMessage implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -19,10 +20,12 @@ class RealTimeMessage
      *
      * @return void
      */
-    public $message;
-    public function __construct(string $message)
+    public User $user;
+    public string $message;
+    public function __construct(User $user, string $message)
     {
         $this->message = $message;
+        $this->user = $user;
     }
 
     /**
@@ -32,6 +35,6 @@ class RealTimeMessage
      */
     public function broadcastOn()
     {
-        return new Channel('events');
+        return new PrivateChannel('message-events');
     }
 }

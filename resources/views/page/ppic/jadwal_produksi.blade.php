@@ -467,6 +467,17 @@
             if ($('#status').val() == 'acc') {
                 $('#status_info').hide();
                 $('#status_success').show();
+                $.ajax({
+                    url: '/notif',
+                    type: 'GET',
+                    success: function() {
+                        console.log('notif sent');
+                    },
+                    error: function(err) {
+                        console.log('error: ' + err);
+                    }
+                });
+
             } else if ($('#status').val() == 'not_acc') {
                 $('#status_info').show();
                 $('#status_success').hide();

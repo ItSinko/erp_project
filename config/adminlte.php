@@ -661,6 +661,12 @@ return [
             'icon' => 'fas fa-sign-out-alt',
             'form' => true,
         ],
+
+        [
+            'text' => 'test',
+            'isNavbarRightItem' => true,
+            'icon' => 'fas fa-sign-out-alt',
+        ],
     ],
 
     /*
