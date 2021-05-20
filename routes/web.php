@@ -48,7 +48,7 @@ Route::get('/kesehatan/ubah/{id}', 'KesehatanController@kesehatan_ubah');
 /* Get Data */
 Route::get('/kesehatan/data', 'KesehatanController@kesehatan_data');
 Route::get('/kesehatan/data/{karyawan_id}', 'KesehatanController@kesehatan_data_detail');
-Route::get('/kesehatan/detail', 'KesehatanController@kesehatan_detail');
+Route::get('/kesehatan/detail/', 'KesehatanController@kesehatan_detail');
 
 //Kesehatan Harian
 /* Tabel */
@@ -83,6 +83,24 @@ Route::get('/kesehatan_mingguan_tensi/detail/data/{karyawan_id}', 'KesehatanCont
 
 //Kesehatan Bulanan
 Route::get('/kesehatan_bulanan', 'KesehatanController@kesehatan_bulanan');
+Route::get('/kesehatan_bulanan/tambah', 'KesehatanController@kesehatan_bulanan_tambah');
+Route::get('/kesehatan_bulanan/tambah/data', 'KesehatanController@kesehatan_bulanan_tambah_data');
+Route::post('/kesehatan_bulanan_gcu/aksi_tambah', 'KesehatanController@kesehatan_bulanan_gcu_aksi_tambah');
+Route::put('/kesehatan_bulanan_gcu/aksi_ubah', 'KesehatanController@kesehatan_bulanan_gcu_aksi_ubah');
+Route::get('/kesehatan_bulanan_gcu/data', 'KesehatanController@kesehatan_bulanan_gcu_data');
+Route::get('/kesehatan_bulanan/detail', 'KesehatanController@kesehatan_bulanan_gcu_detail');
+Route::get('/kesehatan_bulanan_gcu/detail/{karyawan_id}', 'KesehatanController@kesehatan_bulanan_gcu_detail_data');
+Route::get('/kesehatan_bulanan/detail/data/{karyawan_id}', 'KesehatanController@kesehatan_bulanan_detail_data_karyawan');
+
+//Karyawan Sakit
+Route::get('/karyawan_sakit', 'KesehatanController@karyawan_sakit');
+Route::get('/karyawan_sakit/tambah', 'KesehatanController@karyawan_sakit_tambah');
+
+
+
+
+
+
 //Karyawan
 Route::group(['prefix' => '/karyawan', 'middleware' => 'auth'], function () {
     Route::get('/', 'CommonController@karyawan');   /* Tabel */

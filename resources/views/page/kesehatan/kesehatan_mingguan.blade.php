@@ -299,8 +299,6 @@
           $('#detail_mod_tensi').modal('show');
         });
       });
-
-
     } else if (form == 'rapid') {
       $('#detail_mod_tensi form')[0].reset();
       var tensi = $('#tensi_tabel').DataTable();
@@ -355,6 +353,7 @@
           $('#detail_mod_rapid').modal('show');
         });
       });
+
     } else {
       $("#tensi_tabel").hide();
       $("#rapid_tabel").hide();
