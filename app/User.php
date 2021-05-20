@@ -86,4 +86,9 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\digidocu\Document');
     }
+
+    public function PersiapanPackingProduk()
+    {
+        return $this->hasMany(PersiapanPackingProduk::class);
+    }
 }
