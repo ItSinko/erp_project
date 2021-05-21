@@ -60,6 +60,11 @@ class Karyawan extends Model
     {
         return $this->hasMany('App\kesehatan_mingguan_tensi');
     }
+    public function karyawan_sakit()
+    {
+        return $this->hasMany('App\karyawan_sakit');
+    }
+
     // public function DetailPeminjamanKaryawan()
     // {
     //     return $this->hasMany(DetailPeminjamanKaryawan::class);

@@ -6,10 +6,12 @@ use App\Charts\SampleChart;
 use App\Divisi;
 use App\gcu_karyawan;
 use App\Karyawan;
+use App\karyawan_sakit;
 use App\Kesehatan_awal;
 use App\Kesehatan_harian;
 use App\kesehatan_mingguan_rapid;
 use App\kesehatan_mingguan_tensi;
+use App\obat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -647,6 +649,98 @@ class KesehatanController extends Controller
     public function karyawan_sakit_tambah()
     {
         $karyawan = Karyawan::all();
-        return view('page.kesehatan.karyawan_sakit_tambah', ['karyawan' => $karyawan]);
+        $obat = Obat::all();
+        $pengecek = $karyawan->where('divisi_id', '28');
+        return view('page.kesehatan.karyawan_sakit_tambah', ['karyawan' => $karyawan, 'pengecek' => $pengecek, 'obat' => $obat]);
+    }
+    // public function obat_data()
+    // {
+    //     $data = Obat::all();
+    //     echo json_encode($data);
+    // }
+
+    public function karyawan_sakit_aksi_tambah(Request $request)
+    {
+        $this->validate(
+            $request,
+            [
+                'karyawan_id' => 'required',
+                'tgl' => 'required',
+                'pemeriksa_id' => 'required',
+            ],
+            [
+                'pemeriksa_id.required' => 'Pemeriksa harus di pilih',
+                'karyawan_id.required' => 'Karyawan harus di pilih',
+                'tgl.required' => 'Tanggal pengecekan harus di isi',
+            ]
+        );
+        $karyawan_sakit = Karyawan_sakit::create([
+            'tgl_cek' => $request->tgl,
+            'karyawan_id' => $request->karyawan_id,
+            'pemeriksa_id' => $request->pemeriksa_id,
+            'analisa' => $request->analisa,
+            'diagnosa' => $request->diagnosa,
+            'tindakan' => $request->hasil_1,
+            'terapi' => $request->terapi,
+            'obat_id' => $request->obat_id,
+            'aturan' => $request->aturan_obat,
+            'konsumsi' => $request->dosis_obat,
+            'keputusan' => $request->hasil_2
+        ]);
+        if ($karyawan_sakit) {
+            return redirect()->back()->with('success', 'Berhasil menambahkan data');
+        } else {
+            return redirect()->back()->with('error', 'Gagal menambahkan data');
+        }
+    }
+
+    public function karyawan_sakit_data()
+    {
+        $data = Karyawan_sakit::all();
+        return datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('x', function ($data) {
+                return $data->karyawan->divisi->nama;
+            })
+            ->addColumn('y', function ($data) {
+                return $data->karyawan->nama;
+            })
+            ->addColumn('z', function ($data) {
+                return $data->pemeriksa->nama;
+            })
+            ->addColumn('o', function ($data) {
+                if ($data->obat_id != NULL) {
+                    return $data->obat->nama;
+                } else {
+                    return '';
+                }
+            })
+            ->addColumn('d', function ($data) {
+                if ($data->obat_id != NULL) {
+                    return $data->aturan;
+                } else {
+                    return '';
+                }
+            })
+            ->addColumn('e', function ($data) {
+                if ($data->obat_id != NULL) {
+                    return $data->konsumsi;
+                } else {
+                    return '';
+                }
+            })
+
+            ->addColumn('detail_button', function ($data) {
+                $btn = $data->tindakan;
+                $btn = $btn . '<br><div class="inline-flex"><button type="button" id="detail_tindakan"  class="btn btn-block btn-primary karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-eye"></i></button></div>';
+                return  $btn;
+            })
+            ->addColumn('button', function ($data) {
+                $btn = '<div class="inline-flex"><button type="button" id="edit_gcu"  class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fa fa-eye" aria-hidden="true"></i></button></div>';
+                $btn = $btn . ' <div class="inline-flex"><button type="button" class="btn btn-block btn-danger karyawan-img-small" style="border-radius:50%;" data-toggle="modal" data-target="#delete" ><i class="fas fa-trash"></i></button></div>';
+                return $btn;
+            })
+            ->rawColumns(['button', 'detail_button'])
+            ->make(true);
     }
 }

@@ -22,13 +22,14 @@
               </tr>
               <tr>
                 <th>No</th>
+                <th>Tgl</th>
                 <th>Divisi</th>
                 <th>Nama</th>
-                <th>Berat</th>
-                <th>Tinggi</th>
-                <th>BMI</th>
-                <th>Vaksin</th>
-                <th>Buta warna</th>
+                <th>Pemeriksa</th>
+                <th>Analisa</th>
+                <th>Diagnosa</th>
+                <th>Tindak Lanjut</th>
+                <th>Hasil</th>
                 <th></th>
               </tr>
             </thead>
@@ -41,7 +42,7 @@
   </div>
 </div>
 <!-- Modal Detail -->
-<div class="modal fade  bd-example-modal-lg" id="berat_mod" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade  bd-example-modal-lg" id="detail_mod" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog modal-lg" role="document">
     <div class="card-body">
       <form method="post" action="/kesehatan_harian_mingguan_tensi/aksi_ubah">
@@ -60,59 +61,19 @@
             <form role="form">
               <div class="card-body">
                 <div class="form-group">
-                  <label for="lemak" style="text-align:right;">Tgl Cek</label>
-                  <input type="date" class="form-control" name="tgl_cek" id="lemak" placeholder="Masukkan jumlah lemak">
+                  <label style="text-align:right;">Nama Obat</label>
+                  <input type="text" class="form-control" id="nama_obat" readonly>
                 </div>
                 <div class="form-group">
-                  <label for="keterangan" style=" text-align:right;">Tinggi Badan</label>
-                  <div class="input-group mb-3">
-                    <input type="number" class="form-control" name="tinggi" id="tinggi" readonly>
-                    <div class="input-group-append">
-                      <span class="input-group-text">Cm</span>
-                    </div>
-                  </div>
+                  <label style="text-align:right;">Aturan konsumsi Obat</label>
+                  <input type="text" class="form-control" id="aturan" readonly>
                 </div>
                 <div class="form-group">
-                  <label for="keterangan" style=" text-align:right;">Berat Badan</label>
-                  <div class="input-group mb-3">
-                    <input type="number" class="form-control" name="berat" id="berat" required>
-                    <div class="input-group-append">
-                      <span class="input-group-text">Kg</span>
-                    </div>
-                  </div>
+                  <label style="text-align:right;">Jumlah konsumsi Obat</label>
+                  <input type="text" class="form-control" id="konsumsi" readonly>
                 </div>
-                <div class="form-group">
-                  <label for="lemak" style="text-align:right;">Lemak</label>
-                  <input type="text" class="form-control" name="lemak" id="lemak" placeholder="Masukkan jumlah lemak">
-                </div>
-                <div class="form-group">
-                  <label for="lemak" style="text-align:right;">Kandungan Air</label>
-                  <input type="text" class="form-control" name="lemak" placeholder="Masukkan jumlah kandungan air">
-                </div>
-                <div class="form-group">
-                  <label for="lemak" style="text-align:right;">Massa Otot</label>
-                  <input type="text" class="form-control" name="otot" placeholder="Masukkan jumlah massa otot">
-                </div>
-                <div class="form-group">
-                  <label for="lemak" style="text-align:right;">Tulang</label>
-                  <input type="text" class="form-control" name="tulang" placeholder="Masukkan jumlah tulang">
-                </div>
-                <div class="form-group">
-                  <label for="lemak" style="text-align:right;">Kalori</label>
-                  <input type="text" class="form-control" name="kalori" placeholder="Masukkan jumlah kalori">
-                </div>
-                <!-- <div class="form-group">
-                  <label for="lemak" style="text-align:right;">Body Mass Index</label>
-                  <input type="text" class="form-control" id="bmi" readonly>
-                </div>
-                <small id="status_bmi" class="form-text text-muted"></small> -->
               </div>
             </form>
-          </div>
-          <!-- /.card -->
-
-          <div class="modal-footer">
-            <button class="btn btn-success rounded-pill" id="button_tambah" onclick="return confirm('Data akan di ubah ?');"><i class="fas fa-plus"></i>&nbsp;Update Data</button>
           </div>
         </div>
       </form>
@@ -130,78 +91,56 @@
       language: {
         processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
       },
-      ajax: '/kesehatan/data',
+      ajax: '/karyawan_sakit/data',
       columns: [{
           data: 'DT_RowIndex',
           orderable: false,
           searchable: false
         },
         {
+          data: 'tgl_cek'
+        },
+        {
           data: 'x'
         },
         {
-          data: 'karyawan.nama'
+          data: 'y'
         },
         {
-          data: 'berat_kg'
+          data: 'z'
         },
         {
-          data: 'tinggi_cm'
+          data: 'analisa'
         },
         {
-          data: 'bmi',
-          render: function(data, type, full) {
-            $s = '<br><span class="badge bg-success  ">Sehat</span>';
-            $k = '<br><span class="badge bg-danger  ">Kekurangan Berat Badan</span>';
-            $o = '<br><span class="badge bg-danger  ">Kegemukan (Obesitas)</span>';
-            $g = '<br><span class="badge bg-warning  ">Kelebihan Berat Badan</span>';
-            if (data >= 30) {
-              return parseFloat(data).toFixed(2) + $o;
-            } else if (data >= 25 || data >= 29.9) {
-              return parseFloat(data).toFixed(2) + $g;
-            } else if (data >= 18.5 || data >= 24.9) {
-              return parseFloat(data).toFixed(2) + $s;
-            } else {
-              return parseFloat(data).toFixed(2) + $k;
-            }
-
-          }
+          data: 'diagnosa'
         },
         {
-          data: 'vaksin'
+          data: 'detail_button'
         },
         {
-          data: 'status_mata'
+          data: 'keputusan'
         },
         {
           data: 'button'
         }
       ]
     });
-    $('#tabel > tbody').on('click', '#berat', function() {
+
+
+    $('#tabel > tbody').on('click', '#detail_tindakan', function() {
       var rows = tabel.rows($(this).parents('tr')).data();
       $('.data_detail_head').html(
-        rows[0]['karyawan']['nama']
+        rows[0]['tindakan'] + ' : ' + rows[0]['y']
       );
-      $('input[id="tinggi"]').val(rows[0]['tinggi']);
 
-      var value1 = $('.modal-body input[id=berat]').val();
-      var value2 = rows[0]['tinggi'];
+      $('#detail_mod').modal('show');
+      $('input[id="nama_obat"]').val(rows[0]['o']);
+      $('input[id="aturan"]').val(rows[0]['d']);
+      $('input[id="konsumsi"]').val(rows[0]['e']);
 
-      var sum = value1 / ((value2 / 100) * (value2 / 100))
-      $('#bmi').val(sum.toFixed(2));
-      if (sum >= 30) {
-        $('#status_bmi').text('Kegemukan (Obesitas)');
-      } else if (sum >= 25 || sum >= 29.9) {
-        $('#status_bmi').text('Kelebihan Berat Badan');
-      } else if (sum >= 18.5 || sum >= 24.9) {
-        $('#status_bmi').text('Normal (Ideal)');
-      } else {
-        $('#status_bmi').text('Kekurangan Berat Badan');
-      }
+    });
 
-      $('#berat_mod').modal('show');
-    })
   });
 </script>
 @endsection

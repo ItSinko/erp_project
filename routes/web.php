@@ -97,7 +97,10 @@ Route::get('/kesehatan_bulanan/detail/data/{karyawan_id}', 'KesehatanController@
 
 //Karyawan Sakit
 Route::get('/karyawan_sakit', 'KesehatanController@karyawan_sakit');
+Route::get('/karyawan_sakit/data', 'KesehatanController@karyawan_sakit_data');
 Route::get('/karyawan_sakit/tambah', 'KesehatanController@karyawan_sakit_tambah');
+Route::get('/karyawan_sakit/obat/data/', 'KesehatanController@obat_data');
+Route::post('/karyawan_sakit/aksi_tambah', 'KesehatanController@karyawan_sakit_aksi_tambah');
 
 
 

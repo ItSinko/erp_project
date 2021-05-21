@@ -28,7 +28,7 @@
             </div>
             @endif
             <div class="col-lg-12">
-                <form action="/kesehatan/aksi_tambah" method="post" enctype="multipart/form-data">
+                <form action="/karyawan_sakit/aksi_tambah" method="post">
                     {{ csrf_field() }}
                     <div class="card">
                         <div class="card-header bg-success">
@@ -39,6 +39,13 @@
                                 <div class="row">
                                     <div class="col-lg-12">
                                         <div class="form-horizontal">
+                                            <div class="form-group row">
+                                                <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;">Tgl Pemeriksaan </label>
+                                                <div class="col-sm-8">
+                                                    <input type="date" class="form-control @error('tgl_cek') is-invalid @enderror" name="tgl" value="{{old('tgl_cek')}}" placeholder="Analisa pemeriksaan" style="width:45%;">
+                                                </div>
+                                                <span role="alert" id="no_seri-msg"></span>
+                                            </div>
                                             <div class="form-group row">
                                                 <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Nama</label>
                                                 <div class="col-sm-8">
@@ -58,10 +65,10 @@
                                             <div class="form-group row">
                                                 <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Pemeriksa</label>
                                                 <div class="col-sm-8">
-                                                    <select type="text" class="form-control @error('karyawan_id') is-invalid @enderror select2" name="karyawan_id" style="width:45%;">
+                                                    <select type="text" class="form-control @error('pemeriksa_id') is-invalid @enderror select2" name="pemeriksa_id" style="width:45%;">
                                                         <option value=""></option>
-                                                        @foreach($karyawan as $k)
-                                                        <option value="{{$k->id}}">{{$k->nama}}</option>
+                                                        @foreach($pengecek as $p)
+                                                        <option value="{{$p->id}}">{{$p->nama}}</option>
                                                         @endforeach
                                                     </select>
                                                     @if($errors->has('karyawan_id'))
@@ -74,14 +81,14 @@
                                             <div class="form-group row">
                                                 <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;">Analisa </label>
                                                 <div class="col-sm-8">
-                                                    <textarea type="text" class="form-control @error('ket_vaksin') is-invalid @enderror" name="ket_vaksin" id="keterangan" value="{{old('ket_vaksin')}}" placeholder="Analisa pemeriksaan" style="width:45%;"></textarea>
+                                                    <textarea type="text" class="form-control @error('analisa') is-invalid @enderror" name="analisa" id="analisa" value="{{old('analisa')}}" placeholder="Analisa pemeriksaan" style="width:45%;"></textarea>
                                                 </div>
                                                 <span role="alert" id="no_seri-msg"></span>
                                             </div>
                                             <div class="form-group row">
                                                 <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;">Diagnosa</label>
                                                 <div class="col-sm-8">
-                                                    <textarea type="text" class="form-control @error('ket_vaksin') is-invalid @enderror" name="ket_vaksin" id="keterangan" value="{{old('ket_vaksin')}}" placeholder="Diagnosa pemeriksaan" style="width:45%;"></textarea>
+                                                    <textarea type="text" class="form-control @error('diagnosa') is-invalid @enderror" name="diagnosa" id="diagnosa" value="{{old('diagnosa')}}" placeholder="Diagnosa pemeriksaan" style="width:45%;"></textarea>
                                                 </div>
                                                 <span role="alert" id="no_seri-msg"></span>
                                             </div>
@@ -89,13 +96,13 @@
                                                 <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;">Tindak lanjut</label>
                                                 <div class="col-sm-8" style="margin-top:7px;">
                                                     <div class="icheck-success d-inline col-sm-4">
-                                                        <input type="radio" name="hasil_1" value="terapi">
+                                                        <input type="radio" name="hasil_1" value="Terapi">
                                                         <label for="no">
                                                             Terapi
                                                         </label>
                                                     </div>
                                                     <div class="icheck-warning d-inline col-sm-4">
-                                                        <input type="radio" name="hasil_1" value="pengobatan">
+                                                        <input type="radio" name="hasil_1" value="Pengobatan">
                                                         <label for="sample">
                                                             Pengobatan
                                                         </label>
@@ -107,7 +114,7 @@
                                                 <div class="form-group row">
                                                     <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;">Terapi</label>
                                                     <div class="col-sm-8">
-                                                        <textarea type="text" class="form-control @error('ket_vaksin') is-invalid @enderror" id="terapi" value="{{old('ket_vaksin')}}" placeholder="Terapi yang digunakan" style="width:45%;"></textarea>
+                                                        <textarea type="text" class="form-control @error('terapi') is-invalid @enderror" id="terapi" value="{{old('terapi')}}" placeholder="Terapi yang digunakan" style="width:45%;" name="terapi"></textarea>
                                                     </div>
                                                     <span role="alert" id="no_seri-msg"></span>
                                                 </div>
@@ -116,10 +123,9 @@
                                                 <div class="form-group row">
                                                     <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Obat</label>
                                                     <div class="col-sm-8">
-                                                        <select type="text" class="form-control @error('karyawan_id') is-invalid @enderror select2" style="width:45%;" id="obat">
-                                                            <option value=""></option>
-                                                            @foreach($karyawan as $k)
-                                                            <option value="{{$k->id}}">{{$k->nama}}</option>
+                                                        <select type="text" class="form-control @error('obat') is-invalid @enderror select2" style="width:45%;" id="obat" name="obat_id">
+                                                            @foreach($obat as $o)
+                                                            <option value="{{$o->id}}">{{$o->nama}}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>
@@ -128,13 +134,13 @@
                                                     <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;">Aturan konsumsi</label>
                                                     <div class="col-sm-8" style="margin-top:7px;">
                                                         <div class="icheck-success d-inline col-sm-4">
-                                                            <input type="radio" name="aturan_obat" value="Antibody">
+                                                            <input type="radio" name="aturan_obat" value="Sebelum Makan">
                                                             <label for="no">
                                                                 Sebelum Makan
                                                             </label>
                                                         </div>
                                                         <div class="icheck-warning d-inline col-sm-4">
-                                                            <input type="radio" name="aturan_obat" value="Antigen">
+                                                            <input type="radio" name="aturan_obat" value="Sesudah Makan">
                                                             <label for="sample">
                                                                 Sesudah Makan
                                                             </label>
@@ -146,19 +152,19 @@
                                                     <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;">Jumlah konsumsi</label>
                                                     <div class="col-sm-8" style="margin-top:7px;">
                                                         <div class="icheck-success d-inline col-sm-4">
-                                                            <input type="radio" name="dosis_obat" value="Antibody">
+                                                            <input type="radio" name="dosis_obat" value="1x1">
                                                             <label for="no">
                                                                 1x1 Hari
                                                             </label>
                                                         </div>
                                                         <div class="icheck-warning d-inline col-sm-4">
-                                                            <input type="radio" name="dosis_obat" value="Antigen">
+                                                            <input type="radio" name="dosis_obat" value="2x1">
                                                             <label for="sample">
                                                                 2x1 Hari
                                                             </label>
                                                         </div>
                                                         <div class="icheck-warning d-inline col-sm-2">
-                                                            <input type="radio" name="dosis_obat" value="Antigen">
+                                                            <input type="radio" name="dosis_obat" id="custom_radio">
                                                             <label for="sample">
                                                                 <div class="input-group mb-3">
                                                                     <input type="text" class="form-control" name="dosis_obat" id="dosis_obat_custom" placeholder="Jumlah obat x hari">
@@ -176,13 +182,13 @@
                                                 <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;">Tindak lanjut</label>
                                                 <div class="col-sm-8" style="margin-top:7px;">
                                                     <div class="icheck-success d-inline col-sm-4">
-                                                        <input type="radio" name="hasil_2" value="Antibody">
+                                                        <input type="radio" name="hasil_2" value="Lanjut bekerja">
                                                         <label for="no">
                                                             Lanjut bekerja
                                                         </label>
                                                     </div>
                                                     <div class="icheck-warning d-inline col-sm-4">
-                                                        <input type="radio" name="hasil_2" value="Antigen">
+                                                        <input type="radio" name="hasil_2" value="Dipulangkan">
                                                         <label for="sample">
                                                             Dipulangkan
                                                         </label>
@@ -190,6 +196,7 @@
                                                     <span class="invalid-feedback" role="alert" id="kondisi-msg"></span>
                                                 </div>
                                             </div>
+
                                         </div>
                                     </div>
                                 </div>
@@ -209,10 +216,32 @@
 @section('adminlte_js')
 <script>
     $(document).ready(function() {
+
+        var data = [{
+                id: 0,
+                text: '<div style="color:green">enhancement</div>'
+            },
+            {
+                id: 1,
+                text: '<div style="color:red">bug</div><div><small>This is some small text on a new line</small></div>'
+            }
+        ];
+
+        var check;
+        $('input[name=dosis_obat]').on("click", function() {
+            check = $("#custom_radio").is(":checked");
+            if (check) {
+                $('input[id=dosis_obat_custom]').prop("required", true);
+            } else {
+                $('input[id=dosis_obat_custom]').prop("required", false);
+                $('#dosis_obat_custom').val('');
+            }
+        });
+
         $('input[name=hasil_1]').prop("required", true);
         $('input[name=hasil_2]').prop("required", true);
         $('input[type=radio][name=hasil_1]').on('change', function() {
-            if (this.value == 'terapi') {
+            if (this.value == 'Terapi') {
                 $('#obat').val(null).trigger('change');
                 $("#tipe_1").removeAttr("style");
                 $("#tipe_2").css('display', 'none');
@@ -223,8 +252,8 @@
                 $('input[name=dosis_obat]').prop("checked", false);
                 $('textarea[id=terapi]').prop("required", true);
             } else {
-                $('input[name=aturan_obat]').prop("required", true);
                 $('input[name=dosis_obat]').prop("required", true);
+                $('input[name=aturan_obat]').prop("required", true);
                 $('#obat').val(null).trigger('change');
                 $("#tipe_1").css('display', 'none')
                 $("#tipe_2").removeAttr("style");
@@ -233,4 +262,43 @@
         });
     });
 </script>
+<!-- <script>
+    var data = ["Ahmedabad", "Mumbai", "USA", "Canada", "Pune"];
+
+    $(document).ready(function() {
+        $('.obat').select2({
+            placeholder: "select...",
+            ajax: {
+                type: "POST",
+                dataType: 'json',
+                //url: '/karyawan_sakit/obat/data/',
+                processResults: function(data) {
+                    console.log(data);
+                    return {
+                        results: $.map(data.items, function(obj, index) {
+                            return {
+                                id: index,
+                                text: obj
+                            };
+                        })
+                    };
+                },
+                data: function(params) {
+                    var query = {
+                        search: params.term,
+                        items: data // only for jsfiddle to simulate ajax
+                    };
+                    if (params.term == "*") query.items = [];
+                    return {
+                        json: JSON.stringify(query)
+                    }
+                }
+            }
+        });
+    });
+
+    $('.obat').on('select2:select', function(e) {
+        console.log("select done", e.params.data);
+    });
+</script> -->
 @stop
