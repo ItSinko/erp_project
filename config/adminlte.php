@@ -490,6 +490,16 @@ return [
             'auth' => [24]
         ],
         [
+            'header' => 'PERSIAPAN',
+            'auth' => [17]
+        ],
+        [
+            'text'    => 'Packing Produk',
+            'icon'    => 'fas fa-calendar-alt',
+            'url'  => '/persiapan_packing_produk',
+            'auth' => [17],
+        ],
+        [
             'header' => 'PRODUKSI',
             'auth' => [17, 23]
         ],

@@ -20,6 +20,6 @@ class PartEng extends Model
 
     public function PerbaikanProduksi()
     {
-        return $this->belongsToMany(PerbaikanProduksi::class, 'perbaikan_produksi_parts');
+        return $this->belongsToMany(PerbaikanProduksi::class, 'perbaikan_produksi_parts', 'part_id', 'perbaikan_produksi_id')->withTimestamps();
     }
 }

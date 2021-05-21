@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PersiapanPackingProduk extends Model
 {
-    protected $fillable = ['bppb_id', 'user_id'];
+    protected $fillable = ['bppb_id', 'user_id', 'status'];
 
     public function Bppb()
     {
@@ -20,6 +20,6 @@ class PersiapanPackingProduk extends Model
 
     public function DetailPersiapanPackingProduk()
     {
-        return $this->hasMany(DetailPersiapanPackingProduk::class);
+        return $this->hasMany(DetailPersiapanPackingProduk::class, 'persiapan_id');
     }
 }

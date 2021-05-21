@@ -34,6 +34,8 @@ use App\Http\Controllers\UserLogController;
 use App\MonitoringProses;
 use App\PartEng;
 use App\PerbaikanProduksi;
+use App\PersiapanPackingProduk;
+use App\DetailPersiapanPackingProduk;
 
 class ProduksiController extends Controller
 {
@@ -1266,7 +1268,7 @@ class ProduksiController extends Controller
                 return $btn;
             })
             ->addColumn('aksi', function ($s) {
-                $btn = '<a href = "/perbaikan/produksi/detail/' . $s->id . '"><button class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-eye"></i></button></a>
+                $btn = '<a class="perbaikanproduksimodal" data-toggle="modal" data-target="#perbaikanproduksimodal" data-attr="/perbaikan/produksi/detail/' . $s->id . '" data-id="' . $s->id . '"><button class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-eye"></i></button></a>
                 <a href = "/perbaikan/produksi/edit/' . $s->id . '"><button class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-pencil-alt"></i></button></a>
                 <a href = "/perbaikan/produksi/delete/' . $s->id . '"><button class="btn btn-danger btn-sm m-1" style="border-radius:50%;"><i class="fas fa-trash"></i></button></a>';
                 return $btn;
@@ -1603,5 +1605,130 @@ class ProduksiController extends Controller
                 return redirect()->back()->with('error', "Gagal menyimpan data Perbaikan");
             }
         }
+    }
+
+    public function perbaikan_produksi_detail($id)
+    {
+        $s = PerbaikanProduksi::find($id);
+        return view('page.produksi.perbaikan_produksi_detail_show', ['id' => $id, 's' => $s]);
+    }
+
+    public function persiapan_packing_produk()
+    {
+        return view('page.produksi.persiapan_packing_produk_show');
+    }
+
+    public function persiapan_packing_produk_show()
+    {
+        $s = Bppb::all();
+
+        return DataTables::of($s)
+            ->addIndexColumn()
+            ->addColumn('gambar', function ($s) {
+                $gambar = '<img class="product-img-small img-fluid"';
+                if (empty($s->DetailProduk->foto)) {
+                    $gambar .= 'src="{{url(\'assets/image/produk\')}}/noimage.png"';
+                } else if (!empty($s->DetailProduk->foto)) {
+                    $gambar .= 'src="{{asset(\'image/produk/\')}}/' . $s->DetailProduk->foto . '"';
+                }
+                $gambar .= 'title="' . $s->DetailProduk->nama . '">';
+                return $gambar;
+            })
+            ->addColumn('produk', function ($s) {
+                $btn = '<hgroup><h6 class="heading">' . $s->DetailProduk->nama . '</h6><div class="subheading text-muted">' . $s->DetailProduk->Produk->KelompokProduk->nama . '</div></hgroup>';
+                return $btn;
+            })
+            ->editColumn('jumlah', function ($s) {
+                $btn = $s->jumlah . " " . $s->DetailProduk->satuan;
+                return $btn;
+            })
+            ->addColumn('aksi', function ($s) {
+                $btn = "";
+                $p = PersiapanPackingProduk::where('bppb_id', $s->id)->first();
+                if (empty($p)) {
+                    $btn = '<a href = "/persiapan_packing_produk/create/' . $s->id . '"><button class="btn btn-success btn-sm m-1" style="border-radius:50%;"><i class="fas fa-plus"></i></button></a>';
+                } else if (!empty($p)) {
+                    $btn = '<a class="persiapanpackingprodukmodal" data-toggle="modal" data-target="#persiapanpackingprodukmodal" data-attr="/persiapan_packing_produk/detail/' . $s->id . '" data-id="' . $s->id . '"><button class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-eye"></i></button></a>';
+                    if ($p->status == 'req_persiapan') {
+                        $btn .= '<a href = "/persiapan_packing_produk/edit/' . $p->id . '"><button class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-pencil-alt"></i></button></a>';
+                        $btn .= '<a href = "/persiapan_packing_produk/delete/' . $p->id . '"><button class="btn btn-danger btn-sm m-1" style="border-radius:50%;"><i class="fas fa-trash"></i></button></a>';
+                    }
+                }
+                return $btn;
+            })
+            ->rawColumns(['gambar', 'produk', 'jumlah', 'aksi'])
+            ->make(true);
+    }
+
+    public function persiapan_packing_produk_create($id)
+    {
+        $s = Bppb::find($id);
+        return view('page.produksi.persiapan_packing_produk_create', ['id' => $id, 's' => $s]);
+    }
+
+    public function persiapan_packing_produk_store($id, Request $request)
+    {
+        $v = Validator::make(
+            $request->all(),
+            [
+                'ketersediaan.*' => 'required',
+            ],
+            [
+                'ketersediaan.*.required' => "Ketersediaan harus diisi",
+            ]
+        );
+        if ($v->fails()) {
+            return redirect()->back()->withErrors($v);
+        } else {
+            $c = PersiapanPackingProduk::create([
+                'user_id' => Auth::user()->id,
+                'bppb_id' => $id,
+                'status' => 'req_persiapan',
+            ]);
+
+            if ($c) {
+                $bool = true;
+                if (!empty($request->dokumen)) {
+                    for ($i = 0; $i < count($request->dokumen); $i++) {
+                        $cs = DetailPersiapanPackingProduk::create([
+                            'persiapan_id' => $c->id,
+                            'dokumen' => $request->dokumen[$i],
+                            'ketersediaan' => $request->ketersediaan[$i],
+                            'keterangan' => $request->keterangan[$i]
+                        ]);
+
+                        if (!$cs) {
+                            $bool = false;
+                        }
+                    }
+                    if ($bool == true) {
+                        return redirect()->back()->with('success', "Berhasil menyimpan Persiapan Packing");
+                    } else if ($bool == false) {
+                        return redirect()->back()->with('error', "Gagal menyimpan Persiapan Packing");
+                    }
+                }
+            }
+        }
+    }
+
+    public function persiapan_packing_produk_detail($id)
+    {
+        $s = DetailPersiapanPackingProduk::whereHas('PersiapanPackingProduk', function ($q) use ($id) {
+            $q->where('bppb_id', $id);
+        })->get();
+
+        return view('page.produksi.persiapan_packing_produk_detail_show', ['id' => $id, 's' => $s]);
+    }
+    public function persiapan_packing_produk_detail_show($id)
+    {
+        $s = DetailPersiapanPackingProduk::whereHas('PersiapanPackingProduk', function ($q) use ($id) {
+            $q->where('bppb_id', $id);
+        })->get();
+
+        return DataTables::of($s)
+            ->addIndexColumn()
+            ->make(true);
+
+        return view('page.produksi.persiapan_packing_produk_detail_show', ['id' => $id, 's' => $s]);
     }
 }
