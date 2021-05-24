@@ -22,9 +22,11 @@ class RealTimeMessage implements ShouldBroadcast
      */
     public User $user;
     public string $message;
-    public function __construct(User $user, string $message)
+    public string $status;
+    public function __construct(User $user, string $message, string $status)
     {
         $this->message = $message;
+        $this->status = $status;
         $this->user = $user;
     }
 

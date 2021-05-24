@@ -19,6 +19,8 @@ use App\Bppb;
 use App\KelompokProduk;
 use App\Event;
 
+use App\Events\RealTimeMessage;
+
 class PPICController extends Controller
 {
     public function __construct()
@@ -55,6 +57,9 @@ class PPICController extends Controller
             'title' => $request->title,
             'start' => $request->start,
             'end' => $request->end,
+            'status' => $request->status,
+            'jumlah' => $request->jumlah,
+            'color' => $request->color,
         ];
 
         Event::create($data);
@@ -65,6 +70,22 @@ class PPICController extends Controller
     public function calendar_delete(Request $request)
     {
         if ($request->id != "") Event::destroy($request->id);
+    }
+
+    public function calendar_notif(Request $request)
+    {
+        event(new RealTimeMessage(Auth::user(), $request->message, $request->status));
+
+        $date = Event::toBase()->orderBy('start', 'asc')->get();
+        $today = date('m');
+        foreach ($date as $d) {
+            $temp = strtotime($d->start);
+            if ($today == date('m', $temp)) {
+                $temp = Event::find($d->id);
+                $temp->status = $request->status;
+                $temp->save();
+            }
+        }
     }
 
     public function bom()

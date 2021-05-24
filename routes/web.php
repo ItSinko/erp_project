@@ -508,11 +508,7 @@ Route::get('/chat', 'ChatController@index');
 Route::get('/message', 'ChatController@fetchMessages');
 Route::post('/message', 'ChatController@sendMessage');
 
-Route::get('/notif', function () {
-    event(new App\Events\RealTimeMessage(Auth::user(), "event message"));
-
-    return "messege sent";
-})->middleware('auth');
+Route::post('/notif', 'PpicController@calendar_notif')->middleware('auth');
 
 Route::get('/welcome', function () {
     return view('welcome');
