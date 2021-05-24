@@ -5,13 +5,20 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\File;
-
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Collection;
+use App\Events\Notification;
+use Yajra\DataTables\Facades\DataTables;
+use Carbon\Carbon;
 use App\Produk;
 use App\DokumenEng;
+use App\HasilPerakitan;
 use App\Ecommerces;
+use App\HasilMonitoringProses;
+use App\HasilPengemasan;
 use DirectoryIterator;
-use Illuminate\Support\Collection;
-use Yajra\DataTables\Facades\DataTables;
 
 class EngController extends Controller
 {
@@ -74,5 +81,180 @@ class EngController extends Controller
     {
         $document = [];
         return view('page.engineering.home', compact('documents', 'activities', 'tagCounts', 'documentCounts', 'filesCounts'));
+    }
+
+    public function perakitan()
+    {
+        return view('page.engineering.perakitan_show');
+    }
+
+    public function perakitan_show()
+    {
+        $id = Auth::user()->id;
+        $hp1 = HasilPerakitan::whereHas('Perakitan.Bppb.DetailProduk.Produk', function ($q) use ($id) {
+            $q->where('ppic_id', $id);
+        })->where('tindak_lanjut_terbuka', '=', 'produk_spesialis')->orWhereIn('status', ['analisa_pemeriksaan_terbuka_ps', 'analisa_pemeriksaan_tertutup_ps'])->get();
+
+        $hp2 = HasilPerakitan::whereHas('Perakitan.Bppb.DetailProduk.Produk', function ($q) use ($id) {
+            $q->where('ppic_id', $id);
+        })->where('tindak_lanjut_tertutup', '=', 'produk_spesialis')->orWhereIn('status', ['analisa_pemeriksaan_terbuka_ps', 'analisa_pemeriksaan_tertutup_ps'])->get();
+
+        $hp = $hp1->merge($hp2);
+
+        return DataTables::of($hp)
+            ->addIndexColumn()
+            ->addColumn('no_bppb', function ($s) {
+                return $s->Perakitan->Bppb->no_bppb;
+            })
+            ->addColumn('produk', function ($s) {
+                $btn = '<hgroup><h6 class="heading">' . $s->Perakitan->Bppb->DetailProduk->nama . '</h6><div class="subheading text-muted">' . $s->Perakitan->Bppb->DetailProduk->Produk->KelompokProduk->nama . '</div></hgroup>';
+                return $btn;
+            })
+            ->editColumn('tanggal', function ($s) {
+                return Carbon::createFromFormat('Y-m-d', $s->tanggal)->format('d-m-Y');
+            })
+            ->addColumn('operator', function ($s) {
+                $arr = [];
+                foreach ($s->Perakitan->Karyawan as $i) {
+                    array_push($arr, "<small>" . $i->nama . "</small>");
+                }
+                return implode("<br>", $arr);
+            })
+            ->editColumn('status', function ($s) {
+                $btn = "";
+                if ($s->status == 'rej_pemeriksaan_terbuka') {
+                    if ($s->tindak_lanjut_terbuka == "produk_spesialis") {
+                        $btn = '<a href="/perbaikan/produksi/create/' . $s->id . '/perakitan"><button type="button" class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-wrench"></i></button>
+                        <div><small> Permohonan Analisa Pemeriksaan Terbuka</small></div></a>
+                        <div><small class="danger-text">Pemeriksaan Terbuka Ditolak</small></div>';
+                    }
+                } else if ($s->status == 'rej_pemeriksaan_tertutup') {
+                    if ($s->tindak_lanjut_tertutup == "produk_spesialis") {
+                        $btn = '<a href="/perbaikan/produksi/create/' . $s->id . '/perakitan"><button type="button" class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-wrench"></i></button>
+                        <div><small> Permohonan Analisa Pemeriksaan Tertutup</small></div></a>
+                        <div><small class="danger-text">Pemeriksaan Tertutup</small></div>';
+                    }
+                }
+                return $btn;
+            })
+            ->addColumn('aksi', function ($s) {
+                $btn = '<a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="Klik untuk melihat detail BPPB">';
+                $btn .= '<i class="fa fa-ellipsis-v" aria-hidden="true"></i> </a>';
+
+                $btn .= '<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">';
+                $btn .= '<a class="dropdown-item" href="/bppb/edit/' . $s->id . '"><span style="color: black;"><i class="fa fa-edit" aria-hidden="true"></i>&nbsp;Ubah</span></a>';
+                $btn .= '<a class="dropdown-item deletemodal" data-toggle="modal" data-target="#deletemodal" data-url="/bppb/delete/' . $s->id . '"><span style="color: black;"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp;Hapus</span></a></div>';
+                return $btn;
+            })
+            ->rawColumns(['operator', 'produk', 'status', 'aksi'])
+            ->make(true);
+    }
+
+    public function pengujian()
+    {
+        return view('page.engineering.pengujian_show');
+    }
+
+    public function pengujian_show()
+    {
+        $id = Auth::user()->id;
+        $s = HasilMonitoringProses::whereHas('MonitoringProses.Bppb.DetailProduk.Produk', function ($q) use ($id) {
+            $q->where('ppic_id', $id);
+        })->where('tindak_lanjut', '=', 'produk_spesialis')->orWhereIn('status', ['req_analisa_perbaikan'])->get();
+
+        return DataTables::of($s)
+            ->addIndexColumn()
+            ->addColumn('no_bppb', function ($s) {
+                return $s->MonitoringProses->Bppb->no_bppb;
+            })
+            ->addColumn('produk', function ($s) {
+                $btn = '<hgroup><h6 class="heading">' . $s->MonitoringProses->Bppb->DetailProduk->nama . '</h6><div class="subheading text-muted">' . $s->MonitoringProses->Bppb->DetailProduk->Produk->KelompokProduk->nama . '</div></hgroup>';
+                return $btn;
+            })
+            ->editColumn('tanggal', function ($s) {
+                return Carbon::createFromFormat('Y-m-d', $s->MonitoringProses->tanggal)->format('d-m-Y');
+            })
+            ->addColumn('operator', function ($s) {
+                return $s->MonitoringProses->Karyawan->nama;
+            })
+            ->addColumn('no_seri', function ($s) {
+                return $s->HasilPerakitan->no_seri;
+            })
+            ->editColumn('status', function ($s) {
+                $btn = "";
+                if ($s->status == 'req_analisa_perbaikan') {
+                    if ($s->tindak_lanjut == "produk_spesialis") {
+                        $btn = '<a href="/perbaikan/produksi/create/' . $s->id . '/pengujian"><button type="button" class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-wrench"></i></button>
+                        <div><small> Permohonan Analisa</small></div></a>
+                        <div><small class="danger-text">Pengujian Ditolak</small></div>';
+                    }
+                }
+                return $btn;
+            })
+            ->addColumn('aksi', function ($s) {
+                $btn = '<a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="Klik untuk melihat detail BPPB">';
+                $btn .= '<i class="fa fa-ellipsis-v" aria-hidden="true"></i> </a>';
+
+                $btn .= '<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">';
+                $btn .= '<a class="dropdown-item" href="/bppb/edit/' . $s->id . '"><span style="color: black;"><i class="fa fa-edit" aria-hidden="true"></i>&nbsp;Ubah</span></a>';
+                $btn .= '<a class="dropdown-item deletemodal" data-toggle="modal" data-target="#deletemodal" data-url="/bppb/delete/' . $s->id . '"><span style="color: black;"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp;Hapus</span></a></div>';
+                return $btn;
+            })
+            ->rawColumns(['operator', 'produk', 'status', 'aksi'])
+            ->make(true);
+    }
+
+    public function pengemasan()
+    {
+        return view('page.engineering.pengemasan_show');
+    }
+
+    public function pengemasan_show()
+    {
+        $id = Auth::user()->id;
+        $s = HasilPengemasan::whereHas('Pengemasan.Bppb.DetailProduk.Produk', function ($q) use ($id) {
+            $q->where('ppic_id', $id);
+        })->where('tindak_lanjut', '=', 'produk_spesialis')->orWhereIn('status', ['req_analisa_perbaikan'])->get();
+
+        return DataTables::of($s)
+            ->addIndexColumn()
+            ->addColumn('no_bppb', function ($s) {
+                return $s->Pengemasan->Bppb->no_bppb;
+            })
+            ->addColumn('produk', function ($s) {
+                $btn = '<hgroup><h6 class="heading">' . $s->Pengemasan->Bppb->DetailProduk->nama . '</h6><div class="subheading text-muted">' . $s->Perakitan->Bppb->DetailProduk->Produk->KelompokProduk->nama . '</div></hgroup>';
+                return $btn;
+            })
+            ->editColumn('tanggal', function ($s) {
+                return Carbon::createFromFormat('Y-m-d', $s->tanggal)->format('d-m-Y');
+            })
+            ->addColumn('operator', function ($s) {
+                return $s->Pengemasan->Karyawan->nama;
+            })
+            ->addColumn('no_seri', function ($s) {
+                return $s->HasilPerakitan->no_seri;
+            })
+            ->editColumn('status', function ($s) {
+                $btn = "";
+                if ($s->status == 'req_analisa_perbaikan') {
+                    if ($s->tindak_lanjut == "produk_spesialis") {
+                        $btn = '<a href="/perbaikan/produksi/create/' . $s->id . '/pengujian"><button type="button" class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-wrench"></i></button>
+                        <div><small> Permohonan Analisa</small></div></a>
+                        <div><small class="danger-text">Pengujian Ditolak</small></div>';
+                    }
+                }
+                return $btn;
+            })
+            ->addColumn('aksi', function ($s) {
+                $btn = '<a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="Klik untuk melihat detail BPPB">';
+                $btn .= '<i class="fa fa-ellipsis-v" aria-hidden="true"></i> </a>';
+
+                $btn .= '<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">';
+                $btn .= '<a class="dropdown-item" href="/bppb/edit/' . $s->id . '"><span style="color: black;"><i class="fa fa-edit" aria-hidden="true"></i>&nbsp;Ubah</span></a>';
+                $btn .= '<a class="dropdown-item deletemodal" data-toggle="modal" data-target="#deletemodal" data-url="/bppb/delete/' . $s->id . '"><span style="color: black;"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp;Hapus</span></a></div>';
+                return $btn;
+            })
+            ->rawColumns(['operator', 'produk', 'status', 'aksi'])
+            ->make(true);
     }
 }

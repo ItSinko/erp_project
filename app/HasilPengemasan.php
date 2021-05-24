@@ -22,4 +22,9 @@ class HasilPengemasan extends Model
     {
         return $this->belongsToMany(DetailCekPengemasan::class, 'hasil_pengemasan_detail_cek_pengemasans', 'hasil_id', 'detail_cek_id')->withTimestamps();
     }
+
+    public function PerbaikanProduksi()
+    {
+        return $this->belongsToMany(PerbaikanProduksi::class, 'perbaikan_produksi_pengemasans')->withTimestamps();
+    }
 }

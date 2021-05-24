@@ -324,11 +324,14 @@ Route::group(['prefix' => '/persiapan_packing_produk', 'middleware' => 'auth'], 
     Route::get('/edit/{id}', 'ProduksiController@persiapan_packing_produk_edit')->name('persiapan_packing_produk.edit');
     Route::put('/update/{id}', 'ProduksiController@persiapan_packing_produk_update')->name('persiapan_packing_produk.update');
     Route::get('/detail/{id}', 'ProduksiController@persiapan_packing_produk_detail')->name('persiapan_packing_produk.detail');
+    Route::get('/detail/show/{id}', 'ProduksiController@persiapan_packing_produk_detail_show')->name('persiapan_packing_produk.detail.show');
 });
 
 
 //PERAKITAN
 Route::group(['prefix' => '/perakitan', 'middleware' => 'auth'], function () {
+    Route::get('/eng', 'EngController@perakitan')->name('perakitan.eng');
+    Route::get('/show/eng', 'EngController@perakitan_show')->name('perakitan.show.eng');
     Route::get('/', 'ProduksiController@perakitan')->name('perakitan');
     Route::get('/show', 'ProduksiController@perakitan_show')->name('perakitan.show');
     Route::get('/create', 'ProduksiController@perakitan_create')->name('perakitan.create');   /* Create dari BPPB */
@@ -391,6 +394,8 @@ Route::group(['prefix' => '/perakitan', 'middleware' => 'auth'], function () {
 //PENGUJIAN
 Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {
     Route::get('/', 'QCController@pengujian')->name('pengujian');
+    Route::get('/eng', 'EngController@pengujian')->name('pengujian.eng');
+    Route::get('/show/eng', 'EngController@pengujian_show')->name('pengujian.show.eng');
     Route::get('/show', 'QCController@pengujian_show')->name('pengujian.show');
     Route::get('/perbaikan', 'ProduksiController@pengujian_perbaikan')->name('pengujian.perbaikan');
     Route::get('/perbaikan/show', 'ProduksiController@pengujian_perbaikan_show')->name('pengujian.perbaikan.show');
@@ -448,6 +453,8 @@ Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {
 // PENGEMASAN
 Route::group(['prefix' => '/pengemasan', 'middleware' => 'auth'], function () {
     Route::get('/', 'ProduksiController@pengemasan')->name('pengemasan');
+    Route::get('/eng', 'EngController@pengemasan')->name('pengemasan.eng');
+    Route::get('/show/eng', 'EngController@pengemasan_show')->name('pengemasan.show.eng');
     Route::get('/form', 'ProduksiController@pengemasan_form')->name('pengemasan.form');
     Route::get('/form/show', 'ProduksiController@pengemasan_form_show')->name('pengemasan.form.show');
     Route::get('/form/create', 'ProduksiController@pengemasan_form_create')->name('pengemasan.form.create');

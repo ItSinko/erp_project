@@ -52,14 +52,14 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <form action="{{ route('perbaikan.produksi.store', ['id' => $s->Perakitan->Bppb->id]) }}" method="post">
+                    <form action="{{ route('perbaikan.produksi.store', ['id' => $bppbid]) }}" method="post">
                         {{ csrf_field() }}
                         {{ method_field('PUT') }}
                         <h3>BPPB</h3>
                         <div class="form-group row">
                             <label for="no_bppb" class="col-sm-4 col-form-label" style="text-align:right;">BPPB</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" name="no_bppb" id="no_bppb" value="{{old('no_bppb', $s->Perakitan->Bppb->no_bppb)}}" style="width: 30%;" readonly>
+                                <input type="text" class="form-control" name="no_bppb" id="no_bppb" @if($proses=='perakitan' ) value="{{old('no_bppb',  $s->Perakitan->Bppb->no_bppb)}}" @elseif($proses=='pengujian' ) value="{{old('no_bppb', $s->MonitoringProses->Bppb->no_bppb)}}" @elseif($proses=='pengemasan' ) value="{{old('no_bppb', $s->Pengemasan->Bppb->no_bppb)}}" @endif style="width: 30%;" readonly>
                                 @if ($errors->has('no_bppb'))
                                 <span class="invalid-feedback" role="alert">{{$errors->first('no_bppb')}}</span>
                                 @endif
@@ -69,7 +69,7 @@
                         <div class="form-group row">
                             <label for="nama_produk" class="col-sm-4 col-form-label" style="text-align:right;">Produk</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" name="nama_produk" id="nama_produk" value="{{old('nama_produk', $s->Perakitan->Bppb->DetailProduk->nama)}}" style="width: 50%;" readonly>
+                                <input type="text" class="form-control" name="nama_produk" id="nama_produk" @if($proses=='perakitan' ) value="{{old('nama_produk', $s->Perakitan->Bppb->DetailProduk->nama)}}" @elseif($proses=='pengujian' ) value="{{old('nama_produk', $s->MonitoringProses->Bppb->DetailProduk->nama)}}" @elseif($proses=='pengemasan' ) value="{{old('nama_produk', $s->Pengemasan->Bppb->DetailProduk->nama)}}" @endif style="width: 50%;" readonly>
                                 @if ($errors->has('nama_produk'))
                                 <span class="invalid-feedback" role="alert">{{$errors->first('nama_produk')}}</span>
                                 @endif
@@ -104,11 +104,13 @@
                                 <div class="select2-info">
                                     <select class="select2 form-control @error('hasil_perakitan_id') is-invalid @enderror hasil_perakitan_id" multiple="multiple" data-placeholder="Pilih No Seri" data-dropdown-css-class="select2-info" style="width: 100%;" name="hasil_perakitan_id[]" id="hasil_perakitan_id">
                                         @foreach($hp as $i)
-                                        @if($proses == 'perakitan')
-                                        <option value="{{$i->id}}" @if($id==$i->id)) selected @endif>{{$i->no_seri}}</option>
-                                        @elseif($proses == 'pengujian' || $proses == "pengemasan")
-                                        <option value="{{$i->HasilPerakitan->id}}" @if($id==$i->HasilPerakitan->id)) selected @endif>{{$i->HasilPerakitan->no_seri}}</option>
-                                        @endif
+                                        <option value="{{$i->id}}" @if($id==$i->id)) selected @endif>
+                                            @if($proses == 'perakitan')
+                                            {{$i->no_seri}}
+                                            @elseif($proses == 'pengujian' || $proses == "pengemasan")
+                                            {{$i->HasilPerakitan->no_seri}}
+                                            @endif
+                                        </option>
                                         @endforeach
                                     </select>
                                     @if ($errors->has('hasil_perakitan_id'))

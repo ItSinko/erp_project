@@ -34,7 +34,7 @@ class HasilPerakitan extends Model
 
     public function PerbaikanProduksi()
     {
-        return $this->belongsToMany(PerbaikanProduksi::class, 'perbaikan_produksi_no_seris');
+        return $this->belongsToMany(PerbaikanProduksi::class, 'perbaikan_produksi_perakitans')->withTimestamps();
     }
 
     public function countStatus($status)

@@ -1185,6 +1185,11 @@ class QCController extends Controller
             $u->hasil = $request->hasil;
             $u->keterangan = $request->keterangan;
             $u->no_barcode = $request->no_barcode;
+            if ($request->tindak_lanjut == "produk_spesialis") {
+                $u->status = 'req_perbaikan';
+            } else if ($request->tindak_lanjut == "perbaikan") {
+                $u->status = 'req_analisa_perbaikan';
+            }
             $u->save();
 
             if ($u) {

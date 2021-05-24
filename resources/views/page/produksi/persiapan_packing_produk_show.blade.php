@@ -52,7 +52,7 @@
                 </div>
             </div>
             <div class="modal fade" id="persiapanpackingprodukmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-dialog modal-xl" role="document">
                     <div class="modal-content">
                         <div class="modal-header" style="background-color:	#006400;">
                             <h4 class="modal-title" id="myModalLabel" style="color:white;">Persiapan Packing</h4>
@@ -86,16 +86,16 @@
                     searchable: false
                 },
                 {
-                    data: 'dokumen',
-                    name: 'dokumen'
+                    data: 'no_bppb',
+                    name: 'no_bppb'
                 },
                 {
-                    data: 'ketersediaan',
-                    name: 'ketersediaan'
+                    data: 'produk',
+                    name: 'produk'
                 },
                 {
-                    data: 'keterangan',
-                    name: 'keterangan'
+                    data: 'jumlah',
+                    name: 'jumlah'
                 },
                 {
                     data: 'aksi',
@@ -111,7 +111,7 @@
             var href = $(this).attr('data-attr');
             var dataid = $(this).attr('data-id');
             $.ajax({
-                url: href,
+                url: '/persiapan_packing_produk/detail/' + dataid,
                 beforeSend: function() {
                     $('#loader').show();
                 },
@@ -122,7 +122,8 @@
                     $('#detaildata').DataTable({
                         processing: true,
                         serverSide: true,
-                        ajax: '/persiapan_packing_produk/detail/show/' + dataid,
+                        scrollX: true,
+                        ajax: href,
                         columns: [{
                                 data: 'DT_RowIndex',
                                 name: 'DT_RowIndex',
@@ -159,12 +160,6 @@
                             {
                                 data: 'verifikasi',
                                 name: 'verifikasi'
-                            },
-                            {
-                                data: 'aksi',
-                                name: 'aksi',
-                                orderable: false,
-                                searchable: false
                             },
                         ]
                     });

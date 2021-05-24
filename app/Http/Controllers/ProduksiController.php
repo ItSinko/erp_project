@@ -876,7 +876,7 @@ class ProduksiController extends Controller
             ->addColumn('aksi', function ($s) {
                 $btn = '<a href="/pengujian/perbaikan/bppb/' . $s->id . '">
                 <button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-search"></i></button>
-                <div><small>Lihat Laporan</small></div></a>';
+                <div><small>Lihat Laporan </small></div></a>';
                 return $btn;
             })
             ->rawColumns(['gambar', 'produk', 'jumlah', 'aksi'])
@@ -921,7 +921,7 @@ class ProduksiController extends Controller
                 $res = "";
                 if ($s->tindak_lanjut == "perbaikan") {
                     if ($s->status == "req_perbaikan") {
-                        $res .= '<a href="/perbaikan/produksi/create/' . $s->HasilPerakitan->id . '/pengujian">
+                        $res .= '<a href="/perbaikan/produksi/create/' . $s->id . '/pengujian">
                             <button type="button" class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-wrench"></i></button>
                             <div><small>Perbaikan</small></div></a>';
                     } else if ($s->status == "acc_perbaikan") {
@@ -1279,35 +1279,60 @@ class ProduksiController extends Controller
 
     public function perbaikan_produksi_create($id, $proses)
     {
-        $s = HasilPerakitan::find($id);
-        $bppbid = $s->Perakitan->Bppb->id;
-        $dp = $s->Perakitan->Bppb->detail_produk_id;
-        $p = PartEng::whereHas(
-            'BillOfMaterial',
-            function ($q) use ($dp) {
-                $q->where('detail_produk_id', $dp);
-            }
-        )->get();
         $k = Karyawan::whereNotIn('jabatan', ['direktur', 'manager'])->get();
         $hp = "";
+        $s = "";
+        $bppbid = "";
+        $dp = "";
+        $p = "";
 
         if ($proses == "perakitan") {
+            $s = HasilPerakitan::find($id);
+            $bppbid = $s->Perakitan->Bppb->id;
+            $dp = $s->Perakitan->Bppb->detail_produk_id;
+            $p = PartEng::whereHas(
+                'BillOfMaterial',
+                function ($q) use ($dp) {
+                    $q->where('detail_produk_id', $dp);
+                }
+            )->get();
+
             $hp = HasilPerakitan::whereHas('Perakitan', function ($q) use ($bppbid) {
                 $q->where('bppb_id', $bppbid);
             })->whereIn('status', ['rej_pemeriksaan_terbuka', 'rej_pemeriksaan_tertutup'])
-                ->orWhereIn('tindak_lanjut_terbuka', ['perbaikan'])
-                ->orWhereIn('tindak_lanjut_tertutup', ['perbaikan'])
+                ->orWhereIn('tindak_lanjut_terbuka', ['perbaikan', 'produksi_spesialis'])
+                ->orWhereIn('tindak_lanjut_tertutup', ['perbaikan', 'produksi_spesialis'])
                 ->get();
         } else if ($proses == "pengujian") {
+            $s = HasilMonitoringProses::find($id);
+            $bppbid = $s->MonitoringProses->Bppb->id;
+            $dp = $s->MonitoringProses->Bppb->detail_produk_id;
+            $p = PartEng::whereHas(
+                'BillOfMaterial',
+                function ($q) use ($dp) {
+                    $q->where('detail_produk_id', $dp);
+                }
+            )->get();
+
             $hp = HasilMonitoringProses::whereHas('MonitoringProses', function ($q) use ($bppbid) {
                 $q->where('bppb_id', $bppbid);
-            })->with('HasilPerakitan')->whereIn('status', ['req_perbaikan'])->get();
+            })->with('HasilPerakitan')->whereIn('status', ['req_perbaikan', 'req_analisa_perbaikan'])->get();
         } else if ($proses == "pengemasan") {
+            $s = HasilPengemasan::find($id);
+            $bppbid = $s->Pengemasan->Bppb->id;
+            $dp = $s->Pengemasan->Bppb->detail_produk_id;
+            $p = PartEng::whereHas(
+                'BillOfMaterial',
+                function ($q) use ($dp) {
+                    $q->where('detail_produk_id', $dp);
+                }
+            )->get();
+
             $hp = HasilPengemasan::whereHas('Pengemasan', function ($q) use ($bppbid) {
                 $q->where('bppb_id', $bppbid);
-            })->with('HasilPerakitan')->whereIn('status', ['req_perbaikan'])->get();
+            })->with('HasilPerakitan')->whereIn('tindak_lanjut', ['perbaikan', 'produk_spesialis'])->get();
         }
-        return view('page.produksi.perbaikan_produksi_create', ['id' => $id, 's' => $s, 'k' => $k, 'p' => $p, 'hp' => $hp, 'proses' => $proses]);
+        return view('page.produksi.perbaikan_produksi_create', ['id' => $id, 's' => $s, 'bppbid' => $bppbid, 'k' => $k, 'p' => $p, 'hp' => $hp, 'proses' => $proses]);
     }
 
     public function perbaikan_produksi_store($id, Request $request)
@@ -1353,7 +1378,13 @@ class ProduksiController extends Controller
             ]);
             if ($c) {
                 $p = PerbaikanProduksi::find($c->id);
-                $p->HasilPerakitan()->sync($request->hasil_perakitan_id);
+                if ($request->ketidaksesuaian_proses == "perakitan") {
+                    $p->HasilPerakitan()->sync($request->hasil_perakitan_id);
+                } else if ($request->ketidaksesuaian_proses == "pengujian") {
+                    $p->HasilMonitoringProses()->sync($request->hasil_perakitan_id);
+                } else if ($request->ketidaksesuaian_proses == "pengemasan") {
+                    $p->HasilPengemasan()->sync($request->hasil_perakitan_id);
+                }
                 $p->PartEng()->sync($request->part);
                 $u = $p->save();
 
@@ -1524,7 +1555,14 @@ class ProduksiController extends Controller
             $p->analisa = $request->analisa;
             $p->realisasi_pengerjaan = $request->realisasi_pengerjaan;
             $p->status = 'acc_perbaikan';
-            $p->HasilPerakitan()->sync($request->hasil_perakitan_id);
+            if ($request->ketidaksesuaian_proses == "perakitan") {
+                $p->HasilPerakitan()->sync($request->hasil_perakitan_id);
+            } else if ($request->ketidaksesuaian_proses == "pengujian") {
+                $p->HasilMonitoringProses()->sync($request->hasil_perakitan_id);
+            } else if ($request->ketidaksesuaian_proses == "pengemasan") {
+                $p->HasilPengemasan()->sync($request->hasil_perakitan_id);
+            }
+
             $p->PartEng()->sync($request->part);
             $u = $p->save();
 
@@ -1648,7 +1686,7 @@ class ProduksiController extends Controller
                 if (empty($p)) {
                     $btn = '<a href = "/persiapan_packing_produk/create/' . $s->id . '"><button class="btn btn-success btn-sm m-1" style="border-radius:50%;"><i class="fas fa-plus"></i></button></a>';
                 } else if (!empty($p)) {
-                    $btn = '<a class="persiapanpackingprodukmodal" data-toggle="modal" data-target="#persiapanpackingprodukmodal" data-attr="/persiapan_packing_produk/detail/' . $s->id . '" data-id="' . $s->id . '"><button class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-eye"></i></button></a>';
+                    $btn = '<a class="persiapanpackingprodukmodal" data-toggle="modal" data-target="#persiapanpackingprodukmodal" data-attr="/persiapan_packing_produk/detail/show/' . $s->id . '" data-id="' . $s->id . '"><button class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-eye"></i></button></a>';
                     if ($p->status == 'req_persiapan') {
                         $btn .= '<a href = "/persiapan_packing_produk/edit/' . $p->id . '"><button class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-pencil-alt"></i></button></a>';
                         $btn .= '<a href = "/persiapan_packing_produk/delete/' . $p->id . '"><button class="btn btn-danger btn-sm m-1" style="border-radius:50%;"><i class="fas fa-trash"></i></button></a>';
@@ -1713,9 +1751,7 @@ class ProduksiController extends Controller
 
     public function persiapan_packing_produk_detail($id)
     {
-        $s = DetailPersiapanPackingProduk::whereHas('PersiapanPackingProduk', function ($q) use ($id) {
-            $q->where('bppb_id', $id);
-        })->get();
+        $s = Bppb::find($id);
 
         return view('page.produksi.persiapan_packing_produk_detail_show', ['id' => $id, 's' => $s]);
     }
@@ -1727,6 +1763,9 @@ class ProduksiController extends Controller
 
         return DataTables::of($s)
             ->addIndexColumn()
+            ->editColumn('dokumen', function ($s) {
+                return str_replace('_', ' ', ucwords($s->dokumen));
+            })
             ->make(true);
 
         return view('page.produksi.persiapan_packing_produk_detail_show', ['id' => $id, 's' => $s]);
