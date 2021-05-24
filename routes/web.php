@@ -102,10 +102,16 @@ Route::get('/karyawan_sakit/tambah', 'KesehatanController@karyawan_sakit_tambah'
 Route::get('/karyawan_sakit/obat/data/', 'KesehatanController@obat_data');
 Route::post('/karyawan_sakit/aksi_tambah', 'KesehatanController@karyawan_sakit_aksi_tambah');
 
+//Karyawan Sakit Masuk
+Route::get('/karyawan_sakit_masuk', 'KesehatanController@karyawan_sakit_masuk');
+Route::get('/karyawan_sakit_masuk/tambah', 'KesehatanController@karyawan_sakit_masuk_tambah');
 
-
-
-
+//Obat
+Route::get('/obat', 'KesehatanController@obat');
+Route::get('/obat/data', 'KesehatanController@obat_data');
+Route::get('/obat/detail/data/{id}', 'KesehatanController@obat_detail_data');
+Route::get('/obat/tambah', 'KesehatanController@obat_tambah');
+Route::post('/obat/aksi_tambah', 'KesehatanController@obat_aksi_tambah');
 
 //Karyawan
 Route::group(['prefix' => '/karyawan', 'middleware' => 'auth'], function () {

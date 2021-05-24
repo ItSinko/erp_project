@@ -79,129 +79,161 @@
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-                                                <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;">Analisa </label>
-                                                <div class="col-sm-8">
-                                                    <textarea type="text" class="form-control @error('analisa') is-invalid @enderror" name="analisa" id="analisa" value="{{old('analisa')}}" placeholder="Analisa pemeriksaan" style="width:45%;"></textarea>
-                                                </div>
-                                                <span role="alert" id="no_seri-msg"></span>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;">Diagnosa</label>
-                                                <div class="col-sm-8">
-                                                    <textarea type="text" class="form-control @error('diagnosa') is-invalid @enderror" name="diagnosa" id="diagnosa" value="{{old('diagnosa')}}" placeholder="Diagnosa pemeriksaan" style="width:45%;"></textarea>
-                                                </div>
-                                                <span role="alert" id="no_seri-msg"></span>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;">Tindak lanjut</label>
+                                                <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;">Alasan tidak masuk</label>
                                                 <div class="col-sm-8" style="margin-top:7px;">
                                                     <div class="icheck-success d-inline col-sm-4">
-                                                        <input type="radio" name="hasil_1" value="Terapi">
+                                                        <input type="radio" name="alasan" value="Cuti">
                                                         <label for="no">
-                                                            Terapi
+                                                            Cuti
                                                         </label>
                                                     </div>
                                                     <div class="icheck-warning d-inline col-sm-4">
-                                                        <input type="radio" name="hasil_1" value="Pengobatan">
+                                                        <input type="radio" name="alasan" value="Ijin">
                                                         <label for="sample">
-                                                            Pengobatan
+                                                            Ijin
+                                                        </label>
+                                                    </div>
+                                                    <div class="icheck-warning d-inline col-sm-4">
+                                                        <input type="radio" name="alasan" value="Sakit">
+                                                        <label for="sample">
+                                                            Sakit
                                                         </label>
                                                     </div>
                                                     <span class="invalid-feedback" role="alert" id="kondisi-msg"></span>
                                                 </div>
                                             </div>
-                                            <div id="tipe_1" style="display:none">
+                                            <div class="sakit" id="sakit" style="display:none">
                                                 <div class="form-group row">
-                                                    <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;">Terapi</label>
+                                                    <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;">Analisa </label>
                                                     <div class="col-sm-8">
-                                                        <textarea type="text" class="form-control @error('terapi') is-invalid @enderror" id="terapi" value="{{old('terapi')}}" placeholder="Terapi yang digunakan" style="width:45%;" name="terapi"></textarea>
+                                                        <textarea type="text" class="form-control @error('analisa') is-invalid @enderror" name="analisa" id="analisa" value="{{old('analisa')}}" placeholder="Analisa pemeriksaan" style="width:45%;"></textarea>
+                                                    </div>
+                                                    <span role="alert" id="no_seri-msg"></span>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;">Diagnosa</label>
+                                                    <div class="col-sm-8">
+                                                        <textarea type="text" class="form-control @error('diagnosa') is-invalid @enderror" name="diagnosa" id="diagnosa" value="{{old('diagnosa')}}" placeholder="Diagnosa pemeriksaan" style="width:45%;"></textarea>
+                                                    </div>
+                                                    <span role="alert" id="no_seri-msg"></span>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;">Tindak lanjut</label>
+                                                    <div class="col-sm-8" style="margin-top:7px;">
+                                                        <div class="icheck-success d-inline col-sm-4">
+                                                            <input type="radio" name="hasil_1" value="Terapi">
+                                                            <label for="no">
+                                                                Terapi
+                                                            </label>
+                                                        </div>
+                                                        <div class="icheck-warning d-inline col-sm-4">
+                                                            <input type="radio" name="hasil_1" value="Pengobatan">
+                                                            <label for="sample">
+                                                                Pengobatan
+                                                            </label>
+                                                        </div>
+                                                        <span class="invalid-feedback" role="alert" id="kondisi-msg"></span>
+                                                    </div>
+                                                </div>
+                                                <div id="tipe_1" style="display:none">
+                                                    <div class="form-group row">
+                                                        <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;">Terapi</label>
+                                                        <div class="col-sm-8">
+                                                            <textarea type="text" class="form-control @error('terapi') is-invalid @enderror" id="terapi" value="{{old('terapi')}}" placeholder="Terapi yang digunakan" style="width:45%;" name="terapi"></textarea>
+                                                        </div>
+                                                        <span role="alert" id="no_seri-msg"></span>
+                                                    </div>
+                                                </div>
+                                                <div id="tipe_2" style="display:none">
+                                                    <div class="form-group row">
+                                                        <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Obat</label>
+                                                        <div class="col-sm-8">
+                                                            <select type="text" class="form-control @error('obat_id') is-invalid @enderror select2" style="width:45%;" id="obat" name="obat_id">
+
+                                                            </select>
+                                                            @if($errors->has('obat_id'))
+                                                            <div class="text-danger">
+                                                                {{ $errors->first('obat_id')}}
+                                                            </div>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;">Aturan konsumsi</label>
+                                                        <div class="col-sm-8" style="margin-top:7px;">
+                                                            <div class="icheck-success d-inline col-sm-4">
+                                                                <input type="radio" name="aturan_obat" value="Sebelum Makan">
+                                                                <label for="no">
+                                                                    Sebelum Makan
+                                                                </label>
+                                                            </div>
+                                                            <div class="icheck-warning d-inline col-sm-4">
+                                                                <input type="radio" name="aturan_obat" value="Sesudah Makan">
+                                                                <label for="sample">
+                                                                    Sesudah Makan
+                                                                </label>
+                                                            </div>
+                                                            <span class="invalid-feedback" role="alert" id="kondisi-msg"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;">Jumlah konsumsi</label>
+                                                        <div class="col-sm-8" style="margin-top:7px;">
+                                                            <div class="icheck-success d-inline col-sm-4">
+                                                                <input type="radio" name="dosis_obat" value="1x1">
+                                                                <label for="no">
+                                                                    1x1 Hari
+                                                                </label>
+                                                            </div>
+                                                            <div class="icheck-warning d-inline col-sm-4">
+                                                                <input type="radio" name="dosis_obat" value="2x1">
+                                                                <label for="sample">
+                                                                    2x1 Hari
+                                                                </label>
+                                                            </div>
+                                                            <div class="icheck-warning d-inline col-sm-2">
+                                                                <input type="radio" name="dosis_obat" id="custom_radio">
+                                                                <label for="sample">
+                                                                    <div class="input-group mb-3">
+                                                                        <input type="text" class="form-control" name="dosis_obat_custom" id="dosis_obat_custom" placeholder="Jumlah obat x hari">
+                                                                        <div class="input-group-append">
+                                                                            <span class="input-group-text">Hari</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </label>
+                                                            </div>
+                                                            <span class="invalid-feedback" role="alert" id="kondisi-msg"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;">Tindak lanjut</label>
+                                                    <div class="col-sm-8" style="margin-top:7px;">
+                                                        <div class="icheck-success d-inline col-sm-4">
+                                                            <input type="radio" name="hasil_2" value="Lanjut bekerja">
+                                                            <label for="no">
+                                                                Lanjut bekerja
+                                                            </label>
+                                                        </div>
+                                                        <div class="icheck-warning d-inline col-sm-4">
+                                                            <input type="radio" name="hasil_2" value="Dipulangkan">
+                                                            <label for="sample">
+                                                                Dipulangkan
+                                                            </label>
+                                                        </div>
+                                                        <span class="invalid-feedback" role="alert" id="kondisi-msg"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="ijin" style="display:none">
+                                                <div class="form-group row">
+                                                    <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;">Catatan </label>
+                                                    <div class="col-sm-8">
+                                                        <textarea type="text" class="form-control @error('keterangan') is-invalid @enderror" id="keterangan" value="{{old('keterangan')}}" placeholder="Rincian alasan" style="width:45%;" name="keterangan"></textarea>
                                                     </div>
                                                     <span role="alert" id="no_seri-msg"></span>
                                                 </div>
                                             </div>
-                                            <div id="tipe_2" style="display:none">
-                                                <div class="form-group row">
-                                                    <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Obat</label>
-                                                    <div class="col-sm-8">
-                                                        <select type="text" class="form-control @error('obat_id') is-invalid @enderror select2" style="width:45%;" id="obat" name="obat_id">
-                                                            @foreach($obat as $o)
-                                                            <option value="{{$o->id}}">{{$o->nama}}</option>
-                                                            @endforeach
-                                                        </select>
-                                                        @if($errors->has('obat_id'))
-                                                        <div class="text-danger">
-                                                            {{ $errors->first('obat_id')}}
-                                                        </div>
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                                <div class="form-group row">
-                                                    <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;">Aturan konsumsi</label>
-                                                    <div class="col-sm-8" style="margin-top:7px;">
-                                                        <div class="icheck-success d-inline col-sm-4">
-                                                            <input type="radio" name="aturan_obat" value="Sebelum Makan">
-                                                            <label for="no">
-                                                                Sebelum Makan
-                                                            </label>
-                                                        </div>
-                                                        <div class="icheck-warning d-inline col-sm-4">
-                                                            <input type="radio" name="aturan_obat" value="Sesudah Makan">
-                                                            <label for="sample">
-                                                                Sesudah Makan
-                                                            </label>
-                                                        </div>
-                                                        <span class="invalid-feedback" role="alert" id="kondisi-msg"></span>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group row">
-                                                    <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;">Jumlah konsumsi</label>
-                                                    <div class="col-sm-8" style="margin-top:7px;">
-                                                        <div class="icheck-success d-inline col-sm-4">
-                                                            <input type="radio" name="dosis_obat" value="1x1">
-                                                            <label for="no">
-                                                                1x1 Hari
-                                                            </label>
-                                                        </div>
-                                                        <div class="icheck-warning d-inline col-sm-4">
-                                                            <input type="radio" name="dosis_obat" value="2x1">
-                                                            <label for="sample">
-                                                                2x1 Hari
-                                                            </label>
-                                                        </div>
-                                                        <div class="icheck-warning d-inline col-sm-2">
-                                                            <input type="radio" name="dosis_obat" id="custom_radio">
-                                                            <label for="sample">
-                                                                <div class="input-group mb-3">
-                                                                    <input type="text" class="form-control" name="dosis_obat_custom" id="dosis_obat_custom" placeholder="Jumlah obat x hari">
-                                                                    <div class="input-group-append">
-                                                                        <span class="input-group-text">Hari</span>
-                                                                    </div>
-                                                                </div>
-                                                            </label>
-                                                        </div>
-                                                        <span class="invalid-feedback" role="alert" id="kondisi-msg"></span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;">Tindak lanjut</label>
-                                                <div class="col-sm-8" style="margin-top:7px;">
-                                                    <div class="icheck-success d-inline col-sm-4">
-                                                        <input type="radio" name="hasil_2" value="Lanjut bekerja">
-                                                        <label for="no">
-                                                            Lanjut bekerja
-                                                        </label>
-                                                    </div>
-                                                    <div class="icheck-warning d-inline col-sm-4">
-                                                        <input type="radio" name="hasil_2" value="Dipulangkan">
-                                                        <label for="sample">
-                                                            Dipulangkan
-                                                        </label>
-                                                    </div>
-                                                    <span class="invalid-feedback" role="alert" id="kondisi-msg"></span>
-                                                </div>
-                                            </div>
-
                                         </div>
                                     </div>
                                 </div>
@@ -243,6 +275,7 @@
             }
         });
 
+        $('input[name=alasan]').prop("required", true);
         $('input[name=hasil_1]').prop("required", true);
         $('input[name=hasil_2]').prop("required", true);
         $('input[type=radio][name=hasil_1]').on('change', function() {
@@ -265,45 +298,25 @@
                 $('textarea[id=terapi]').prop("required", false);
             }
         });
-    });
-</script>
-<!-- <script>
-    var data = ["Ahmedabad", "Mumbai", "USA", "Canada", "Pune"];
-
-    $(document).ready(function() {
-        $('.obat').select2({
-            placeholder: "select...",
-            ajax: {
-                type: "POST",
-                dataType: 'json',
-                //url: '/karyawan_sakit/obat/data/',
-                processResults: function(data) {
-                    console.log(data);
-                    return {
-                        results: $.map(data.items, function(obj, index) {
-                            return {
-                                id: index,
-                                text: obj
-                            };
-                        })
-                    };
-                },
-                data: function(params) {
-                    var query = {
-                        search: params.term,
-                        items: data // only for jsfiddle to simulate ajax
-                    };
-                    if (params.term == "*") query.items = [];
-                    return {
-                        json: JSON.stringify(query)
-                    }
-                }
+        $('input[type=radio][name=alasan]').on('change', function() {
+            if (this.value == 'Sakit') {
+                $("#sakit").removeAttr("style");
+                $("#ijin").css('display', 'none');
+                $('textarea[id=keterangan]').prop("required", false);
+            } else {
+                $('input[name=aturan_obat]').prop("checked", false);
+                $('input[name=hasil_1]').prop("checked", false);
+                $('input[name=hasil_2]').prop("checked", false);
+                $('input[name=dosis_obat]').prop("checked", false);
+                $('textarea[id=keterangan]').prop("required", true);
+                $("#sakit").css('display', 'none');
+                $('#terapi').val('');
+                $('#keterangan').val('');
+                $('#analisa').val('');
+                $('#diagnosa').val('');
+                $("#ijin").removeAttr("style");
             }
         });
     });
-
-    $('.obat').on('select2:select', function(e) {
-        console.log("select done", e.params.data);
-    });
-</script> -->
+</script>
 @stop

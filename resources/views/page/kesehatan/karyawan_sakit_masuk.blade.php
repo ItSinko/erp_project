@@ -12,12 +12,12 @@
     <div class="card">
       <div class="card-body">
         <div class='table-responsive'>
-          <h2>Karyawan Sakit</h2>
+          <h2>Karyawan Sakit Masuk</h2>
           <table id="tabel" class="table table-hover styled-table table-striped">
             <thead style="text-align: center;">
               <tr>
                 <th colspan="12">
-                  <a href="/karyawan_sakit/tambah" style="color: white;"><button type="button" class="btn btn-block btn-success btn-sm" style="width: 200px;"><i class="fas fa-plus"></i> &nbsp; Tambah</i></button></a>
+                  <a href="/karyawan_sakit_masuk/tambah" style="color: white;"><button type="button" class="btn btn-block btn-success btn-sm" style="width: 200px;"><i class="fas fa-plus"></i> &nbsp; Tambah</i></button></a>
                 </th>
               </tr>
               <tr>
@@ -134,14 +134,11 @@
         }
       ]
     });
-
-
     $('#tabel > tbody').on('click', '#detail_tindakan', function() {
       var rows = tabel.rows($(this).parents('tr')).data();
       $('.data_detail_head').html(
         rows[0]['tindakan'] + ' : ' + rows[0]['y']
       );
-
       if (rows[0]['tindakan'] == 'Terapi') {
         $('#pengobatan').addClass('d-none');
         $('#terapi').removeClass('d-none');
@@ -155,7 +152,6 @@
       $('input[id="konsumsi"]').val(rows[0]['e']);
       $('input[id="terapi"]').val(rows[0]['f']);
     });
-
   });
 </script>
 @endsection
