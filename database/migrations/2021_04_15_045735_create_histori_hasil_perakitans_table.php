@@ -17,7 +17,7 @@ class CreateHistoriHasilPerakitansTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('hasil_perakitan_id')->nullable()->unsigned();
             $table->foreign('hasil_perakitan_id')->references('id')->on('hasil_perakitans')->onDelete('cascade');
-            $table->enum('kegiatan', ['perbaikan_pemeriksaan_terbuka', 'pemeriksaan_terbuka', 'perbaikan_pemeriksaan_tertutup', 'pemeriksaan_tertutup', 'analisa_pemeriksaan_terbuka_ps', 'analisa_pemeriksaan_tertutup_ps', 'pemeriksaan_pengujian', 'perbaikan_pengujian', 'analisa_pengujian_ps']);
+            $table->enum('kegiatan', ['perbaikan_pemeriksaan_terbuka', 'pemeriksaan_terbuka', 'perbaikan_pemeriksaan_tertutup', 'pemeriksaan_tertutup', 'analisa_pemeriksaan_terbuka_ps', 'analisa_pemeriksaan_tertutup_ps', 'pemeriksaan_pengujian', 'perbaikan_pengujian', 'analisa_pengujian_ps', 'pemeriksaan_pengemasan', 'perbaikan_pengemasan', 'analisa_pengemasan_ps']);
             $table->date('tanggal');
             $table->enum('hasil', ['ok', 'nok'])->nullable();
             $table->text('keterangan')->nullable();

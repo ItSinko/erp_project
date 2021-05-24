@@ -115,4 +115,9 @@ class Bppb extends Model
     {
         return $this->hasMany(PerbaikanProduksi::class);
     }
+
+    public function PersiapanPackingProduk()
+    {
+        return $this->hasMany(PersiapanPackingProduk::class);
+    }
 }

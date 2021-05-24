@@ -20,11 +20,11 @@ class PerbaikanProduksi extends Model
 
     public function HasilPerakitan()
     {
-        return $this->belongsToMany(HasilPerakitan::class, 'perbaikan_produksi_no_seris');
+        return $this->belongsToMany(HasilPerakitan::class, 'perbaikan_produksi_no_seris')->withTimestamps();
     }
 
     public function PartEng()
     {
-        return $this->belongsToMany(PartEng::class, 'perbaikan_produksi_parts');
+        return $this->belongsToMany(PartEng::class, 'perbaikan_produksi_parts', 'perbaikan_produksi_id', 'part_id')->withTimestamps();
     }
 }

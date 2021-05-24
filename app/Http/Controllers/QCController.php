@@ -692,7 +692,11 @@ class QCController extends Controller
                 return Carbon::createFromFormat('Y-m-d', $s->tanggal)->format('d-m-Y');
             })
             ->addColumn('operator', function ($s) {
-                return $s->Karyawan->nama;
+                if (empty($s->Karyawan)) {
+                    return "<span class='text-muted'>tidak tersedia</span>";
+                } else if (!empty($s->Karyawan)) {
+                    return $s->Karyawan->nama;
+                }
             })
             ->addColumn('jumlah', function ($s) {
                 $countok = HasilMonitoringProses::where([
@@ -713,7 +717,7 @@ class QCController extends Controller
                         <a href = "/pengujian/monitoring_proses/laporan/edit/' . $s->id . '"><button class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-pencil-alt"></i></button></a>';
                 return $btn;
             })
-            ->rawColumns(['operator', 'jumlah', 'aksi'])
+            ->rawColumns(['operator', 'jumlah', 'aksi', 'operator'])
             ->make(true);
     }
 
@@ -824,12 +828,14 @@ class QCController extends Controller
                     'karyawan_id' => 'required',
                     'no_seri' => 'required',
                     'tindak_lanjut' => 'required',
+                    'hasil' => 'required',
                 ],
                 [
                     'tanggal_laporan.required' => "Tanggal harus diisi",
                     'no_seri.*.required' => "No Seri harus diisi",
                     'karyawan_id.required' => "Karyawan harus dipilih",
                     'tindak_lanjut.required' => "Tindak Lanjut harus dipilih",
+                    'hasil.required' => "Hasil harus dipilih",
                 ]
             );
         } else if ($request->brc == "ya") {
@@ -841,6 +847,7 @@ class QCController extends Controller
                     'no_seri' => 'required',
                     'tindak_lanjut' => 'required',
                     'no_barcode.*' => 'required',
+                    'hasil' => 'required',
                 ],
                 [
                     'tanggal_laporan.required' => "Tanggal harus diisi",
@@ -848,6 +855,7 @@ class QCController extends Controller
                     'karyawan_id.required' => "Karyawan harus dipilih",
                     'tindak_lanjut.required' => "Tindak Lanjut harus dipilih",
                     'no_barcode.*.required' => "No Barcode harus diisi",
+                    'hasil.required' => "Hasil harus dipilih",
                 ]
             );
         }
@@ -862,7 +870,6 @@ class QCController extends Controller
                 'karyawan_id' => $request->karyawan_id,
                 'user_id' => Auth::user()->id
             ]);
-
 
             if ($c) {
                 if (!empty($request->no_seri)) {
@@ -1057,6 +1064,7 @@ class QCController extends Controller
                 [
                     'no_seri' => 'required',
                     'tindak_lanjut' => 'required',
+                    'hasil' => 'required',
                 ],
                 [
                     'no_seri.*.required' => "No Seri harus diisi",
