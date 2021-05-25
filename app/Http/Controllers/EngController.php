@@ -19,6 +19,7 @@ use App\Ecommerces;
 use App\HasilMonitoringProses;
 use App\HasilPengemasan;
 use DirectoryIterator;
+use App\PerbaikanProduksi;
 
 class EngController extends Controller
 {
@@ -122,17 +123,41 @@ class EngController extends Controller
             })
             ->editColumn('status', function ($s) {
                 $btn = "";
+                $id = $s->id;
+                $p = PerbaikanProduksi::whereHas('HasilPerakitan', function ($q) use ($id) {
+                    $q->where('id', $id);
+                })->orderBy('updated_at', 'desc')->first();
                 if ($s->status == 'rej_pemeriksaan_terbuka') {
                     if ($s->tindak_lanjut_terbuka == "produk_spesialis") {
                         $btn = '<a href="/perbaikan/produksi/create/' . $s->id . '/perakitan"><button type="button" class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-wrench"></i></button>
                         <div><small> Permohonan Analisa Pemeriksaan Terbuka</small></div></a>
                         <div><small class="danger-text">Pemeriksaan Terbuka Ditolak</small></div>';
+                        if ($p) {
+                            $btn .= '<a class="perbaikanproduksimodal" data-toggle="modal" data-target="#perbaikanproduksimodal" data-attr="/perbaikan/produksi/detail/' . $p->id . '" data-id="' . $p->id . '">
+                                    <button class="btn btn-sm btn-info"><small><i class="fas fa-cog"></i>&nbsp;Hasil Perbaikan</small></button></a>';
+                        }
                     }
                 } else if ($s->status == 'rej_pemeriksaan_tertutup') {
                     if ($s->tindak_lanjut_tertutup == "produk_spesialis") {
                         $btn = '<a href="/perbaikan/produksi/create/' . $s->id . '/perakitan"><button type="button" class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-wrench"></i></button>
                         <div><small> Permohonan Analisa Pemeriksaan Tertutup</small></div></a>
                         <div><small class="danger-text">Pemeriksaan Tertutup</small></div>';
+                        if ($p) {
+                            $btn .= '<a class="perbaikanproduksimodal" data-toggle="modal" data-target="#perbaikanproduksimodal" data-attr="/perbaikan/produksi/detail/' . $p->id . '" data-id="' . $p->id . '">
+                                    <button class="btn btn-sm btn-info"><small><i class="fas fa-cog"></i>&nbsp;Hasil Perbaikan</small></button></a>';
+                        }
+                    }
+                } else if ($s->status = 'analisa_pemeriksaan_terbuka_ps') {
+                    if ($p) {
+                        $btn = '<div><small class="success-text">Analisa Pemeriksaan Terbuka Selesai</small></div>
+                        <a class="perbaikanproduksimodal" data-toggle="modal" data-target="#perbaikanproduksimodal" data-attr="/perbaikan/produksi/detail/' . $p->id . '" data-id="' . $p->id . '">
+                                <button class="btn btn-sm btn-info"><i class="fas fa-cog"></i>&nbsp;Hasil Perbaikan</button></a>';
+                    }
+                } else if ($s->status = 'analisa_pemeriksaan_tertutup_ps') {
+                    if ($p) {
+                        $btn = '<div><small class="success-text">Analisa Pemeriksaan Tertutup Selesai</small></div>
+                        <a class="perbaikanproduksimodal" data-toggle="modal" data-target="#perbaikanproduksimodal" data-attr="/perbaikan/produksi/detail/' . $p->id . '" data-id="' . $p->id . '">
+                                <button class="btn btn-sm btn-info"><i class="fas fa-cog"></i>&nbsp;Hasil Perbaikan</button></a>';
                     }
                 }
                 return $btn;
@@ -182,11 +207,22 @@ class EngController extends Controller
             })
             ->editColumn('status', function ($s) {
                 $btn = "";
+                $ids = $s->id;
+
+                $p = PerbaikanProduksi::whereHas('HasilMonitoringProses', function ($q) use ($ids) {
+                    $q->where('id', $ids);
+                })->orderBy('updated_at', 'desc')->first();
+
                 if ($s->status == 'req_analisa_perbaikan') {
                     if ($s->tindak_lanjut == "produk_spesialis") {
                         $btn = '<a href="/perbaikan/produksi/create/' . $s->id . '/pengujian"><button type="button" class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-wrench"></i></button>
                         <div><small> Permohonan Analisa</small></div></a>
                         <div><small class="danger-text">Pengujian Ditolak</small></div>';
+
+                        if ($p) {
+                            $btn .= '<a class="perbaikanproduksimodal" data-toggle="modal" data-target="#perbaikanproduksimodal" data-attr="/perbaikan/produksi/detail/' . $p->id . '" data-id="' . $p->id . '">
+                                    <button class="btn btn-sm btn-info"><small><i class="fas fa-cog"></i>&nbsp;Hasil Perbaikan</small></button></a>';
+                        }
                     }
                 }
                 return $btn;
@@ -236,11 +272,21 @@ class EngController extends Controller
             })
             ->editColumn('status', function ($s) {
                 $btn = "";
+                $ids = $s->id;
+                $p = PerbaikanProduksi::whereHas('HasilPengemasan', function ($q) use ($ids) {
+                    $q->where('id', $ids);
+                })->orderBy('updated_at', 'desc')->first();
+
                 if ($s->status == 'req_analisa_perbaikan') {
                     if ($s->tindak_lanjut == "produk_spesialis") {
                         $btn = '<a href="/perbaikan/produksi/create/' . $s->id . '/pengujian"><button type="button" class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-wrench"></i></button>
                         <div><small> Permohonan Analisa</small></div></a>
                         <div><small class="danger-text">Pengujian Ditolak</small></div>';
+
+                        if ($p) {
+                            $btn .= '<a class="perbaikanproduksimodal" data-toggle="modal" data-target="#perbaikanproduksimodal" data-attr="/perbaikan/produksi/detail/' . $p->id . '" data-id="' . $p->id . '">
+                                    <button class="btn btn-sm btn-info"><small><i class="fas fa-cog"></i>&nbsp;Hasil Perbaikan</small></button></a>';
+                        }
                     }
                 }
                 return $btn;

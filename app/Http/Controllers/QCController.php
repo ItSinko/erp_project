@@ -18,6 +18,7 @@ use App\PemeriksaanProsesPengujian;
 use App\HasilPemeriksaanProsesPengujian;
 use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\UserLogController;
+use App\PerbaikanProduksi;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -189,21 +190,42 @@ class QCController extends Controller
             })
             ->addColumn('aksi', function ($s) {
                 $btn = "";
+                $id = $s->id;
+                $p = PerbaikanProduksi::whereHas('HasilPerakitan', function ($q) use ($id) {
+                    $q->where('id', $id);
+                })->orderBy('updated_at', 'desc')->first();
                 if ($s->status == "req_pemeriksaan_terbuka") {
                     $btn = '<a href="/perakitan/pemeriksaan/terbuka/edit/' . $s->id . '"><button type="button" class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-wrench"></i></button>
                                 <div><small>Pemeriksaan Terbuka</small></div></a>';
+                    if ($p) {
+                        $btn .= '<a class="perbaikanproduksimodal" data-toggle="modal" data-target="#perbaikanproduksimodal" data-attr="/perbaikan/produksi/detail/' . $p->id . '" data-id="' . $p->id . '">
+                        <button class="btn btn-sm btn-info"><small><i class="fas fa-cog"></i>&nbsp;Hasil Perbaikan</small></button></a>';
+                    }
                 } else if ($s->status == "acc_pemeriksaan_terbuka") {
                     $btn = '<small><i style="color:green;" class="fas fa-check-circle"></i><div>Pemeriksaan Terbuka</div></small>';
                 } else if ($s->status == "rej_pemeriksaan_terbuka" || $s->status == "perbaikan_pemeriksaan_terbuka" || $s->status == "analisa_pemeriksaan_terbuka_ps") {
                     $btn = '<small><i style="color:red;" class="fas fa-times-circle"></i><div>Pemeriksaan Terbuka</div></small>';
+                    if ($p) {
+                        $btn .= '<a class="perbaikanproduksimodal" data-toggle="modal" data-target="#perbaikanproduksimodal" data-attr="/perbaikan/produksi/detail/' . $p->id . '" data-id="' . $p->id . '">
+                        <button class="btn btn-sm btn-info"><small><i class="fas fa-cog"></i>&nbsp;Hasil Perbaikan</small></button></a>';
+                    }
                 } else if ($s->status == "req_pemeriksaan_tertutup") {
                     $btn = '<a href="/perakitan/pemeriksaan/tertutup/edit/' . $s->id . '"><button type="button" class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-wrench"></i></button>
                             <div><small>Pemeriksaan Tertutup</small></div></a>';
+                    if ($p) {
+                        $btn .= '<a class="perbaikanproduksimodal" data-toggle="modal" data-target="#perbaikanproduksimodal" data-attr="/perbaikan/produksi/detail/' . $p->id . '" data-id="' . $p->id . '">
+                                <button class="btn btn-sm btn-info"><small><i class="fas fa-cog"></i>&nbsp;Hasil Perbaikan</small></button></a>';
+                    }
                 } else if ($s->status == "acc_pemeriksaan_tertutup") {
                     $btn = '<small><i style="color:green;" class="fas fa-check-circle"></i><div>Pemeriksaan Tertutup</div></small>';
                 } else if ($s->status == "rej_pemeriksaan_tertutup" || $s->status == "perbaikan_pemeriksaan_tertutup" || $s->status == "analisa_pemeriksaan_tertutup_ps") {
                     $btn = '<small><i style="color:red;" class="fas fa-times-circle"></i><div>Pemeriksaan Tertutup</div></small>';
+                    if ($p) {
+                        $btn .= '<a class="perbaikanproduksimodal" data-toggle="modal" data-target="#perbaikanproduksimodal" data-attr="/perbaikan/produksi/detail/' . $p->id . '" data-id="' . $p->id . '">
+                        <button class="btn btn-sm btn-info"><small><i class="fas fa-cog"></i>&nbsp;Hasil Perbaikan</small></button></a>';
+                    }
                 }
+
                 return $btn;
             })
             // ->editColumn('status', function ($s) {
@@ -574,21 +596,42 @@ class QCController extends Controller
             })
             ->addColumn('aksi', function ($s) {
                 $btn = "";
+                $id = $s->id;
+                $p = PerbaikanProduksi::whereHas('HasilPerakitan', function ($q) use ($id) {
+                    $q->where('id', $id);
+                })->orderBy('updated_at', 'desc')->first();
                 if ($s->status == "req_pemeriksaan_terbuka") {
                     $btn = '<a href="/perakitan/pemeriksaan/terbuka/edit/' . $s->id . '"><button type="button" class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-wrench"></i></button>
                                 <div><small>Pemeriksaan Terbuka</small></div></a>';
+                    if ($p) {
+                        $btn .= '<a class="perbaikanproduksimodal" data-toggle="modal" data-target="#perbaikanproduksimodal" data-attr="/perbaikan/produksi/detail/' . $p->id . '" data-id="' . $p->id . '">
+                                    <button class="btn btn-sm btn-info"><small><i class="fas fa-cog"></i>&nbsp;Hasil Perbaikan</small></button></a>';
+                    }
                 } else if ($s->status == "acc_pemeriksaan_terbuka") {
                     $btn = '<small><i style="color:green;" class="fas fa-check-circle"></i><div>Pemeriksaan Terbuka</div></small>';
                 } else if ($s->status == "rej_pemeriksaan_terbuka" || $s->status == "perbaikan_pemeriksaan_terbuka" || $s->status == "analisa_pemeriksaan_terbuka_ps") {
                     $btn = '<small><i style="color:red;" class="fas fa-times-circle"></i><div>Pemeriksaan Terbuka</div></small>';
+                    if ($p) {
+                        $btn .= '<a class="perbaikanproduksimodal" data-toggle="modal" data-target="#perbaikanproduksimodal" data-attr="/perbaikan/produksi/detail/' . $p->id . '" data-id="' . $p->id . '">
+                        <button class="btn btn-sm btn-info"><small><i class="fas fa-cog"></i>&nbsp;Hasil Perbaikan</small></button></a>';
+                    }
                 } else if ($s->status == "req_pemeriksaan_tertutup") {
                     $btn = '<a href="/perakitan/pemeriksaan/tertutup/edit/' . $s->id . '"><button type="button" class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-wrench"></i></button>
                             <div><small>Pemeriksaan Tertutup</small></div></a>';
+                    if ($p) {
+                        $btn .= '<a class="perbaikanproduksimodal" data-toggle="modal" data-target="#perbaikanproduksimodal" data-attr="/perbaikan/produksi/detail/' . $p->id . '" data-id="' . $p->id . '">
+                        <button class="btn btn-sm btn-info"><small><i class="fas fa-cog"></i>&nbsp;Hasil Perbaikan</small></button></a>';
+                    }
                 } else if ($s->status == "acc_pemeriksaan_tertutup") {
                     $btn = '<small><i style="color:green;" class="fas fa-check-circle"></i><div>Pemeriksaan Tertutup</div></small>';
                 } else if ($s->status == "rej_pemeriksaan_tertutup" || $s->status == "perbaikan_pemeriksaan_tertutup" || $s->status == "analisa_pemeriksaan_tertutup_ps") {
                     $btn = '<small><i style="color:red;" class="fas fa-times-circle"></i><div>Pemeriksaan Tertutup</div></small>';
+                    if ($p) {
+                        $btn .= '<a class="perbaikanproduksimodal" data-toggle="modal" data-target="#perbaikanproduksimodal" data-attr="/perbaikan/produksi/detail/' . $p->id . '" data-id="' . $p->id . '">
+                        <button class="btn btn-sm btn-info"><small><i class="fas fa-cog"></i>&nbsp;Hasil Perbaikan</small></button></a>';
+                    }
                 }
+
                 return $btn;
             })
             // ->editColumn('status', function ($s) {
@@ -785,9 +828,18 @@ class QCController extends Controller
             })
             ->addColumn('aksi', function ($s) {
                 $btn = "";
+                $id = $s->id;
+                $p = PerbaikanProduksi::whereHas('HasilMonitoringProses', function ($q) use ($id) {
+                    $q->where('id', $id);
+                })->orderBy('updated_at', 'desc')->first();
+
                 if ($s->status == "acc_perbaikan" || $s->status == "acc_analisa_perbaikan") {
                     $btn = '<a href = "/pengujian/monitoring_proses/hasil/edit/' . $s->id . '"><button class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-pencil-alt"></i></button></a>
-                <a class="deletemodal" data-toggle="modal" data-target="#deletemodal" data-attr="/pengujian/monitoring_proses/hasil/delete/' . $s->id . '"><button class="btn btn-danger btn-sm m-1" style="border-radius:50%;"><i class="fas fa-trash"></i></button></a>';
+                    <a class="deletemodal" data-toggle="modal" data-target="#deletemodal" data-attr="/pengujian/monitoring_proses/hasil/delete/' . $s->id . '"><button class="btn btn-danger btn-sm m-1" style="border-radius:50%;"><i class="fas fa-trash"></i></button></a>';
+                    if ($p) {
+                        $btn .= '<a class="perbaikanproduksimodal" data-toggle="modal" data-target="#perbaikanproduksimodal" data-attr="/perbaikan/produksi/detail/' . $p->id . '" data-id="' . $p->id . '">
+                        <button class="btn btn-sm btn-info"><small><i class="fas fa-cog"></i>&nbsp;Hasil Perbaikan</small></button></a>';
+                    }
                 } else if ($s->status == "req_perbaikan") {
                     $btn = '<a class="deletemodal" data-toggle="modal" data-target="#deletemodal" data-attr="/pengujian/monitoring_proses/hasil/delete/' . $s->id . '"><button class="btn btn-danger btn-sm m-1" style="border-radius:50%;"><i class="fas fa-trash"></i></button></a>';
                 } else if ($s->status == "pengemasan") {

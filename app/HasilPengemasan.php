@@ -27,4 +27,13 @@ class HasilPengemasan extends Model
     {
         return $this->belongsToMany(PerbaikanProduksi::class, 'perbaikan_produksi_pengemasans')->withTimestamps();
     }
+
+    public function latestPerbaikan()
+    {
+        $id = $this->Pengemasan->id;
+        $p = PerbaikanProduksi::whereHas('HasilPengemasan', function ($q) use ($id) {
+            $q->where('id', $id);
+        })->orderby('updated_at', 'desc')->first();
+        return $p->id;
+    }
 }
