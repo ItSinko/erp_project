@@ -96,7 +96,7 @@
           data: 'alasan'
         },
         {
-          data: 'keterangan'
+          data: 'y'
         },
         {
           data: 'z'
