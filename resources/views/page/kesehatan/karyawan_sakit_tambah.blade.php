@@ -201,7 +201,6 @@
                                                     <span class="invalid-feedback" role="alert" id="kondisi-msg"></span>
                                                 </div>
                                             </div>
-
                                         </div>
                                     </div>
                                 </div>

@@ -6,6 +6,7 @@ use App\Charts\SampleChart;
 use App\Divisi;
 use App\gcu_karyawan;
 use App\Karyawan;
+use App\karyawan_masuk;
 use App\karyawan_sakit;
 use App\Kesehatan_awal;
 use App\Kesehatan_harian;
@@ -767,15 +768,16 @@ class KesehatanController extends Controller
             ->rawColumns(['button', 'detail_button'])
             ->make(true);
     }
-    public function karyawan_sakit_masuk()
+    public function karyawan_masuk()
     {
-        return view('page.kesehatan.karyawan_sakit_masuk');
+        return view('page.kesehatan.karyawan_masuk');
     }
-    public function karyawan_sakit_masuk_tambah()
+    public function karyawan_masuk_tambah()
     {
+        $obat = Obat::all();
         $karyawan = Karyawan::all();
         $pengecek = $karyawan->where('divisi_id', '28');
-        return view('page.kesehatan.karyawan_sakit_masuk_tambah', ['karyawan' => $karyawan, 'pengecek' => $pengecek]);
+        return view('page.kesehatan.karyawan_masuk_tambah', ['karyawan' => $karyawan, 'pengecek' => $pengecek, 'obat' => $obat]);
     }
     public function obat()
     {
@@ -818,6 +820,20 @@ class KesehatanController extends Controller
             })
             ->make(true);
     }
+    public function karyawan_masuk_detail_data($id)
+    {
+        $data = Karyawan_sakit::where('id', $id);
+        return datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('x', function ($data) {
+                return $data->karyawan->divisi->nama;
+            })
+            ->addColumn('y', function ($data) {
+                return $data->karyawan->nama;
+            })
+            ->make(true);
+    }
+
     public function obat_aksi_tambah(Request $request)
     {
         $this->validate(
@@ -843,5 +859,101 @@ class KesehatanController extends Controller
         } else {
             return redirect()->back()->with('error', 'Gagal menambahkan data');
         }
+    }
+
+
+    public function karyawan_masuk_aksi_tambah(Request $request)
+    {
+        $this->validate(
+            $request,
+            [
+                'tgl' => 'required',
+                'karyawan_id' => 'required'
+            ],
+            [
+                'tgl.required' => 'Tgl pemeriksaan harus di isi',
+                'karyawan_id.unique' => 'Nama karyawan harus di pilih'
+            ]
+        );
+
+        if ($request->alasan == "Sakit") {
+            if ($request->dosis_obat_custom != NULL) {
+                $karyawan_sakit = Karyawan_sakit::create([
+                    'tgl_cek' => $request->tgl,
+                    'karyawan_id' => $request->karyawan_id,
+                    'pemeriksa_id' => $request->pemeriksa_id,
+                    'analisa' => $request->analisa,
+                    'diagnosa' => $request->diagnosa,
+                    'tindakan' => $request->hasil_1,
+                    'terapi' => $request->terapi,
+                    'obat_id' => $request->obat_id,
+                    'aturan' => $request->aturan_obat,
+                    'konsumsi' => $request->dosis_obat_custom,
+                    'keputusan' => $request->hasil_2
+                ]);
+            } else {
+                $karyawan_sakit = Karyawan_sakit::create([
+                    'tgl_cek' => $request->tgl,
+                    'karyawan_id' => $request->karyawan_id,
+                    'pemeriksa_id' => $request->pemeriksa_id,
+                    'analisa' => $request->analisa,
+                    'diagnosa' => $request->diagnosa,
+                    'tindakan' => $request->hasil_1,
+                    'terapi' => $request->terapi,
+                    'obat_id' => $request->obat_id,
+                    'aturan' => $request->aturan_obat,
+                    'konsumsi' => $request->dosis_obat,
+                    'keputusan' => $request->hasil_2
+                ]);
+            }
+
+            $karyawan_masuk = Karyawan_masuk::create([
+                'karyawan_id' => $request->karyawan_id,
+                'pemeriksa_id' => $request->pemeriksa_id,
+                'karyawan_sakit_id' => $karyawan_sakit->id,
+                'tgl_cek' => $request->tgl,
+                'alasan' => $request->alasan,
+                'keterangan' => $request->keterangan
+            ]);
+        } else {
+            $karyawan_masuk = Karyawan_masuk::create([
+                'karyawan_id' => $request->karyawan_id,
+                'pemeriksa_id' => $request->pemeriksa_id,
+                'tgl_cek' => $request->tgl,
+                'alasan' => $request->alasan,
+                'keterangan' => $request->keterangan
+            ]);
+        }
+        if ($karyawan_masuk) {
+            return redirect()->back()->with('success', 'Berhasil menambahkan data');
+        } else {
+            return redirect()->back()->with('error', 'Gagal menambahkan data');
+        }
+    }
+    public function karyawan_masuk_data()
+    {
+        $data = Karyawan_masuk::all();
+        return datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('x', function ($data) {
+                return $data->karyawan->divisi->nama;
+            })
+            ->addColumn('y', function ($data) {
+                return $data->karyawan->nama;
+            })
+            ->addColumn('z', function ($data) {
+                return $data->pemeriksa->nama;
+            })
+            ->addColumn('button', function ($data) {
+                if ($data->alasan == "Sakit") {
+                    $btn = '<div class="inline-flex"><button type="button" id="riwayat"  class="btn btn-block btn-primary karyawan-img-small" style="border-radius:50%;" ><i class="fa fa-eye" aria-hidden="true"></i></button></div>';
+                    return $btn;
+                } else {
+                    $btn = '<div class="inline-flex"><button type="button"  class="btn btn-block btn-primary karyawan-img-small" style="border-radius:50%;" disabled><i class="fa fa-eye" aria-hidden="true"></i></button></div>';
+                    return $btn;
+                }
+            })
+            ->rawColumns(['button'])
+            ->make(true);
     }
 }

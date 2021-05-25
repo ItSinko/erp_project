@@ -28,7 +28,7 @@
             </div>
             @endif
             <div class="col-lg-12">
-                <form action="/karyawan_sakit/aksi_tambah" method="post">
+                <form action="/karyawan_masuk/aksi_tambah" method="post">
                     {{ csrf_field() }}
                     <div class="card">
                         <div class="card-header bg-success">
@@ -149,7 +149,10 @@
                                                         <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Obat</label>
                                                         <div class="col-sm-8">
                                                             <select type="text" class="form-control @error('obat_id') is-invalid @enderror select2" style="width:45%;" id="obat" name="obat_id">
-
+                                                                <option value=""></option>
+                                                                @foreach($obat as $o)
+                                                                <option value="{{$o->id}}">{{$o->nama}}</option>
+                                                                @endforeach
                                                             </select>
                                                             @if($errors->has('obat_id'))
                                                             <div class="text-danger">
@@ -229,7 +232,7 @@
                                                 <div class="form-group row">
                                                     <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;">Catatan </label>
                                                     <div class="col-sm-8">
-                                                        <textarea type="text" class="form-control @error('keterangan') is-invalid @enderror" id="keterangan" value="{{old('keterangan')}}" placeholder="Rincian alasan" style="width:45%;" name="keterangan"></textarea>
+                                                        <textarea type="text" class="form-control @error('keterangan') is-invalid @enderror" id="keterangan" value="{{old('keterangan')}}" placeholder="Rincian alasan tidak masuk" style="width:45%;" name="keterangan"></textarea>
                                                     </div>
                                                     <span role="alert" id="no_seri-msg"></span>
                                                 </div>
@@ -240,7 +243,7 @@
                             </div>
                         </div>
                         <div class="card-footer">
-                            <span class="float-left"><a class="btn btn-danger rounded-pill" href="/karyawan_sakit"><i class="fas fa-times"></i>&nbsp;Batal</a></span>
+                            <span class="float-left"><a class="btn btn-danger rounded-pill" href="/karyawan_masuk"><i class="fas fa-times"></i>&nbsp;Batal</a></span>
                             <span class="float-right"><button class="btn btn-success rounded-pill" id="button_tambah"><i class="fas fa-plus"></i>&nbsp;Tambah Data</button></span>
                         </div>
                     </div>
@@ -276,8 +279,8 @@
         });
 
         $('input[name=alasan]').prop("required", true);
-        $('input[name=hasil_1]').prop("required", true);
-        $('input[name=hasil_2]').prop("required", true);
+        $('textarea[id=terapi]').prop("required", false);
+
         $('input[type=radio][name=hasil_1]').on('change', function() {
             if (this.value == 'Terapi') {
                 $('#obat').val(null).trigger('change');
@@ -290,6 +293,7 @@
                 $('input[name=dosis_obat]').prop("checked", false);
                 $('textarea[id=terapi]').prop("required", true);
             } else {
+                $('#terapi').val('');
                 $('input[name=dosis_obat]').prop("required", true);
                 $('input[name=aturan_obat]').prop("required", true);
                 $('#obat').val(null).trigger('change');
@@ -303,13 +307,22 @@
                 $("#sakit").removeAttr("style");
                 $("#ijin").css('display', 'none');
                 $('textarea[id=keterangan]').prop("required", false);
+                $('input[name=hasil_1]').prop("required", true);
+                $('input[name=hasil_2]').prop("required", true);
             } else {
+                $('input[name=aturan_obat]').prop("required", false);
+                $('input[name=dosis_obat]').prop("required", false);
+                $('input[id=dosis_obat_custom]').prop("required", false);
+                $('textarea[id=keterangan]').prop("required", true);
+                $('textarea[id=terapi]').prop("required", false);
+                $('input[name=hasil_1]').prop("required", false);
+                $('input[name=hasil_2]').prop("required", false);
                 $('input[name=aturan_obat]').prop("checked", false);
                 $('input[name=hasil_1]').prop("checked", false);
                 $('input[name=hasil_2]').prop("checked", false);
                 $('input[name=dosis_obat]').prop("checked", false);
-                $('textarea[id=keterangan]').prop("required", true);
                 $("#sakit").css('display', 'none');
+                $('#dosis_obat_custom').val('');
                 $('#terapi').val('');
                 $('#keterangan').val('');
                 $('#analisa').val('');

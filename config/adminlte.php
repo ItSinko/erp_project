@@ -368,8 +368,8 @@ return [
                         ],
                         [
                             'icon' => 'far fa-circle',
-                            'text' => 'Karyawan Sakit Masuk',
-                            'url'  => '/karyawan_sakit_masuk',
+                            'text' => 'Karyawan Masuk',
+                            'url'  => '/karyawan_masuk',
                             'auth' => [28],
 
                         ]

@@ -12,19 +12,22 @@
     <div class="card">
       <div class="card-body">
         <div class='table-responsive'>
-          <h2>Obat</h2>
+          <h2>Karyawan Sakit Masuk</h2>
           <table id="tabel" class="table table-hover styled-table table-striped">
             <thead style="text-align: center;">
               <tr>
                 <th colspan="12">
-                  <a href="/obat/tambah" style="color: white;"><button type="button" class="btn btn-block btn-success btn-sm" style="width: 200px;"><i class="fas fa-plus"></i> &nbsp; Tambah</i></button></a>
+                  <a href="/karyawan_masuk/tambah" style="color: white;"><button type="button" class="btn btn-block btn-success btn-sm" style="width: 200px;"><i class="fas fa-plus"></i> &nbsp; Tambah</i></button></a>
                 </th>
               </tr>
               <tr>
                 <th>No</th>
+                <th>Tgl</th>
+                <th>Divisi</th>
                 <th>Nama</th>
-                <th>Stok</th>
-                <th>Keterangan</th>
+                <th>Pemeriksa</th>
+                <th>Alasan</th>
+                <th>Catatan</th>
                 <th></th>
               </tr>
             </thead>
@@ -54,12 +57,10 @@
             <table class="table table-hover styled-table table-striped" width="100%" id="tabel_detail">
               <thead>
                 <tr>
-                  <th>No</th>
-                  <th>Tgl</th>
-                  <th>Divisi</th>
-                  <th>Nama</th>
                   <th>Analisa</th>
                   <th>Diagnosa</th>
+                  <th>Tindak Lanjut</th>
+                  <th>Hasil</th>
                 </tr>
               </thead>
               <tbody>
@@ -82,17 +83,26 @@
       language: {
         processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
       },
-      ajax: '/obat/data',
+      ajax: '/karyawan_masuk/data',
       columns: [{
           data: 'DT_RowIndex',
           orderable: false,
           searchable: false
         },
         {
-          data: 'nama'
+          data: 'tgl_cek'
         },
         {
-          data: 'a'
+          data: 'alasan'
+        },
+        {
+          data: 'keterangan'
+        },
+        {
+          data: 'z'
+        },
+        {
+          data: 'alasan'
         },
         {
           data: 'keterangan'
@@ -105,7 +115,7 @@
     $('#tabel > tbody').on('click', '#riwayat', function() {
       var rows = tabel.rows($(this).parents('tr')).data();
       $('.data_detail_head').html(
-        'Riwayat Pemakaian ' + rows[0]['nama']
+        'Detail Sakit : ' + rows[0]['y']
       );
       var y = $('#tabel_detail').DataTable({
         processing: true,
@@ -114,21 +124,19 @@
         language: {
           processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
         },
-        ajax: '/obat/detail/data/' + rows[0]['id'],
+        ajax: '/karyawan_masuk/detail/data/' + rows[0]['karyawan_sakit_id'],
         columns: [{
-          data: 'DT_RowIndex',
-          orderable: false,
-          searchable: false
-        }, {
-          data: 'tgl_cek'
-        }, {
           data: 'analisa'
         }, {
           data: 'diagnosa'
+        }, {
+          data: 'tindakan'
+        }, {
+          data: 'keputusan'
         }],
       });
       $('#riwayat_mod').modal('show');
-    })
+    });
   });
 </script>
 @endsection

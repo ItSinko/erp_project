@@ -102,9 +102,12 @@ Route::get('/karyawan_sakit/tambah', 'KesehatanController@karyawan_sakit_tambah'
 Route::get('/karyawan_sakit/obat/data/', 'KesehatanController@obat_data');
 Route::post('/karyawan_sakit/aksi_tambah', 'KesehatanController@karyawan_sakit_aksi_tambah');
 
-//Karyawan Sakit Masuk
-Route::get('/karyawan_sakit_masuk', 'KesehatanController@karyawan_sakit_masuk');
-Route::get('/karyawan_sakit_masuk/tambah', 'KesehatanController@karyawan_sakit_masuk_tambah');
+//Karyawan Masuk
+Route::get('/karyawan_masuk', 'KesehatanController@karyawan_masuk');
+Route::get('/karyawan_masuk/data', 'KesehatanController@karyawan_masuk_data');
+Route::get('/karyawan_masuk/tambah', 'KesehatanController@karyawan_masuk_tambah');
+Route::post('/karyawan_masuk/aksi_tambah', 'KesehatanController@karyawan_masuk_aksi_tambah');
+Route::get('/karyawan_masuk/detail/data/{id}', 'KesehatanController@karyawan_masuk_detail_data');
 
 //Obat
 Route::get('/obat', 'KesehatanController@obat');
