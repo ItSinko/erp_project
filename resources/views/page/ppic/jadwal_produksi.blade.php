@@ -43,6 +43,7 @@
 
 @section('content')
 <div class="row">
+    <!-- <button id="test-button">Cliick Me</button> -->
     <div class="col-md-12">
         <div class="row" id="calendar-view">
             <div class="col-md-3">
@@ -82,7 +83,7 @@
                                     <button type="button" class="btn btn-primary btn-block status" id="acc">ACC</button>
                                 </div>
                                 <div class="col-sm-6">
-                                    <button type="button" class="btn btn-danger btn-block status" id="penyusunan">Batal ACC</button>
+                                    <button type="button" class="btn btn-danger btn-block status" id="penyusunan">Tolak</button>
                                 </div>
                             </div>
                         </div>
@@ -95,6 +96,7 @@
                     <div class="card-body">
                         <div id='calendar'></div>
                         <div id="date" hidden>{{ $event }}</div> <!-- catch data from controller -->
+                        <div id="user" hidden>{{ (Auth::user()) }}</div>
                     </div>
                 </div>
             </div>
@@ -293,7 +295,7 @@
 </script>
 <script>
     var initial_date = JSON.parse($('#date').html()); // load event from database
-    console.log(initial_date);
+    var user = JSON.parse($('#user').html());
 
     function date_diff(date1, date2) {
         const date1utc = Date.UTC(date1.getFullYear(), date1.getMonth(), date1.getDate());
@@ -342,13 +344,14 @@
         if (status == 'penyusunan') {
             $('#status_penyusunan').show();
             $('#status_acc').hide();
-            $('#penyusunan').addClass("disabled");
             $('#acc').removeClass('disabled');
+            console.log("penyusunan");
         } else if (status == 'acc') {
             $('#status_penyusunan').hide();
             $('#status_acc').show();
             $('#acc').addClass("disabled");
             $('#penyusunan').removeClass('disabled');
+            console.log('acc');
         } else if (status == 'pelaksanaan') {
             // todo:
             // add plaksanaan status
@@ -413,7 +416,7 @@
                         if (result) {
                             console.log(event_info.event);
                             $.ajax({
-                                url: "{{ route('schedule.delete') }}",
+                                url: "/ppic/schedule/delete",
                                 data: {
                                     id: event_info.event._def.publicId
                                 },
@@ -432,6 +435,13 @@
             },
         });
         calendar.render();
+
+        $('#test-button').click(function() {
+            calendar.next(function() {
+                console.log('test');
+            });
+            console.log(calendar.getDate().getMonth());
+        });
 
         var status;
         if (initial_date.length != 0)
@@ -458,7 +468,7 @@
             if ($('#activity').val()) {
                 console.log('enter ajax');
                 $.ajax({
-                    url: "{{ route('schedule.create') }}",
+                    url: "ppic/schedule/create",
                     method: "POST",
                     data: {
                         title: $('#activity').val(),
@@ -502,32 +512,54 @@
         });
 
         $('.status').on('click', function() {
-            console.log(this);
             var message, status;
             if ($(this).attr('id') == 'acc') {
                 choose_status('acc')
                 message = "Jadwal telah di ACC";
                 status = 'acc';
+                $.ajax({
+                    url: '/notif',
+                    type: 'POST',
+                    data: {
+                        message: message,
+                        status: status,
+                    },
+                    success: function() {
+                        console.log('notif sent');
+                    },
+                    error: function(err) {
+                        console.log('error: ' + err);
+                    }
+                });
 
             } else {
-                choose_status('penyusunan');
-                message = "Jadwal dibatalkan untuk di ACC";
-                status = 'penyusunan'
-            }
-            $.ajax({
-                url: '/notif',
-                type: 'POST',
-                data: {
-                    message: message,
-                    status: status,
-                },
-                success: function() {
-                    console.log('notif sent');
-                },
-                error: function(err) {
-                    console.log('error: ' + err);
+                var add_message;
+                if (user.nama == "Anna") {
+                    bootbox.prompt({
+                        title: "Keterangan",
+                        centerVertical: true,
+                        callback: function(result) {
+                            add_message = result;
+                            message = "Jadwal dibatalkan untuk di ACC:<br>" + add_message;
+                            status = 'penyusunan';
+                            $.ajax({
+                                url: '/notif',
+                                type: 'POST',
+                                data: {
+                                    message: message,
+                                    status: status,
+                                },
+                                success: function() {
+                                    console.log('notif sent');
+                                },
+                                error: function(err) {
+                                    console.log('error: ' + err);
+                                }
+                            });
+                        }
+                    });
                 }
-            });
+            }
         });
 
         $('.view').click(function() {

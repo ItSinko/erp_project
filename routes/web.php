@@ -3,6 +3,7 @@
 use App\Http\Controllers\CommonController;
 use App\Http\Controllers\GetController;
 use App\Http\Controllers\QCController;
+use GuzzleHttp\Middleware;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -504,11 +505,14 @@ Route::get('/gudang/data', 'GudangController@get_data')->name('gudang.data');
 
 
 //PPIC
-Route::get('/ppic', 'PpicController@index');
-Route::post('/schedule/create', 'PpicController@calendar_create')->name('schedule.create');
-Route::post('/schedule/delete', 'PpicController@calendar_delete')->name('schedule.delete');
-Route::get('/bom', 'PpicController@bom');
-Route::get('get_bom', 'PpicController@get_bom');
+Route::group(['prefix' => 'ppic', 'middleware' => 'auth'], function () {
+    Route::get('/schedule', 'PpicController@schedule_show');
+    Route::post('/schedule/create', 'PpicController@schedule_create');
+    Route::post('/schedule/delete', 'PpicController@schedule_delete');
+    Route::get('/bom', 'PpicController@bom');
+    Route::get('get_bom', 'PpicController@get_bom');
+});
+
 
 // Eng
 Route::view('/eng', 'page.engineering.index');
@@ -522,7 +526,7 @@ Route::get('/chat', 'ChatController@index');
 Route::get('/message', 'ChatController@fetchMessages');
 Route::post('/message', 'ChatController@sendMessage');
 
-Route::post('/notif', 'PpicController@calendar_notif')->middleware('auth');
+Route::post('/notif', 'PpicController@schedule_notif')->middleware('auth');
 
 Route::get('/welcome', function () {
     return view('welcome');

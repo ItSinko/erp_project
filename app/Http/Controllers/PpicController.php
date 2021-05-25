@@ -28,7 +28,7 @@ class PPICController extends Controller
         $this->middleware('auth');
     }
 
-    public function index()
+    public function schedule_show()
     {
         $date = Event::toBase()->orderBy('start', 'asc')->get();
         $event = json_encode($date);
@@ -45,13 +45,7 @@ class PPICController extends Controller
         return view('page.ppic.jadwal_produksi', compact('event', 'produk', 'date'));
     }
 
-    public function ppic()
-    {
-        $list = Produk::toBase()->get();
-        return view("ppic.form_ppic", compact('list'));
-    }
-
-    public function calendar_create(Request $request)
+    public function schedule_create(Request $request)
     {
         $data = [
             'title' => $request->title,
@@ -67,12 +61,12 @@ class PPICController extends Controller
         return $result;
     }
 
-    public function calendar_delete(Request $request)
+    public function schedule_delete(Request $request)
     {
         if ($request->id != "") Event::destroy($request->id);
     }
 
-    public function calendar_notif(Request $request)
+    public function schedule_notif(Request $request)
     {
         event(new RealTimeMessage(Auth::user(), $request->message, $request->status));
 

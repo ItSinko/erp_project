@@ -540,7 +540,7 @@ return [
         ],
         [
             'text' => 'Jadwal Produksi',
-            'url'  => '/ppic',
+            'url'  => '/ppic/schedule',
             'icon' => 'fas fa-table',
             'auth' => [24]
         ],
