@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PartEng extends Model
 {
+    protected $table = "part_engs";
     protected $fillable = ['part_id', 'kode_part', 'nama', 'foto', 'deskripsi', 'spesifikasi', 'status'];
 
     public function Part()

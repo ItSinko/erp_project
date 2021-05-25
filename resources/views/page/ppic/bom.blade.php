@@ -24,8 +24,24 @@
                     </select>
                 </div>
             </div>
-            <div class="card-body">
-                <span id="card">Nothing</span>
+            <div class="card-body" id=table style="display: none;">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr style="text-align: center;">
+                            <th>#</th>
+                            <th style="width: 50%">Nama</th>
+                            <th>Jumlah</th>
+                            <th>Stok</th>
+                            <th>Pemotongan</th>
+                            <th>Sisa</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                    <tfoot>
+
+                    </tfoot>
+                </table>
             </div>
         </div>
     </div>
@@ -33,20 +49,64 @@
 @endsection
 
 @section('adminlte_js')
+<script src="{{ asset('vendor/bootbox/bootbox.js') }}"></script>
 <script>
     $(document).ready(function() {
         $("#input").change(function() {
             var value = $("#input").val();
-            alert(value);
+            $('#table').hide();
+            $('tbody').html('');
+            $('tfoot').html('');
+            $('#table').show(1000);
+
             if (value == "Choose...") $("#card").html("");
             else {
                 $.ajax({
-                    url: "/get_bom",
-                    data: {
-                        value: value
-                    },
+                    url: "/ppic/get_bom/" + value,
                     success: function(result) {
-                        $("#card").html(result);
+                        var_result = result;
+                        console.log(result);
+                        var data = $('tbody')
+
+                        console.log(result.length);
+                        for (var j = 0; j < result.length - 1; j++) {
+                            var pemotongan = parseInt(result[j].jumlah) * parseInt(var_result[var_result.length - 1]);
+                            var sisa = parseInt(result[j].stok) - pemotongan;
+                            var child;
+                            if (sisa == 0) {
+                                child = `
+                                <tr style="background: yellow;">
+                                    <td>` + j + 1 + `</td>
+                                    <td>` + result[j].nama + `</td>
+                                    <td>` + result[j].jumlah + `</td>
+                                    <td>` + result[j].stok + `</td>
+                                    <td>` + pemotongan + `</td>
+                                    <td>` + sisa + `</td>
+                                </tr>
+                            `;
+                            } else {
+                                child = `
+                                <tr>
+                                    <td>` + j + 1 + `</td>
+                                    <td>` + result[j].nama + `</td>
+                                    <td>` + result[j].jumlah + `</td>
+                                    <td>` + result[j].stok + `</td>
+                                    <td>` + pemotongan + `</td>
+                                    <td>` + sisa + `</td>
+                                </tr>
+                            `;
+                            }
+                            data.append(child);
+                        }
+                        var last_child = `
+                                <tr>
+                                    <th colspan="5">Jumlah Maksimum Produksi</th>
+                                    <th>` + var_result[var_result.length - 1] + `</th>
+                                </tr>
+                        `;
+
+                        $('tfoot').html(last_child);
+
                         $("#bom_table").DataTable({
                             lengthMenu: [
                                 [-1, 10, 50],
@@ -55,7 +115,11 @@
                         });
                     },
                     error: function(xhr, status, error) {
-                        alert("status: " + status + "\nerror: " + error);
+                        $('#card').html('BOM not found')
+                        bootbox.alert({
+                            centerVertical: true,
+                            message: "BOM tidak ditemukan",
+                        });
                     }
                 });
             }

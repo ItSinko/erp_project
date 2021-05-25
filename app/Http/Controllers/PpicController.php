@@ -18,6 +18,7 @@ use App\Part;
 use App\Bppb;
 use App\KelompokProduk;
 use App\Event;
+use App\PartEng;
 
 use App\Events\RealTimeMessage;
 
@@ -84,12 +85,30 @@ class PPICController extends Controller
 
     public function bom()
     {
-        $list = Produk::all();
+        $list = DetailProduk::all();
         return view('page.ppic.bom', compact('list'));
     }
 
-    public function get_bom()
+    public function get_bom($id)
     {
+        $bom = Bill_of_material::where('detail_produk_id', $id)->get();
+        $result = [];
+
+        $min = INF;
+        foreach ($bom as $d) {
+            $part_eng = PartEng::where('kode_part', $d->part_eng_id)->first();
+            if ($part_eng['nama'] == NULL) continue;
+            $part_gbmb = Part::where('kode', $part_eng['part_id'])->first();
+
+            if ($part_gbmb['jumlah'] != NULL) {
+                $count = (int)($part_gbmb['jumlah'] / $d->jumlah);
+                if ($count < $min) $min = $count;
+            }
+            array_push($result, ['nama' => $part_eng['nama'], 'jumlah' => $d->jumlah, 'stok' => $part_gbmb['jumlah']]);
+        }
+
+        array_push($result, $min);
+        return $result;
     }
 
     public function bppb()

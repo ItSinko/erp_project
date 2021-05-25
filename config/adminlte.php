@@ -546,7 +546,7 @@ return [
         ],
         [
             'text' => 'BOM',
-            'url'  => '/bom',
+            'url'  => '/ppic/bom',
             'icon' => 'fas fa-table',
             'auth' => [24]
         ],
