@@ -281,7 +281,7 @@ return [
             'submenu' => [
                 [
                     'icon' => 'far fa-circle',
-                    'text' => 'Cek Awal',
+                    'text' => 'Awal',
                     'auth' => [28],
                     'submenu' => [
                         [
@@ -300,7 +300,7 @@ return [
                 ],
                 [
                     'icon' => 'far fa-circle',
-                    'text' => 'Cek Harian',
+                    'text' => 'Harian',
                     'auth' => [28],
                     'submenu' => [
                         [
@@ -319,7 +319,7 @@ return [
                 ],
                 [
                     'icon' => 'far fa-circle',
-                    'text' => 'Cek Mingguan',
+                    'text' => 'Mingguan',
                     'auth' => [28],
                     'submenu' => [
                         [
@@ -338,7 +338,7 @@ return [
                 ],
                 [
                     'icon' => 'far fa-circle',
-                    'text' => 'Cek Bulanan',
+                    'text' => 'Bulanan',
                     'auth' => [28],
                     'submenu' => [
                         [
@@ -347,8 +347,42 @@ return [
                             'auth' => [28],
                             'url'  => '/kesehatan_bulanan',
                         ],
+                        [
+                            'icon' => 'far fa-circle',
+                            'text' => 'Detail',
+                            'auth' => [28],
+                            'url'  => '/kesehatan_bulanan/detail',
+                        ]
                     ],
+                ],
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Khusus',
+                    'auth' => [28],
+                    'submenu' => [
+                        [
+                            'icon' => 'far fa-circle',
+                            'text' => 'Karyawan Sakit',
+                            'auth' => [28],
+                            'url'  => '/karyawan_sakit',
+                        ],
+                        [
+                            'icon' => 'far fa-circle',
+                            'text' => 'Karyawan Masuk',
+                            'url'  => '/karyawan_masuk',
+                            'auth' => [28],
+
+                        ]
+                    ],
+                ],
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Obat',
+                    'auth' => [28],
+                    'url'  => '/obat',
                 ]
+
+
             ],
         ],
         [

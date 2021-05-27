@@ -74,6 +74,12 @@
                                                         <b>Status Tubuh</b> <a class="float-right" id="status_tubuh"></a>
                                                     </li>
                                                     <li class="list-group-item">
+                                                        <b>Rabun Mata Kiri</b> <a class="float-right" id="mata_kiri"></a>
+                                                    </li>
+                                                    <li class="list-group-item">
+                                                        <b>Rabun Mata Kanan</b> <a class="float-right" id="mata_kanan"></a>
+                                                    </li>
+                                                    <li class="list-group-item">
                                                         <b>Buta Warna</b> <a class="float-right" id="buta_warna"></a>
                                                     </li>
                                                     <li class="list-group-item">
@@ -94,48 +100,55 @@
                                         </div>
                                     </div>
                                     <div class="col-sm-4 col-xs-12">
-                                    </div>
-                                    <div class="col-sm-6 col-xs-12">
                                         <div class="info-box">
-                                            <span class="info-box-icon bg-brown"><i class="fa fa-files-o"></i></span>
                                             <div class="info-box-content">
-                                                <span class="info-box-text">Lemak</span>
+                                                <span class="info-box-text"> <i class="fa fa-file" aria-hidden="true"></i> Lampiran Medical Check Up</span>
+                                            </div>
+                                        </div>
+                                        <div class="info-box">
+                                            <div class="info-box-content">
+                                                <span class="info-box-text"> <i class="fa fa-file" aria-hidden="true"></i> Lampiran PCR \ Ge Nose</span>
+                                            </div>
+                                        </div><!-- /.info-box -->
+                                    </div>
+                                    <div class="col-sm-1 col-xs-12">
+                                    </div>
+                                    <div class="col-sm-2 col-xs-12">
+                                        <div class="info-box">
+                                            <div class="info-box-content">
+                                                <span class="info-box-text">Fat</span>
                                                 <span class="info-box-number" id="lemak"></span>
                                             </div><!-- /.info-box-content -->
                                         </div><!-- /.info-box -->
                                     </div><!-- /.col -->
-                                    <div class="col-sm-6 col-xs-12">
+                                    <div class="col-sm-2 col-xs-12">
                                         <div class="info-box">
-                                            <span class="info-box-icon bg-blue"><i class="fa fa-star-o"></i></span>
                                             <div class="info-box-content">
-                                                <span class="info-box-text">Kadar air dalam tubuh</span>
+                                                <span class="info-box-text">TBW</span>
                                                 <span class="info-box-number" id="kandungan_air"></span>
                                             </div><!-- /.info-box-content -->
                                         </div><!-- /.info-box -->
                                     </div><!-- /.col -->
-                                    <div class="col-sm-6 col-xs-12">
+                                    <div class="col-sm-2 col-xs-12">
                                         <div class="info-box">
-                                            <span class="info-box-icon bg-red"><i class="fa fa-star-o"></i></span>
                                             <div class="info-box-content">
-                                                <span class="info-box-text">Massa Otot</span>
+                                                <span class="info-box-text">Muscle</span>
                                                 <span class="info-box-number" id="otot"></span>
                                             </div><!-- /.info-box-content -->
                                         </div><!-- /.info-box -->
                                     </div><!-- /.col -->
-                                    <div class="col-sm-6 col-xs-12">
+                                    <div class="col-sm-2 col-xs-12">
                                         <div class="info-box">
-                                            <span class="info-box-icon bg-black"><i class="fa fa-star-o"></i></span>
                                             <div class="info-box-content">
                                                 <span class="info-box-text">Kalori</span>
                                                 <span class="info-box-number" id="kalori"></span>
                                             </div><!-- /.info-box-content -->
                                         </div><!-- /.info-box -->
                                     </div><!-- /.col -->
-                                    <div class="col-sm-6 col-xs-12">
+                                    <div class="col-sm-2 col-xs-12">
                                         <div class="info-box">
-                                            <span class="info-box-icon bg-white"><i class="fa fa-star-o"></i></span>
                                             <div class="info-box-content">
-                                                <span class="info-box-text">Tulang</span>
+                                                <span class="info-box-text">Bone</span>
                                                 <span class="info-box-number" id="tulang"></span>
                                             </div><!-- /.info-box-content -->
                                         </div><!-- /.info-box -->
@@ -179,16 +192,17 @@
                         $("#tinggi").text(data[0].tinggi + " Cm");
                         $("#berat").text(data[0].berat + " Kg");
                         $("#bmi").text(sum.toFixed(2));
+                        $("#mata_kiri").text(data[0].mata_kiri);
+                        $("#mata_kanan").text(data[0].mata_kanan);
                         $("#buta_warna").text(data[0].status_mata);
                         $("#status_vaksin").text(data[0].vaksin);
                         $("#ket_vaksin").text(data[0].ket_vaksin);
                         $("#jenis_rapid").text(data[0].tes_covid);
                         $("#hasil_rapid").text(data[0].hasil_covid);
-                        $("#lemak").text(data[0].lemak);
-                        $("#kandungan_air").text(data[0].kandungan_air);
-                        $("#otot").text(data[0].otot);
-                        $("#kalori").text(data[0].kalori);
-                        $("#tulang").text(data[0].tulang);
+                        $("#kandungan_air").text(data[0].kandungan_air + " %");
+                        $("#otot").text(data[0].otot + " Kg");
+                        $("#kalori").text(data[0].kalori + " kkal");
+                        $("#tulang").text(data[0].tulang + " Kg");
                     } else {
                         $("#detail").hide('1000');
                         $("#detail_gagal").show('1000');

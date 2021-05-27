@@ -12,8 +12,23 @@
 <section class="content">
     <div class="row">
         <div class="col-lg-12">
+            @if(session()->has('success'))
+            <div class="alert alert-success alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                {{session()->get('success')}}
+            </div>
+            @elseif(session()->has('error') || count($errors) > 0)
+            <div class="alert alert-danger alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                Data gagal ditambahkan
+            </div>
+            @endif
             <div class="col-lg-12">
-                <form action="/kesehatan/aksi_tambah" method="post">
+                <form action="/kesehatan/aksi_tambah" method="post" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <div class="card">
                         <div class="card-header bg-success">
@@ -85,7 +100,7 @@
                                                 <label for="keterangan" class="col-sm-4 col-form-label" style="text-align:right;">Berat Badan</label>
                                                 <div class="col-sm-2">
                                                     <div class="input-group mb-3">
-                                                        <input type="number" class="form-control" name="berat" id="berat" value="{{ old('berat') }}">
+                                                        <input type="text" class="form-control" name="berat" id="berat" value="{{ old('berat') }}">
                                                         <div class="input-group-append">
                                                             <span class="input-group-text">Kg</span>
                                                         </div>
@@ -98,67 +113,110 @@
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-                                                <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Lemak</label>
-                                                <div class="col-sm-8">
-                                                    <input type="number" class="form-control @error('lemak') is-invalid @enderror " style="width:15%;" name="lemak" value="{{ old('lemak') }}">
-                                                    @if($errors->has('lemak'))
-                                                    <div class="text-danger">
-                                                        {{ $errors->first('lemak')}}
-                                                    </div>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Kandungan Air</label>
-                                                <div class="col-sm-8">
-                                                    <input type="number" class="form-control @error('kandungan_air') is-invalid @enderror " style="width:15%;" name="kandungan_air" value="{{ old('kandungan_air') }}">
-                                                    @if($errors->has('kandungan_air'))
-                                                    <div class="text-danger">
-                                                        {{ $errors->first('kandungan_air')}}
-                                                    </div>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Massa Otot</label>
-                                                <div class="col-sm-8">
-                                                    <input type="number" class="form-control @error('otot') is-invalid @enderror " style="width:15%;" name="otot" value="{{ old('otot') }}">
-                                                    @if($errors->has('otot'))
-                                                    <div class="text-danger">
-                                                        {{ $errors->first('otot')}}
-                                                    </div>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Tulang</label>
-                                                <div class="col-sm-8">
-                                                    <input type="number" class="form-control @error('tulang') is-invalid @enderror " style="width:15%;" name="tulang" value="{{ old('tulang') }}">
-                                                    @if($errors->has('tulang'))
-                                                    <div class="text-danger">
-                                                        {{ $errors->first('tulang')}}
-                                                    </div>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Kalori</label>
-                                                <div class="col-sm-8">
-                                                    <input type="number" class="form-control @error('kalori') is-invalid @enderror " style="width:15%;" name="kalori" value="{{ old('kalori') }}">
-                                                    @if($errors->has('kalori'))
-                                                    <div class="text-danger">
-                                                        {{ $errors->first('kalori')}}
-                                                    </div>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Body Mass Index</label>
+                                                <label class="col-sm-4 col-form-label" style="text-align:right;">Body Mass Index</label>
                                                 <div class="col-sm-8">
                                                     <input type="text" class="form-control @error('data') is-invalid @enderror " id="bmi" style="width:15%;" disabled>
                                                     <small id="status_bmi" class="form-text text-muted"></small>
                                                 </div>
-                                                <span role="alert" id="no_pemeriksaan-msg"></span>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="col-sm-4 col-form-label" style="text-align:right;">Rabun Mata</label>
+                                                <div class="col-sm-8 ">
+                                                    <div class="col-sm-4  d-inline">
+                                                        <input type="text" class="form-control d-inline col-sm-4 " id="mata_kiri" style="width:15%;" placeholder="Mata Kiri" name="mata_kiri">
+                                                        <small id="mata_kiri_status" class="form-text text-muted d-inline"></small>
+                                                    </div>
+                                                    <div class="col-sm-4  d-inline">
+                                                        <input type="text" class="form-control d-inline col-sm-4" id="mata_kanan" style="width:15%;" placeholder="Mata Kanan" name="mata_kanan">
+                                                        <small id="mata_kanan_status" class="form-text text-muted d-inline"></small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;">Komposisi tubuh</label>
+                                                <div class="col-sm-8" style="margin-top:7px;">
+                                                    <div class="icheck-success d-inline col-sm-4">
+                                                        <input type="radio" name="status_komposisi_tubuh" value="0" checked="0">
+                                                        <label for="no">
+                                                            Tidak Ada
+                                                        </label>
+                                                    </div>
+                                                    <div class="icheck-warning d-inline col-sm-4">
+                                                        <input type="radio" name="status_komposisi_tubuh" value="1">
+                                                        <label for="sample">
+                                                            Ada
+                                                        </label>
+                                                    </div>
+                                                    <span class="invalid-feedback" role="alert" id="kondisi-msg"></span>
+                                                </div>
+                                            </div>
+                                            <div class="card" id="detail_komposisi" style="display:none">
+                                                <div class="card-header bg-success">
+                                                    <div class="card-title">&nbsp;Komposisi Tubuh</div>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="col-lg-12">
+                                                        <div class="row">
+                                                            <div class="col-lg-12">
+                                                                <table id="tabel" class="table table-hover styled-table table-striped">
+                                                                    <thead style="text-align: center;">
+                                                                        <tr>
+                                                                            <th>Fat</th>
+                                                                            <th>Tbw</th>
+                                                                            <th>Muscle</th>
+                                                                            <th>Bone</th>
+                                                                            <th>Kalori</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody style="text-align: center;">
+                                                                        <tr>
+                                                                            <td>
+                                                                                <div class="input-group mb-3">
+                                                                                    <input type="text" class="form-control" name="lemak" id="lemak" value="{{ old('lemak') }}">
+                                                                                    <div class="input-group-append">
+                                                                                        <span class="input-group-text">gram</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </td>
+                                                                            <td>
+                                                                                <div class="input-group mb-3">
+                                                                                    <input type="text" class="form-control" name="kandungan_air" id="kandungan_air" value="{{ old('kandungan_air') }}">
+                                                                                    <div class="input-group-append">
+                                                                                        <span class="input-group-text">%</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </td>
+                                                                            <td>
+                                                                                <div class="input-group mb-3">
+                                                                                    <input type="text" class="form-control" name="otot" id="otot" value="{{ old('otot') }}">
+                                                                                    <div class="input-group-append">
+                                                                                        <span class="input-group-text">Kg</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </td>
+                                                                            <td>
+                                                                                <div class="input-group mb-3">
+                                                                                    <input type="text" class="form-control" name="tulang" id="tulang" value="{{ old('tulang') }}">
+                                                                                    <div class="input-group-append">
+                                                                                        <span class="input-group-text">Kg</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </td>
+                                                                            <td>
+                                                                                <div class="input-group mb-3">
+                                                                                    <input type="text" class="form-control" name="kalori" id="kalori" value="{{ old('kalori') }}">
+                                                                                    <div class="input-group-append">
+                                                                                        <span class="input-group-text">kkal</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;">Buta Warna</label>
@@ -237,25 +295,25 @@
                                                     <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;"></label>
                                                     <div class="col-sm-8" style="margin-top:7px;">
                                                         <div class="icheck-success d-inline col-sm-4">
-                                                            <input type="radio" name="hasil_covid" value="non-reaktif">
+                                                            <input type="radio" name="hasil_covid" value="C">
                                                             <label for="no">
                                                                 C
                                                             </label>
                                                         </div>
                                                         <div class="icheck-success d-inline col-sm-4">
-                                                            <input type="radio" name="hasil_covid" value="reaktif">
+                                                            <input type="radio" name="hasil_covid" value="C/IG">
                                                             <label for="no">
                                                                 C/IG
                                                             </label>
                                                         </div>
                                                         <div class="icheck-warning d-inline col-sm-4">
-                                                            <input type="radio" name="hasil_covid" value="reaktif">
+                                                            <input type="radio" name="hasil_covid" value="C/IgM">
                                                             <label for="sample">
                                                                 C/IgM
                                                             </label>
                                                         </div>
                                                         <div class="icheck-warning d-inline col-sm-4">
-                                                            <input type="radio" name="hasil_covid" value="reaktif">
+                                                            <input type="radio" name="hasil_covid" value="C/IgG/IgM">
                                                             <label for="sample">
                                                                 C/IgG/IgM
                                                             </label>
@@ -269,13 +327,13 @@
                                                     <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;"></label>
                                                     <div class="col-sm-8" style="margin-top:7px;">
                                                         <div class="icheck-success d-inline col-sm-4">
-                                                            <input type="radio" name="hasil_covid" value="negatif">
+                                                            <input type="radio" name="hasil_covid" value="C">
                                                             <label for="no">
                                                                 C
                                                             </label>
                                                         </div>
                                                         <div class="icheck-warning d-inline col-sm-4">
-                                                            <input type="radio" name="hasil_covid" value="positif">
+                                                            <input type="radio" name="hasil_covid" value="C/T">
                                                             <label for="sample">
                                                                 C/T
                                                             </label>
@@ -288,6 +346,18 @@
                                                 <div class="form-group row">
                                                     <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;"></label>
                                                     <div class="col-sm-4">
+                                                        <div class="icheck-success d-inline col-sm-4">
+                                                            <input type="radio" name="hasil_covid" value="Positif">
+                                                            <label for="no">
+                                                                Positif
+                                                            </label>
+                                                        </div>
+                                                        <div class="icheck-warning d-inline col-sm-4">
+                                                            <input type="radio" name="hasil_covid" value="Negatif">
+                                                            <label for="sample">
+                                                                Negatif
+                                                            </label>
+                                                        </div>
                                                         <input type="file" class="form-control @error('file_covid') is-invalid @enderror" name="file_covid" value="{{old('file_covid')}}" style="width:45%;">
                                                         @if($errors->has('file_covid'))
                                                         <div class="text-danger">
@@ -320,9 +390,11 @@
             if (this.value == 'Belum') {
                 $('textarea[name=ket_vaksin]').val('');
                 $('textarea[name=ket_vaksin]').prop("disabled", true);
+                $('textarea[name=ket_vaksin]').prop("required", false);
             } else if (this.value == 'Sudah') {
                 $('textarea[name=ket_vaksin]').val('');
                 $('textarea[name=ket_vaksin]').prop("disabled", false);
+                $('textarea[name=ket_vaksin]').prop("required", true);
             }
         });
 
@@ -330,15 +402,16 @@
         $('#tipe_1').show();
         $('#tipe_2').hide();
         $('#tipe_3').hide();
+        $('input[name=status_mata]').prop("required", true);
 
 
         $('input[type=radio][name=status_mata]').on('change', function() {
             if (this.value == 'Defisensi') {
-                $('#status_butawarna').text('Dapat membaca < 7 angka');
+                $('#status_butawarna').text('Dapat membaca 1 - 7 angka');
             } else if (this.value == 'Abnormal') {
-                $('#status_butawarna').text('Dapat membaca >=7 angka ');
+                $('#status_butawarna').text('Dapat membaca 8 - 9 angka ');
             } else {
-                $('#status_butawarna').text('Dapat membaca semua angka');
+                $('#status_butawarna').text('Dapat membaca 10 - 14 angka');
             }
         });
 
@@ -347,20 +420,57 @@
                 $('#tipe_1').show();
                 $('#tipe_2').hide();
                 $('#tipe_3').hide();
+                $('input[name=hasil_covid]').prop("required", true);
+                $('input[name=hasil_covid]').prop("checked", false);
             } else if (this.value == 'Antigen') {
                 $('#tipe_2').show();
                 $('#tipe_1').hide();
                 $('#tipe_3').hide();
+                $('input[name=hasil_covid]').prop("required", true);
+                $('input[name=hasil_covid]').prop("checked", false);
             } else if (this.value == 'Saliva') {
                 $('#tipe_2').show();
                 $('#tipe_1').hide();
                 $('#tipe_3').hide();
+                $('input[name=hasil_covid]').prop("required", true);
+                $('input[name=hasil_covid]').prop("checked", false);
             } else if (this.value == 'Genose / PCR') {
                 $('#tipe_3').show();
                 $('#tipe_1').hide();
                 $('#tipe_2').hide();
+                $('input[name=hasil_covid]').prop("required", true);
+                $('input[name=hasil_covid]').prop("checked", false);
             } else {
 
+            }
+        });
+
+
+        $('input[type=radio][name=status_komposisi_tubuh]').on('change', function() {
+            if (this.value == 1) {
+                $('#lemak').val('');
+                $('#kandungan_air').val('');
+                $('#otot').val('');
+                $('#tulang').val('');
+                $('#kalori').val('');
+                $('input[id=lemak]').prop("required", true);
+                $('input[id=kandungan_air]').prop("required", true);
+                $('input[id=otot]').prop("required", true);
+                $('input[id=tulang]').prop("required", true);
+                $('input[id=kalori]').prop("required", true);
+                $("#detail_komposisi").removeAttr("style");
+            } else {
+                $('#lemak').val('');
+                $('#kandungan_air').val('');
+                $('#otot').val('');
+                $('#tulang').val('');
+                $('#kalori').val('');
+                $('input[id=lemak]').prop("required", false);
+                $('input[id=kandungan_air]').prop("required", false);
+                $('input[id=otot]').prop("required", false);
+                $('input[id=tulang]').prop("required", false);
+                $('input[id=kalori]').prop("required", false);
+                $("#detail_komposisi").css('display', 'none');
             }
         });
 
@@ -378,6 +488,28 @@
                     $('#status_bmi').text('Normal (Ideal)');
                 } else {
                     $('#status_bmi').text('Kekurangan Berat Badan');
+                }
+            });
+        });
+
+        $(function() {
+            $('#mata_kiri').keyup(function() {
+                var value1 = parseFloat($('#mata_kiri').val());
+                if (value1 <= 6) {
+                    $('#mata_kiri_status').text('Tidak Normal');
+                } else {
+                    $('#mata_kiri_status').text('Normal');
+                }
+            });
+        });
+
+        $(function() {
+            $('#mata_kanan').keyup(function() {
+                var value1 = parseFloat($('#mata_kanan').val());
+                if (value1 <= 6) {
+                    $('#mata_kanan_status').text('Tidak Normal');
+                } else {
+                    $('#mata_kanan_status').text('Normal');
                 }
             });
         });
