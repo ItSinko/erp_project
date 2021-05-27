@@ -48,21 +48,24 @@ class DocumentsController extends Controller
    */
   public function index(Request $request)
   {
-    $query = parse_url($request->fullUrl())['query'];
-    $query_arr = [];
+    if (isset(parse_url($request->fullUrl())['query']))
+      $query = parse_url($request->fullUrl())['query'];
+    else
+      $query = '';
     parse_str($query, $query_arr);
 
-    $docs = Document::all();
-    $filetype = null;
+    $docs = Document::all(); // temp
+    $filetype = null;        // temp
 
-    $path = '';
+    $path = '/';
     $level = count($query_arr);
     foreach ($query_arr as $d) {
       $path .= $d . '/';
     }
 
-    $title = '/' . $path;
-    $general = false;
+    $title = $path;
+    $general = true;
+
     // $arr = [];
     // foreach ($docs as $d) {
     //   if (strpos($d->file,  $path) === false) {
@@ -73,11 +76,17 @@ class DocumentsController extends Controller
     // $docs = $arr;
 
     $folder = Storage::disk('doc_spa')->directories($path);
-    $docs = Storage::disk('doc_spa')->files($path);
-    $docs += $folder;
+    $arr = [];
+    foreach ($docs as $d) {
+      $pos = strrpos($d->file, '/');
+      if ($path == '/' . substr($d->file, 0, $pos) . '/')
+        array_push($arr, $d);
+    }
+    $docs = $arr;
+    // $docs = Storage::disk('doc_spa')->files($path);
+    // $docs = array_merge($docs, $folder);
 
-    dd($folder);
-    return view('page.dokumen_spa.documents.index', compact('docs', 'filetype', 'general', 'title', "query", "level"));
+    return view('page.dokumen_spa.documents.index', compact('docs', 'folder', 'filetype', 'general', 'title', "level"));
   }
 
   // my documents

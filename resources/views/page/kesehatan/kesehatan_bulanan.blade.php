@@ -14,7 +14,7 @@
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
-      Data berhasil di ubah
+      {{session()->get('success')}}
     </div>
     @elseif(session()->has('error') || count($errors) > 0)
     <div class="alert alert-danger alert-dismissible">
@@ -24,7 +24,6 @@
       Data gagal di tambahkan
     </div>
     @endif
-
     <div class="card">
       <div class="card-body">
         <div class='table-responsive'>
@@ -34,8 +33,8 @@
             <div class="col-sm-8">
               <select type="text" class="form-control @error('form') is-invalid @enderror select2" name="form" style="width:45%;" id="form">
                 <option value="0">Pilih Data</option>
-                <option value="tensi">Pengukuran Berat Badan</option>
-                <option value="rapid">Pengecekan Covid</option>
+                <option value="tensi">Berat Badan</option>
+                <option value="rapid">GCU (Glucose, Cholesterol, Uric ACID)</option>
               </select>
             </div>
           </div>
@@ -52,7 +51,7 @@
             <thead style="text-align: center;">
               <tr>
                 <th colspan="12">
-                  <a href="/kesehatan_mingguan/tambah" style="color: white;"><button type="button" class="btn btn-block btn-success btn-sm" style="width: 200px;"><i class="fas fa-plus"></i> &nbsp; Tambah</i></button></a>
+                  <a href="/kesehatan_bulanan/tambah" style="color: white;"><button type="button" class="btn btn-block btn-success btn-sm" style="width: 200px;"><i class="fas fa-plus"></i> &nbsp; Tambah</i></button></a>
                 </th>
               </tr>
               <tr>
@@ -60,8 +59,10 @@
                 <th></th>
                 <th></th>
                 <th></th>
-                <th colspan="2">Pengukuran Tensi</th>
                 <th></th>
+                <th></th>
+                <th></th>
+                <th colspan="3">Komposisi</th>
                 <th></th>
               </tr>
               <tr>
@@ -69,28 +70,33 @@
                 <th>Tgl Pengecekan</th>
                 <th>Divisi</th>
                 <th>Nama</th>
-                <th>Sistolik</th>
-                <th>Diastolik</th>
-                <th>Catatan</th>
+                <th>Tinggi</th>
+                <th>Berat</th>
+                <th>BMI</th>
+                <th></th>
+                <th></th>
+                <th></th>
                 <th></th>
               </tr>
             </thead>
             <tbody style="text-align: center;">
             </tbody>
           </table>
-          <table id="rapid_tabel" class="table table-hover styled-table table-striped" style="display:none">
+          <table id="gcu_tabel" class="table table-hover styled-table table-striped" style="display:none">
             <thead style="text-align: center;">
               <tr>
                 <th colspan="12">
-                  <a href="/kesehatan_mingguan/tambah" style="color: white;"><button type="button" class="btn btn-block btn-success btn-sm" style="width: 200px;"><i class="fas fa-plus"></i> &nbsp; Tambah</i></button></a>
+                  <a href="/kesehatan_bulanan/tambah" style="color: white;"><button type="button" class="btn btn-block btn-success btn-sm" style="width: 200px;"><i class="fas fa-plus"></i> &nbsp; Tambah</i></button></a>
                 </th>
               </tr>
               <tr>
                 <th>No</th>
-                <th>Tgl Pengecekan</th>
+                <th>Tanggal</th>
                 <th>Divisi</th>
                 <th>Nama</th>
-                <th>Hasil Rapid</th>
+                <th>Glucose</th>
+                <th>Cholesterol</th>
+                <th>Uric Acid</th>
                 <th>Catatan</th>
                 <th></th>
               </tr>
@@ -104,15 +110,15 @@
   </div>
 </div>
 <!-- Modal Detail -->
-<div class="modal fade  bd-example-modal-lg" id="detail_mod_tensi" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade  bd-example-modal-lg" id="detail_mod_gcu" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog modal-lg" role="document">
-    <form method="post" action="/kesehatan_harian_mingguan_tensi/aksi_ubah">
+    <form method="post" action="/kesehatan_bulanan_gcu/aksi_ubah">
       {{ csrf_field() }}
       {{ method_field('PUT')}}
       <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title" id="myModalLabel">
-            <div class="data_detail_head"></div>
+            <div class="data_detail_head_gcu"></div>
           </h4>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         </div>
@@ -122,13 +128,13 @@
               <thead>
                 <tr>
                   <th></th>
-                  <th colspan="2">Pengukuran Tensi</th>
-                  <th></th>
+                  <th colspan="4">Pengukuran GCU (Glucose, Cholesterol, Uric ACID)</th>
                 </tr>
                 <tr>
                   <th>Tgl Pengecekan</th>
-                  <th>Sistolik</th>
-                  <th>Diastolik</th>
+                  <th>Glucose</th>
+                  <th>Cholesterol</th>
+                  <th>Uric Acid</th>
                   <th>Catatan</th>
                 </tr>
               </thead>
@@ -140,17 +146,25 @@
                   <td>
                     <div class="input-group mb-3">
                       <input type="text" class="form-control d-none" name="id" id="id">
-                      <input type="text" class="form-control" name="sistolik" id="sistolik">
+                      <input type="text" class="form-control" name="glukosa" id="glukosa">
                       <div class="input-group-append">
-                        <span class="input-group-text">mmHg</span>
+                        <span class="input-group-text">mg/dl</span>
                       </div>
                     </div>
                   </td>
                   <td>
                     <div class="input-group mb-3">
-                      <input type="text" class="form-control" name="spo2" id="spo2">
+                      <input type="text" class="form-control" name="kolesterol" id="kolesterol">
                       <div class="input-group-append">
-                        <span class="input-group-text">mmHg</span>
+                        <span class="input-group-text">mg/dl</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="input-group mb-3">
+                      <input type="text" class="form-control" name="asam_urat" id="asam_urat">
+                      <div class="input-group-append">
+                        <span class="input-group-text">mg/dl</span>
                       </div>
                     </div>
                   </td>
@@ -172,7 +186,6 @@
 <!-- End Modal Detail -->
 @stop
 @section('adminlte_js')
-
 <script>
 
 </script>
@@ -180,9 +193,9 @@
   $('#form').change(function() {
     var form = $(this).val();
     if (form == 'tensi') {
-      var rapid = $('#rapid_tabel').DataTable();
+      var rapid = $('#gcu_tabel').DataTable();
       rapid.destroy();
-      $("#rapid_tabel").hide();
+      $("#gcu_tabel").hide();
       $("#detail_gagal").hide();
       $("#tensi_tabel").show();
       $(function() {
@@ -219,6 +232,15 @@
             {
               data: 'button'
             },
+            {
+              data: 'button'
+            },
+            {
+              data: 'button'
+            },
+            {
+              data: 'button'
+            },
           ]
         });
       });
@@ -238,16 +260,16 @@
       tensi.destroy();
       $("#detail_gagal").hide();
       $("#tensi_tabel").hide();
-      $("#rapid_tabel").show();
+      $("#gcu_tabel").show();
 
       $(function() {
-        var rapid_tabel = $('#rapid_tabel').DataTable({
+        var gcu_tabel = $('#gcu_tabel').DataTable({
           processing: true,
           serverSide: true,
           language: {
             processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
           },
-          ajax: '/kesehatan_mingguan_rapid/data',
+          ajax: '/kesehatan_bulanan_gcu/data',
           columns: [{
               data: 'DT_RowIndex',
               orderable: false,
@@ -263,7 +285,55 @@
               data: 'karyawan.nama'
             },
             {
-              data: 'hasil'
+              data: 'glu',
+              render: function(data) {
+                $l = '<br><span class="badge bg-danger">' + data + '</span>';
+                $n = '<br><span class="badge bg-success">' + data + '</span>';
+                $w = '<br><span class="badge bg-warning">' + data + '</span>';
+
+                if (data >= 200) {
+                  return 'Diabetes' + $l;
+                } else if (data < 200) {
+                  return 'Normal' + $n;;
+                } else if (data >= 140 && data <= 199) {
+                  return 'Pra Diabetes' + $w;
+                } else {
+                  return '';
+                }
+              }
+            },
+            {
+              data: 'kol',
+              render: function(data) {
+                $l = '<br><span class="badge bg-danger">' + data + '</span>';
+                $n = '<br><span class="badge bg-success">' + data + '</span>';
+                $w = '<br><span class="badge bg-warning">' + data + '</span>';
+                if (data > 239) {
+                  return 'Bahaya' + $l;
+                } else if (data < 200) {
+                  return 'Normal' + $n;
+                } else if (data >= 200 && data <= 239) {
+                  return 'Hati hati' + $w;
+                } else {
+                  return '';
+                }
+              }
+            },
+            {
+              data: 'asam',
+              render: function(data) {
+                $l = '<br><span class="badge bg-danger">' + data + '</span>';
+                $n = '<br><span class="badge bg-success">' + data + '</span>';
+                $w = '<br><span class="badge bg-warning">' + data + '</span>';
+
+                if (data >= 2 && data <= 7.5) {
+                  return 'Normal' + $n;
+                } else if (data > 7.5) {
+                  return 'Asam Urat' + $l;
+                } else {
+                  return '';
+                }
+              }
             },
             {
               data: 'keterangan'
@@ -273,13 +343,25 @@
             },
           ]
         });
+        $('#gcu_tabel tbody').on('click', '#edit_gcu', function() {
+          var rows = gcu_tabel.rows($(this).parents('tr')).data();
+          console.log(rows);
+          $('input[id="id"]').val(rows[0]['id']);
+          $('textarea[id="catatan"]').val(rows[0]['keterangan']);
+          $('.data_detail_head_gcu').html(rows[0].karyawan['nama']);
+          $('input[id="tgl"]').val(rows[0]['tgl_cek']);
+          $('input[id="glukosa"]').val(rows[0]['glukosa']);
+          $('input[id="kolesterol"]').val(rows[0]['kolesterol']);
+          $('input[id="asam_urat"]').val(rows[0]['asam_urat']);
+          $('#detail_mod_gcu').modal('show');
+        });
       });
     } else {
       $("#tensi_tabel").hide();
-      $("#rapid_tabel").hide();
+      $("#gcu_tabel").hide();
       var tensi = $('#tensi_tabel').DataTable();
       tensi.destroy();
-      var rapid = $('#rapid_tabel').DataTable();
+      var rapid = $('#gcu_tabel').DataTable();
       rapid.destroy();
       $("#detail_gagal").show();
     }

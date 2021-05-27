@@ -4,6 +4,10 @@
 <script src="{{ asset('digidocu/materialize-css/js/materialize.min.js') }}" charset="utf-8"></script>
 
 <script type="text/javascript">
+  function test() {
+    bootbox.alert('Hello');
+  }
+
   $(".dropdown-button").dropdown();
   // side nav
   $(".button-collapse").sideNav();

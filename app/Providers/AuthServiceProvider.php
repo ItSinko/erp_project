@@ -28,5 +28,9 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('admin', function ($user) {
             return ($user->divisi->nama == 'Super Admin') || ($user->divisi->nama == 'IT');
         });
+
+        Gate::define('manager', function ($user) {
+            return ($user->divisi->nama == 'Engineering');
+        });
     }
 }

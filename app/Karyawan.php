@@ -40,6 +40,11 @@ class Karyawan extends Model
         return $this->hasMany('App\Penawaran_offline');
     }
 
+    public function PerbaikanProduksi()
+    {
+        return $this->hasMany(PerbaikanProduksi::class);
+    }
+
     public function Kesehatan_awal()
     {
         return $this->hasOne('App\Kesehatan_awal');
@@ -60,6 +65,16 @@ class Karyawan extends Model
     {
         return $this->hasMany('App\kesehatan_mingguan_tensi');
     }
+    public function karyawan_sakit()
+    {
+        return $this->hasMany('App\karyawan_sakit');
+    }
+    public function karyawan_masuk()
+    {
+        return $this->hasMany('App\karyawan_masuk');
+    }
+
+
     // public function DetailPeminjamanKaryawan()
     // {
     //     return $this->hasMany(DetailPeminjamanKaryawan::class);

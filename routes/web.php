@@ -3,6 +3,7 @@
 use App\Http\Controllers\CommonController;
 use App\Http\Controllers\GetController;
 use App\Http\Controllers\QCController;
+use GuzzleHttp\Middleware;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -51,7 +52,7 @@ Route::get('/kesehatan/ubah/{id}', 'KesehatanController@kesehatan_ubah');
 /* Get Data */
 Route::get('/kesehatan/data', 'KesehatanController@kesehatan_data');
 Route::get('/kesehatan/data/{karyawan_id}', 'KesehatanController@kesehatan_data_detail');
-Route::get('/kesehatan/detail', 'KesehatanController@kesehatan_detail');
+Route::get('/kesehatan/detail/', 'KesehatanController@kesehatan_detail');
 
 //Kesehatan Harian
 /* Tabel */
@@ -86,6 +87,36 @@ Route::get('/kesehatan_mingguan_tensi/detail/data/{karyawan_id}', 'KesehatanCont
 
 //Kesehatan Bulanan
 Route::get('/kesehatan_bulanan', 'KesehatanController@kesehatan_bulanan');
+Route::get('/kesehatan_bulanan/tambah', 'KesehatanController@kesehatan_bulanan_tambah');
+Route::get('/kesehatan_bulanan/tambah/data', 'KesehatanController@kesehatan_bulanan_tambah_data');
+Route::post('/kesehatan_bulanan_gcu/aksi_tambah', 'KesehatanController@kesehatan_bulanan_gcu_aksi_tambah');
+Route::put('/kesehatan_bulanan_gcu/aksi_ubah', 'KesehatanController@kesehatan_bulanan_gcu_aksi_ubah');
+Route::get('/kesehatan_bulanan_gcu/data', 'KesehatanController@kesehatan_bulanan_gcu_data');
+Route::get('/kesehatan_bulanan/detail', 'KesehatanController@kesehatan_bulanan_gcu_detail');
+Route::get('/kesehatan_bulanan_gcu/detail/{karyawan_id}', 'KesehatanController@kesehatan_bulanan_gcu_detail_data');
+Route::get('/kesehatan_bulanan/detail/data/{karyawan_id}', 'KesehatanController@kesehatan_bulanan_detail_data_karyawan');
+
+//Karyawan Sakit
+Route::get('/karyawan_sakit', 'KesehatanController@karyawan_sakit');
+Route::get('/karyawan_sakit/data', 'KesehatanController@karyawan_sakit_data');
+Route::get('/karyawan_sakit/tambah', 'KesehatanController@karyawan_sakit_tambah');
+Route::get('/karyawan_sakit/obat/data/', 'KesehatanController@obat_data');
+Route::post('/karyawan_sakit/aksi_tambah', 'KesehatanController@karyawan_sakit_aksi_tambah');
+
+//Karyawan Masuk
+Route::get('/karyawan_masuk', 'KesehatanController@karyawan_masuk');
+Route::get('/karyawan_masuk/data', 'KesehatanController@karyawan_masuk_data');
+Route::get('/karyawan_masuk/tambah', 'KesehatanController@karyawan_masuk_tambah');
+Route::post('/karyawan_masuk/aksi_tambah', 'KesehatanController@karyawan_masuk_aksi_tambah');
+Route::get('/karyawan_masuk/detail/data/{id}', 'KesehatanController@karyawan_masuk_detail_data');
+
+//Obat
+Route::get('/obat', 'KesehatanController@obat');
+Route::get('/obat/data', 'KesehatanController@obat_data');
+Route::get('/obat/detail/data/{id}', 'KesehatanController@obat_detail_data');
+Route::get('/obat/tambah', 'KesehatanController@obat_tambah');
+Route::post('/obat/aksi_tambah', 'KesehatanController@obat_aksi_tambah');
+
 //Karyawan
 Route::group(['prefix' => '/karyawan', 'middleware' => 'auth'], function () {
     Route::get('/', 'CommonController@karyawan');   /* Tabel */
@@ -315,8 +346,23 @@ Route::group(['prefix' => '/bppb', 'middleware' => 'auth'], function () {
 });
 
 
+//PERSIAPAN
+Route::group(['prefix' => '/persiapan_packing_produk', 'middleware' => 'auth'], function () {
+    Route::get('/', 'ProduksiController@persiapan_packing_produk')->name('persiapan_packing_produk');
+    Route::get('/show', 'ProduksiController@persiapan_packing_produk_show')->name('persiapan_packing_produk.show');
+    Route::get('/create/{id}', 'ProduksiController@persiapan_packing_produk_create')->name('persiapan_packing_produk.create');
+    Route::put('/store/{id}', 'ProduksiController@persiapan_packing_produk_store')->name('persiapan_packing_produk.store');
+    Route::get('/edit/{id}', 'ProduksiController@persiapan_packing_produk_edit')->name('persiapan_packing_produk.edit');
+    Route::put('/update/{id}', 'ProduksiController@persiapan_packing_produk_update')->name('persiapan_packing_produk.update');
+    Route::get('/detail/{id}', 'ProduksiController@persiapan_packing_produk_detail')->name('persiapan_packing_produk.detail');
+    Route::get('/detail/show/{id}', 'ProduksiController@persiapan_packing_produk_detail_show')->name('persiapan_packing_produk.detail.show');
+});
+
+
 //PERAKITAN
 Route::group(['prefix' => '/perakitan', 'middleware' => 'auth'], function () {
+    Route::get('/eng', 'EngController@perakitan')->name('perakitan.eng');
+    Route::get('/show/eng', 'EngController@perakitan_show')->name('perakitan.show.eng');
     Route::get('/', 'ProduksiController@perakitan')->name('perakitan');
     Route::get('/show', 'ProduksiController@perakitan_show')->name('perakitan.show');
     Route::get('/create', 'ProduksiController@perakitan_create')->name('perakitan.create');   /* Create dari BPPB */
@@ -375,9 +421,12 @@ Route::group(['prefix' => '/perakitan', 'middleware' => 'auth'], function () {
     });
 });
 
+
 //PENGUJIAN
 Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {
     Route::get('/', 'QCController@pengujian')->name('pengujian');
+    Route::get('/eng', 'EngController@pengujian')->name('pengujian.eng');
+    Route::get('/show/eng', 'EngController@pengujian_show')->name('pengujian.show.eng');
     Route::get('/show', 'QCController@pengujian_show')->name('pengujian.show');
     Route::get('/perbaikan', 'ProduksiController@pengujian_perbaikan')->name('pengujian.perbaikan');
     Route::get('/perbaikan/show', 'ProduksiController@pengujian_perbaikan_show')->name('pengujian.perbaikan.show');
@@ -432,10 +481,11 @@ Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {
 });
 
 
-
-//PENGEMASAN
+// PENGEMASAN
 Route::group(['prefix' => '/pengemasan', 'middleware' => 'auth'], function () {
     Route::get('/', 'ProduksiController@pengemasan')->name('pengemasan');
+    Route::get('/eng', 'EngController@pengemasan')->name('pengemasan.eng');
+    Route::get('/show/eng', 'EngController@pengemasan_show')->name('pengemasan.show.eng');
     Route::get('/form', 'ProduksiController@pengemasan_form')->name('pengemasan.form');
     Route::get('/form/show', 'ProduksiController@pengemasan_form_show')->name('pengemasan.form.show');
     Route::get('/form/create', 'ProduksiController@pengemasan_form_create')->name('pengemasan.form.create');
@@ -448,6 +498,18 @@ Route::group(['prefix' => '/pengemasan', 'middleware' => 'auth'], function () {
     Route::put('/laporan/store/{bppb_id}', 'ProduksiController@pengemasan_laporan_store')->name('pengemasan.laporan.store');
     Route::get('/hasil/{id}', 'ProduksiController@pengemasan_hasil')->name('pengemasan.hasil');
     Route::get('/hasil/show/{id}', 'ProduksiController@pengemasan_hasil_show')->name('pengemasan.hasil.show');
+});
+
+
+// PERBAIKAN
+Route::group(['prefix' => '/perbaikan', 'middleware' => 'auth'], function () {
+    Route::get('/produksi', 'ProduksiController@perbaikan_produksi')->name('perbaikan.produksi');
+    Route::get('/produksi/show', 'ProduksiController@perbaikan_produksi_show')->name('perbaikan.produksi.show');
+    Route::get('/produksi/create/{id}/{proses}', 'ProduksiController@perbaikan_produksi_create')->name('perbaikan.produksi.create');
+    Route::put('/produksi/store/{id}', 'ProduksiController@perbaikan_produksi_store')->name('perbaikan.produksi.store');
+    Route::get('/produksi/edit/{id}', 'ProduksiController@perbaikan_produksi_edit')->name('perbaikan.produksi.edit');
+    Route::put('/produksi/update/{id}', 'ProduksiController@perbaikan_produksi_update')->name('perbaikan.produksi.update');
+    Route::get('/produksi/detail/{id}', 'ProduksiController@perbaikan_produksi_detail')->name('perbaikan.produksi.detail');
 });
 
 
@@ -480,11 +542,14 @@ Route::get('/gudang/data', 'GudangController@get_data')->name('gudang.data');
 
 
 //PPIC
-Route::get('/ppic', 'PpicController@index');
-Route::post('/schedule/create', 'PpicController@calendar_create')->name('schedule.create');
-Route::post('/schedule/delete', 'PpicController@calendar_delete')->name('schedule.delete');
-Route::get('/bom', 'PpicController@bom');
-Route::get('get_bom', 'PpicController@get_bom');
+Route::group(['prefix' => 'ppic', 'middleware' => 'auth'], function () {
+    Route::get('/schedule', 'PpicController@schedule_show');
+    Route::post('/schedule/create', 'PpicController@schedule_create');
+    Route::post('/schedule/delete', 'PpicController@schedule_delete');
+    Route::get('/bom', 'PpicController@bom');
+    Route::get('/get_bom/{id}', 'PpicController@get_bom');
+});
+
 
 // Eng
 Route::view('/eng', 'page.engineering.index');
@@ -497,3 +562,9 @@ Route::get('test_spa', 'EngController@index');
 Route::get('/chat', 'ChatController@index');
 Route::get('/message', 'ChatController@fetchMessages');
 Route::post('/message', 'ChatController@sendMessage');
+
+Route::post('/notif', 'PpicController@schedule_notif')->middleware('auth');
+
+Route::get('/welcome', function () {
+    return view('welcome');
+});

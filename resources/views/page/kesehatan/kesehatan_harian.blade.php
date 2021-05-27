@@ -214,7 +214,6 @@
             } else {
               return '';
             }
-
           }
         },
         {
@@ -223,7 +222,6 @@
             $l = '<br><span class="badge bg-danger">Rendah</span>';
             $n = '<br><span class="badge bg-success">Normal</span>';
             $w = '<br><span class="badge bg-warning">Tinggi</span>';
-
             if (data > 100) {
               return data + ' %' + $w;
             } else if (data < 59) {
@@ -233,7 +231,6 @@
             } else {
               return '';
             }
-
           }
         },
         {
@@ -242,7 +239,6 @@
             $l = '<br><span class="badge bg-danger">Rendah</span>';
             $n = '<br><span class="badge bg-success">Normal</span>';
             $w = '<br><span class="badge bg-warning">Tinggi</span>';
-
             if (data > 100) {
               return data + ' bpm' + $w;
             } else if (data < 59) {
@@ -263,9 +259,7 @@
 
     $('#tabel > tbody').on('click', '#edit', function() {
       var rows = tabel.rows($(this).parents('tr')).data();
-      $('.data_detail_head').html(
-        rows[0]['karyawan']['nama']
-      );
+      $('.data_detail_head').html(rows[0]['karyawan']['nama']);
       $('input[id="id"]').val(rows[0]['id']);
       $('input[id="tgl"]').val(rows[0]['tgl_cek']);
       $('input[id="suhu_pagi"]').val(rows[0]['suhu_pagi']);

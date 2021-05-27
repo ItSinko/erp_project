@@ -9,7 +9,7 @@ use App\DetailProduk;
 
 class Produk extends Model
 {
-    protected $fillable = ['kelompok_produk_id', 'kategori_id', 'merk', 'tipe', 'nama', 'kode_barcode', 'nama_coo', 'no_akd', 'keterangan'];
+    protected $fillable = ['kelompok_produk_id', 'kategori_id', 'merk', 'tipe', 'nama', 'kode_barcode', 'nama_coo', 'no_akd', 'keterangan', 'ppic_id'];
 
     public function KelompokProduk()
     {
@@ -38,5 +38,10 @@ class Produk extends Model
     public function detail_ecommerces()
     {
         return $this->hasMany('App\Detail_ecommereces');
+    }
+
+    public function User()
+    {
+        return $this->belongsTo(User::class, 'ppic_id');
     }
 }

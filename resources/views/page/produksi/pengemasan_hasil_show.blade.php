@@ -126,8 +126,16 @@
                                     @endif
                                 </td>
                                 <td>{{$i->keterangan}}</td>
-                                <td>{{$i->tindak_lanjut}}</td>
-                                <td></td>
+                                <td>{{ucfirst($i->tindak_lanjut)}}</td>
+                                <td>@if($i->status == 'req_perbaikan')
+                                    <a href="/perbaikan/produksi/create/{{$i->id}}/pengemasan">
+                                        <button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-paper-plane"></i></button>
+                                        <div><small>Perbaikan </small></div>
+                                    </a>
+                                    @elseif($i->status == 'acc_perbaikan')
+                                    <small class="danger-text">Perbaikan</small>
+                                    @endif
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>
