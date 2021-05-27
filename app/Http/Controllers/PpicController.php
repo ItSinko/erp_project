@@ -97,10 +97,10 @@ class PPICController extends Controller
         $min = INF;
         foreach ($bom as $d) {
             $part_eng = PartEng::where('kode_part', $d->part_eng_id)->first();
-            if ($part_eng['nama'] == NULL) continue;
+            if (!isset($part_eng['nama'])) continue;
             $part_gbmb = Part::where('kode', $part_eng['part_id'])->first();
 
-            if ($part_gbmb['jumlah'] != NULL) {
+            if (isset($part_gbmb['jumlah'])) {
                 $count = (int)($part_gbmb['jumlah'] / $d->jumlah);
                 if ($count < $min) $min = $count;
             }
