@@ -112,8 +112,10 @@
                                         @foreach($hp as $i)
                                         @if($s->ketidaksesuaian_proses == "perakitan")
                                         <option value="{{$i->id}}" @if($s->HasilPerakitan->contains('id', $i->id)) selected @endif>{{$i->no_seri}}</option>
-                                        @elseif($s->ketidaksesuaian_proses == "pengujian" || $s->ketidaksesuaian_proses == "pengemasan")
-                                        <option value="{{$i->HasilPerakitan->id}}" @if($s->HasilPerakitan->contains('id', $i->HasilPerakitan->id)) selected @endif>{{$i->HasilPerakitan->no_seri}}</option>
+                                        @elseif($s->ketidaksesuaian_proses == "pengujian")
+                                        <option value="{{$i->id}}" @if($s->HasilMonitoringProses->contains('id', $i->id)) selected @endif>{{$i->HasilPerakitan->no_seri}}</option>
+                                        @elseif($s->ketidaksesuaian_proses == "pengemasan")
+                                        <option value="{{$i->id}}" @if($s->HasilPengemasan->contains('id', $i->id)) selected @endif>{{$i->HasilPerakitan->no_seri}}</option>
                                         @endif
                                         @endforeach
 

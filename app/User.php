@@ -91,4 +91,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(PersiapanPackingProduk::class);
     }
+
+    public function Produk()
+    {
+        return $this->hasMany(Produk::class, 'ppic_id');
+    }
 }

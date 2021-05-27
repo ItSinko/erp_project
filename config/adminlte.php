@@ -596,7 +596,7 @@ return [
         ],
         [
             'header' => 'PRODUKSI',
-            'auth' => [17, 23]
+            'auth' => [17, 23, 10]
         ],
         [
             'text'    => 'Jadwal Kerja Produksi',
@@ -636,6 +636,12 @@ return [
             ],
         ],
         [
+            'text'    => 'Perakitan',
+            'icon'    => 'fas fa-cogs',
+            'url'  => '/perakitan/eng',
+            'auth' => [10],
+        ],
+        [
             'text'    => 'Pengujian',
             'icon'    => 'fab fa-searchengin',
             'auth' => [17, 23],
@@ -659,6 +665,12 @@ return [
                     'auth' => [17],
                 ],
             ],
+        ],
+        [
+            'text'    => 'Pengujian',
+            'icon'    => 'fab fa-searchengin',
+            'url'  => '/pengujian/eng',
+            'auth' => [10],
         ],
         [
             'text'    => 'Pengemasan',
@@ -692,11 +704,18 @@ return [
             ],
         ],
         [
+            'text'    => 'Pengemasan',
+            'icon'    => 'fas fa-box-open',
+            'url'  => '/pengemasan/eng',
+            'auth' => [10],
+        ],
+        [
             'text'    => 'Perbaikan',
             'icon'    => 'fas fa-wrench',
             'url' => '/perbaikan/produksi',
             'auth' => [17],
         ],
+
 
         ['header' => 'LOGOUT'],
         [

@@ -7,12 +7,12 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>Persiapan Packing Produk</h1>
+                <h1>Perakitan</h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item active">Pengemasan</li>
+                    <li class="breadcrumb-item active">Perakitan</li>
                 </ol>
             </div>
         </div>
@@ -31,9 +31,11 @@
                             <tr>
                                 <th>No</th>
                                 <th>No BPPB</th>
-                                <th>Produk</th>
-                                <th>Jumlah</th>
-                                <th>Aksi</th>
+                                <th>Tipe dan Nama</th>
+                                <th>No Seri</th>
+                                <th>Operator</th>
+                                <th>Tanggal</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody style="text-align:center;">
@@ -43,27 +45,31 @@
                             <tr>
                                 <th>No</th>
                                 <th>No BPPB</th>
-                                <th>Produk</th>
-                                <th>Jumlah</th>
-                                <th>Aksi</th>
+                                <th>Tipe dan Nama</th>
+                                <th>No Seri</th>
+                                <th>Operator</th>
+                                <th>Tanggal</th>
+                                <th>Status</th>
                             </tr>
                         </tfoot>
                     </table>
                 </div>
             </div>
-            <div class="modal fade" id="persiapanpackingprodukmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                <div class="modal-dialog modal-xl" role="document">
+
+            <div class="modal fade" id="perbaikanproduksimodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header" style="background-color:	#006400;">
-                            <h4 class="modal-title" id="myModalLabel" style="color:white;">Persiapan Packing</h4>
+                            <h4 class="modal-title" id="myModalLabel" style="color:white;">Laporan Perbaikan</h4>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         </div>
-                        <div class="modal-body" id="persiapanpackingproduk">
+                        <div class="modal-body" id="perbaikanproduksi">
 
                         </div>
                     </div>
                 </div>
             </div>
+
             <!-- /.card -->
         </div>
         <!-- /.col -->
@@ -78,7 +84,7 @@
         $('#example').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('persiapan_packing_produk.show') }}",
+            ajax: "{{ route('perakitan.show.eng')}}",
             columns: [{
                     data: 'DT_RowIndex',
                     name: 'DT_RowIndex',
@@ -94,75 +100,37 @@
                     name: 'produk'
                 },
                 {
-                    data: 'jumlah',
-                    name: 'jumlah'
+                    data: 'no_seri',
+                    name: 'no_seri'
                 },
                 {
-                    data: 'aksi',
-                    name: 'aksi',
-                    orderable: false,
-                    searchable: false
+                    data: 'operator',
+                    name: 'operator'
+                },
+                {
+                    data: 'tanggal',
+                    name: 'tanggal'
+                },
+                {
+                    data: 'status',
+                    name: 'status'
                 },
             ]
         });
 
-        $(document).on('click', '.persiapanpackingprodukmodal', function(event) {
+        $(document).on('click', '.perbaikanproduksimodal', function(event) {
             event.preventDefault();
             var href = $(this).attr('data-attr');
             var dataid = $(this).attr('data-id');
             $.ajax({
-                url: '/persiapan_packing_produk/detail/' + dataid,
+                url: href,
                 beforeSend: function() {
                     $('#loader').show();
                 },
                 success: function(result) {
-                    $('#persiapanpackingprodukmodal').modal("show");
-                    $('#persiapanpackingproduk').html(result).show();
+                    $('#perbaikanproduksimodal').modal("show");
+                    $('#perbaikanproduksi').html(result).show();
                     console.log(result);
-                    $('#detaildata').DataTable({
-                        processing: true,
-                        serverSide: true,
-                        scrollX: true,
-                        ajax: href,
-                        columns: [{
-                                data: 'DT_RowIndex',
-                                name: 'DT_RowIndex',
-                                orderable: false,
-                                searchable: false
-                            }, {
-                                data: 'dokumen',
-                                name: 'dokumen'
-                            },
-                            {
-                                data: 'ketersediaan',
-                                name: 'ketersediaan'
-                            },
-                            {
-                                data: 'keterangan',
-                                name: 'keterangan'
-                            },
-                            {
-                                data: 'ukuran',
-                                name: 'ukuran'
-                            },
-                            {
-                                data: 'model',
-                                name: 'model'
-                            },
-                            {
-                                data: 'warna_kertas',
-                                name: 'warna_kertas'
-                            },
-                            {
-                                data: 'warna_tinta',
-                                name: 'warna_tinta'
-                            },
-                            {
-                                data: 'verifikasi',
-                                name: 'verifikasi'
-                            },
-                        ]
-                    });
                 },
                 complete: function() {
                     $('#loader').hide();
@@ -177,4 +145,4 @@
         });
     });
 </script>
-@endsection
+@stop

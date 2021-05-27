@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 25, 2021 at 11:58 AM
+-- Generation Time: May 24, 2021 at 11:58 AM
 -- Server version: 10.4.18-MariaDB
 -- PHP Version: 7.3.27
 
@@ -1023,7 +1023,7 @@ CREATE TABLE `hasil_monitoring_proses` (
   `hasil` enum('ok','nok') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `keterangan` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `tindak_lanjut` enum('pengemasan','perbaikan','produk_spesialis','karantina') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `status` enum('req_perbaikan','acc_perbaikan','rej_perbaikan','req_analisa_perbaikan','acc_analisa_perbaikan','rej_analisa_perbaikan','pengemasan','perbaikan','analisa_perbaikan') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `status` enum('req_perbaikan','acc_perbaikan','rej_perbaikan','req_analisa_perbaikan','acc_analisa_perbaikan','rej_analisa_perbaikan','pengemasan') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -1038,8 +1038,7 @@ INSERT INTO `hasil_monitoring_proses` (`id`, `monitoring_proses_id`, `hasil_pera
 (29, 10, 84, NULL, 'nok', 'Barang tidak berfungsi dengan baik', 'produk_spesialis', 'req_analisa_perbaikan', '2021-05-06 08:44:27', '2021-05-24 07:58:43'),
 (30, 10, 85, NULL, 'ok', NULL, 'pengemasan', 'pengemasan', '2021-05-06 08:44:27', '2021-05-06 08:44:27'),
 (31, 13, 85, NULL, NULL, 'pengujian pengemasan', NULL, NULL, '2021-05-19 09:40:44', '2021-05-19 09:40:44'),
-(32, 13, 83, NULL, NULL, 'pengujian pengemasan', NULL, NULL, '2021-05-19 09:40:44', '2021-05-19 09:40:44'),
-(33, 14, 85, NULL, NULL, 'pengujian pengemasan', NULL, NULL, '2021-05-25 02:08:51', '2021-05-25 02:08:51');
+(32, 13, 83, NULL, NULL, 'pengujian pengemasan', NULL, NULL, '2021-05-19 09:40:44', '2021-05-19 09:40:44');
 
 -- --------------------------------------------------------
 
@@ -1106,7 +1105,7 @@ CREATE TABLE `hasil_pengemasans` (
   `hasil` enum('ok','nok') COLLATE utf8mb4_unicode_ci NOT NULL,
   `keterangan` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `tindak_lanjut` enum('ok','perbaikan','pengujian','karantina') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `status` enum('req_perbaikan','acc_perbaikan','rej_perbaikan','req_pengujian','acc_pengujian','rej_pengujian','ok','req_analisa_produk_spesialis','analisa_produk_spesialis','acc_analisa_produk_spesialis','rej_analisa_produk_spesialis') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `status` enum('req_perbaikan','acc_perbaikan','rej_perbaikan','req_pengujian','acc_pengujian','rej_pengujian','ok') COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -1174,7 +1173,7 @@ CREATE TABLE `hasil_perakitans` (
   `tindak_lanjut_tertutup` enum('ok','operator','produk_spesialis','perbaikan','karantina','ps','aging') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `keterangan_tindak_lanjut_tertutup` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `keterangan` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `status` enum('dibuat','req_pemeriksaan_terbuka','acc_pemeriksaan_terbuka','perbaikan_pemeriksaan_terbuka','analisa_pemeriksaan_terbuka_ps','rej_pemeriksaan_terbuka','req_pemeriksaan_tertutup','acc_pemeriksaan_tertutup','perbaikan_pemeriksaan_tertutup','analisa_pemeriksaan_tertutup_ps','rej_pemeriksaan_tertutup','acc_analisa_pemeriksaan_terbuka_ps','rej_analisa_pemeriksaan_terbuka_ps','acc_analisa_pemeriksaan_tertutup_ps','rej_analisa_pemeriksaan_tertutup_ps','req_analisa_pemeriksaan_terbuka_ps','req_analisa_pemeriksaan_tertutup_ps') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `status` enum('dibuat','req_pemeriksaan_terbuka','acc_pemeriksaan_terbuka','perbaikan_pemeriksaan_terbuka','analisa_pemeriksaan_terbuka_ps','rej_pemeriksaan_terbuka','req_pemeriksaan_tertutup','acc_pemeriksaan_tertutup','perbaikan_pemeriksaan_tertutup','analisa_pemeriksaan_tertutup_ps','rej_pemeriksaan_tertutup') COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -1187,13 +1186,13 @@ INSERT INTO `hasil_perakitans` (`id`, `perakitan_id`, `tanggal`, `no_seri`, `kon
 (76, 33, '2021-04-19', 'RMIN0001', 'ok', 'ok', 'ok', 'ok', NULL, 'ok', 'ok', 'ok', 'aging', NULL, NULL, 'acc_pemeriksaan_tertutup', '2021-04-18 18:15:31', '2021-04-28 05:52:49'),
 (77, 34, '2021-04-19', 'FRIN00001', 'ok', 'ok', 'nok', 'operator', 'Cacat', NULL, NULL, NULL, NULL, NULL, NULL, 'rej_pemeriksaan_terbuka', '2021-04-18 19:22:09', '2021-05-18 08:06:23'),
 (78, 34, '2021-04-19', 'FRIN00002', 'ok', 'ok', 'ok', 'ok', NULL, 'ok', 'ok', 'nok', 'perbaikan', 'Tutup lecet', NULL, 'rej_pemeriksaan_tertutup', '2021-04-18 19:22:09', '2021-04-26 05:46:46'),
-(80, 35, '2021-04-19', 'FRIN00004', 'ok', 'ok', 'nok', 'produk_spesialis', 'Kabel Terkelupas', NULL, NULL, NULL, NULL, NULL, NULL, 'analisa_pemeriksaan_terbuka_ps', '2021-04-18 19:40:33', '2021-05-25 08:58:14'),
+(80, 35, '2021-04-19', 'FRIN00004', 'ok', 'ok', 'nok', 'produk_spesialis', 'Kabel Terkelupas', NULL, NULL, NULL, NULL, NULL, NULL, 'rej_pemeriksaan_terbuka', '2021-04-18 19:40:33', '2021-04-26 04:39:36'),
 (81, 35, '2021-04-19', 'FRIN00005', 'ok', 'ok', 'ok', 'ok', NULL, 'ok', 'ok', 'ok', 'aging', NULL, NULL, 'acc_pemeriksaan_tertutup', '2021-04-18 19:40:33', '2021-04-26 05:47:17'),
 (82, 34, '2021-04-26', 'FRIN00003', 'ok', 'ok', 'ok', 'ok', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'acc_pemeriksaan_terbuka', '2021-04-26 07:12:30', '2021-04-26 08:55:00'),
 (83, 34, '2021-04-26', 'FRIN00006', 'ok', 'ok', 'ok', 'ok', NULL, 'ok', 'ok', 'ok', 'aging', NULL, NULL, 'acc_pemeriksaan_tertutup', '2021-04-26 07:12:30', '2021-04-28 08:49:28'),
 (84, 35, '2021-04-26', 'SWFR00001', 'ok', 'ok', 'ok', 'ok', NULL, 'ok', 'ok', 'ok', 'aging', NULL, NULL, 'acc_pemeriksaan_tertutup', '2021-04-26 07:21:51', '2021-04-29 08:43:27'),
 (85, 35, '2021-04-26', 'SWFR00002', 'ok', 'ok', 'ok', 'ok', NULL, 'ok', 'ok', 'ok', 'aging', NULL, NULL, 'acc_pemeriksaan_tertutup', '2021-04-26 07:21:51', '2021-04-29 08:43:54'),
-(86, 35, '2021-04-26', 'SWFR00003', 'ok', 'ok', 'ok', 'ok', NULL, 'ok', 'ok', 'nok', 'perbaikan', 'tes', NULL, 'rej_pemeriksaan_tertutup', '2021-04-26 07:21:51', '2021-05-25 04:26:02'),
+(86, 35, '2021-04-26', 'SWFR00003', 'ok', 'ok', 'nok', 'operator', 'Tes', NULL, NULL, NULL, NULL, NULL, NULL, 'perbaikan_pemeriksaan_terbuka', '2021-04-26 07:21:51', '2021-05-18 08:44:00'),
 (87, 35, '2021-04-26', 'SWFR00004', 'ok', 'ok', 'nok', 'operator', 'Cacat', NULL, NULL, NULL, NULL, NULL, NULL, 'perbaikan_pemeriksaan_terbuka', '2021-04-26 07:22:23', '2021-05-18 08:44:00');
 
 -- --------------------------------------------------------
@@ -1269,12 +1268,7 @@ INSERT INTO `histori_hasil_perakitans` (`id`, `hasil_perakitan_id`, `kegiatan`, 
 (54, 81, 'perbaikan_pengujian', '2021-05-19', 'ok', '', 'ok', '2021-05-19 09:54:24', '2021-05-19 09:54:24'),
 (55, 84, 'perbaikan_pengujian', '2021-05-19', 'ok', '', 'ok', '2021-05-19 09:54:24', '2021-05-19 09:54:24'),
 (56, 84, 'pemeriksaan_pengujian', '2021-05-24', 'nok', 'Barang tidak berfungsi dengan baik', 'perbaikan', '2021-05-24 07:25:18', '2021-05-24 07:25:18'),
-(57, 84, 'pemeriksaan_pengujian', '2021-05-24', 'nok', 'Barang tidak berfungsi dengan baik', 'perbaikan', '2021-05-24 07:58:43', '2021-05-24 07:58:43'),
-(58, 85, 'perbaikan_pengemasan', '2021-05-25', 'ok', '', 'pengujian', '2021-05-25 02:08:51', '2021-05-25 02:08:51'),
-(59, 86, 'pemeriksaan_terbuka', '2021-05-25', 'ok', NULL, 'ok', '2021-05-25 02:46:24', '2021-05-25 02:46:24'),
-(60, 86, 'pemeriksaan_tertutup', '2021-05-25', 'nok', 'Tes', 'perbaikan', '2021-05-25 04:01:07', '2021-05-25 04:01:07'),
-(61, 86, 'pemeriksaan_tertutup', '2021-05-25', 'nok', 'tes', 'perbaikan', '2021-05-25 04:26:02', '2021-05-25 04:26:02'),
-(62, 80, 'analisa_pemeriksaan_terbuka_ps', '2021-05-25', 'ok', '', 'ok', '2021-05-25 08:58:14', '2021-05-25 08:58:14');
+(57, 84, 'pemeriksaan_pengujian', '2021-05-24', 'nok', 'Barang tidak berfungsi dengan baik', 'perbaikan', '2021-05-24 07:58:43', '2021-05-24 07:58:43');
 
 -- --------------------------------------------------------
 
@@ -1481,43 +1475,7 @@ INSERT INTO `karyawans` (`id`, `divisi_id`, `nama`, `foto`, `jabatan`, `ktp`, `b
 (14, 23, 'Kristin Purnama S', NULL, 'staff', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (15, 23, 'Mariatun', NULL, 'operator', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (16, 23, 'Lailatul Komariyah', NULL, 'operator', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(17, 28, 'Hana Restiati', NULL, 'staff', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(18, 10, 'Elvina Ambarwati', NULL, 'staff', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(19, 10, 'Ardhiefa Rachmana Rahman', NULL, 'staff', NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `karyawan_masuks`
---
-
-CREATE TABLE `karyawan_masuks` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `karyawan_id` int(11) NOT NULL,
-  `pemeriksa_id` int(11) NOT NULL,
-  `karyawan_sakit_id` int(11) DEFAULT NULL,
-  `tgl_cek` date NOT NULL,
-  `alasan` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `keterangan` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `karyawan_masuks`
---
-
-INSERT INTO `karyawan_masuks` (`id`, `karyawan_id`, `pemeriksa_id`, `karyawan_sakit_id`, `tgl_cek`, `alasan`, `keterangan`, `created_at`, `updated_at`) VALUES
-(1, 1, 17, NULL, '2021-05-25', 'Ijin', 'aa', '2021-05-25 06:56:58', '2021-05-25 06:56:58'),
-(2, 2, 17, 18, '2021-05-25', 'Sakit', NULL, '2021-05-25 06:59:14', '2021-05-25 06:59:14'),
-(3, 5, 17, 19, '2021-05-25', 'Sakit', NULL, '2021-05-25 07:03:30', '2021-05-25 07:03:30'),
-<<<<<<< HEAD
-(4, 4, 17, NULL, '2021-05-25', 'Cuti', 'Cuti Melahirkan', '2021-05-25 07:03:53', '2021-05-25 07:03:53');
-=======
-(4, 4, 17, NULL, '2021-05-25', 'Cuti', 'Cuti Melahirkan', '2021-05-25 07:03:53', '2021-05-25 07:03:53'),
-(5, 13, 17, 20, '2021-05-25', 'Sakit', NULL, '2021-05-25 09:54:24', '2021-05-25 09:54:24'),
-(6, 4, 17, NULL, '2021-05-25', 'Cuti', 'Nikah', '2021-05-25 09:55:07', '2021-05-25 09:55:07');
->>>>>>> della
+(17, 28, 'Hana Restiati', NULL, 'staff', NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1547,22 +1505,14 @@ CREATE TABLE `karyawan_sakits` (
 --
 
 INSERT INTO `karyawan_sakits` (`id`, `tgl_cek`, `karyawan_id`, `pemeriksa_id`, `analisa`, `diagnosa`, `tindakan`, `terapi`, `obat_id`, `aturan`, `konsumsi`, `keputusan`, `created_at`, `updated_at`) VALUES
-(1, '2021-05-21', 1, 17, 'Pusing', 'DD', 'Pengobatan', NULL, 2, 'Sesudah Makan', '2x1', 'Dipulangkan', '2021-05-21 07:11:24', '2021-05-21 07:11:24'),
-(2, '2021-05-21', 2, 17, 'Mual', 'Diagnosa', 'Pengobatan', NULL, 3, 'Sesudah Makan', '2x1', 'Dipulangkan', '2021-05-21 07:14:40', '2021-05-21 07:14:40'),
-(3, '2021-05-21', 5, 17, 'Pilek ', 'Diagnosa', 'Terapi', 'Pijet Pijet', NULL, NULL, NULL, 'Lanjut bekerja', '2021-05-21 07:15:13', '2021-05-21 07:15:13'),
+(1, '2021-05-21', 1, 17, 'AA', 'DD', 'Pengobatan', NULL, 2, 'Sesudah Makan', '2x1', 'Dipulangkan', '2021-05-21 07:11:24', '2021-05-21 07:11:24'),
+(2, '2021-05-21', 2, 17, 'Analisa', 'Diagnosa', 'Pengobatan', NULL, 3, 'Sesudah Makan', '2x1', 'Dipulangkan', '2021-05-21 07:14:40', '2021-05-21 07:14:40'),
+(3, '2021-05-21', 5, 17, 'Analisa', 'Diagnosa', 'Terapi', 'Pijet Pijet', NULL, NULL, NULL, 'Lanjut bekerja', '2021-05-21 07:15:13', '2021-05-21 07:15:13'),
 (4, '2021-05-21', 6, 17, NULL, NULL, 'Pengobatan', NULL, 4, 'Sebelum Makan', '1x1', 'Lanjut bekerja', '2021-05-21 07:35:45', '2021-05-21 07:35:45'),
 (7, '2021-05-12', 13, 17, NULL, NULL, 'Pengobatan', NULL, 2, 'Sesudah Makan', '1x3', 'Lanjut bekerja', '2021-05-21 09:42:17', '2021-05-21 09:42:17'),
 (13, '2021-05-24', 15, 17, 'A', 'D', 'Pengobatan', NULL, 3, 'Sesudah Makan', '2x1', 'Lanjut bekerja', '2021-05-24 01:30:05', '2021-05-24 01:30:05'),
 (15, '2021-05-24', 14, 17, 'Sakit Pilek', 'Diagnosa', 'Pengobatan', NULL, 4, 'Sesudah Makan', '7x2', 'Lanjut bekerja', '2021-05-24 01:37:25', '2021-05-24 01:37:25'),
-(16, '2021-05-24', 7, 17, 'Meriang', 'Masuk Angin', 'Pengobatan', NULL, 1, 'Sesudah Makan', '1x1', 'Lanjut bekerja', '2021-05-24 07:03:12', '2021-05-24 07:03:12'),
-(17, '2021-05-25', 5, 17, 'Sakit Panas', NULL, 'Pengobatan', NULL, 2, 'Sesudah Makan', '2x1', 'Lanjut bekerja', '2021-05-25 06:49:22', '2021-05-25 06:49:22'),
-(18, '2021-05-25', 2, 17, 'Pilek', 'Diagnosa', 'Pengobatan', NULL, 2, 'Sesudah Makan', '2x1', 'Lanjut bekerja', '2021-05-25 06:59:14', '2021-05-25 06:59:14'),
-<<<<<<< HEAD
-(19, '2021-05-25', 5, 17, 'Sakit Meriang', NULL, 'Pengobatan', NULL, 5, 'Sesudah Makan', '7x2', 'Dipulangkan', '2021-05-25 07:03:30', '2021-05-25 07:03:30');
-=======
-(19, '2021-05-25', 5, 17, 'Sakit Meriang', NULL, 'Pengobatan', NULL, 5, 'Sesudah Makan', '7x2', 'Dipulangkan', '2021-05-25 07:03:30', '2021-05-25 07:03:30'),
-(20, '2021-05-25', 13, 17, 'Sakit Perut', 'Sakit', 'Pengobatan', NULL, 2, 'Sesudah Makan', '2x1', 'Dipulangkan', '2021-05-25 09:54:24', '2021-05-25 09:54:24');
->>>>>>> della
+(16, '2021-05-24', 7, 17, 'Meriang', 'Masuk Angin', 'Pengobatan', NULL, 1, 'Sesudah Makan', '1x1', 'Lanjut bekerja', '2021-05-24 07:03:12', '2021-05-24 07:03:12');
 
 -- --------------------------------------------------------
 
@@ -1985,8 +1935,7 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (221, '2021_05_24_100801_update_obats', 150),
 (222, '2021_05_24_114238_create_perbaikan_produksi_perakitans_table', 151),
 (223, '2021_05_24_114252_create_perbaikan_produksi_pengujians_table', 152),
-(224, '2021_05_24_114408_create_perbaikan_produksi_pengemasans_table', 153),
-(226, '2021_05_25_084452_create_karyawan_masuks', 154);
+(224, '2021_05_24_114408_create_perbaikan_produksi_pengemasans_table', 153);
 
 -- --------------------------------------------------------
 
@@ -2012,8 +1961,7 @@ INSERT INTO `monitoring_proses` (`id`, `bppb_id`, `tanggal`, `karyawan_id`, `use
 (3, 29, '2021-04-28', 16, 7, '2021-04-28 04:55:45', '2021-04-29 07:11:20'),
 (9, 29, '2021-04-29', 15, 7, '2021-04-29 01:01:38', '2021-04-29 01:01:38'),
 (10, 29, '2021-04-29', 15, 7, '2021-04-29 09:07:28', '2021-04-29 09:07:28'),
-(13, 29, '2021-05-19', NULL, 2, '2021-05-19 09:40:44', '2021-05-19 09:40:44'),
-(14, 29, '2021-05-25', NULL, 2, '2021-05-25 02:08:51', '2021-05-25 02:08:51');
+(13, 29, '2021-05-19', NULL, 2, '2021-05-19 09:40:44', '2021-05-19 09:40:44');
 
 -- --------------------------------------------------------
 
@@ -2937,9 +2885,8 @@ INSERT INTO `perbaikan_produksis` (`id`, `bppb_id`, `karyawan_id`, `kondisi_prod
 (5, 29, 1, 'Perbaikan Pengujian', 'pengujian', 'operator', '2021-05-19', 'PB/PR/0001/05/21', '2021-05-19', 'Perbaikan Pengujian TES', 'TESTESTESTES', 'acc_perbaikan', '2021-05-19 01:22:24', '2021-05-19 01:22:24'),
 (13, 29, 2, 'Tidak Baik', 'pengemasan', 'operator', '2021-05-19', 'PB/PR/0002/05/21', '2021-05-19', 'Manual Book tidak ada', 'Manual Books', 'acc_perbaikan', '2021-05-19 09:40:44', '2021-05-19 09:40:44'),
 (14, 29, 3, 'Tes', 'pengujian', 'bahan_baku', '2021-05-19', 'PB/PR/0002/05/21', '2021-05-19', 'Tes', 'Tes', 'acc_perbaikan', '2021-05-19 09:54:24', '2021-05-19 09:54:24'),
-(19, 29, 1, 'Tdk bisa nyala', 'pengemasan', 'bahan_baku', '2021-05-25', 'PB/PR/0002/05/21', '2021-05-25', 'bahan baku', 'Pengganti bahan baku', 'acc_perbaikan', '2021-05-25 02:08:51', '2021-05-25 02:08:51'),
-(20, 29, 3, 'Perbaikan', 'perakitan', 'bahan_baku', '2021-05-25', 'PB/PR/0001/25/05/21', '2021-05-25', 'Perbaikan 2', 'Perbaikan 2', 'acc_perbaikan', '2021-05-25 04:12:50', '2021-05-25 04:12:50'),
-(21, 29, 18, 'Kabel putus', 'perakitan', 'operator', '2021-05-25', 'PB/PR/0001/05/21', '2021-05-25', 'Pengecekan Kabel', 'Mengganti Kabel', 'acc_perbaikan', '2021-05-25 08:58:14', '2021-05-25 08:58:14');
+(15, 29, 3, 'tes', 'pengemasan', 'operator', '2021-05-24', 'PB/PR/0001/05/21', '2021-05-24', 'tes', 'tes', 'acc_perbaikan', '2021-05-24 09:52:42', '2021-05-24 09:52:42'),
+(16, 29, 3, 'tes', 'pengemasan', 'operator', '2021-05-24', 'PB/PR/0001/05/21', '2021-05-24', 'tes', 'tes', 'acc_perbaikan', '2021-05-24 09:53:56', '2021-05-24 09:53:56');
 
 -- --------------------------------------------------------
 
@@ -2999,7 +2946,7 @@ CREATE TABLE `perbaikan_produksi_pengemasans` (
 --
 
 INSERT INTO `perbaikan_produksi_pengemasans` (`perbaikan_produksi_id`, `hasil_pengemasan_id`, `created_at`, `updated_at`) VALUES
-(19, 10, '2021-05-25 02:08:51', '2021-05-25 02:08:51');
+(16, 10, '2021-05-24 09:53:56', '2021-05-24 09:53:56');
 
 -- --------------------------------------------------------
 
@@ -3026,14 +2973,6 @@ CREATE TABLE `perbaikan_produksi_perakitans` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `perbaikan_produksi_perakitans`
---
-
-INSERT INTO `perbaikan_produksi_perakitans` (`perbaikan_produksi_id`, `hasil_perakitan_id`, `created_at`, `updated_at`) VALUES
-(20, 86, '2021-05-25 04:12:50', '2021-05-25 04:12:50'),
-(21, 80, '2021-05-25 08:58:14', '2021-05-25 08:58:14');
 
 -- --------------------------------------------------------
 
@@ -3673,12 +3612,6 @@ ALTER TABLE `karyawans`
   ADD KEY `karyawans_divisi_id_foreign` (`divisi_id`);
 
 --
--- Indexes for table `karyawan_masuks`
---
-ALTER TABLE `karyawan_masuks`
-  ADD PRIMARY KEY (`id`);
-
---
 -- Indexes for table `karyawan_sakits`
 --
 ALTER TABLE `karyawan_sakits`
@@ -3786,7 +3719,8 @@ ALTER TABLE `parts`
 -- Indexes for table `part_engs`
 --
 ALTER TABLE `part_engs`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `part_engs_part_id_foreign` (`part_id`);
 
 --
 -- Indexes for table `password_resets`
@@ -4156,7 +4090,7 @@ ALTER TABLE `hasil_ik_pemeriksaan_pengujians`
 -- AUTO_INCREMENT for table `hasil_monitoring_proses`
 --
 ALTER TABLE `hasil_monitoring_proses`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT for table `hasil_pemeriksaan_proses_pengujians`
@@ -4186,7 +4120,7 @@ ALTER TABLE `hasil_perakitans`
 -- AUTO_INCREMENT for table `histori_hasil_perakitans`
 --
 ALTER TABLE `histori_hasil_perakitans`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
 
 --
 -- AUTO_INCREMENT for table `ik_pemeriksaan_pengujians`
@@ -4210,27 +4144,13 @@ ALTER TABLE `jasa_ekss`
 -- AUTO_INCREMENT for table `karyawans`
 --
 ALTER TABLE `karyawans`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
-
---
--- AUTO_INCREMENT for table `karyawan_masuks`
---
-ALTER TABLE `karyawan_masuks`
-<<<<<<< HEAD
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-=======
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
->>>>>>> della
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `karyawan_sakits`
 --
 ALTER TABLE `karyawan_sakits`
-<<<<<<< HEAD
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
-=======
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
->>>>>>> della
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `kategori_produks`
@@ -4272,13 +4192,13 @@ ALTER TABLE `kesehatan_mingguan_tensis`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=227;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=225;
 
 --
 -- AUTO_INCREMENT for table `monitoring_proses`
 --
 ALTER TABLE `monitoring_proses`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `notifikasis`
@@ -4368,7 +4288,7 @@ ALTER TABLE `perakitans`
 -- AUTO_INCREMENT for table `perbaikan_produksis`
 --
 ALTER TABLE `perbaikan_produksis`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `permissions`

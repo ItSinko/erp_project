@@ -41,7 +41,7 @@
             <div class="card">
                 <div class="card-body">
                     <h4>Monitoring Proses</h4><br>
-                    <table id="example1" class="table table-hover table-bordered styled-table">
+                    <table id="detaildata" class="table table-hover table-bordered styled-table">
                         <thead style="text-align: center;">
                             <tr>
                                 <th rowspan="2">No</th>
