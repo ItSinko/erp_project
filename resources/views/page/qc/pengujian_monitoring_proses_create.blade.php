@@ -134,6 +134,34 @@
                                         </div>
 
                                         <div class="form-group row">
+                                            <label for="kode_barcode" class="col-sm-4 col-form-label" style="text-align:right;">Kode Barcode</label>
+                                            <div class="col-sm-1">
+                                                <input type="text" class="form-control  @error('inisial_produk') is-invalid @enderror " name="inisial_produk" id="inisial_produk" value="{{old('inisial_produk')}}">
+                                                @if ($errors->has('inisial_produk'))
+                                                <span class="invalid-feedback" role="alert">{{$errors->first('inisial_produk')}}</span>
+                                                @endif
+                                            </div>
+                                            <div class="col-sm-1">
+                                                <input type="text" class="form-control  @error('tipe_produk') is-invalid @enderror " name="tipe_produk" id="tipe_produk" value="{{old('tipe_produk')}}">
+                                                @if ($errors->has('tipe_produk'))
+                                                <span class="invalid-feedback" role="alert">{{$errors->first('tipe_produk')}}</span>
+                                                @endif
+                                            </div>
+                                            <div class="col-sm-1">
+                                                <input type="text" class="form-control  @error('waktu_produksi') is-invalid @enderror " name="waktu_produksi" id="waktu_produksi" value="{{old('waktu_produksi')}}">
+                                                @if ($errors->has('waktu_produksi'))
+                                                <span class="invalid-feedback" role="alert">{{$errors->first('waktu_produksi')}}</span>
+                                                @endif
+                                            </div>
+                                            <div class="col-sm-1">
+                                                <input type="text" class="form-control  @error('urutan_bb') is-invalid @enderror " name="urutan_bb" id="urutan_bb" value="{{old('urutan_bb')}}">
+                                                @if ($errors->has('urutan_bb'))
+                                                <span class="invalid-feedback" role="alert">{{$errors->first('urutan_bb')}}</span>
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
                                             <table id="tableitem" class="table table-hover">
                                                 <thead style="text-align: center;">
                                                     <tr>
@@ -275,9 +303,17 @@
         $('input[type="radio"][name="brc"]').on("change", function() {
             if (this.value == 'ya') {
                 $('.barcode').attr('readonly', false);
+                $('#inisial_produk').attr('readonly', false);
+                $('#tipe_produk').attr('readonly', false);
+                $('#waktu_produksi').attr('readonly', false);
+                $('#urutan_bb').attr('readonly', false);
                 rdb = 'ya';
             } else if (this.value == 'tidak') {
                 $('.barcode').attr('readonly', true);
+                $('#inisial_produk').attr('readonly', true);
+                $('#tipe_produk').attr('readonly', true);
+                $('#waktu_produksi').attr('readonly', true);
+                $('#urutan_bb').attr('readonly', true);
                 rdb = 'tidak';
                 $('.barcode').val("");
             }

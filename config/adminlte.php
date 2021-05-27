@@ -591,7 +591,7 @@ return [
                 [
                     'icon' => 'far fa-circle',
                     'text' => 'Laporan',
-                    'url'  => '/pengemasan/pemeriksaan',
+                    'url'  => '/pengemasan/qc',
                     'auth' => [23],
                 ],
                 [

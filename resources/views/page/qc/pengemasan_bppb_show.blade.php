@@ -39,28 +39,28 @@
                         <div class="row">
                             <label for="no_seri" class="col-sm-6 col-form-label">No BPPB</label>
                             <div class="col-sm-6 col-form-label" style="text-align:right;">
-                                {{$s->Bppb->no_bppb}}
+                                {{$s->no_bppb}}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <label for="no_seri" class="col-sm-6 col-form-label">Tanggal BPPB</label>
+                            <div class="col-sm-6 col-form-label" style="text-align:right;">
+                                {{$s->tanggal_bppb}}
                             </div>
                         </div>
 
                         <div class="row">
                             <label for="no_seri" class="col-sm-4 col-form-label">Produk</label>
                             <div class="col-sm-8 col-form-label" style="text-align:right;">
-                                {{$s->Bppb->DetailProduk->nama}}
+                                {{$s->DetailProduk->nama}}
                             </div>
                         </div>
 
                         <div class="row">
-                            <label for="tanggal" class="col-sm-6 col-form-label">Tanggal Laporan</label>
+                            <label for="tanggal" class="col-sm-6 col-form-label text-muted">Ubah Pemeriksaan</label>
                             <div class="col-sm-6 col-form-label" style="text-align:right;">
-                                {{date("d-m-Y", strtotime($s->tanggal))}}
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <label for="tanggal" class="col-sm-6 col-form-label">Operator</label>
-                            <div class="col-sm-6 col-form-label" style="text-align:right;">
-                                {{$s->Karyawan->nama}}
+                                <a href="{{ route('pengemasan.bppb.edit.qc', ['bppbid' => $bppbid]) }}"><button class="btn btn-warning rounded-pill"><i class="fas fa-edit"></i>&nbsp;Edit</button></a>
                             </div>
                         </div>
 
@@ -71,7 +71,7 @@
         <div class="col-9">
             <div class="card">
                 <div class="card-body">
-                    <h4>Monitoring Proses</h4><br>
+                    <h4>Pengemasan</h4><br>
                     <table id="example1" class="table table-hover table-bordered styled-table">
                         <thead style="text-align: center;">
                             <tr>
@@ -100,7 +100,7 @@
                             <tr>
                                 <td>{{$loop->iteration}}</td>
                                 <td>{{$i->HasilPerakitan->no_seri}}</td>
-                                <td>{{$i->no_barcode}}</td>
+                                <td></td>
                                 <td>
                                     @if($i->kondisi_unit == "baik")
                                     <i class="fas fa-check-circle" style="color:green;"></i>
@@ -111,9 +111,9 @@
                                 @foreach($c as $cs)
                                 @foreach($cs->DetailCekPengemasan as $h)
                                 <td>@if($i->DetailCekPengemasan->contains('id', $h->id))
-                                    <i class="fas fa-check-circle" style="color:green;"></i>
+                                    <i class="fas fa-check" style="color:green;"></i>
                                     @else
-                                    <i class="fas fa-times-circle" style="color:red;"></i>
+                                    <i class="fas fa-times" style="color:red;"></i>
                                     @endif
                                 </td>
                                 @endforeach
@@ -130,19 +130,27 @@
                                 <td>@if($i->status == 'req_perbaikan')
                                     <a href="/perbaikan/produksi/create/{{$i->id}}/pengemasan">
                                         <button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-paper-plane"></i></button>
-                                        <div><small>Perbaikan</small></div>
+                                        <div><small>Perbaikan </small></div>
                                     </a>
                                     @elseif($i->status == 'acc_perbaikan')
                                     <small class="danger-text">Perbaikan</small>
+                                    @elseif($i->status == 'req_pemeriksaan')
+                                    <a href="/pengemasan/hasil/edit/qc/{{$i->id}}">
+                                        <button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-cog"></i></button>
+                                        <div><small>Periksa </small></div>
+                                    </a>
                                     @elseif($i->status == 'rej_pemeriksaan')
-                                    @if($i->tindak_lanjut == 'perbaikan')
+                                    @if($i->tindak_lanjut == "perbaikan")
                                     <a href="/perbaikan/produksi/create/{{$i->id}}/pengemasan">
                                         <button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-paper-plane"></i></button>
-                                        <div><small>Perbaikan</small></div>
+                                        <div><small>Perbaikan </small></div>
                                     </a>
-                                    @elseif($i->tindak_lanjut == 'produk_spesialis')
-                                    <small class="danger-text">Produk Spesialis</small>
+                                    <div><small class="danger-text">Perbaikan</small></div>
+                                    @elseif($i->tindak_lanjut == "produk_spesialis")
+                                    <div><small class="danger-text">Analisa Produk Spesialis</small></div>
                                     @endif
+                                    @elseif($i->status == "req_pengujian")
+                                    <a href="/">Lihat Laporan</a>
                                     @endif
                                 </td>
                             </tr>

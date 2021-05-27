@@ -332,6 +332,7 @@ Route::group(['prefix' => '/persiapan_packing_produk', 'middleware' => 'auth'], 
 Route::group(['prefix' => '/perakitan', 'middleware' => 'auth'], function () {
     Route::get('/eng', 'EngController@perakitan')->name('perakitan.eng');
     Route::get('/show/eng', 'EngController@perakitan_show')->name('perakitan.show.eng');
+
     Route::get('/', 'ProduksiController@perakitan')->name('perakitan');
     Route::get('/show', 'ProduksiController@perakitan_show')->name('perakitan.show');
     Route::get('/create', 'ProduksiController@perakitan_create')->name('perakitan.create');   /* Create dari BPPB */
@@ -455,6 +456,13 @@ Route::group(['prefix' => '/pengemasan', 'middleware' => 'auth'], function () {
     Route::get('/', 'ProduksiController@pengemasan')->name('pengemasan');
     Route::get('/eng', 'EngController@pengemasan')->name('pengemasan.eng');
     Route::get('/show/eng', 'EngController@pengemasan_show')->name('pengemasan.show.eng');
+    Route::get('/qc', 'QCController@pengemasan')->name('pengemasan.qc');
+    Route::get('/show/qc', 'QCController@pengemasan_show')->name('pengemasan.show.qc');
+    Route::get('/bppb/show/qc/{bppbid}', 'QCController@pengemasan_bppb_show')->name('pengemasan.bppb.show.qc');
+    Route::get('/bppb/edit/qc/{bppbid}', 'QCController@pengemasan_bppb_edit')->name('pengemasan.bppb.edit.qc');
+    Route::put('/bppb/update/qc/{bppbid}', 'QCController@pengemasan_bppb_update')->name('pengemasan.bppb.update.qc');
+    Route::get('/hasil/edit/qc/{id}', 'QCController@pengemasan_hasil_edit')->name('pengemasan.hasil.edit.qc');
+    Route::put('/hasil/update/qc/{id}', 'QCController@pengemasan_hasil_update')->name('pengemasan.hasil.update.qc');
     Route::get('/form', 'ProduksiController@pengemasan_form')->name('pengemasan.form');
     Route::get('/form/show', 'ProduksiController@pengemasan_form_show')->name('pengemasan.form.show');
     Route::get('/form/create', 'ProduksiController@pengemasan_form_create')->name('pengemasan.form.create');

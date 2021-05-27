@@ -134,6 +134,34 @@
                                         </div>
 
                                         <div class="form-group row">
+                                            <label for="kode_barcode" class="col-sm-4 col-form-label" style="text-align:right;">Kode Barcode</label>
+                                            <div class="col-sm-1">
+                                                <input type="text" class="form-control  @error('inisial_produk') is-invalid @enderror " name="inisial_produk" id="inisial_produk" value="{{old('inisial_produk')}}">
+                                                @if ($errors->has('inisial_produk'))
+                                                <span class="invalid-feedback" role="alert">{{$errors->first('inisial_produk')}}</span>
+                                                @endif
+                                            </div>
+                                            <div class="col-sm-1">
+                                                <input type="text" class="form-control  @error('tipe_produk') is-invalid @enderror " name="tipe_produk" id="tipe_produk" value="{{old('tipe_produk')}}">
+                                                @if ($errors->has('tipe_produk'))
+                                                <span class="invalid-feedback" role="alert">{{$errors->first('tipe_produk')}}</span>
+                                                @endif
+                                            </div>
+                                            <div class="col-sm-1">
+                                                <input type="text" class="form-control  @error('waktu_produksi') is-invalid @enderror " name="waktu_produksi" id="waktu_produksi" value="{{old('waktu_produksi')}}">
+                                                @if ($errors->has('waktu_produksi'))
+                                                <span class="invalid-feedback" role="alert">{{$errors->first('waktu_produksi')}}</span>
+                                                @endif
+                                            </div>
+                                            <div class="col-sm-1">
+                                                <input type="text" class="form-control  @error('urutan_bb') is-invalid @enderror " name="urutan_bb" id="urutan_bb" value="{{old('urutan_bb')}}">
+                                                @if ($errors->has('urutan_bb'))
+                                                <span class="invalid-feedback" role="alert">{{$errors->first('urutan_bb')}}</span>
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
                                             <table id="tableitem" class="table table-hover table-bordered">
                                                 <thead style="text-align: center;">
                                                     <tr>
@@ -144,9 +172,6 @@
                                                         @foreach($cp as $cps)
                                                         <th colspan="{{count($cps->DetailCekPengemasan)}}">{{$cps->perlengkapan}}</th>
                                                         @endforeach
-                                                        <th rowspan="2">Hasil</th>
-                                                        <th rowspan="2">Keterangan</th>
-                                                        <th rowspan="2">Tindak Lanjut</th>
                                                         <th rowspan="2">Aksi</th>
                                                     </tr>
                                                     <tr>
@@ -247,49 +272,6 @@
                                                         @endforeach
                                                         @endforeach
                                                         <td>
-                                                            <div class="row">
-                                                                <div class="col-sm-12">
-                                                                    <div class="form-group clearfix">
-                                                                        <div class="icheck-success d-inline checked">
-                                                                            <input type="radio" name="hasil[0]" id="ok" class="hasil" value="ok" checked>
-                                                                            <label for="ok">
-                                                                                <i class="fas fa-check-circle" style="color:green;"></i>
-                                                                            </label>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-sm-12">
-                                                                    <div class="form-group clearfix">
-                                                                        <div class="icheck-danger d-inline">
-                                                                            <input type="radio" name="hasil[0]" id="nok" value="nok" class="hasil">
-                                                                            <label for="nok">
-                                                                                <i class="fas fa-times-circle" style="color:red;"></i>
-                                                                            </label>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <div class="form-group">
-                                                                <div class="input-group">
-                                                                    <textarea class="form-control @error('keterangan') is-invalid @enderror" name="keterangan[0]" id="keterangan"></textarea>
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <select class="select2 custom-select form-control tindak_lanjut  @error('tindak_lanjut') is-invalid @enderror " name="tindak_lanjut[0]" id="tindak_lanjut0" data-placeholder="Pilih Tindak Lanjut" data-dropdown-css-class="select2-info" style="width: 80%;">
-                                                                <option value="ok">OK</option>
-                                                                <option value="perbaikan" disabled>Perbaikan</option>
-                                                                <option value="produk_spesialis" disabled>Produk Spesialis</option>
-                                                            </select>
-                                                            @if ($errors->has('tindak_lanjut'))
-                                                            <span class="invalid-feedback" role="alert">{{$errors->first('tindak_lanjut')}}</span>
-                                                            @endif
-                                                        </td>
-                                                        <td>
                                                             <button type="button" class="btn btn-success karyawan-img-small" style="border-radius:50%;" id="tambahitem"><i class="fas fa-plus-circle"></i></button>
                                                         </td>
                                                     </tr>
@@ -326,9 +308,17 @@
         $('input[type="radio"][name="brc"]').on("change", function() {
             if (this.value == 'ya') {
                 $('.barcode').attr('readonly', false);
+                $('#inisial_produk').attr('readonly', false);
+                $('#tipe_produk').attr('readonly', false);
+                $('#waktu_produksi').attr('readonly', false);
+                $('#urutan_bb').attr('readonly', false);
                 rdb = 'ya';
             } else if (this.value == 'tidak') {
                 $('.barcode').attr('readonly', true);
+                $('#inisial_produk').attr('readonly', true);
+                $('#tipe_produk').attr('readonly', true);
+                $('#waktu_produksi').attr('readonly', true);
+                $('#urutan_bb').attr('readonly', true);
                 rdb = 'tidak';
                 $('.barcode').val("");
             }
@@ -348,7 +338,6 @@
                 // $(el).find('.tindak_lanjut').attr('name', 'tindak_lanjut[' + j + ']');
                 // $(el).find('.tindak_lanjut').attr('id', 'tindak_lanjut' + j);
                 // $(el).find('textarea[id="keterangan"]').attr('name', 'keterangan[' + j + ']');
-                $('.tindak_lanjut').select2();
                 $('.no_seri').select2();
             });
         }
@@ -449,49 +438,6 @@
             @endforeach
             @endforeach
             <td>
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="form-group clearfix">
-                            <div class="icheck-success d-inline checked">
-                                <input type="radio" name="hasil[` + add + `]" id="ok" class="hasil" value="ok" checked>
-                                <label for="ok">
-                                    <i class="fas fa-check-circle" style="color:green;"></i>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="form-group clearfix">
-                            <div class="icheck-danger d-inline">
-                                <input type="radio" name="hasil[` + add + `]" id="nok" value="nok" class="hasil">
-                                <label for="nok">
-                                    <i class="fas fa-times-circle" style="color:red;"></i>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </td>
-            <td>
-                <div class="form-group">
-                    <div class="input-group">
-                        <textarea class="form-control @error('keterangan') is-invalid @enderror" name="keterangan[` + add + `]" id="keterangan"></textarea>
-                    </div>
-                </div>
-            </td>
-            <td>
-                <select class="select2 custom-select form-control tindak_lanjut  @error('tindak_lanjut') is-invalid @enderror " name="tindak_lanjut[` + add + `]" id="tindak_lanjut` + add + `" data-placeholder="Pilih Tindak Lanjut" data-dropdown-css-class="select2-info" style="width: 80%;">
-                    <option value="ok">OK</option>
-                    <option value="perbaikan" disabled>Perbaikan</option>
-                    <option value="produk_spesialis" disabled>Produk Spesialis</option>
-                </select>
-                @if ($errors->has('tindak_lanjut'))
-                <span class="invalid-feedback" role="alert">{{$errors->first('tindak_lanjut')}}</span>
-                @endif
-            </td>
-            <td>
                 <button type="button" class="btn btn-danger karyawan-img-small" style="border-radius:50%;" id="closetable"><i class="fas fa-times-circle"></i></button>
             </td>
         </tr>`;
@@ -502,24 +448,6 @@
         $('#tableitem').on('click', '#closetable', function(e) {
             $(this).closest('tr').remove();
             numberRows($("#tableitem"));
-        });
-
-        $('#tableitem').on('change', '.hasil', function(e) {
-            var hasil = $(this).closest('tr').find('.hasil');
-            if (this.value == 'ok') {
-                // $('select').select2('val', '');
-                $(this).closest('tr').find('select.tindak_lanjut').val('').trigger('change');
-                $(this).closest('tr').find("select.tindak_lanjut option[value='ok']").attr('disabled', false);
-                $(this).closest('tr').find("select.tindak_lanjut option[value='perbaikan']").attr('disabled', true);
-                $(this).closest('tr').find("select.tindak_lanjut option[value='produk_spesialis']").attr('disabled', true);
-
-            } else if (this.value == 'nok') {
-                // $('select').select2('val', '');
-                $(this).closest('tr').find('select.tindak_lanjut').val('').trigger('change');
-                $(this).closest('tr').find("select.tindak_lanjut option[value='ok']").attr('disabled', true);
-                $(this).closest('tr').find("select.tindak_lanjut option[value='perbaikan']").attr('disabled', false);
-                $(this).closest('tr').find("select.tindak_lanjut option[value='produk_spesialis']").attr('disabled', false);
-            }
         });
     });
 </script>
