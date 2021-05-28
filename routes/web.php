@@ -299,6 +299,12 @@ Route::group(['prefix' => '/peminjaman', 'middleware' => 'auth'], function () {
 //BPPB
 Route::group(['prefix' => '/bppb', 'middleware' => 'auth'], function () {
     Route::get('/', 'PpicController@bppb')->name('bppb');
+    Route::get('/permintaan_bahan_baku/{id}', 'PpicController@bppb_permintaan_bahan_baku')->name('bppb.permintaan_bahan_baku');
+    Route::get('/pengembalian_barang_gudang/{id}', 'PpicController@bppb_pengembalian_barang_gudang')->name('bppb.pengembalian_barang_gudang');
+    Route::get('/penyerahan_barang_jadi/{id}', 'PpicController@bppb_penyerahan_barang_jadi')->name('bppb.penyerahan_barang_jadi');
+    Route::get('/penyerahan_barang_jadi/show/{id}', 'PpicController@bppb_penyerahan_barang_jadi_show')->name('bppb.penyerahan_barang_jadi.show');
+    Route::get('/penyerahan_barang_jadi/create/{id}', 'ProduksiController@bppb_penyerahan_barang_jadi_create')->name('bppb.penyerahan_barang_jadi.create');
+    Route::put('/penyerahan_barang_jadi/store/{id}', 'ProduksiController@bppb_penyerahan_barang_jadi_store')->name('bppb.penyerahan_barang_jadi.store');
     Route::get('/show', 'PpicController@bppb_show')->name('bppb.show');
     Route::get('/create', 'PpicController@bppb_create')->name('bppb.create');  /* Create */
     Route::get('/create/get_detail_produk_by_kelompok_produk/{kelompok_produk_id}', 'GetController@get_detail_produk_by_kelompok_produk');

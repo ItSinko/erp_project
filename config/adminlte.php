@@ -621,7 +621,6 @@ return [
             'auth' => [17],
         ],
 
-
         ['header' => 'LOGOUT'],
         [
             'text' => 'Logout',

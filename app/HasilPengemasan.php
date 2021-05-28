@@ -47,4 +47,9 @@ class HasilPengemasan extends Model
 
         return $h;
     }
+
+    public function DetailPenyerahanBarangJadi()
+    {
+        return $this->hasMany(DetailPenyerahanBarangJadi::class);
+    }
 }

@@ -49,6 +49,7 @@
                 <th>Produk</th>
                 <th>Jumlah</th>
                 <th>Divisi</th>
+                <th>Laporan</th>
                 <th>Aksi</th>
               </tr>
             </thead>
@@ -166,6 +167,12 @@
         {
           data: 'divisi_id',
           name: 'divisi_id'
+        },
+        {
+          data: 'laporan',
+          name: 'laporan',
+          orderable: false,
+          searchable: false
         },
         {
           data: 'aksi',

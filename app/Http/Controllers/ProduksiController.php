@@ -50,6 +50,15 @@ class ProduksiController extends Controller
         $this->UserLogController = $UserLogController;
     }
 
+    //BPPB
+    public function bppb_penyerahan_barang_jadi_create($id)
+    {
+        $s = Bppb::find($id);
+        $hp = HasilPengemasan::whereHas('Pengemasan.Bppb', function ($q) use ($id) {
+            $q->where('id', $id);
+        })->get();
+        return view('page.produksi.bppb_penyerahan_barang_jadi_create', ['id' => $id, 's' => $s, 'hp' => $hp]);
+    }
 
     //PERAKITAN
     public function perakitan()
