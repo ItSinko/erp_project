@@ -36,4 +36,20 @@ class HasilPengemasan extends Model
         })->orderby('updated_at', 'desc')->first();
         return $p->id;
     }
+
+    public function countStatus($status)
+    {
+        $k = $this->HasilPerakitan->id;
+        $h = HistoriHasilPerakitan::where([
+            ['hasil_perakitan_id', '=', $k],
+            ['kegiatan', '=', $status]
+        ])->count();
+
+        return $h;
+    }
+
+    public function DetailPenyerahanBarangJadi()
+    {
+        return $this->hasMany(DetailPenyerahanBarangJadi::class);
+    }
 }

@@ -7,12 +7,12 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>Pemeriksaan Terbuka</h1>
+                <h1>Pengemasan</h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item active">Perakitan</li>
+                    <li class="breadcrumb-item active">Pengemasan</li>
                 </ol>
             </div>
         </div>
@@ -32,35 +32,35 @@
                             <div class="row">
                                 <label for="no_seri" class="col-sm-6 col-form-label">No BPPB</label>
                                 <div class="col-sm-6 col-form-label" style="text-align:right;">
-                                    {{$s->Perakitan->Bppb->no_bppb}}
+                                    {{$s->Pengemasan->Bppb->no_bppb}}
                                 </div>
                             </div>
 
                             <div class="row">
                                 <label for="no_seri" class="col-sm-4 col-form-label">Produk</label>
                                 <div class="col-sm-8 col-form-label" style="text-align:right;">
-                                    {{$s->Perakitan->Bppb->DetailProduk->nama}}
+                                    {{$s->Pengemasan->Bppb->DetailProduk->nama}}
                                 </div>
                             </div>
 
                             <div class="row">
-                                <label for="no_seri" class="col-sm-8 col-form-label">Jumlah Perakitan</label>
+                                <label for="no_seri" class="col-sm-8 col-form-label">Jumlah Pengemasan</label>
                                 <div class="col-sm-4 col-form-label" style="text-align:right;">
-                                    {{$s->Perakitan->Bppb->countHasilPerakitan()}} {{$s->Perakitan->Bppb->DetailProduk->satuan}}
+                                    {{$s->Pengemasan->Bppb->countHasilPengemasan()}} {{$s->Pengemasan->Bppb->DetailProduk->satuan}}
                                 </div>
                             </div>
 
                             <div class="row">
                                 <label for="no_seri" class="col-sm-8 col-form-label">Tanggal Laporan</label>
                                 <div class="col-sm-4 col-form-label" style="text-align:right;">
-                                    {{$s->tanggal}}
+                                    {{$s->Pengemasan->tanggal}}
                                 </div>
                             </div>
 
                             <div class="row">
                                 <label for="no_seri" class="col-sm-4 col-form-label">Operator</label>
                                 <div class="col-sm-8 col-form-label" style="text-align:right;">
-                                    {{ $s->Perakitan->Karyawan->pluck('nama')->implode(', ') }}
+                                    {{ $s->Pengemasan->Karyawan->nama}}
                                 </div>
                             </div>
 
@@ -93,104 +93,56 @@
                 @endif
                 <div class="card">
                     <div class="card-header bg-warning">
-                        <h3 class="card-title"><i class="fas fa-pencil-alt" aria-hidden="true"></i>&nbsp;Pemeriksaan Terbuka</h3>
+                        <h3 class="card-title"><i class="fas fa-pencil-alt" aria-hidden="true"></i>&nbsp;Pemeriksaan Pengemasan</h3>
                     </div>
                     <div class="card-body">
                         <div class="col-md-12">
-                            <form action="{{ route('perakitan.pemeriksaan.terbuka.update', ['id' => $id]) }}" method="post">
+                            <form action="{{ route('pengemasan.hasil.update.qc', ['id' => $id]) }}" method="post">
                                 {{ csrf_field() }}
                                 {{ method_field('PUT') }}
                                 <hgroup>
                                     <h3 class="card-heading">Pemeriksaan</h3>
-                                    <h6 class="card-subheading text-muted ">Pemeriksaan ke-{{$s->countStatus('pemeriksaan_terbuka') + 1}}</h6>
+                                    <h6 class="card-subheading text-muted ">Pemeriksaan ke-{{$s->countStatus('pemeriksaan_pengemasan') + 1}}</h6>
                                 </hgroup>
                                 <div class="form-horizontal">
 
                                     <div class="form-group row">
-                                        <label for="kondisi_fisik_bahan_baku" class="col-sm-5 col-form-label" style="text-align:right;">Kondisi Bahan Baku</label>
-                                        <div class="col-sm-1 col-form-label">
-                                            <div class="icheck-primary d-inline">
-                                                <input type="radio" id="kondisi_fisik_bahan_baku_ok" name="kondisi_fisik_bahan_baku" value="ok" checked>
-                                                <label for="kondisi_fisik_bahan_baku_ok">
-                                                    Baik
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-2 col-form-label">
-                                            <div class="icheck-primary d-inline">
-                                                <input type="radio" id="kondisi_fisik_bahan_baku_nok" name="kondisi_fisik_bahan_baku" value="nok">
-                                                <label for="kondisi_fisik_bahan_baku_nok">
-                                                    Tidak
-                                                </label>
-                                            </div>
-                                        </div>
-                                        @if ($errors->has('kondisi_fisik_bahan_baku'))
-                                        <span class="invalid-feedback" role="alert">{{$errors->first('kondisi_fisik_bahan_baku')}}</span>
-                                        @endif
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label for="divisi_id" class="col-sm-5 col-form-label" style="text-align:right;">Kondisi Saat Proses Perakitan</label>
+                                        <label for="hasil" class="col-sm-5 col-form-label" style="text-align:right;">Hasil</label>
 
                                         <div class="col-sm-1 col-form-label">
                                             <div class="icheck-primary d-inline">
-                                                <input type="radio" id="kondisi_saat_proses_perakitan_ok" name="kondisi_saat_proses_perakitan" value="ok" checked>
-                                                <label for="kondisi_saat_proses_perakitan_ok">
-                                                    Baik
+                                                <input type="radio" id="hasil_ok" name="hasil" value="ok" checked>
+                                                <label for="hasil_ok">
+                                                    <i class="fas fa-check-circle" style="color:green;"></i>
                                                 </label>
                                             </div>
                                         </div>
 
                                         <div class="col-sm-2 col-form-label">
                                             <div class="icheck-primary d-inline">
-                                                <input type="radio" id="kondisi_saat_proses_perakitan_nok" name="kondisi_saat_proses_perakitan" value="nok">
-                                                <label for="kondisi_saat_proses_perakitan_nok">
-                                                    Tidak
+                                                <input type="radio" id="hasil_nok" name="hasil" value="nok">
+                                                <label for="hasil_nok">
+                                                    <i class="fas fa-times-circle" style="color:red;"></i>
                                                 </label>
                                             </div>
                                         </div>
-                                        @if ($errors->has('kondisi_saat_proses_perakitan'))
-                                        <span class="invalid-feedback" role="alert">{{$errors->first('kondisi_saat_proses_perakitan')}}</span>
-                                        @endif
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label for="hasil_terbuka" class="col-sm-5 col-form-label" style="text-align:right;">Hasil</label>
-
-                                        <div class="col-sm-1 col-form-label">
-                                            <div class="icheck-primary d-inline">
-                                                <input type="radio" id="hasil_terbuka_ok" name="hasil_terbuka" value="ok" checked>
-                                                <label for="hasil_terbuka_ok">
-                                                    Baik
-                                                </label>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-sm-2 col-form-label">
-                                            <div class="icheck-primary d-inline">
-                                                <input type="radio" id="hasil_terbuka_nok" name="hasil_terbuka" value="nok">
-                                                <label for="hasil_terbuka_nok">
-                                                    Tidak Baik
-                                                </label>
-                                            </div>
-                                        </div>
-                                        @if ($errors->has('hasil_terbuka'))
-                                        <span class="invalid-feedback" role="alert">{{$errors->first('hasil_terbuka')}}</span>
+                                        @if ($errors->has('hasil'))
+                                        <span class="invalid-feedback" role="alert">{{$errors->first('hasil')}}</span>
                                         @endif
                                     </div>
 
                                     <div class="form-group row">
                                         <label for="kelompok_produk_id" class="col-sm-5 col-form-label" style="text-align:right;">Tindak Lanjut</label>
                                         <div class="col-sm-7">
-                                            <select class="form-control select2 select2-info @error('tindak_lanjut_terbuka') is-invalid @enderror" data-dropdown-css-class="select2-info" style="width: 30%;" data-placeholder="Pilih Tindak Lanjut" name="tindak_lanjut_terbuka" id="tindak_lanjut_terbuka">
+                                            <select class="form-control select2 select2-info @error('tindak_lanjut') is-invalid @enderror" data-dropdown-css-class="select2-info" style="width: 30%;" data-placeholder="Pilih Tindak Lanjut" name="tindak_lanjut" id="tindak_lanjut">
                                                 <option value=""></option>
                                                 <option value="ok">OK</option>
-                                                <option value="operator" disabled>Operator</option>
+                                                <option value="perbaikan" disabled>Perbaikan</option>
                                                 <option value="produk_spesialis" disabled>Produk Spesialis</option>
                                             </select>
                                             <small id="alert-perubahan"></small>
-                                            @if ($errors->has('tindak_lanjut_terbuka'))
-                                            <span class="invalid-feedback" role="alert">{{$errors->first('tindak_lanjut_terbuka')}}</span>
+                                            @if ($errors->has('tindak_lanjut'))
+                                            <span class="invalid-feedback" role="alert">{{$errors->first('tindak_lanjut')}}</span>
                                             @endif
                                         </div>
                                     </div>
@@ -199,12 +151,13 @@
                                     <div class="form-group row">
                                         <label for="divisi_id" class="col-sm-5 col-form-label" style="text-align:right;">Keterangan</label>
                                         <div class="col-sm-7">
-                                            <textarea name="keterangan_tindak_lanjut_terbuka" id="keterangan_tindak_lanjut_terbuka" class="form-control @error('keterangan_tindak_lanjut_terbuka') is-invalid @enderror" disabled></textarea>
-                                            @if ($errors->has('keterangan_tindak_lanjut_terbuka'))
-                                            <span class="invalid-feedback" role="alert">{{$errors->first('keterangan_tindak_lanjut_terbuka')}}</span>
+                                            <textarea name="keterangan" id="keterangan" class="form-control @error('keterangan') is-invalid @enderror" disabled></textarea>
+                                            @if ($errors->has('keterangan'))
+                                            <span class="invalid-feedback" role="alert">{{$errors->first('keterangan')}}</span>
                                             @endif
                                         </div>
                                     </div>
+
                                 </div>
                         </div>
                         <!-- /.card -->
@@ -231,13 +184,13 @@
 @section('adminlte_js')
 <script>
     $(function() {
-        var countStatus = "{{$s->countStatus('perbaikan_pemeriksaan_terbuka')}}";
-        $('input[type="radio"][name="hasil_terbuka"]').on("change", function() {
+        var countStatus = "{{$s->countStatus('perbaikan_pengemasan')}}";
+        $('input[type="radio"][name="hasil"]').on("change", function() {
             if (this.value == 'ok') {
                 // $('select').select2('val', '');
                 $('select').val('').trigger('change');
                 $("select option[value='ok']").attr('disabled', false);
-                $("select option[value='operator']").attr('disabled', true);
+                $("select option[value='perbaikan']").attr('disabled', true);
                 $("select option[value='produk_spesialis']").attr('disabled', true);
 
             } else if (this.value == 'nok') {
@@ -245,17 +198,17 @@
                 $('select').val('').trigger('change');
                 $("select option[value='ok']").attr('disabled', true);
                 if (countStatus < 2) {
-                    $("select option[value='operator']").attr('disabled', false);
+                    $("select option[value='perbaikan']").attr('disabled', false);
                 } else if (countStatus >= 2) {
                     $("select option[value='produk_spesialis']").attr('disabled', false);
                 }
             }
         });
-        $('select[name="tindak_lanjut_terbuka"]').on("change", function() {
+        $('select[name="tindak_lanjut"]').on("change", function() {
             if (this.value == 'ok' || this.value == '') {
-                $('textarea[name="keterangan_tindak_lanjut_terbuka"]').attr('disabled', true);
+                $('textarea[name="keterangan"]').attr('disabled', true);
             } else {
-                $('textarea[name="keterangan_tindak_lanjut_terbuka"]').attr('disabled', false);
+                $('textarea[name="keterangan"]').attr('disabled', false);
             }
         });
     });

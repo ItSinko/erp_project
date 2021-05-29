@@ -50,6 +50,15 @@ class ProduksiController extends Controller
         $this->UserLogController = $UserLogController;
     }
 
+    //BPPB
+    public function bppb_penyerahan_barang_jadi_create($id)
+    {
+        $s = Bppb::find($id);
+        $hp = HasilPengemasan::whereHas('Pengemasan.Bppb', function ($q) use ($id) {
+            $q->where('id', $id);
+        })->get();
+        return view('page.produksi.bppb_penyerahan_barang_jadi_create', ['id' => $id, 's' => $s, 'hp' => $hp]);
+    }
 
     //PERAKITAN
     public function perakitan()
@@ -626,7 +635,7 @@ class ProduksiController extends Controller
                             <div><small class="success-text">Pemeriksaan Terbuka Diterima</small></div>';
                 } else if ($s->status == 'rej_pemeriksaan_terbuka') {
                     if ($s->tindak_lanjut_terbuka == "operator") {
-                        $btn = '<a href="/perbaikan/produksi/create/' . $s->id . '/perakitan"><button type="button" class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-wrench"></i></button>
+                        $btn = '<a href="/perakitan/hasil/status/' . $s->id . '/perbaikan_pemeriksaan_terbuka"><button type="button" class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-wrench"></i></button>
                                 <div><small>Lakukan Perbaikan</small></div></a>
                                 <div><small class="danger-text">Pemeriksaan Terbuka Ditolak</small></div>';
                     } else if ($s->tindak_lanjut_terbuka == "produk_spesialis") {
@@ -1092,16 +1101,12 @@ class ProduksiController extends Controller
                 'karyawan_id' => 'required',
                 'tanggal_laporan' => 'required',
                 'no_seri' => 'required',
-                'hasil' => 'required',
-                'tindak_lanjut' => 'required'
 
             ],
             [
                 'karyawan_id.required' => 'Operator harus dipilih',
                 'tanggal_laporan.reqired' => 'Tanggal Laporan harus diisi',
                 'no_seri.required' => 'No Seri harus diisi',
-                'hasil' => 'required',
-                'tindak_lanjut' => 'required'
             ]
         );
 
@@ -1118,22 +1123,14 @@ class ProduksiController extends Controller
             if (!empty($request->no_seri)) {
                 $bool = true;
                 for ($i = 0; $i < count($request->no_seri); $i++) {
-                    $status = "";
-                    if ($request->tindak_lanjut == "ok") {
-                        $status = 'ok';
-                    } else if ($request->tindak_lanjut == "perbaikan") {
-                        $status = 'req_perbaikan';
-                    } else if ($request->tindak_lanjut == "pengujian") {
-                        $status = 'req_pengujian';
-                    }
                     $cs = HasilPengemasan::create([
                         'pengemasan_id' => $c->id,
                         'hasil_perakitan_id' => $request->no_seri[$i],
                         'no_barcode' => $request->no_barcode[$i],
-                        'hasil' => $request->hasil[$i],
-                        'keterangan' => $request->keterangan[$i],
-                        'tindak_lanjut' => $request->tindak_lanjut[$i],
-                        'status' => $status
+                        'hasil' => NULL,
+                        'keterangan' => NULL,
+                        'tindak_lanjut' => NULL,
+                        'status' => 'req_pemeriksaan'
                     ]);
 
                     $arrdcp = [];
@@ -1665,7 +1662,7 @@ class ProduksiController extends Controller
                                     "tanggal" => Carbon::now()->toDateString(),
                                     "hasil" => "ok",
                                     "keterangan" => "",
-                                    "tindak_lanjut" => "ok"
+                                    "tindak_lanjut" => "operator"
                                 ]);
                             }
                         } else if ($h->status == "rej_pemeriksaan_tertutup") {
@@ -1691,7 +1688,7 @@ class ProduksiController extends Controller
                                     "tanggal" => Carbon::now()->toDateString(),
                                     "hasil" => "ok",
                                     "keterangan" => "",
-                                    "tindak_lanjut" => "ok"
+                                    "tindak_lanjut" => "perbaikan"
                                 ]);
                             }
                         }
@@ -1711,37 +1708,50 @@ class ProduksiController extends Controller
                         }
                     } else if ($request->ketidaksesuaian_proses == "pengemasan") {
                         $u = HasilPengemasan::find($request->hasil_perakitan_id[$i]);
-                        if ($u->status == "req_perbaikan") {
-                            $c = HistoriHasilPerakitan::create([
-                                "hasil_perakitan_id" => $u->hasil_perakitan_id,
-                                "kegiatan" => "perbaikan_pengemasan",
-                                "tanggal" => Carbon::now()->toDateString(),
-                                "hasil" => "ok",
-                                "keterangan" => "",
-                                "tindak_lanjut" => "pengujian"
-                            ]);
-                            $u->status = "acc_perbaikan";
-                            $u->save();
-
-                            $mp_id = "";
-                            $mp = MonitoringProses::where([['bppb_id', '=', $id], ['tanggal', '=', Carbon::now()->toDateString()]])->first();
-                            if (count($mp) <= 0) {
-                                $mp_c = MonitoringProses::create([
-                                    'bppb_id' => $id,
-                                    'tanggal' => Carbon::now()->toDateString(),
-                                    'user_id' => Auth::user()->id
+                        if ($u->status == "rej_pemeriksaan") {
+                            if ($u->tindak_lanjut == 'perbaikan') {
+                                $c = HistoriHasilPerakitan::create([
+                                    "hasil_perakitan_id" => $u->hasil_perakitan_id,
+                                    "kegiatan" => "perbaikan_pengemasan",
+                                    "tanggal" => Carbon::now()->toDateString(),
+                                    "hasil" => "ok",
+                                    "keterangan" => "",
+                                    "tindak_lanjut" => "pengujian"
                                 ]);
+                                $u->status = "req_pengujian";
+                                $u->save();
 
-                                $mp_id = $mp_c->id;
-                            } else if (count($mp) > 0) {
-                                $mp_id = $mp->id;
+                                $mp_id = "";
+                                $mp = MonitoringProses::where([['bppb_id', '=', $id], ['tanggal', '=', Carbon::now()->toDateString()]])->first();
+                                if (count($mp) <= 0) {
+                                    $mp_c = MonitoringProses::create([
+                                        'bppb_id' => $id,
+                                        'tanggal' => Carbon::now()->toDateString(),
+                                        'user_id' => Auth::user()->id
+                                    ]);
+
+                                    $mp_id = $mp_c->id;
+                                } else if (count($mp) > 0) {
+                                    $mp_id = $mp->id;
+                                }
+
+                                $cs = HasilMonitoringProses::create([
+                                    'monitoring_proses_id' => $mp_id,
+                                    'hasil_perakitan_id' => $u->hasil_perakitan_id,
+                                    'keterangan' => 'pengujian pengemasan'
+                                ]);
+                            } else if ($u->tindak_lanjut == 'produk_spesialis') {
+                                $c = HistoriHasilPerakitan::create([
+                                    "hasil_perakitan_id" => $u->hasil_perakitan_id,
+                                    "kegiatan" => "perbaikan_pengemasan",
+                                    "tanggal" => Carbon::now()->toDateString(),
+                                    "hasil" => "ok",
+                                    "keterangan" => "",
+                                    "tindak_lanjut" => "perbaikan"
+                                ]);
+                                $u->status = "analisa_produk_spesialis";
+                                $u->save();
                             }
-
-                            $cs = HasilMonitoringProses::create([
-                                'monitoring_proses_id' => $mp_id,
-                                'hasil_perakitan_id' => $u->hasil_perakitan_id,
-                                'keterangan' => 'pengujian pengemasan'
-                            ]);
                         }
                     }
                 }

@@ -16,11 +16,15 @@ use App\DetailProduk;
 use App\Produk;
 use App\Part;
 use App\Bppb;
+use App\DetailPenyerahanBarangJadi;
 use App\KelompokProduk;
 use App\Event;
 use App\PartEng;
 
 use App\Events\RealTimeMessage;
+use App\PenyerahanBarangJadi;
+use Carbon\Carbon;
+use App\HasilPengemasan;
 
 class PPICController extends Controller
 {
@@ -130,11 +134,21 @@ class PPICController extends Controller
                     $gambar = 'src="{{asset(\'image/produk/\')}}/' . $s->DetailProduk->foto . '"';
                 }
 
-                $gambar .= `title="` . $s->DetailProduk->nama . `">`;
+                $gambar .= 'title="' . $s->DetailProduk->nama . '">';
                 return $gambar;
             })
             ->addColumn('produk', function ($s) {
                 $btn = '<hgroup><h6 class="heading">' . $s->DetailProduk->nama . '</h6><div class="subheading text-muted">' . $s->DetailProduk->Produk->Kelompokproduk->nama . '</div></hgroup>';
+                return $btn;
+            })
+            ->addColumn('laporan', function ($s) {
+                $btn = '<a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="Klik untuk melihat detail BPPB">';
+                $btn .= '<i class="fas fa-eye" aria-hidden="true"></i> </a>';
+
+                $btn .= '<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">';
+                $btn .= '<a class="dropdown-item" href="/bppb/permintaan_bahan_baku/' . $s->id . '"><span style="color: black;"><i class="fas fa-box-open" aria-hidden="true"></i>&nbsp;Permintaan Bahan Baku</span></a>';
+                $btn .= '<a class="dropdown-item" href="/bppb/pengembalian_barang_gudang/' . $s->id . '"><span style="color: black;"><i class="fas fa-dolly" aria-hidden="true"></i>&nbsp;Pengembalian Barang Gudang</span></a>';
+                $btn .= '<a class="dropdown-item" href="/bppb/penyerahan_barang_jadi/' . $s->id . '"><span style="color: black;"><i class="fas fa-pallet" aria-hidden="true"></i>&nbsp;Penyerahan Barang Jadi</span></a>';
                 return $btn;
             })
             ->addColumn('aksi', function ($s) {
@@ -150,7 +164,7 @@ class PPICController extends Controller
                 $btn = $s->Divisi->nama;
                 return $btn;
             })
-            ->rawColumns(['gambar', 'produk', 'aksi'])
+            ->rawColumns(['gambar', 'produk', 'aksi', 'laporan'])
             ->make(true);
     }
 
@@ -266,5 +280,47 @@ class PPICController extends Controller
         $d = $bppb->delete();
 
         return redirect()->back();
+    }
+
+    public function bppb_penyerahan_barang_jadi($id)
+    {
+        $s = Bppb::find($id);
+        return view('page.ppic.bppb_penyerahan_barang_jadi_show', ['id' => $id, 's' => $s]);
+    }
+
+    public function bppb_penyerahan_barang_jadi_show($id)
+    {
+        $s = PenyerahanBarangJadi::where('bppb_id', $id)->get();
+        return DataTables::of($s)
+            ->addIndexColumn()
+            ->editColumn('tanggal', function ($s) {
+                return Carbon::createFromFormat('Y-m-d', $s->tanggal)->format('d-m-Y');
+            })
+            ->addColumn('no_seri', function ($s) {
+                $arr = [];
+                foreach ($s->DetailPenyerahanBarangJadi as $i) {
+                    array_push($arr, $i->HasilPerakitan->HasilPengemasan->no_barcode);
+                }
+                return implode("<br>", $arr);
+            })
+            ->editColumn('divisi', function ($s) {
+                return $s->Divisi->nama;
+            })
+            ->addColumn('aksi', function ($s) {
+                $btn = '<a href = "/bppb/penyerahan_barang_jadi/' . $s->id . '"><button class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-eye"></i></button></a>';
+                $btn .= '<a href = "/perakitan/laporan/edit/' . $s->id . '"><button class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-edit"></i></button></a>';
+                $btn .= '<a class="deletemodal" data-toggle="modal" data-target="#deletemodal" data-attr="/perakitan/laporan/delete/' . $s->id . '"><button class="btn btn-danger btn-sm m-1" style="border-radius:50%;"><i class="fas fa-trash"></i></button></a>';
+                return $btn;
+            })
+            ->rawColumns(['no_seri', 'aksi'])
+            ->make(true);
+    }
+
+    public function bppb_penyerahan_barang_jadi_create($id)
+    {
+        $s = HasilPengemasan::whereHas('Bppb', function ($q) use ($id) {
+            $q->where('id', $id);
+        })->get();
+        return view('page.produksi.bppb_penyerahan_barang_jadi_create');
     }
 }

@@ -686,7 +686,7 @@ return [
                 [
                     'icon' => 'far fa-circle',
                     'text' => 'Laporan',
-                    'url'  => '/pengemasan/pemeriksaan',
+                    'url'  => '/pengemasan/qc',
                     'auth' => [23],
                 ],
                 [
@@ -715,7 +715,6 @@ return [
             'url' => '/perbaikan/produksi',
             'auth' => [17],
         ],
-
 
         ['header' => 'LOGOUT'],
         [

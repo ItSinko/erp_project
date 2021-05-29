@@ -330,6 +330,12 @@ Route::group(['prefix' => '/peminjaman', 'middleware' => 'auth'], function () {
 //BPPB
 Route::group(['prefix' => '/bppb', 'middleware' => 'auth'], function () {
     Route::get('/', 'PpicController@bppb')->name('bppb');
+    Route::get('/permintaan_bahan_baku/{id}', 'PpicController@bppb_permintaan_bahan_baku')->name('bppb.permintaan_bahan_baku');
+    Route::get('/pengembalian_barang_gudang/{id}', 'PpicController@bppb_pengembalian_barang_gudang')->name('bppb.pengembalian_barang_gudang');
+    Route::get('/penyerahan_barang_jadi/{id}', 'PpicController@bppb_penyerahan_barang_jadi')->name('bppb.penyerahan_barang_jadi');
+    Route::get('/penyerahan_barang_jadi/show/{id}', 'PpicController@bppb_penyerahan_barang_jadi_show')->name('bppb.penyerahan_barang_jadi.show');
+    Route::get('/penyerahan_barang_jadi/create/{id}', 'ProduksiController@bppb_penyerahan_barang_jadi_create')->name('bppb.penyerahan_barang_jadi.create');
+    Route::put('/penyerahan_barang_jadi/store/{id}', 'ProduksiController@bppb_penyerahan_barang_jadi_store')->name('bppb.penyerahan_barang_jadi.store');
     Route::get('/show', 'PpicController@bppb_show')->name('bppb.show');
     Route::get('/create', 'PpicController@bppb_create')->name('bppb.create');  /* Create */
     Route::get('/create/get_detail_produk_by_kelompok_produk/{kelompok_produk_id}', 'GetController@get_detail_produk_by_kelompok_produk');
@@ -363,6 +369,7 @@ Route::group(['prefix' => '/persiapan_packing_produk', 'middleware' => 'auth'], 
 Route::group(['prefix' => '/perakitan', 'middleware' => 'auth'], function () {
     Route::get('/eng', 'EngController@perakitan')->name('perakitan.eng');
     Route::get('/show/eng', 'EngController@perakitan_show')->name('perakitan.show.eng');
+
     Route::get('/', 'ProduksiController@perakitan')->name('perakitan');
     Route::get('/show', 'ProduksiController@perakitan_show')->name('perakitan.show');
     Route::get('/create', 'ProduksiController@perakitan_create')->name('perakitan.create');   /* Create dari BPPB */
@@ -486,6 +493,13 @@ Route::group(['prefix' => '/pengemasan', 'middleware' => 'auth'], function () {
     Route::get('/', 'ProduksiController@pengemasan')->name('pengemasan');
     Route::get('/eng', 'EngController@pengemasan')->name('pengemasan.eng');
     Route::get('/show/eng', 'EngController@pengemasan_show')->name('pengemasan.show.eng');
+    Route::get('/qc', 'QCController@pengemasan')->name('pengemasan.qc');
+    Route::get('/show/qc', 'QCController@pengemasan_show')->name('pengemasan.show.qc');
+    Route::get('/bppb/show/qc/{bppbid}', 'QCController@pengemasan_bppb_show')->name('pengemasan.bppb.show.qc');
+    Route::get('/bppb/edit/qc/{bppbid}', 'QCController@pengemasan_bppb_edit')->name('pengemasan.bppb.edit.qc');
+    Route::put('/bppb/update/qc/{bppbid}', 'QCController@pengemasan_bppb_update')->name('pengemasan.bppb.update.qc');
+    Route::get('/hasil/edit/qc/{id}', 'QCController@pengemasan_hasil_edit')->name('pengemasan.hasil.edit.qc');
+    Route::put('/hasil/update/qc/{id}', 'QCController@pengemasan_hasil_update')->name('pengemasan.hasil.update.qc');
     Route::get('/form', 'ProduksiController@pengemasan_form')->name('pengemasan.form');
     Route::get('/form/show', 'ProduksiController@pengemasan_form_show')->name('pengemasan.form.show');
     Route::get('/form/create', 'ProduksiController@pengemasan_form_create')->name('pengemasan.form.create');

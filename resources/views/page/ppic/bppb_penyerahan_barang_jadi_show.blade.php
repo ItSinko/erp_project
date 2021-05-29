@@ -15,12 +15,12 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>Pengemasan</h1>
+                <h1>BPPB</h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item active">Pengemasan</li>
+                    <li class="breadcrumb-item active">BPPB</li>
                 </ol>
             </div>
         </div>
@@ -39,28 +39,39 @@
                         <div class="row">
                             <label for="no_seri" class="col-sm-6 col-form-label">No BPPB</label>
                             <div class="col-sm-6 col-form-label" style="text-align:right;">
-                                {{$s->Bppb->no_bppb}}
+                                {{$s->no_bppb}}
                             </div>
                         </div>
 
                         <div class="row">
                             <label for="no_seri" class="col-sm-4 col-form-label">Produk</label>
                             <div class="col-sm-8 col-form-label" style="text-align:right;">
-                                {{$s->Bppb->DetailProduk->nama}}
+                                {{$s->DetailProduk->nama}}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <label for="no_seri" class="col-sm-5 col-form-label">Kelompok Produk</label>
+                            <div class="col-sm-7 col-form-label" style="text-align:right;">
+                                {{$s->DetailProduk->Produk->KelompokProduk->nama}}
                             </div>
                         </div>
 
                         <div class="row">
                             <label for="tanggal" class="col-sm-6 col-form-label">Tanggal Laporan</label>
                             <div class="col-sm-6 col-form-label" style="text-align:right;">
-                                {{date("d-m-Y", strtotime($s->tanggal))}}
+                                {{date("d-m-Y", strtotime($s->tanggal_bppb))}}
                             </div>
                         </div>
 
                         <div class="row">
-                            <label for="tanggal" class="col-sm-6 col-form-label">Operator</label>
+                            <label for="tanggal" class="col-sm-6 col-form-label">Aksi</label>
                             <div class="col-sm-6 col-form-label" style="text-align:right;">
-                                {{$s->Karyawan->nama}}
+                                @if(empty($s->PenyerahanBarangJadi))
+                                <a href='/bppb/penyerahan_barang_jadi/create/{{$id}}'><button type="button" class="btn btn-success rounded-pill btn-sm"><i class="fas fa-plus"></i>&nbsp;Tambah</button></a>
+                                @elseif(!empty($s->PenyerahanBarangJadi))
+                                <button type="button" class="btn btn-warning rounded-pill btn-sm"><i class="fas fa-edit"></i>&nbsp;Ubah</button>
+                                @endif
                             </div>
                         </div>
 
@@ -71,82 +82,19 @@
         <div class="col-9">
             <div class="card">
                 <div class="card-body">
-                    <h4>Monitoring Proses</h4><br>
+                    <h4>Penyerahan Barang Jadi</h4><br>
                     <table id="example1" class="table table-hover table-bordered styled-table">
                         <thead style="text-align: center;">
                             <tr>
-                                <th rowspan="2">No</th>
-                                <th rowspan="2">No Seri</th>
-                                <th rowspan="2">Barcode</th>
-                                <th rowspan="2">Kondisi Unit</th>
-                                @foreach($c as $cs)
-                                <th colspan="{{count($cs->DetailCekPengemasan)}}">{{$cs->perlengkapan}}</th>
-                                @endforeach
-                                <th rowspan="2">Hasil</th>
-                                <th rowspan="2">Keterangan</th>
-                                <th rowspan="2">Tindak Lanjut</th>
-                                <th rowspan="2">Aksi</th>
-                            </tr>
-                            <tr>
-                                @foreach($c as $cs)
-                                @foreach($cs->DetailCekPengemasan as $i)
-                                <th>{{$i->nama_barang}}</th>
-                                @endforeach
-                                @endforeach
+                                <th>No</th>
+                                <th>No Seri</th>
+                                <th>Jumlah</th>
+                                <th>Penyerahan</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody style="text-align:center;">
-                            @foreach($hp as $i)
-                            <tr>
-                                <td>{{$loop->iteration}}</td>
-                                <td>{{$i->HasilPerakitan->no_seri}}</td>
-                                <td>{{$i->no_barcode}}</td>
-                                <td>
-                                    @if($i->kondisi_unit == "baik")
-                                    <i class="fas fa-check-circle" style="color:green;"></i>
-                                    @elseif($i->kondisi_unit == "tidak")
-                                    <i class="fas fa-times-circle" style="color:red;"></i>
-                                    @endif
-                                </td>
-                                @foreach($c as $cs)
-                                @foreach($cs->DetailCekPengemasan as $h)
-                                <td>@if($i->DetailCekPengemasan->contains('id', $h->id))
-                                    <i class="fas fa-check-circle" style="color:green;"></i>
-                                    @else
-                                    <i class="fas fa-times-circle" style="color:red;"></i>
-                                    @endif
-                                </td>
-                                @endforeach
-                                @endforeach
-                                <td>
-                                    @if($i->hasil == "ok")
-                                    <i class="fas fa-check-circle" style="color:green;"></i>
-                                    @elseif($i->hasil == "nok")
-                                    <i class="fas fa-times-circle" style="color:red;"></i>
-                                    @endif
-                                </td>
-                                <td>{{$i->keterangan}}</td>
-                                <td>{{ucfirst($i->tindak_lanjut)}}</td>
-                                <td>@if($i->status == 'req_perbaikan')
-                                    <a href="/perbaikan/produksi/create/{{$i->id}}/pengemasan">
-                                        <button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-paper-plane"></i></button>
-                                        <div><small>Perbaikan</small></div>
-                                    </a>
-                                    @elseif($i->status == 'acc_perbaikan')
-                                    <small class="danger-text">Perbaikan</small>
-                                    @elseif($i->status == 'rej_pemeriksaan')
-                                    @if($i->tindak_lanjut == 'perbaikan')
-                                    <a href="/perbaikan/produksi/create/{{$i->id}}/pengemasan">
-                                        <button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-paper-plane"></i></button>
-                                        <div><small>Perbaikan</small></div>
-                                    </a>
-                                    @elseif($i->tindak_lanjut == 'produk_spesialis')
-                                    <small class="danger-text">Produk Spesialis</small>
-                                    @endif
-                                    @endif
-                                </td>
-                            </tr>
-                            @endforeach
+
                         </tbody>
                     </table>
                 </div>
@@ -206,8 +154,39 @@
 <script>
     $(function() {
         $('#example1').DataTable({
-            scrollX: true
+            scrollX: true,
+            processing: true,
+            serverSide: true,
+            ajax: "{{ route('bppb.penyerahan_barang_jadi.show', ['id' => $s->id]) }}",
+            columns: [{
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex',
+                    orderable: false,
+                    searchable: false
+                },
+                {
+                    data: 'tanggal',
+                    name: 'tanggal'
+                },
+                {
+                    data: 'no_seri',
+                    name: 'no_seri'
+                },
+                {
+                    data: 'jumlah',
+                    name: 'jumlah'
+                },
+                {
+                    data: 'divisi_id'
+                },
+                {
+                    data: 'aksi',
+                    name: 'aksi',
+                    orderable: false,
+                    searchable: false
+                },
+            ]
         });
-    })
+    });
 </script>
-@endsection
+@stop

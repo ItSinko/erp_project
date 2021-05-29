@@ -221,9 +221,17 @@
         $('input[type="radio"][name="brc"]').on("change", function() {
             if (this.value == 'ya') {
                 $('.barcode').attr('readonly', false);
+                $('#insial_produk').attr('readonly', false);
+                $('#tipe_produk').attr('readonly', false);
+                $('#waktu_produksi').attr('readonly', false);
+                $('#urutan_bb').attr('readonly', false);
                 rdb = 'ya';
             } else if (this.value == 'tidak') {
                 $('.barcode').attr('readonly', true);
+                $('#insial_produk').attr('readonly', true);
+                $('#tipe_produk').attr('readonly', true);
+                $('#waktu_produksi').attr('readonly', true);
+                $('#urutan_bb').attr('readonly', true);
                 rdb = 'tidak';
                 $('.barcode').val("");
             }
