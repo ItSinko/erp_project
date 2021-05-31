@@ -65,7 +65,7 @@
                     {{ csrf_field() }}
                     <div class="card">
                         <div class="card-header bg-success">
-                            <div class="card-title"><i class="fas fa-plus-circle"></i>&nbsp;Pengukuran Tensi</div>
+                            <div class="card-title"><i class="fas fa-plus-circle"></i>&nbsp;Pengukuran Berat Badan</div>
                         </div>
                         <div class="card-body">
                             <div class="col-lg-12">

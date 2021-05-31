@@ -101,11 +101,6 @@
                   <label for="lemak" style="text-align:right;">Kalori</label>
                   <input type="text" class="form-control" name="kalori" placeholder="Masukkan jumlah kalori">
                 </div>
-                <!-- <div class="form-group">
-                  <label for="lemak" style="text-align:right;">Body Mass Index</label>
-                  <input type="text" class="form-control" id="bmi" readonly>
-                </div>
-                <small id="status_bmi" class="form-text text-muted"></small> -->
               </div>
             </form>
           </div>

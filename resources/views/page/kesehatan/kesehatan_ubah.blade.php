@@ -49,13 +49,13 @@
                                                 <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;">Vaksin</label>
                                                 <div class="col-sm-8" style="margin-top:7px;">
                                                     <div class="icheck-success d-inline col-sm-4">
-                                                        <input type="radio" name="status_vaksin" value="Belum" checked="0">
+                                                        <input type="radio" name="status_vaksin" value="Belum" {{ ($kesehatan_awal->vaksin=="Belum")? "checked" : "" }}>
                                                         <label for="no">
                                                             Belum
                                                         </label>
                                                     </div>
                                                     <div class="icheck-warning d-inline col-sm-4">
-                                                        <input type="radio" name="status_vaksin" value="Sudah">
+                                                        <input type="radio" name="status_vaksin" value="Sudah" {{ ($kesehatan_awal->vaksin=="Sudah")? "checked" : "" }}>
                                                         <label for="sample">
                                                             Sudah
                                                         </label>
@@ -66,7 +66,7 @@
                                             <div class="form-group row">
                                                 <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;">Keterangan</label>
                                                 <div class="col-sm-8">
-                                                    <textarea type="text" class="form-control @error('ket_vaksin') is-invalid @enderror" name="ket_vaksin" id="keterangan" value="{{$kesehatan_awal->keterangan}}" placeholder="Keterangan Vaksin" style="width:45%;" disabled></textarea>
+                                                    <textarea type="text" class="form-control @error('ket_vaksin') is-invalid @enderror" name="ket_vaksin" id="keterangan" placeholder="Keterangan Vaksin" style="width:45%;" {{ ($kesehatan_awal->ket_vaksin ? '1' : 'disabled') }}>{{$kesehatan_awal->ket_vaksin}}</textarea>
                                                 </div>
                                                 <span role="alert" id="no_seri-msg"></span>
                                             </div>
@@ -90,7 +90,7 @@
                                                 <label for="keterangan" class="col-sm-4 col-form-label" style="text-align:right;">Berat Badan</label>
                                                 <div class="col-sm-2">
                                                     <div class="input-group mb-3">
-                                                        <input type="text" class="form-control" name="berat" id="berat" value="{{ old('berat') }}">
+                                                        <input type="text" class="form-control" name="berat" id="berat" value="{{$kesehatan_awal->berat}}">
                                                         <div class="input-group-append">
                                                             <span class="input-group-text">Kg</span>
                                                         </div>
@@ -105,7 +105,7 @@
                                             <div class="form-group row">
                                                 <label class="col-sm-4 col-form-label" style="text-align:right;">Body Mass Index</label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" class="form-control @error('data') is-invalid @enderror " id="bmi" style="width:15%;" disabled>
+                                                    <input type="text" class="form-control @error('data') is-invalid @enderror " id="bmi" style="width:15%;" disabled value="{{number_format($kesehatan_awal->berat / (($kesehatan_awal->tinggi / 100) * ($kesehatan_awal->tinggi / 100)),2) }}">
                                                     <small id="status_bmi" class="form-text text-muted"></small>
                                                 </div>
                                             </div>
@@ -117,7 +117,7 @@
                                                         <small id="mata_kiri_status" class="form-text text-muted d-inline"></small>
                                                     </div>
                                                     <div class="col-sm-4  d-inline">
-                                                        <input type="text" class="form-control d-inline col-sm-4" id="mata_kanan" style="width:15%;" placeholder="Mata Kanan" name="mata_kanan" value="{{$kesehatan_awal->mata_kiri}}">
+                                                        <input type="text" class="form-control d-inline col-sm-4" id="mata_kanan" style="width:15%;" placeholder="Mata Kanan" name="mata_kanan" value="{{$kesehatan_awal->mata_kanan}}">
                                                         <small id="mata_kanan_status" class="form-text text-muted d-inline"></small>
                                                     </div>
                                                 </div>
@@ -126,13 +126,13 @@
                                                 <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;">Komposisi tubuh</label>
                                                 <div class="col-sm-8" style="margin-top:7px;">
                                                     <div class="icheck-success d-inline col-sm-4">
-                                                        <input type="radio" name="status_komposisi_tubuh" value="0" checked="0">
+                                                        <input type="radio" name="status_komposisi_tubuh" value="0" checked="0" {{ ($kesehatan_awal->lemak==NULL)? "checked" : "" }}>
                                                         <label for="no">
                                                             Tidak Ada
                                                         </label>
                                                     </div>
                                                     <div class="icheck-warning d-inline col-sm-4">
-                                                        <input type="radio" name="status_komposisi_tubuh" value="1">
+                                                        <input type="radio" name="status_komposisi_tubuh" value="1" {{ ($kesehatan_awal->lemak!=NULL)? "checked" : "" }}>
                                                         <label for="sample">
                                                             Ada
                                                         </label>
@@ -140,7 +140,7 @@
                                                     <span class="invalid-feedback" role="alert" id="kondisi-msg"></span>
                                                 </div>
                                             </div>
-                                            <div class="card" id="detail_komposisi" style="display:none">
+                                            <div class="card" id="detail_komposisi" style="  {{ ($kesehatan_awal->ket_vaksin ? '1' : 'display:none') }}">
                                                 <div class="card-header bg-success">
                                                     <div class="card-title">&nbsp;Komposisi Tubuh</div>
                                                 </div>
@@ -162,7 +162,7 @@
                                                                         <tr>
                                                                             <td>
                                                                                 <div class="input-group mb-3">
-                                                                                    <input type="text" class="form-control" name="lemak" id="lemak" value="{{ old('lemak') }}">
+                                                                                    <input type="text" class="form-control" name="lemak" id="lemak" value="{{ $kesehatan_awal->lemak }}">
                                                                                     <div class="input-group-append">
                                                                                         <span class="input-group-text">gram</span>
                                                                                     </div>
@@ -170,7 +170,7 @@
                                                                             </td>
                                                                             <td>
                                                                                 <div class="input-group mb-3">
-                                                                                    <input type="text" class="form-control" name="kandungan_air" id="kandungan_air" value="{{ old('kandungan_air') }}">
+                                                                                    <input type="text" class="form-control" name="kandungan_air" id="kandungan_air" value="{{ $kesehatan_awal->kandungan_air }}">
                                                                                     <div class="input-group-append">
                                                                                         <span class="input-group-text">%</span>
                                                                                     </div>
@@ -178,7 +178,7 @@
                                                                             </td>
                                                                             <td>
                                                                                 <div class="input-group mb-3">
-                                                                                    <input type="text" class="form-control" name="otot" id="otot" value="{{ old('otot') }}">
+                                                                                    <input type="text" class="form-control" name="otot" id="otot" value="{{ $kesehatan_awal->otot }}">
                                                                                     <div class="input-group-append">
                                                                                         <span class="input-group-text">Kg</span>
                                                                                     </div>
@@ -186,7 +186,7 @@
                                                                             </td>
                                                                             <td>
                                                                                 <div class="input-group mb-3">
-                                                                                    <input type="text" class="form-control" name="tulang" id="tulang" value="{{ old('tulang') }}">
+                                                                                    <input type="text" class="form-control" name="tulang" id="tulang" value="{{ $kesehatan_awal->tulang }}">
                                                                                     <div class="input-group-append">
                                                                                         <span class="input-group-text">Kg</span>
                                                                                     </div>
@@ -194,7 +194,7 @@
                                                                             </td>
                                                                             <td>
                                                                                 <div class="input-group mb-3">
-                                                                                    <input type="text" class="form-control" name="kalori" id="kalori" value="{{ old('kalori') }}">
+                                                                                    <input type="text" class="form-control" name="kalori" id="kalori" value="{{ $kesehatan_awal->kalori }}">
                                                                                     <div class="input-group-append">
                                                                                         <span class="input-group-text">kkal</span>
                                                                                     </div>
@@ -238,6 +238,7 @@
                                                     @endif
                                                 </div>
                                             </div>
+                                            @if($kesehatan_awal->file_mcu == NULL)
                                             <div class="form-group row">
                                                 <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;">Hasil Medical Check Up</label>
                                                 <div class="col-sm-4">
@@ -249,6 +250,7 @@
                                                     @endif
                                                 </div>
                                             </div>
+                                            @endif
                                             <div class="form-group row">
                                                 <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;">Pemeriksaan Covid</label>
                                                 <div class="col-sm-8" style="margin-top:7px;">
@@ -347,11 +349,13 @@
                                                                 Negatif
                                                             </label>
                                                         </div>
+                                                        @if($kesehatan_awal->file_covid == NULL)
                                                         <input type="file" class="form-control @error('file_covid') is-invalid @enderror" name="file_covid" value="{{old('file_covid')}}" style="width:45%;">
                                                         @if($errors->has('file_covid'))
                                                         <div class="text-danger">
                                                             {{ $errors->first('file_covid')}}
                                                         </div>
+                                                        @endif
                                                         @endif
                                                     </div>
                                                 </div>

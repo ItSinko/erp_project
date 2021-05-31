@@ -250,12 +250,14 @@
                 $("#tipe_1").removeAttr("style");
                 $("#tipe_2").css('display', 'none');
                 $('#dosis_obat_custom').val('');
+                $('select[name=obat_id]').prop("required", false);
                 $('input[name=aturan_obat]').prop("required", false);
                 $('input[name=dosis_obat]').prop("required", false);
                 $('input[name=aturan_obat]').prop("checked", false);
                 $('input[name=dosis_obat]').prop("checked", false);
                 $('textarea[id=terapi]').prop("required", true);
             } else {
+                $('select[name=obat_id]').prop("required", true);
                 $('input[name=dosis_obat]').prop("required", true);
                 $('input[name=aturan_obat]').prop("required", true);
                 $('#obat').val(null).trigger('change');

@@ -178,6 +178,7 @@
                                             <thead style="text-align: center;">
                                                 <tr>
                                                     <th>No</th>
+                                                    <th>Pemeriksa</th>
                                                     <th>Tanggal</th>
                                                     <th>Nama</th>
                                                     <th>Hasil</th>
@@ -286,6 +287,7 @@
 </script>
 <script>
     $(document).ready(function() {
+
         $('select[name="divisi"]').on('change', function() {
             var id = jQuery(this).val();
             console.log(id);
@@ -308,7 +310,20 @@
                                     $('#dates' + value['id'] + '').val($(this).val());
                                 });
                                 $('#tabel_rapid').append(`<tr> <td>` + no + `</td>
-                                <td><input id="dates` + value[`id`] + `" type="date" class="form-control" readonly></td>
+                                                         <td>
+                                                         <select type="text" class="form-control @error('pemeriksa_id[` + x + `]') is-invalid @enderror" name="pemeriksa_id[` + x + `]" style="width:100%;" id="pemeriksa` + no + `">
+                                                         <option value=""></option>
+                                                         @foreach ($pengecek as $p)
+                                                        <option value="{{$p->id}}">{{$p->nama}}</option>
+                                                        @endforeach
+                                                         </select>
+                                                         @if($errors->has('pemeriksa_id[` + x + `]'))
+                                                         <div class="text-danger">
+                                                        {{ $errors->first('pemeriksa_id[` + x + `]')}}
+                                                        </div>
+                                                         @endif
+                                                         </td>
+                                                        <td><input id="dates` + value[`id`] + `" type="date" class="form-control" readonly></td>      
                                                          <td>` + value[`nama`] + `</td>
                                                          <td>    
                                                          <div class="icheck-success d-inline col-sm-4">
@@ -342,6 +357,14 @@
                                                         </td>
                                                         </tr>`);
                                 x++;
+
+
+
+                                $('#pemeriksa' + no + '').select2({
+                                    placeholder: "Pilih Data",
+                                    allowClear: true,
+                                    theme: 'bootstrap4',
+                                })
                             });
                         } else {
                             jQuery('#tabel_rapid > tbody >tr').empty();
@@ -352,6 +375,8 @@
             } else {
                 alert('Harap memuat ulang');
             }
+
+
         });
     });
 </script>

@@ -357,6 +357,25 @@ return [
                 ],
                 [
                     'icon' => 'far fa-circle',
+                    'text' => 'Tahunan',
+                    'auth' => [28],
+                    'submenu' => [
+                        [
+                            'icon' => 'far fa-circle',
+                            'text' => 'Data',
+                            'auth' => [28],
+                            'url'  => '/kesehatan_tahunan',
+                        ],
+                        [
+                            'icon' => 'far fa-circle',
+                            'text' => 'Detail',
+                            'auth' => [28],
+                            'url'  => '/kesehatan_tahunan/detail',
+                        ]
+                    ],
+                ],
+                [
+                    'icon' => 'far fa-circle',
                     'text' => 'Khusus',
                     'auth' => [28],
                     'submenu' => [
