@@ -7,5 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 class Event extends Model
 {
     protected $table = 'jadwal_produksi';
-    protected $fillable = ['title', 'start', 'end', 'status', 'jumlah', 'color'];
+    protected $fillable = ['nama_produk', 'tanggal_mulai', 'tanggal_selesai', 'status', 'jumlah_produksi', 'warna'];
 }

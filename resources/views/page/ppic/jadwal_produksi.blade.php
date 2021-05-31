@@ -38,6 +38,41 @@
     #calendar {
         padding: 20px;
     }
+
+    .loader {
+        border: 16px solid #fff;
+        border-radius: 50%;
+        border-top: 16px solid #3498db;
+        width: 120px;
+        height: 120px;
+        -webkit-animation: spin 2s linear infinite;
+        /* Safari */
+        animation: spin 2s linear infinite;
+        margin-left: auto;
+        margin-right: auto;
+        display: inline-block;
+    }
+
+    /* Safari */
+    @-webkit-keyframes spin {
+        0% {
+            -webkit-transform: rotate(0deg);
+        }
+
+        100% {
+            -webkit-transform: rotate(360deg);
+        }
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
 </style>
 @stop
 
@@ -65,7 +100,7 @@
                             <div id="external-events">
                                 <ul>
                                     @foreach($date as $d)
-                                    <li>{{$d->title}}</li>
+                                    <li>{{$d->nama_produk}}</li>
                                     @endforeach
                                 </ul>
                             </div>
@@ -130,9 +165,9 @@
                     <tbody>
                         @foreach($date as $d)
                         <tr>
-                            <td>{{$d->title}}</td>
-                            <td>{{$d->start}}</td>
-                            <td>{{$d->end}}</td>
+                            <td>{{$d->nama_produk}}</td>
+                            <td>{{$d->tanggal_mulai}}</td>
+                            <td>{{$d->tanggal_selesai}}</td>
                             <td>On Progress</td>
                             <td>
                                 <div class="progress progress-xs">
@@ -164,9 +199,9 @@
                     <tbody>
                         @foreach($date as $d)
                         <tr>
-                            <td>{{$d->title}}</td>
-                            @for ($i = 1; $i <= date('t'); $i++) @php $start=date('d', strtotime($d->start));
-                                $end = date('d', strtotime($d->end));
+                            <td>{{$d->nama_produk}}</td>
+                            @for ($i = 1; $i <= date('t'); $i++) @php $start=date('d', strtotime($d->tanggal_mulai));
+                                $end = date('d', strtotime($d->tanggal_selesai));
                                 @endphp
                                 @if ($i >= $start && $i <= $end) <td style="background: yellow;">
                                     </td>
@@ -295,7 +330,9 @@
 </script>
 <script>
     var initial_date = JSON.parse($('#date').html()); // load event from database
-    var user = JSON.parse($('#user').html());
+    var user = JSON.parse($('#user').html()); // load user authorisation
+
+    console.log(initial_date);
 
     function date_diff(date1, date2) {
         const date1utc = Date.UTC(date1.getFullYear(), date1.getMonth(), date1.getDate());
@@ -365,16 +402,30 @@
     });
 
     $(document).ready(function() {
+
         var Calendar = FullCalendar.Calendar;
         var calendarEl = document.getElementById('calendar');
+
+        var status;
+        var currColor = '#3c8dbc';
+
         var calendar = new Calendar(calendarEl, {
             locale: 'id',
-            weekNumbers: true,
+
             weekends: false,
+            weekNumbers: true,
+
             selectable: true,
             editable: true,
-            droppable: true,
+
+            headerToolbar: {
+                start: 'title',
+                center: '',
+                end: 'today prev,next',
+            },
+
             events: initial_date,
+
             select: function(info) {
                 var date1 = new Date(info.startStr);
                 var date2 = new Date(info.endStr);
@@ -397,8 +448,8 @@
                     });
                 }
             },
+
             eventClick: function(event_info) {
-                console.log(event_info);
                 bootbox.confirm({
                     centerVertical: true,
                     message: "Apakah Anda ingin menghapus produksi ini?",
@@ -436,27 +487,49 @@
         });
         calendar.render();
 
-        $('#test-button').click(function() {
-            calendar.next(function() {
-                console.log('test');
-            });
-            console.log(calendar.getDate().getMonth());
+        $('.fc-prev-button span, .fc-next-button span').click(function(event) {
+            var targetMonth = calendar.getDate().getMonth() + 1;
+            var targetYear = calendar.getDate().getYear();
+            if (event.currentTarget.className.search('right') != -1) targetMonth += 1;
+            if (event.currentTarget.className.search('left') != -1) targetMonth -= 1;
+
+            if (targetMonth > 12) {
+                targetMonth = 1;
+                targetYear += 1;
+            } else if (targetMonth < 0) {
+                targetMonth = 12;
+                targetYear -= 1;
+            }
+
+            $.ajax({
+                url: '/ppic/schedule',
+                method: 'GET',
+                data: {
+                    month: targetMonth,
+                    year: targetYear,
+                },
+                success: function(result) {
+                    console.log(result);
+                },
+                error: function() {
+                    console.log('error');
+                }
+            })
+
+            console.log(targetMonth);
         });
 
-        var status;
         if (initial_date.length != 0)
             status = initial_date[0].status;
         else
             status = 'penyusunan';
         choose_status(status);
 
-        // Change color event
-        var currColor = '#3c8dbc'
+
         $('#color-chooser > li > a').click(function(e) {
             e.preventDefault();
             currColor = $(this).css('color');
             console.log(currColor);
-            //Add color effect to button
             $('#save, #add-new-event').css({
                 'background-color': currColor,
                 'border-color': currColor
@@ -466,26 +539,28 @@
         $('#save').click(function() {
             var color = $(this).css('background-color');
             if ($('#activity').val()) {
-                console.log('enter ajax');
+                console.log('saved data by ajax');
+                var data_saved = {
+                    title: $('#activity').val(),
+                    start: $('#date_start').val(),
+                    end: $('#date_end').val(),
+                    status: "penyusunan",
+                    jumlah: $('#jumlah-produksi').val(),
+                    color: color,
+                }
+                console.log(data_saved);
                 $.ajax({
-                    url: "ppic/schedule/create",
+                    url: "/ppic/schedule/create",
                     method: "POST",
-                    data: {
-                        title: $('#activity').val(),
-                        start: $('#date_start').val(),
-                        end: $('#date_end').val(),
-                        status: "penyusunan",
-                        jumlah: $('#jumlah-produksi').val(),
-                        color: color,
-                    },
+                    data: data_saved,
                     success: function(result) {
                         console.log(result);
                         global_result = result;
                         calendar.addEvent({
                             id: result.id,
-                            title: result.title,
-                            start: result.start,
-                            end: result.end,
+                            title: result.nama_produk,
+                            start: result.tanggal_mulai,
+                            end: result.tanggal_selesai,
                             backgroundColor: color,
                             borderColor: color,
                         });

@@ -33,32 +33,30 @@ class PPICController extends Controller
         $this->middleware('auth');
     }
 
-    public function schedule_show()
+    public function schedule_show(Request $request)
     {
-        $date = Event::toBase()->orderBy('start', 'asc')->get();
-        $event = json_encode($date);
-        $produk = Produk::select('nama')->get();
-        $arr = [];
-        $today = date('m');
-        foreach ($date as $d) {
-            $temp = strtotime($d->start);
-            if ($today == date('m', $temp)) {
-                array_push($arr, $d);
-            }
+        $date = Event::toBase()->orderBy('tanggal_mulai', 'asc')->get();
+        if (isset($request->month) && isset($request->year)) {
+            return true;
         }
-        $date = $arr;
+        $event = [];
+        foreach ($date as $d) {
+            array_push($event, ['title' => $d->nama_produk, 'start' => $d->tanggal_mulai, 'end' => $d->tanggal_selesai, 'color' => $d->warna]);
+        }
+        $event = json_encode($event);
+        $produk = Produk::select('nama')->get();
         return view('page.ppic.jadwal_produksi', compact('event', 'produk', 'date'));
     }
 
     public function schedule_create(Request $request)
     {
         $data = [
-            'title' => $request->title,
-            'start' => $request->start,
-            'end' => $request->end,
+            'nama_produk' => $request->title,
+            'tanggal_mulai' => $request->start,
+            'tanggal_selesai' => $request->end,
             'status' => $request->status,
-            'jumlah' => $request->jumlah,
-            'color' => $request->color,
+            'jumlah_produksi' => $request->jumlah,
+            'warna' => $request->color,
         ];
 
         Event::create($data);
