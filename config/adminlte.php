@@ -399,9 +399,13 @@ return [
                     'text' => 'Obat',
                     'auth' => [28],
                     'url'  => '/obat',
+                ],
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Laporan',
+                    'auth' => [28],
+                    'url'  => '/obat',
                 ]
-
-
             ],
         ],
         [

@@ -29,6 +29,9 @@
                 <th>BMI</th>
                 <th>Vaksin</th>
                 <th>Buta warna</th>
+                <th>Suhu</th>
+                <th>SPO2</th>
+                <th>Pr</th>
                 <th></th>
               </tr>
             </thead>
@@ -105,7 +108,6 @@
             </form>
           </div>
           <!-- /.card -->
-
           <div class="modal-footer">
             <button class="btn btn-success rounded-pill" id="button_tambah" onclick="return confirm('Data akan di ubah ?');"><i class="fas fa-plus"></i>&nbsp;Update Data</button>
           </div>
@@ -167,6 +169,15 @@
         },
         {
           data: 'status_mata'
+        },
+        {
+          data: 'suhu_k'
+        },
+        {
+          data: 'sp'
+        },
+        {
+          data: 'pr'
         },
         {
           data: 'button'

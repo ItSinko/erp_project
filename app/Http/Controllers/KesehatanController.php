@@ -60,6 +60,15 @@ class KesehatanController extends Controller
             ->addColumn('bmi', function ($data) {
                 return $data->berat / (($data->tinggi / 100) * ($data->tinggi / 100));
             })
+            ->addColumn('suhu_k', function ($data) {
+                return $data->suhu . ' °C';
+            })
+            ->addColumn('sp', function ($data) {
+                return $data->spo2 . ' %';
+            })
+            ->addColumn('pr', function ($data) {
+                return $data->pr . ' bpm';
+            })
             ->addColumn('button', function ($data) {
                 $btn = '<div class="inline-flex"><a href="/kesehatan/ubah/' . $data->id . '"><button type="button" class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-edit"></i></button></a>';
                 $btn = $btn . ' <button type="button" class="btn btn-block btn-danger karyawan-img-small" style="border-radius:50%;" data-toggle="modal" data-target="#delete" ><i class="fas fa-trash"></i></button></div>';
@@ -79,7 +88,6 @@ class KesehatanController extends Controller
         $kesehatan_awal = Kesehatan_awal::find($id);
         return view('page.kesehatan.kesehatan_ubah', ['karyawan' => $karyawan, 'kesehatan_awal' => $kesehatan_awal]);
     }
-
     public function kesehatan_aksi_tambah(Request $request)
     {
         $this->validate(
@@ -89,7 +97,10 @@ class KesehatanController extends Controller
                 'status_vaksin' => 'required',
                 'tinggi' => 'required',
                 'berat' => 'required',
-                'status_mata' => 'required'
+                'status_mata' => 'required',
+                'suhu' => 'required',
+                'spo2' => 'required',
+                'pr' => 'required'
             ],
             [
                 'karyawan_id.required' => 'Karyawan harus di pilih',
@@ -97,10 +108,13 @@ class KesehatanController extends Controller
                 'status_vaksin.required' => 'Status Vaksin harus di pilih',
                 'tinggi.required' => 'Tinggi harus di isi',
                 'berat.required' => 'Berat harus di isi',
-                'status_mata.required' => 'Kategori buta warna harus di isi'
+                'status_mata.required' => 'Kategori buta warna harus di isi',
+                'suhu.required' => 'Suhu harus di isi',
+                'spo2.required' => 'Spo2 buta warna harus di isi',
+                'pr.required' => 'Pulse Oximeter buta warna harus di isi',
+                'status_mata.required' => 'Kategori buta warna harus di isi',
             ]
         );
-
 
 
         //Upload
@@ -137,6 +151,9 @@ class KesehatanController extends Controller
             'status_mata' => $request->status_mata,
             'mata_kiri' => $request->mata_kiri,
             'mata_kanan' => $request->mata_kanan,
+            'suhu' => $request->suhu,
+            'spo2' => $request->spo2,
+            'pr' => $request->pr,
             'tes_covid' => $request->tes_covid,
             'hasil_covid' => $request->hasil_covid,
             'file_mcu' => $file_mcu,
@@ -466,8 +483,6 @@ class KesehatanController extends Controller
             })
             ->make(true);
     }
-
-
     public function kesehatan_mingguan_tensi_detail_data_karyawan($karyawan_id)
     {
         $data = kesehatan_mingguan_tensi::where('karyawan_id', $karyawan_id)->get();

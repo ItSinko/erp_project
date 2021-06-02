@@ -65,7 +65,7 @@
                     {{ csrf_field() }}
                     <div class="card">
                         <div class="card-header bg-success">
-                            <div class="card-title"><i class="fas fa-plus-circle"></i>&nbsp;Pengukuran Berat Badan</div>
+                            <div class="card-title"><i class="fas fa-plus-circle"></i>&nbsp;Pengukuran Berat Badaan</div>
                         </div>
                         <div class="card-body">
                             <div class="col-lg-12">
@@ -226,6 +226,7 @@
         }
     });
 </script>
+
 <script>
     $(document).ready(function() {
         $('select[name="divisi"]').on('change', function() {
@@ -258,10 +259,10 @@
                                                          <input type="number" class="form-control d-none" name="karyawan_id[` + x + `]" value="` + value[`id`] + `">
                                                          <input type="text" class="form-control" name="tinggi[` + x + `]" readonly  value="` + value['kesehatan_awal']['tinggi'] + `" id="tinggi">
                                                          <div class="input-group-append">
-                                                            <span class="input-group-text">Cm</span>
-                                                           </div>
-                                                           </div>
-                                                        </td>
+                                                         <span class="input-group-text">Cm</span>
+                                                         </div>
+                                                         </div>
+                                                         </td>
                                                          <td>    
                                                          <div class="input-group mb-3">
                                                          <input type="text" class="form-control" name="berat[` + x + `]" id="berat">

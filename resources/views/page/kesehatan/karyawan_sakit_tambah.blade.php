@@ -182,6 +182,13 @@
                                                         <span class="invalid-feedback" role="alert" id="kondisi-msg"></span>
                                                     </div>
                                                 </div>
+                                                <div class="form-group row">
+                                                    <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;">Jumlah </label>
+                                                    <div class="col-sm-8">
+                                                        <textarea type="text" class="form-control @error('diagnosa') is-invalid @enderror" name="diagnosa" id="diagnosa" value="{{old('diagnosa')}}" placeholder="Diagnosa pemeriksaan" style="width:45%;"></textarea>
+                                                    </div>
+                                                    <span role="alert" id="no_seri-msg"></span>
+                                                </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;">Tindak lanjut</label>
