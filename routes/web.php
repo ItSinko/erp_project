@@ -3,6 +3,7 @@
 use App\Http\Controllers\CommonController;
 use App\Http\Controllers\GetController;
 use App\Http\Controllers\QCController;
+use GuzzleHttp\Middleware;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -355,8 +356,23 @@ Route::group(['prefix' => '/bppb', 'middleware' => 'auth'], function () {
 });
 
 
+//PERSIAPAN
+Route::group(['prefix' => '/persiapan_packing_produk', 'middleware' => 'auth'], function () {
+    Route::get('/', 'ProduksiController@persiapan_packing_produk')->name('persiapan_packing_produk');
+    Route::get('/show', 'ProduksiController@persiapan_packing_produk_show')->name('persiapan_packing_produk.show');
+    Route::get('/create/{id}', 'ProduksiController@persiapan_packing_produk_create')->name('persiapan_packing_produk.create');
+    Route::put('/store/{id}', 'ProduksiController@persiapan_packing_produk_store')->name('persiapan_packing_produk.store');
+    Route::get('/edit/{id}', 'ProduksiController@persiapan_packing_produk_edit')->name('persiapan_packing_produk.edit');
+    Route::put('/update/{id}', 'ProduksiController@persiapan_packing_produk_update')->name('persiapan_packing_produk.update');
+    Route::get('/detail/{id}', 'ProduksiController@persiapan_packing_produk_detail')->name('persiapan_packing_produk.detail');
+    Route::get('/detail/show/{id}', 'ProduksiController@persiapan_packing_produk_detail_show')->name('persiapan_packing_produk.detail.show');
+});
+
+
 //PERAKITAN
 Route::group(['prefix' => '/perakitan', 'middleware' => 'auth'], function () {
+    Route::get('/eng', 'EngController@perakitan')->name('perakitan.eng');
+    Route::get('/show/eng', 'EngController@perakitan_show')->name('perakitan.show.eng');
     Route::get('/', 'ProduksiController@perakitan')->name('perakitan');
     Route::get('/show', 'ProduksiController@perakitan_show')->name('perakitan.show');
     Route::get('/create', 'ProduksiController@perakitan_create')->name('perakitan.create');   /* Create dari BPPB */
@@ -415,9 +431,12 @@ Route::group(['prefix' => '/perakitan', 'middleware' => 'auth'], function () {
     });
 });
 
+
 //PENGUJIAN
 Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {
     Route::get('/', 'QCController@pengujian')->name('pengujian');
+    Route::get('/eng', 'EngController@pengujian')->name('pengujian.eng');
+    Route::get('/show/eng', 'EngController@pengujian_show')->name('pengujian.show.eng');
     Route::get('/show', 'QCController@pengujian_show')->name('pengujian.show');
     Route::get('/perbaikan', 'ProduksiController@pengujian_perbaikan')->name('pengujian.perbaikan');
     Route::get('/perbaikan/show', 'ProduksiController@pengujian_perbaikan_show')->name('pengujian.perbaikan.show');
@@ -472,10 +491,11 @@ Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {
 });
 
 
-
-//PENGEMASAN
+// PENGEMASAN
 Route::group(['prefix' => '/pengemasan', 'middleware' => 'auth'], function () {
     Route::get('/', 'ProduksiController@pengemasan')->name('pengemasan');
+    Route::get('/eng', 'EngController@pengemasan')->name('pengemasan.eng');
+    Route::get('/show/eng', 'EngController@pengemasan_show')->name('pengemasan.show.eng');
     Route::get('/form', 'ProduksiController@pengemasan_form')->name('pengemasan.form');
     Route::get('/form/show', 'ProduksiController@pengemasan_form_show')->name('pengemasan.form.show');
     Route::get('/form/create', 'ProduksiController@pengemasan_form_create')->name('pengemasan.form.create');
@@ -488,6 +508,18 @@ Route::group(['prefix' => '/pengemasan', 'middleware' => 'auth'], function () {
     Route::put('/laporan/store/{bppb_id}', 'ProduksiController@pengemasan_laporan_store')->name('pengemasan.laporan.store');
     Route::get('/hasil/{id}', 'ProduksiController@pengemasan_hasil')->name('pengemasan.hasil');
     Route::get('/hasil/show/{id}', 'ProduksiController@pengemasan_hasil_show')->name('pengemasan.hasil.show');
+});
+
+
+// PERBAIKAN
+Route::group(['prefix' => '/perbaikan', 'middleware' => 'auth'], function () {
+    Route::get('/produksi', 'ProduksiController@perbaikan_produksi')->name('perbaikan.produksi');
+    Route::get('/produksi/show', 'ProduksiController@perbaikan_produksi_show')->name('perbaikan.produksi.show');
+    Route::get('/produksi/create/{id}/{proses}', 'ProduksiController@perbaikan_produksi_create')->name('perbaikan.produksi.create');
+    Route::put('/produksi/store/{id}', 'ProduksiController@perbaikan_produksi_store')->name('perbaikan.produksi.store');
+    Route::get('/produksi/edit/{id}', 'ProduksiController@perbaikan_produksi_edit')->name('perbaikan.produksi.edit');
+    Route::put('/produksi/update/{id}', 'ProduksiController@perbaikan_produksi_update')->name('perbaikan.produksi.update');
+    Route::get('/produksi/detail/{id}', 'ProduksiController@perbaikan_produksi_detail')->name('perbaikan.produksi.detail');
 });
 
 
@@ -520,11 +552,14 @@ Route::get('/gudang/data', 'GudangController@get_data')->name('gudang.data');
 
 
 //PPIC
-Route::get('/ppic', 'PpicController@index');
-Route::post('/schedule/create', 'PpicController@calendar_create')->name('schedule.create');
-Route::post('/schedule/delete', 'PpicController@calendar_delete')->name('schedule.delete');
-Route::get('/bom', 'PpicController@bom');
-Route::get('get_bom', 'PpicController@get_bom');
+Route::group(['prefix' => 'ppic', 'middleware' => 'auth'], function () {
+    Route::get('/schedule', 'PpicController@schedule_show');
+    Route::post('/schedule/create', 'PpicController@schedule_create');
+    Route::post('/schedule/delete', 'PpicController@schedule_delete');
+    Route::get('/bom', 'PpicController@bom');
+    Route::get('/get_bom/{id}', 'PpicController@get_bom');
+});
+
 
 // Eng
 Route::view('/eng', 'page.engineering.index');
@@ -537,3 +572,9 @@ Route::get('test_spa', 'EngController@index');
 Route::get('/chat', 'ChatController@index');
 Route::get('/message', 'ChatController@fetchMessages');
 Route::post('/message', 'ChatController@sendMessage');
+
+Route::post('/notif', 'PpicController@schedule_notif')->middleware('auth');
+
+Route::get('/welcome', function () {
+    return view('welcome');
+});

@@ -1,4 +1,4 @@
-<p align="center"><img src="public/asset/image/logo/logo_sinko.png" width="400"></a></p>
+<p align="center"><img src="public/assets/image/logo/logo_sinko.png" width="400"></a></p>
 
 ## About This Project
 

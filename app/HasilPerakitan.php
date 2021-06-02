@@ -32,6 +32,10 @@ class HasilPerakitan extends Model
         return $this->hasMany(HasilPengemasan::class);
     }
 
+    public function PerbaikanProduksi()
+    {
+        return $this->belongsToMany(PerbaikanProduksi::class, 'perbaikan_produksi_perakitans')->withTimestamps();
+    }
 
     public function countStatus($status)
     {

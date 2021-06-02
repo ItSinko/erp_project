@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 25, 2021 at 11:50 AM
+-- Generation Time: May 25, 2021 at 11:58 AM
 -- Server version: 10.4.18-MariaDB
 -- PHP Version: 7.3.27
 
@@ -1511,7 +1511,13 @@ INSERT INTO `karyawan_masuks` (`id`, `karyawan_id`, `pemeriksa_id`, `karyawan_sa
 (1, 1, 17, NULL, '2021-05-25', 'Ijin', 'aa', '2021-05-25 06:56:58', '2021-05-25 06:56:58'),
 (2, 2, 17, 18, '2021-05-25', 'Sakit', NULL, '2021-05-25 06:59:14', '2021-05-25 06:59:14'),
 (3, 5, 17, 19, '2021-05-25', 'Sakit', NULL, '2021-05-25 07:03:30', '2021-05-25 07:03:30'),
+<<<<<<< HEAD
 (4, 4, 17, NULL, '2021-05-25', 'Cuti', 'Cuti Melahirkan', '2021-05-25 07:03:53', '2021-05-25 07:03:53');
+=======
+(4, 4, 17, NULL, '2021-05-25', 'Cuti', 'Cuti Melahirkan', '2021-05-25 07:03:53', '2021-05-25 07:03:53'),
+(5, 13, 17, 20, '2021-05-25', 'Sakit', NULL, '2021-05-25 09:54:24', '2021-05-25 09:54:24'),
+(6, 4, 17, NULL, '2021-05-25', 'Cuti', 'Nikah', '2021-05-25 09:55:07', '2021-05-25 09:55:07');
+>>>>>>> della
 
 -- --------------------------------------------------------
 
@@ -1551,7 +1557,12 @@ INSERT INTO `karyawan_sakits` (`id`, `tgl_cek`, `karyawan_id`, `pemeriksa_id`, `
 (16, '2021-05-24', 7, 17, 'Meriang', 'Masuk Angin', 'Pengobatan', NULL, 1, 'Sesudah Makan', '1x1', 'Lanjut bekerja', '2021-05-24 07:03:12', '2021-05-24 07:03:12'),
 (17, '2021-05-25', 5, 17, 'Sakit Panas', NULL, 'Pengobatan', NULL, 2, 'Sesudah Makan', '2x1', 'Lanjut bekerja', '2021-05-25 06:49:22', '2021-05-25 06:49:22'),
 (18, '2021-05-25', 2, 17, 'Pilek', 'Diagnosa', 'Pengobatan', NULL, 2, 'Sesudah Makan', '2x1', 'Lanjut bekerja', '2021-05-25 06:59:14', '2021-05-25 06:59:14'),
+<<<<<<< HEAD
 (19, '2021-05-25', 5, 17, 'Sakit Meriang', NULL, 'Pengobatan', NULL, 5, 'Sesudah Makan', '7x2', 'Dipulangkan', '2021-05-25 07:03:30', '2021-05-25 07:03:30');
+=======
+(19, '2021-05-25', 5, 17, 'Sakit Meriang', NULL, 'Pengobatan', NULL, 5, 'Sesudah Makan', '7x2', 'Dipulangkan', '2021-05-25 07:03:30', '2021-05-25 07:03:30'),
+(20, '2021-05-25', 13, 17, 'Sakit Perut', 'Sakit', 'Pengobatan', NULL, 2, 'Sesudah Makan', '2x1', 'Dipulangkan', '2021-05-25 09:54:24', '2021-05-25 09:54:24');
+>>>>>>> della
 
 -- --------------------------------------------------------
 
@@ -4205,13 +4216,21 @@ ALTER TABLE `karyawans`
 -- AUTO_INCREMENT for table `karyawan_masuks`
 --
 ALTER TABLE `karyawan_masuks`
+<<<<<<< HEAD
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+=======
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+>>>>>>> della
 
 --
 -- AUTO_INCREMENT for table `karyawan_sakits`
 --
 ALTER TABLE `karyawan_sakits`
+<<<<<<< HEAD
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+=======
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+>>>>>>> della
 
 --
 -- AUTO_INCREMENT for table `kategori_produks`

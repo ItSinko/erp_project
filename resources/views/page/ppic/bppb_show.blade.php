@@ -30,7 +30,6 @@
         <div class="card-body">
           <table id="example" class="table table-hover styled-table" style="text-align: center;">
             <thead>
-              @if(Auth::user()->divisi->kode == "ppic")
               <tr>
                 <th colspan="12">
                   <a href="{{route('bppb.create')}}" style="color: white;">
@@ -40,7 +39,6 @@
                   </a>
                 </th>
               </tr>
-              @endif
               <tr>
                 <th>No</th>
                 <th>Tanggal</th>

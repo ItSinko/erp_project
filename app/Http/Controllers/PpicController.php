@@ -18,6 +18,9 @@ use App\Part;
 use App\Bppb;
 use App\KelompokProduk;
 use App\Event;
+use App\PartEng;
+
+use App\Events\RealTimeMessage;
 
 class PPICController extends Controller
 {
@@ -26,44 +29,86 @@ class PPICController extends Controller
         $this->middleware('auth');
     }
 
-    public function index()
+    public function schedule_show()
     {
-        $date = Event::toBase()->get();
-        $date = json_encode($date);
-        return view('page.ppic.jadwal_produksi', ['date' => $date]);
+        $date = Event::toBase()->orderBy('start', 'asc')->get();
+        $event = json_encode($date);
+        $produk = Produk::select('nama')->get();
+        $arr = [];
+        $today = date('m');
+        foreach ($date as $d) {
+            $temp = strtotime($d->start);
+            if ($today == date('m', $temp)) {
+                array_push($arr, $d);
+            }
+        }
+        $date = $arr;
+        return view('page.ppic.jadwal_produksi', compact('event', 'produk', 'date'));
     }
 
-    public function ppic()
-    {
-        $list = Produk::toBase()->get();
-        return view("ppic.form_ppic", compact('list'));
-    }
-
-    public function calendar_create(Request $request)
+    public function schedule_create(Request $request)
     {
         $data = [
             'title' => $request->title,
             'start' => $request->start,
             'end' => $request->end,
+            'status' => $request->status,
+            'jumlah' => $request->jumlah,
+            'color' => $request->color,
         ];
 
-        // return json_encode($data);
         Event::create($data);
+        $result = Event::latest()->first();
+        return $result;
     }
 
-    public function calendar_delete(Request $request)
+    public function schedule_delete(Request $request)
     {
         if ($request->id != "") Event::destroy($request->id);
     }
 
+    public function schedule_notif(Request $request)
+    {
+        event(new RealTimeMessage(Auth::user(), $request->message, $request->status));
+
+        $date = Event::toBase()->orderBy('start', 'asc')->get();
+        $today = date('m');
+        foreach ($date as $d) {
+            $temp = strtotime($d->start);
+            if ($today == date('m', $temp)) {
+                $temp = Event::find($d->id);
+                $temp->status = $request->status;
+                $temp->save();
+            }
+        }
+    }
+
     public function bom()
     {
-        $list = Produk::all();
+        $list = DetailProduk::all();
         return view('page.ppic.bom', compact('list'));
     }
 
-    public function get_bom()
+    public function get_bom($id)
     {
+        $bom = Bill_of_material::where('detail_produk_id', $id)->get();
+        $result = [];
+
+        $min = INF;
+        foreach ($bom as $d) {
+            $part_eng = PartEng::where('kode_part', $d->part_eng_id)->first();
+            if (!isset($part_eng['nama'])) continue;
+            $part_gbmb = Part::where('kode', $part_eng['part_id'])->first();
+
+            if (isset($part_gbmb['jumlah'])) {
+                $count = (int)($part_gbmb['jumlah'] / $d->jumlah);
+                if ($count < $min) $min = $count;
+            }
+            array_push($result, ['nama' => $part_eng['nama'], 'jumlah' => $d->jumlah, 'stok' => $part_gbmb['jumlah']]);
+        }
+
+        array_push($result, $min);
+        return $result;
     }
 
     public function bppb()

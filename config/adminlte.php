@@ -254,7 +254,7 @@ return [
         ],
         [
             'header' => 'DATA MASTER',
-            'auth'   => [26, 14, 24]
+            'auth'   => [26, 14]
         ],
         [
             'text' => 'Penjualan Produk',
@@ -463,7 +463,64 @@ return [
         ],
         [
             'header' => 'MASTER DATA',
-            'auth' => [14, 17, 26, 23]
+            'auth' => [14, 17, 26, 23, 24]
+        ],
+        [
+            'text'  =>  'Stok',
+            'icon'  =>  'fas fa-table',
+            'auth'  => [24],
+            'submenu'   =>  [
+                [
+                    'text'  =>  'Gudang',
+                    'icon'  =>  'far fa-circle',
+                    'url'   =>  '#'
+                ],
+                [
+                    'text'  =>  'RND',
+                    'icon'  =>  'far fa-circle',
+                    'url'   =>  '#'
+                ],
+            ]
+        ],
+        [
+            'text'  =>  'Laporan',
+            'icon'  =>  'fas fa-table',
+            'auth'  => [24],
+            'submenu'   =>  [
+                [
+                    'text'  =>  'Pembelian',
+                    'icon'  =>  'far fa-circle',
+                    'url'   =>  '#'
+                ],
+                [
+                    'text'  =>  'Perakitan dan Pengemasan',
+                    'icon'  =>  'far fa-circle',
+                    'url'   =>  '#'
+                ],
+                [
+                    'text'  =>  'Pemeriksaan, Pengujian, dan Pemeriksaan Pengemasan QA',
+                    'icon'  =>  'far fa-circle',
+                    'url'   =>  '#'
+                ],
+
+                [
+                    'text'  =>  'Kerja GK',
+                    'icon'  =>  'far fa-circle',
+                    'url'   =>  '#'
+                ],
+
+                [
+                    'text'  =>  'Penjualan',
+                    'icon'  =>  'far fa-circle',
+                    'url'   =>  '#'
+                ],
+
+                [
+                    'text'  =>  'Marketing',
+                    'icon'  =>  'far fa-circle',
+                    'url'   =>  '#'
+                ],
+            ]
         ],
         [
             'text' => 'Produk',
@@ -535,20 +592,34 @@ return [
             ],
         ],
         [
+            'header'    =>  'PPIC',
+            'auth'  =>  [24]
+        ],
+        [
             'text' => 'Jadwal Produksi',
-            'url'  => '/ppic',
+            'url'  => '/ppic/schedule',
             'icon' => 'fas fa-table',
             'auth' => [24]
         ],
         [
             'text' => 'BOM',
-            'url'  => '/bom',
+            'url'  => '/ppic/bom',
             'icon' => 'fas fa-table',
             'auth' => [24]
         ],
         [
+            'header' => 'PERSIAPAN',
+            'auth' => [17]
+        ],
+        [
+            'text'    => 'Packing Produk',
+            'icon'    => 'fas fa-calendar-alt',
+            'url'  => '/persiapan_packing_produk',
+            'auth' => [17],
+        ],
+        [
             'header' => 'PRODUKSI',
-            'auth' => [17, 23]
+            'auth' => [17, 23, 10]
         ],
         [
             'text'    => 'Jadwal Kerja Produksi',
@@ -588,6 +659,12 @@ return [
             ],
         ],
         [
+            'text'    => 'Perakitan',
+            'icon'    => 'fas fa-cogs',
+            'url'  => '/perakitan/eng',
+            'auth' => [10],
+        ],
+        [
             'text'    => 'Pengujian',
             'icon'    => 'fab fa-searchengin',
             'auth' => [17, 23],
@@ -611,6 +688,12 @@ return [
                     'auth' => [17],
                 ],
             ],
+        ],
+        [
+            'text'    => 'Pengujian',
+            'icon'    => 'fab fa-searchengin',
+            'url'  => '/pengujian/eng',
+            'auth' => [10],
         ],
         [
             'text'    => 'Pengemasan',
@@ -643,12 +726,32 @@ return [
                 ],
             ],
         ],
+        [
+            'text'    => 'Pengemasan',
+            'icon'    => 'fas fa-box-open',
+            'url'  => '/pengemasan/eng',
+            'auth' => [10],
+        ],
+        [
+            'text'    => 'Perbaikan',
+            'icon'    => 'fas fa-wrench',
+            'url' => '/perbaikan/produksi',
+            'auth' => [17],
+        ],
+
+
         ['header' => 'LOGOUT'],
         [
             'text' => 'Logout',
             'url' => '/logout',
             'icon' => 'fas fa-sign-out-alt',
             'form' => true,
+        ],
+
+        [
+            'text' => 'test',
+            'isNavbarRightItem' => true,
+            'icon' => 'fas fa-sign-out-alt',
         ],
     ],
 

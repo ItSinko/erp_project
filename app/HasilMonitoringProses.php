@@ -35,4 +35,9 @@ class HasilMonitoringProses extends Model
 
         return $h;
     }
+
+    public function PerbaikanProduksi()
+    {
+        return $this->belongsToMany(PerbaikanProduksi::class, 'perbaikan_produksi_pengujians')->withTimestamps();
+    }
 }
