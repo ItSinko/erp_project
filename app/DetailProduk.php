@@ -9,9 +9,9 @@ class DetailProduk extends Model
 {
     protected $fillable = ['produk_id', 'kode', 'nama', 'stok', 'harga', 'foto', 'berat'];
 
-    public function BillOfMaterial()
+    public function ProdukBillOfMaterial()
     {
-        return $this->hasMany(BillOfMaterial::class);
+        return $this->hasMany(ProdukBillOfMaterial::class);
     }
 
     public function Produk()

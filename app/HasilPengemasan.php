@@ -44,7 +44,6 @@ class HasilPengemasan extends Model
             ['hasil_perakitan_id', '=', $k],
             ['kegiatan', '=', $status]
         ])->count();
-
         return $h;
     }
 

@@ -28,7 +28,7 @@ use App\Pengemasan;
 use App\HasilPengemasan;
 use App\CekPengemasan;
 use App\DetailCekPengemasan;
-
+use App\DetailPenyerahanBarangJadi;
 use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\UserLogController;
 use App\MonitoringProses;
@@ -36,6 +36,7 @@ use App\PartEng;
 use App\PerbaikanProduksi;
 use App\PersiapanPackingProduk;
 use App\DetailPersiapanPackingProduk;
+use App\PenyerahanBarangJadi;
 
 class ProduksiController extends Controller
 {
@@ -51,14 +52,75 @@ class ProduksiController extends Controller
     }
 
     //BPPB
+    public function bppb_permintaan_bahan_baku_create($id)
+    {
+        $s = Bppb::find($id);
+        return view('page.produksi.bppb_permintaan_bahan_baku_create', ['id' => $id, 's' => $s]);
+    }
+
     public function bppb_penyerahan_barang_jadi_create($id)
     {
         $s = Bppb::find($id);
         $hp = HasilPengemasan::whereHas('Pengemasan.Bppb', function ($q) use ($id) {
             $q->where('id', $id);
+        })->whereHas('HasilPerakitan', function ($q) {
+            $q->doesntHave('DetailPenyerahanBarangJadi');
         })->get();
         return view('page.produksi.bppb_penyerahan_barang_jadi_create', ['id' => $id, 's' => $s, 'hp' => $hp]);
     }
+
+    public function bppb_penyerahan_barang_jadi_store($id, Request $request)
+    {
+        $v = Validator::make(
+            $request->all(),
+            [
+                'tanggal' => 'required',
+                'hasil_perakitan_id' => 'required',
+                'jumlah' => 'required'
+            ],
+            [
+                'tanggal.required' => "Tanggal harus diisi",
+                'hasil_perakitan_id.required' => "Hasil Perakitan harus diisi",
+                'jumlah.required' => "Jumlah harus diisi"
+            ]
+        );
+
+
+        if ($v->fails()) {
+            return redirect()->back()->withErrors($v);
+        } else {
+            $bool = true;
+            for ($i = 0; $i < count($request->divisi_id); $i++) {
+                $c = PenyerahanBarangJadi::create([
+                    'bppb_id' => $id,
+                    'divisi_id' => $request->divisi_id[$i],
+                    'tanggal' => $request->tanggal,
+                    'jumlah' => $request->jumlah[$i],
+                    'status' => 'dibuat',
+                ]);
+
+                if ($c) {
+                    for ($j = 0; $j < count($request->hasil_perakitan_id[$i]); $j++) {
+                        $cs = DetailPenyerahanBarangJadi::create([
+                            'penyerahan_barang_jadi_id' => $c->id,
+                            'hasil_perakitan_id' => $request->hasil_perakitan_id[$i][$j]
+                        ]);
+
+                        if (!$cs) {
+                            $bool = false;
+                        }
+                    }
+                }
+            }
+
+            if ($bool = true) {
+                return redirect()->back()->with('success', "Berhasil menambahkan Data");
+            } else {
+                return redirect()->back()->with('error', "Gagal menambahkan Data");
+            }
+        }
+    }
+
 
     //PERAKITAN
     public function perakitan()
@@ -1198,9 +1260,6 @@ class ProduksiController extends Controller
                 $btn = '<a href = "/pengemasan/form/detail/' . $s->id . '"><button class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-eye"></i></button></a>
                 <a href = "/pengemasan/form/edit/' . $s->id . '"><button class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-pencil-alt"></i></button></a>
                 <a href = "/pengemasan/form/delete/' . $s->id . '"><button class="btn btn-danger btn-sm m-1" style="border-radius:50%;"><i class="fas fa-trash"></i></button></a>';
-
-
-
                 return $btn;
             })
             ->rawColumns(['gambar', 'produk', 'aksi'])

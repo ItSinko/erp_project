@@ -91,14 +91,28 @@
                 </button>
             </div>
             @endif
-            <form action="{{route('bppb.penyerahan_barang_jadi.store', ['id' => $id])}}" method="post" enctype="multipart/form-data">
+            <form action="{{route('bppb.permintaan_bahan_baku.store', ['id' => $id])}}" method="post" enctype="multipart/form-data">
                 {{ csrf_field() }}
                 {{ method_field('PUT') }}
                 <div class="card">
-                    <div class="card-header bg-success">Penyerahan Barang Jadi</div>
+                    <div class="card-header bg-success">Permintaan Bahan Baku</div>
                     <div class="card-body">
 
                         <div class="form-horizontal">
+                            <div class="form-group row">
+                                <label for="divisi_id" class="col-sm-5 col-form-label" style="text-align:right;">Divisi</label>
+                                <div class="col-sm-7">
+                                    <select class="select2 select2-info form-control divisi_id" name="divisi_id" id="divisi_id">
+                                        <option></option>
+                                        <option value="11">Gudang Bahan Material</option>
+                                        <option value="12">Gudang Karantina</option>
+                                    </select>
+                                    @if ($errors->has('divisi_id'))
+                                    <span class="invalid-feedback" role="alert">{{$errors->first('divisi_id')}}</span>
+                                    @endif
+                                </div>
+                            </div>
+
                             <div class="form-group row">
                                 <label for="tanggal" class="col-sm-5 col-form-label" style="text-align:right;">Tanggal</label>
                                 <div class="col-sm-7">
@@ -108,62 +122,37 @@
                                     @endif
                                 </div>
                             </div>
+
+                            <div class="form-group row">
+                                <label for="versi" class="col-sm-5 col-form-label" style="text-align:right;"></label>
+                                <div class="col-sm-7">
+                                    <select class="select2 select2-info form-control versi" name="versi" id="versi">
+                                        <option></option>
+                                        @foreach($s->DetailProduk->ProdukBillOfMaterial as $i)
+                                        <option value="{{$i->id}}">{{$i->versi}}</option>
+                                        @endforeach
+                                    </select>
+                                    @if ($errors->has('versi'))
+                                    <span class="invalid-feedback" role="alert">{{$errors->first('versi')}}</span>
+                                    @endif
+                                </div>
+                            </div>
+
                         </div>
+
                         <div class="col-md-12">
                             <div class="form-group row">
                                 <table id="tableitem" class="table table-hover table-bordered styled-table">
                                     <thead style="text-align: center;">
                                         <tr>
                                             <th>No</th>
-                                            <th>Divisi</th>
-                                            <th>No Seri</th>
-                                            <th>Jumlah</th>
+                                            <th>Part</th>
+                                            <th>Jumlah Diminta</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
-                                    <tbody style="text-align:center;">
-                                        @php $num=0; @endphp
-                                        @if($s->countHasilPengemasanByHasil('ok') > 0)
-                                        @php $num++; @endphp
-                                        <tr>
-                                            <td>{{$num}}</td>
-                                            <td><input type="number" name="divisi_id[{{$num-1}}]" id="divisi_id{{$num-1}}" value="13" hidden><span class="success-text">Gudang Barang Jadi</span></td>
-                                            <td><select class="select2 select2-info form-control hasil_perakitan_id" name="hasil_perakitan_id[{{$num-1}}][]" id="hasil_perakitan_id{{$num-1}}" multiple>
-                                                    @foreach($hp as $i)
-                                                    @if($i->tindak_lanjut == "ok")
-                                                    <option value="{{$i->HasilPerakitan->id}}" selected>{{$i->HasilPerakitan->no_seri}}</option>
-                                                    @endif
-                                                    @endforeach
-                                                </select></td>
-                                            <td><input type="number" class="form-control jumlah" name="jumlah[{{$num-1}}]" id="jumlah{{$num-1}}" value="{{$s->countHasilPengemasanByHasil('ok')}}"></td>
-                                            <td>
-                                                <button type="button" class="btn btn-danger karyawan-img-small" style="border-radius:50%;" id="closeitem"><i class="fas fa-times"></i></button>
-                                            </td>
-                                        </tr>
-                                        @endif
-                                        @if($s->countHasilPengemasanByHasil('nok') > 0)
-                                        @php $num++; @endphp
-                                        <tr>
-                                            <td>{{$num}}</td>
-                                            <td><input type="number" name="divisi_id[{{$num-1}}]" id="divisi_id{{$num-1}}" value="12" hidden><span class="danger-text">Gudang Karantina</span></td>
-                                            <td><select class="select2 select2-info form-control hasil_perakitan_id" name="hasil_perakitan_id[{{$num-1}}][]" id="hasil_perakitan_id{{$num-1}}" multiple>
-                                                    @foreach($hp as $i)
-                                                    @if($i->tindak_lanjut != "ok")
-                                                    <option value="{{$i->HasilPerakitan->id}}" selected>{{$i->HasilPerakitan->no_seri}}</option>
-                                                    @endif
-                                                    @endforeach
-                                                </select></td>
-                                            <td><input type="number" class="form-control jumlah" name="jumlah[{{$num-1}}]" id="jumlah{{$num-1}}" value="{{$s->countHasilPengemasanByHasil('nok')}}"></td>
-                                            <td>
-                                                <button type="button" class="btn btn-danger karyawan-img-small" style="border-radius:50%;" id="closeitem"><i class="fas fa-times"></i></button>
-                                            </td>
-                                        </tr>
-                                        @endif
+                                    <tbody style="text-align: center;">
 
-                                        @if($s->countHasilPengemasanByHasil('nok') <= 0 && $s->countHasilPengemasanByHasil('ok') <= 0) <tr>
-                                                <td colspan="12">Tidak ada data</td>
-                                                </tr>
-                                                @endif
                                     </tbody>
                                 </table>
                             </div>
@@ -190,9 +179,7 @@
 @section('adminlte_js')
 <script>
     $(function() {
-        $('#tableitem').on('change', '.hasil_perakitan_id', function(e) {
-            $(this).closest('tr').find('.jumlah').val($(this).closest('tr').find('select.hasil_perakitan_id :selected').length);
-        });
-    })
+
+    });
 </script>
 @stop
