@@ -739,7 +739,8 @@ class KesehatanController extends Controller
 
         if ($request->hasil_1 == 'Pengobatan') {
             $id = $request->obat_id;
-            $obat = Obat::find($id)->decrement('stok', 1);
+            $jumlah = $request->jumlah;
+            $obat = Obat::find($id)->decrement('stok', $jumlah);
         }
 
         if ($karyawan_sakit) {
@@ -1105,5 +1106,10 @@ class KesehatanController extends Controller
         } else {
             return redirect()->back()->with('error', 'Gagal menambahkan data');
         }
+    }
+    public function obat_data_id($id)
+    {
+        $data = Obat::where('id', $id)->get();
+        echo json_encode($data);
     }
 }

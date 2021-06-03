@@ -552,7 +552,6 @@
                 }
             });
         });
-
         $(function() {
             $('#mata_kanan').keyup(function() {
                 var value1 = parseFloat($('#mata_kanan').val());

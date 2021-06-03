@@ -124,6 +124,7 @@
                                                     <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Obat</label>
                                                     <div class="col-sm-8">
                                                         <select type="text" class="form-control @error('obat_id') is-invalid @enderror select2" style="width:45%;" id="obat" name="obat_id">
+
                                                             @foreach($obat as $o)
                                                             <option value="{{$o->id}}">{{$o->nama}}</option>
                                                             @endforeach
@@ -154,7 +155,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="form-group row">
-                                                    <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;">Jumlah konsumsi</label>
+                                                    <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;"></label>
                                                     <div class="col-sm-8" style="margin-top:7px;">
                                                         <div class="icheck-success d-inline col-sm-4">
                                                             <input type="radio" name="dosis_obat" value="1x1">
@@ -183,9 +184,16 @@
                                                     </div>
                                                 </div>
                                                 <div class="form-group row">
-                                                    <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;">Jumlah </label>
-                                                    <div class="col-sm-8">
-                                                        <textarea type="text" class="form-control @error('diagnosa') is-invalid @enderror" name="diagnosa" id="diagnosa" value="{{old('diagnosa')}}" placeholder="Diagnosa pemeriksaan" style="width:45%;"></textarea>
+                                                    <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;">Jumlah</label>
+                                                    <div class="col-sm-1">
+                                                        <div class="input-group mb-3">
+                                                            <input type="number" class="form-control" name="jumlah" id="jumlah" value="{{ old('jumlah') }}" min="1" required>
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text">Pc</span>
+                                                            </div>
+
+                                                        </div>
+                                                        <small id="stok" class="form-text text-muted"> </small>
                                                     </div>
                                                     <span role="alert" id="no_seri-msg"></span>
                                                 </div>
@@ -227,7 +235,6 @@
 @section('adminlte_js')
 <script>
     $(document).ready(function() {
-
         var data = [{
                 id: 0,
                 text: '<div style="color:green">enhancement</div>'
@@ -237,7 +244,6 @@
                 text: '<div style="color:red">bug</div><div><small>This is some small text on a new line</small></div>'
             }
         ];
-
         var check;
         $('input[name=dosis_obat]').on("click", function() {
             check = $("#custom_radio").is(":checked");
@@ -248,7 +254,6 @@
                 $('#dosis_obat_custom').val('');
             }
         });
-
         $('input[name=hasil_1]').prop("required", true);
         $('input[name=hasil_2]').prop("required", true);
         $('input[type=radio][name=hasil_1]').on('change', function() {
@@ -257,12 +262,15 @@
                 $("#tipe_1").removeAttr("style");
                 $("#tipe_2").css('display', 'none');
                 $('#dosis_obat_custom').val('');
+                $('#jumlah').val('');
                 $('select[name=obat_id]').prop("required", false);
                 $('input[name=aturan_obat]').prop("required", false);
                 $('input[name=dosis_obat]').prop("required", false);
                 $('input[name=aturan_obat]').prop("checked", false);
                 $('input[name=dosis_obat]').prop("checked", false);
                 $('textarea[id=terapi]').prop("required", true);
+                $('#obat').val(null).trigger('change');
+                $('#stok').text('');
             } else {
                 $('select[name=obat_id]').prop("required", true);
                 $('input[name=dosis_obat]').prop("required", true);
@@ -274,44 +282,24 @@
             }
         });
     });
-</script>
-<!-- <script>
-    var data = ["Ahmedabad", "Mumbai", "USA", "Canada", "Pune"];
 
     $(document).ready(function() {
-        $('.obat').select2({
-            placeholder: "select...",
-            ajax: {
-                type: "POST",
-                dataType: 'json',
-                //url: '/karyawan_sakit/obat/data/',
-                processResults: function(data) {
-                    console.log(data);
-                    return {
-                        results: $.map(data.items, function(obj, index) {
-                            return {
-                                id: index,
-                                text: obj
-                            };
-                        })
-                    };
+        $('select[id="obat"]').on('change', function() {
+            var id = jQuery(this).val();
+            $.ajax({
+                url: '/obat/data/' + id,
+                type: "GET",
+                dataType: "json",
+                success: function(data) {
+                    $('#stok').text("Jumlah Stok : " + data[0].stok);
+                    $('#jumlah').prop('max', data[0].stok);
+                    $('#jumlah').prop('min', 1);
                 },
-                data: function(params) {
-                    var query = {
-                        search: params.term,
-                        items: data // only for jsfiddle to simulate ajax
-                    };
-                    if (params.term == "*") query.items = [];
-                    return {
-                        json: JSON.stringify(query)
-                    }
+                error: function(error) {
+                    console.log(error);
                 }
-            }
+            });
         });
     });
-
-    $('.obat').on('select2:select', function(e) {
-        console.log("select done", e.params.data);
-    });
-</script> -->
+</script>
 @stop
