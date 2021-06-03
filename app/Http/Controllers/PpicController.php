@@ -19,6 +19,9 @@ use App\Bppb;
 use App\DetailPenyerahanBarangJadi;
 use App\KelompokProduk;
 use App\Event;
+use App\PartEng;
+
+use App\Events\RealTimeMessage;
 use App\PenyerahanBarangJadi;
 use Carbon\Carbon;
 use App\HasilPengemasan;
@@ -61,13 +64,7 @@ class PPICController extends Controller
         return view('page.ppic.jadwal_produksi', compact('event', 'produk', 'date'));
     }
 
-    public function ppic()
-    {
-        $list = Produk::toBase()->get();
-        return view("ppic.form_ppic", compact('list'));
-    }
-
-    public function calendar_create(Request $request)
+    public function schedule_create(Request $request)
     {
         $data = [
             'nama_produk' => $request->title,
@@ -87,20 +84,38 @@ class PPICController extends Controller
         }
 
         Event::create($data);
+        $result = Event::latest()->first();
+        return $result;
     }
 
-    public function calendar_delete(Request $request)
+    public function schedule_delete(Request $request)
     {
         if ($request->id != "") Event::destroy($request->id);
     }
 
+    public function schedule_notif(Request $request)
+    {
+        event(new RealTimeMessage(Auth::user(), $request->message, $request->status));
+
+        // $date = Event::toBase()->orderBy('start', 'asc')->get();
+        // $today = date('m');
+        // foreach ($date as $d) {
+        //     $temp = strtotime($d->start);
+        //     if ($today == date('m', $temp)) {
+        //         $temp = Event::find($d->id);
+        //         $temp->status = $request->status;
+        //         $temp->save();
+        //     }
+        // }
+    }
+
     public function bom()
     {
-        $list = Produk::all();
+        $list = DetailProduk::all();
         return view('page.ppic.bom', compact('list'));
     }
 
-    public function get_bom()
+    public function get_bom($id)
     {
         $bom = BillOfMaterial::where('produk_bill_of_material_id', $id)->get();
         $result = [];
