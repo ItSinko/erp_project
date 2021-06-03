@@ -39,29 +39,30 @@
         padding: 20px;
     }
 
-    .loader {
-        border: 16px solid #fff;
-        border-radius: 50%;
-        border-top: 16px solid #3498db;
-        width: 120px;
-        height: 120px;
-        -webkit-animation: spin 2s linear infinite;
-        /* Safari */
-        animation: spin 2s linear infinite;
-        margin-left: auto;
-        margin-right: auto;
-        display: inline-block;
+    #loader {
+        opacity: 0.8;
+        background-color: #ccc;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0px;
+        left: 0px;
+        z-index: 10000;
     }
 
-    /* Safari */
-    @-webkit-keyframes spin {
-        0% {
-            -webkit-transform: rotate(0deg);
-        }
-
-        100% {
-            -webkit-transform: rotate(360deg);
-        }
+    #loading_gif {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        z-index: 1;
+        width: 120px;
+        height: 120px;
+        margin: -76px 0 0 -76px;
+        border: 16px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 16px solid #3498db;
+        -webkit-animation: spin 2s linear infinite;
+        animation: spin 2s linear infinite;
     }
 
     @keyframes spin {
@@ -77,65 +78,116 @@
 @stop
 
 @section('content')
-<div class="row">
-    <!-- <button id="test-button">Cliick Me</button> -->
-    <div class="col-md-12">
-        <div class="row" id="calendar-view">
-            <div class="col-md-3">
-                <div class="sticky-top mb-3">
-                    <div class="alert alert-info alert-dismissible" id="status_penyusunan" style="display: none;">
-                        <h5><i class="icon fas fa-info"></i> Status </h5>
-                        Proses penyusunan jadwal
-                    </div>
-                    <div class="alert alert-success alert-dismissible" id="status_acc" style="display: none;">
-                        <h5><i class="icon fas fa-check"></i> Status</h5>
-                        Jadwal telah Ditetapkan
-                    </div>
-                    <div class="card">
-                        <div class="card-header">
-                            <h4 class="card-title">Daftar Produksi</h4>
+<div id="loader">
+    <div id="loading_gif"></div>
+</div>
+<div class="row" id="page">
+    <div class="col-3 calendar-view">
+        <div class="sticky-top">
+            <div class="alert alert-info alert-dismissible" id="status_penyusunan" style="display: none;">
+                <h5><i class="icon fas fa-info"></i> Status </h5>
+                Proses penyusunan jadwal
+            </div>
+            <div class="alert alert-success alert-dismissible" id="status_acc" style="display: none;">
+                <h5><i class="icon fas fa-check"></i> Status</h5>
+                Jadwal telah Ditetapkan
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Daftar Produksi</h4>
+                </div>
+                <div class="card-body">
+                    <table style="text-align: center; width: 100%;" id="product_list">
+                        <thead>
+                            <tr>
+                                <th>Nama Produk</th>
+                                <th>Versi BOM</th>
+                            </tr>
+                        </thead>
+                        <tbody id="product_list_body">
+                            @foreach($date as $d)
+                            <tr id="row_{{ $d->id_produk }}">
+                                <td>{{$d->nama_produk}}</td>
+                                <td>
+                                    <button class="btn btn-info choose-bom" id="{{ $d->id_produk }}">
+                                        @if ($d->bom == NULL)
+                                        Pilih BOM
+                                        @else
+                                        Versi {{$d->bom}}
+                                        @endif
+                                    </button>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            @can('manager')
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Status Jadwal Produksi</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <button type="button" class="btn btn-primary btn-block status" id="acc">ACC</button>
                         </div>
-                        <div class="card-body">
-                            <!-- the events -->
-                            <div id="external-events">
-                                <ul>
-                                    @foreach($date as $d)
-                                    <li>{{$d->nama_produk}}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        </div>
-                        <!-- /.card-body -->
-                    </div>
-                    @can('manager')
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Status Jadwal Produksi</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <button type="button" class="btn btn-primary btn-block status" id="acc">ACC</button>
-                                </div>
-                                <div class="col-sm-6">
-                                    <button type="button" class="btn btn-danger btn-block status" id="penyusunan">Tolak</button>
-                                </div>
-                            </div>
+                        <div class="col-sm-6">
+                            <button type="button" class="btn btn-danger btn-block status" id="penyusunan">Tolak</button>
                         </div>
                     </div>
-                    @endcan
                 </div>
             </div>
-            <div class="col-md-9">
-                <div class="card">
-                    <div class="card-body">
-                        <div id='calendar'></div>
-                        <div id="date" hidden>{{ $event }}</div> <!-- catch data from controller -->
-                        <div id="user" hidden>{{ (Auth::user()) }}</div>
-                    </div>
-                </div>
+            @endcan
+        </div>
+    </div>
+    <div class="col-9 calendar-view">
+        <div class="card">
+            <div class="card-body">
+                <div id='calendar'></div>
+                <div id="date" hidden>{{ $event }}</div> <!-- catch data from controller -->
+                <div id="user" hidden>{{ (Auth::user()) }}</div>
             </div>
         </div>
+    </div>
+    <div class="col-12">
+        <div class="card" id="table-view" style="display: none;">
+            <div class="card-header">
+                <h3 class="card-title">Table View</h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <table class="table table-bordered center">
+                    <thead>
+                        <tr>
+                            <th style="width: 10%">Produk</th>
+                            @for ($i = 1; $i <= date('t'); $i++) <th>{{$i}}</th>
+                                @endfor
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($date as $d)
+                        <tr>
+                            <td>{{$d->nama_produk}}</td>
+                            @for ($i = 1; $i <= date('t'); $i++) @php $start=date('d', strtotime($d->tanggal_mulai));
+                                $end = date('d', strtotime($d->tanggal_selesai));
+                                @endphp
+                                @if ($i >= $start && $i <= $end) <td style="background: yellow;">
+                                    </td>
+                                    @else
+                                    <td></td>
+                                    @endif
+                                    @endfor
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
         <div class="card" id="list-view" style="display: none;">
             <div class="card-header">
                 <h3 class="card-title">List View</h3>
@@ -182,43 +234,14 @@
             </div>
             <!-- /.card-body -->
         </div>
-        <div class="card" id="table-view" style="display: none;">
-            <div class="card-header">
-                <h3 class="card-title">Table View</h3>
-            </div>
-            <!-- /.card-header -->
-            <div class="card-body">
-                <table class="table table-bordered center">
-                    <thead>
-                        <tr>
-                            <th style="width: 10%">Produk</th>
-                            @for ($i = 1; $i <= date('t'); $i++) <th>{{$i}}</th>
-                                @endfor
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($date as $d)
-                        <tr>
-                            <td>{{$d->nama_produk}}</td>
-                            @for ($i = 1; $i <= date('t'); $i++) @php $start=date('d', strtotime($d->tanggal_mulai));
-                                $end = date('d', strtotime($d->tanggal_selesai));
-                                @endphp
-                                @if ($i >= $start && $i <= $end) <td style="background: yellow;">
-                                    </td>
-                                    @else
-                                    <td></td>
-                                    @endif
-                                    @endfor
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
     </div>
 </div>
 
-<div class="modal fade" id="date_form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="row">
+
+</div>
+
+<div class="modal fade" id="date_form" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header text-center">
@@ -243,7 +266,7 @@
                         <select name="" id="activity" class="form-control select2" data-placeholder="Pilih Produk...">
                             <option value=""></option>
                             @foreach($produk as $d)
-                            <option value="{{ $d->nama }}">{{ $d->nama }}</option>
+                            <option value="{{ $d->nama.','.$d->id }}">{{ $d->nama }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -277,6 +300,52 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="show-bom" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h4 class="modal-title w-100 font-weight-bold">Pilih BOM</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body mx-3">
+                <div class="input-group col-6" style="margin-left: auto; margin-right: auto; margin-bottom: 10px">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="input">Search</label>
+                    </div>
+                    <select class="custom-select" id="bom-input">
+                        <option selected>Choose...</option>
+                        @foreach ($produk as $li)
+                        <option value="{{ $li->id }}">{{ $li->nama }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <table class="table table-bordered" id="table-bom">
+                    <thead>
+                        <tr style="text-align: center;">
+                            <th>#</th>
+                            <th style="width: 50%">Nama</th>
+                            <th>Jumlah</th>
+                            <th>Stok</th>
+                            <th>Pemotongan</th>
+                            <th>Sisa</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                    <tfoot>
+                    </tfoot>
+                </table>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="submit" class="btn btn-primary" id="choosen">Pilih</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @stop
 
 @section('adminlte_js')
@@ -329,10 +398,10 @@
         });
 </script>
 <script>
-    var initial_date = JSON.parse($('#date').html()); // load event from database
+    var initial_event = JSON.parse($('#date').html()); // load event from database
     var user = JSON.parse($('#user').html()); // load user authorisation
 
-    console.log(initial_date);
+    var bom_id;
 
     function date_diff(date1, date2) {
         const date1utc = Date.UTC(date1.getFullYear(), date1.getMonth(), date1.getDate());
@@ -366,14 +435,14 @@
 
     function choose_view(view) {
         if (view == 'Kalender') {
-            $('#calendar-view').show(500);
+            $('.calendar-view').show(500);
             $('#table-view, #list-view').hide();
         } else if (view == 'Tabel') {
             $('#table-view').show(500);
-            $('#calendar-view, #list-view').hide();
+            $('.calendar-view, #list-view').hide();
         } else if (view == 'Daftar') {
             $('#list-view').show(500);
-            $('#calendar-view, #table-view').hide();
+            $('.calendar-view, #table-view').hide();
         }
     }
 
@@ -391,8 +460,16 @@
             console.log('acc');
         } else if (status == 'pelaksanaan') {
             // todo:
-            // add plaksanaan status
+            // add pelaksanaan status
         }
+    }
+
+    function showPage() {
+        $('#loader').hide();
+    }
+
+    function hidePage() {
+        $('#loader').show();
     }
 
     $.ajaxSetup({
@@ -403,11 +480,20 @@
 
     $(document).ready(function() {
 
+        setTimeout(showPage, 2000);
+
         var Calendar = FullCalendar.Calendar;
         var calendarEl = document.getElementById('calendar');
 
         var status;
         var currColor = '#3c8dbc';
+
+        if (initial_event.length != 0) {
+            status = initial_event[0].status;
+        } else {
+            status = 'penyusunan';
+        }
+        choose_status(status);
 
         var calendar = new Calendar(calendarEl, {
             locale: 'id',
@@ -416,7 +502,7 @@
             weekNumbers: true,
 
             selectable: true,
-            editable: true,
+            editable: false,
 
             headerToolbar: {
                 start: 'title',
@@ -424,7 +510,7 @@
                 end: 'today prev,next',
             },
 
-            events: initial_date,
+            events: initial_event,
 
             select: function(info) {
                 var date1 = new Date(info.startStr);
@@ -436,7 +522,6 @@
                 $('#date_end').val(info.endStr);
                 $('#days').val(days);
 
-                console.log(date1, date2);
                 if (date1.getMonth() == date2.getMonth()) {
                     $('#date_form').modal();
                 } else if ((date1.getMonth() + 1 == date2.getMonth()) && (date2.getDate() == 1)) {
@@ -449,7 +534,7 @@
                 }
             },
 
-            eventClick: function(event_info) {
+            eventClick: function(info) {
                 bootbox.confirm({
                     centerVertical: true,
                     message: "Apakah Anda ingin menghapus produksi ini?",
@@ -465,16 +550,19 @@
                     },
                     callback: function(result) {
                         if (result) {
-                            console.log(event_info.event);
                             $.ajax({
                                 url: "/ppic/schedule/delete",
                                 data: {
-                                    id: event_info.event._def.publicId
+                                    id: info.event._def.publicId
                                 },
                                 method: "POST",
                                 success: function() {
-                                    console.log('event deleted');
-                                    event_info.event.remove();
+                                    // console.log('event deleted');
+                                    // console.log('row_' + info.event._def.publicId);
+                                    // console.log($('#product_list_body').children());
+                                    info.event.remove();
+                                    $('#row_' + info.event._def.publicId).remove();
+                                    console.log($('#row_' + info.event._def.publicId));
                                 },
                                 error: function() {
                                     console.log('error delete an event');
@@ -486,44 +574,6 @@
             },
         });
         calendar.render();
-
-        $('.fc-prev-button span, .fc-next-button span').click(function(event) {
-            var targetMonth = calendar.getDate().getMonth() + 1;
-            var targetYear = calendar.getDate().getYear();
-            if (event.currentTarget.className.search('right') != -1) targetMonth += 1;
-            if (event.currentTarget.className.search('left') != -1) targetMonth -= 1;
-
-            if (targetMonth > 12) {
-                targetMonth = 1;
-                targetYear += 1;
-            } else if (targetMonth < 0) {
-                targetMonth = 12;
-                targetYear -= 1;
-            }
-
-            $.ajax({
-                url: '/ppic/schedule',
-                method: 'GET',
-                data: {
-                    month: targetMonth,
-                    year: targetYear,
-                },
-                success: function(result) {
-                    console.log(result);
-                },
-                error: function() {
-                    console.log('error');
-                }
-            })
-
-            console.log(targetMonth);
-        });
-
-        if (initial_date.length != 0)
-            status = initial_date[0].status;
-        else
-            status = 'penyusunan';
-        choose_status(status);
 
 
         $('#color-chooser > li > a').click(function(e) {
@@ -538,10 +588,13 @@
 
         $('#save').click(function() {
             var color = $(this).css('background-color');
+            var arr = $('#activity').val().split(',');
+            var produk = arr[0];
+            var id_produk = arr[1];
             if ($('#activity').val()) {
-                console.log('saved data by ajax');
                 var data_saved = {
-                    title: $('#activity').val(),
+                    title: produk,
+                    id_produk: id_produk,
                     start: $('#date_start').val(),
                     end: $('#date_end').val(),
                     status: "penyusunan",
@@ -554,8 +607,6 @@
                     method: "POST",
                     data: data_saved,
                     success: function(result) {
-                        console.log(result);
-                        global_result = result;
                         calendar.addEvent({
                             id: result.id,
                             title: result.nama_produk,
@@ -565,7 +616,30 @@
                             borderColor: color,
                         });
                         $('#date_form').modal('hide');
-                        $('#activity').val('');
+                        $('#product_list_body').append(`<tr id="row_` + result.id + `">
+                            <td>` + result.nama_produk + `</td>
+                            <td>
+                                <button class="btn btn-info choose-bom" id="` + result.id + `">
+                                    Pilih BOM
+                                </button>
+                            </td>
+                        </tr>`);
+                        $('.choose-bom').click(function() {
+                            console.log("test")
+                            $('#show-bom').modal('show');
+                            bom_id = this.id;
+                            var input_bom = $('#bom-input').html(`<option selected>Choose...</option>`);
+                            $.ajax({
+                                url: '/ppic/get_bom_version/' + bom_id,
+                                method: 'GET',
+                                success: function(result) {
+                                    var data = JSON.parse(result);
+                                    for (var i = 0; i < data.length; i++) {
+                                        input_bom.append(`<option value="` + data[i].id + " " + data[i].versi + " " + data[i].detail_produk_id + `">Versi ` + data[i].versi + `</option>`)
+                                    }
+                                }
+                            });
+                        });
                     },
                     error: function(err) {
                         console.log(err);
@@ -579,11 +653,27 @@
             }
         });
 
-        $(document).keypress(function(e) {
-            var key = e.which;
-            if (key == 13) {
-                $('#save').trigger("click");
-            }
+        $('#choosen').click(function() {
+            var versi = $("#bom-input").val().split(' ')[1];
+            var id = $("#bom-input").val().split(' ')[2];
+            console.log($("#bom-input").val().split(' '));
+            $.ajax({
+                url: "/ppic/schedule/create",
+                method: "POST",
+                data: {
+                    id_produk: id,
+                    bom: versi,
+                },
+                success: function(data) {
+
+                    console.log(data);
+                    $('#' + bom_id).html("Versi " + versi);
+                    $('#show-bom').modal('hide');
+                },
+                error: function(xhr, status, error) {
+                    console.log(error);
+                }
+            });
         });
 
         $('.status').on('click', function() {
@@ -639,6 +729,87 @@
 
         $('.view').click(function() {
             choose_view($(this).text());
+        });
+
+        $("#bom-input").change(function() {
+            var value = $("#bom-input").val().split(' ')[0];
+            $('#table-bom').hide();
+            $('#table-bom tbody').html('');
+            $('#table-bom tfoot').html('');
+            $('#table-bom').show(1000);
+
+            if (value != "Choose...") {
+                $.ajax({
+                    url: "/ppic/get_bom/" + value,
+                    success: function(result) {
+                        var_result = result;
+                        var data = $('#table-bom tbody')
+
+                        for (var j = 0; j < result.length - 1; j++) {
+                            var pemotongan = parseInt(result[j].jumlah) * parseInt(var_result[var_result.length - 1]);
+                            var sisa = parseInt(result[j].stok) - pemotongan;
+                            var child;
+                            if (sisa == 0) {
+                                child = `
+                                <tr style="background: yellow;">
+                                    <td>` + String(j + 1) + `</td>
+                                    <td>` + result[j].nama + `</td>
+                                    <td>` + result[j].jumlah + `</td>
+                                    <td>` + result[j].stok + `</td>
+                                    <td>` + pemotongan + `</td>
+                                    <td>` + sisa + `</td>
+                                </tr>
+                            `;
+                            } else {
+                                child = `
+                                <tr>
+                                    <td>` + String(j + 1) + `</td>
+                                    <td>` + result[j].nama + `</td>
+                                    <td>` + result[j].jumlah + `</td>
+                                    <td>` + result[j].stok + `</td>
+                                    <td>` + pemotongan + `</td>
+                                    <td>` + sisa + `</td>
+                                </tr>
+                            `;
+                            }
+                            data.append(child);
+                        }
+                        var last_child = `
+                                <tr>
+                                    <th colspan="5">Jumlah Maksimum Produksi</th>
+                                    <th>` + var_result[var_result.length - 1] + `</th>
+                                </tr>
+                        `;
+
+                        $('#table-bom tfoot').html(last_child);
+                    },
+                    error: function(xhr, status, error) {
+                        bootbox.alert({
+                            centerVertical: true,
+                            message: "BOM tidak ditemukan",
+                        });
+
+                        console.log(error);
+                    }
+                });
+            }
+        });
+
+        $('.choose-bom').click(function() {
+            console.log("test")
+            $('#show-bom').modal('show');
+            bom_id = this.id;
+            var input_bom = $('#bom-input').html(`<option selected>Choose...</option>`);
+            $.ajax({
+                url: '/ppic/get_bom_version/' + bom_id,
+                method: 'GET',
+                success: function(result) {
+                    var data = JSON.parse(result);
+                    for (var i = 0; i < data.length; i++) {
+                        input_bom.append(`<option value="` + data[i].id + " " + data[i].versi + " " + data[i].detail_produk_id + `">Versi ` + data[i].versi + `</option>`)
+                    }
+                }
+            });
         });
     });
 </script>

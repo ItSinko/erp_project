@@ -26,6 +26,8 @@ use App\PenyerahanBarangJadi;
 use Carbon\Carbon;
 use App\HasilPengemasan;
 
+use App\Bom_Version;
+
 class PPICController extends Controller
 {
     public function __construct()
@@ -37,14 +39,26 @@ class PPICController extends Controller
     {
         $date = Event::toBase()->orderBy('tanggal_mulai', 'asc')->get();
         if (isset($request->month) && isset($request->year)) {
-            return true;
+            $month = $request->month;
+            $year = $request->year;
+        } else {
+            $month = date('m');
+            $year = date('Y');
         }
         $event = [];
         foreach ($date as $d) {
-            array_push($event, ['title' => $d->nama_produk, 'start' => $d->tanggal_mulai, 'end' => $d->tanggal_selesai, 'color' => $d->warna]);
+            $temp_date = strtotime($d->tanggal_mulai);
+
+            if (date('m', $temp_date) == $month && date('Y', $temp_date) == $year)
+                array_push($event, ['id' => $d->id, 'title' => $d->nama_produk, 'start' => $d->tanggal_mulai, 'end' => $d->tanggal_selesai, 'color' => $d->warna]);
         }
         $event = json_encode($event);
-        $produk = Produk::select('nama')->get();
+
+        if (isset($request->month) && isset($request->year)) {
+            return $event;
+        }
+
+        $produk = DetailProduk::select('nama', 'id')->get();
         return view('page.ppic.jadwal_produksi', compact('event', 'produk', 'date'));
     }
 
@@ -57,7 +71,15 @@ class PPICController extends Controller
             'status' => $request->status,
             'jumlah_produksi' => $request->jumlah,
             'warna' => $request->color,
+            'id_produk' => $request->id_produk,
         ];
+
+        if ($request->bom != null) {
+            $data = Event::where('id_produk', $request->id_produk)->update(['bom' => $request->bom]);
+            // $data->bom = $request->bom;
+            // $data->save();
+            return $request->id_produk;
+        }
 
         Event::create($data);
         $result = Event::latest()->first();
@@ -93,7 +115,7 @@ class PPICController extends Controller
 
     public function get_bom($id)
     {
-        $bom = Bill_of_material::where('detail_produk_id', $id)->get();
+        $bom = Bill_of_material::where('produk_bill_of_material_id', $id)->get();
         $result = [];
 
         $min = INF;
@@ -111,6 +133,14 @@ class PPICController extends Controller
 
         array_push($result, $min);
         return $result;
+    }
+
+    public function get_bom_version($id)
+    {
+        $bom_id = Bom_Version::where('detail_produk_id', $id)->get();
+        $bom_id = json_encode($bom_id);
+
+        return $bom_id;
     }
 
     public function bppb()

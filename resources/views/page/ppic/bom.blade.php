@@ -24,7 +24,7 @@
                     </select>
                 </div>
             </div>
-            <div class="card-body" id=table style="display: none;">
+            <div class="card-body" id="table" style="display: none;">
                 <table class="table table-bordered">
                     <thead>
                         <tr style="text-align: center;">
@@ -39,7 +39,6 @@
                     <tbody>
                     </tbody>
                     <tfoot>
-
                     </tfoot>
                 </table>
             </div>
