@@ -21,4 +21,16 @@ class Pengemasan extends Model
     {
         return $this->belongsTo(User::class, 'pic_id');
     }
+
+    public function HasilPengemasan()
+    {
+        return $this->hasMany(HasilPengemasan::class);
+    }
+
+    public function countHasilPengemasanStatus($status)
+    {
+        $id = $this->id;
+        $h = HasilPengemasan::where('pengemasan_id', $id)->whereIn('status', [$status])->count();
+        return $h;
+    }
 }

@@ -517,6 +517,8 @@ Route::group(['prefix' => '/pengemasan', 'middleware' => 'auth'], function () {
     Route::put('/laporan/store/{bppb_id}', 'ProduksiController@pengemasan_laporan_store')->name('pengemasan.laporan.store');
     Route::get('/hasil/{id}', 'ProduksiController@pengemasan_hasil')->name('pengemasan.hasil');
     Route::get('/hasil/show/{id}', 'ProduksiController@pengemasan_hasil_show')->name('pengemasan.hasil.show');
+    Route::get('/hasil/create/{id}', 'ProduksiController@pengemasan_hasil_create')->name('pengemasan.hasil.create');
+    Route::put('/hasil/store/{id}', 'ProduksiController@pengemasan_hasil_store')->name('pengemasan.hasil.store');
 });
 
 
