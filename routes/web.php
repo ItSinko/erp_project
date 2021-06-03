@@ -96,6 +96,16 @@ Route::get('/kesehatan_bulanan/detail', 'KesehatanController@kesehatan_bulanan_g
 Route::get('/kesehatan_bulanan_gcu/detail/{karyawan_id}', 'KesehatanController@kesehatan_bulanan_gcu_detail_data');
 Route::get('/kesehatan_bulanan/detail/data/{karyawan_id}', 'KesehatanController@kesehatan_bulanan_detail_data_karyawan');
 
+//Kesehatan Tahunan
+Route::get('/kesehatan_tahunan', 'KesehatanController@kesehatan_tahunan');
+Route::get('/kesehatan_tahunan/data', 'KesehatanController@kesehatan_tahunan_data');
+Route::get('/kesehatan_tahunan/detail/{karyawan_id}', 'KesehatanController@kesehatan_tahunan_detail_karyawan');
+Route::get('/kesehatan_tahunan/detail/data/{karyawan_id}', 'KesehatanController@kesehatan_tahunan_detail_data_karyawan');
+Route::get('/kesehatan_tahunan/detail', 'KesehatanController@kesehatan_tahunan_detail');
+Route::get('/kesehatan_tahunan/tambah', 'KesehatanController@kesehatan_tahunan_tambah');
+Route::post('/kesehatan_tahunan/aksi_tambah', 'KesehatanController@kesehatan_tahunan_aksi_tambah');
+Route::put('/kesehatan_tahunan/aksi_ubah', 'KesehatanController@kesehatan_tahunan_aksi_ubah');
+
 //Karyawan Sakit
 Route::get('/karyawan_sakit', 'KesehatanController@karyawan_sakit');
 Route::get('/karyawan_sakit/data', 'KesehatanController@karyawan_sakit_data');
@@ -113,6 +123,7 @@ Route::get('/karyawan_masuk/detail/data/{id}', 'KesehatanController@karyawan_mas
 //Obat
 Route::get('/obat', 'KesehatanController@obat');
 Route::get('/obat/data', 'KesehatanController@obat_data');
+Route::get('/obat/data/{id}', 'KesehatanController@obat_data_id');
 Route::get('/obat/detail/data/{id}', 'KesehatanController@obat_detail_data');
 Route::get('/obat/tambah', 'KesehatanController@obat_tambah');
 Route::post('/obat/aksi_tambah', 'KesehatanController@obat_aksi_tambah');
@@ -513,6 +524,7 @@ Route::group(['prefix' => '/pengemasan', 'middleware' => 'auth'], function () {
     Route::get('/show', 'ProduksiController@pengemasan_show')->name('pengemasan.show');
     Route::get('/laporan', 'ProduksiController@pengemasan_laporan')->name('pengemasan.laporan');
     Route::get('/laporan/show/{id}', 'ProduksiController@pengemasan_laporan_show')->name('pengemasan.laporan.show');
+    Route::get('/laporan/status/{id}/{status}', 'ProduksiController@pengemasan_laporan_status')->name('pengemasan.laporan.status');
     Route::get('/laporan/create/{bppb_id}', 'ProduksiController@pengemasan_laporan_create')->name('pengemasan.laporan.create');
     Route::put('/laporan/store/{bppb_id}', 'ProduksiController@pengemasan_laporan_store')->name('pengemasan.laporan.store');
     Route::get('/hasil/{id}', 'ProduksiController@pengemasan_hasil')->name('pengemasan.hasil');

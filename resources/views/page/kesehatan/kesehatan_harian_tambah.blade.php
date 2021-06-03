@@ -76,9 +76,10 @@
                                                     <th></th>
                                                     <th></th>
                                                     <th></th>
-                                                    <th></th>
+
                                                     <th colspan="2">Suhu</th>
                                                     <th colspan="2">Oximeter</th>
+                                                    <th></th>
                                                 </tr>
                                                 <tr>
                                                     <th>No</th>

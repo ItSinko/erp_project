@@ -87,6 +87,7 @@
               </tr>
               <tr>
                 <th>No</th>
+                <th>Pengecekan</th>
                 <th>Tgl Pengecekan</th>
                 <th>Divisi</th>
                 <th>Nama</th>
@@ -103,6 +104,7 @@
     </div>
   </div>
 </div>
+
 <!-- Modal Detail -->
 <div class="modal fade  bd-example-modal-lg" id="detail_mod_tensi" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog modal-lg" role="document">
@@ -322,6 +324,9 @@
             },
             {
               data: 'tgl_cek'
+            },
+            {
+              data: 'z'
             },
             {
               data: 'x'

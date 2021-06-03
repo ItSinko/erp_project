@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class karyawan_sakit extends Model
 {
     //
-    protected $fillable = ['tgl_cek', 'karyawan_id', 'pemeriksa_id', 'analisa', 'diagnosa', 'tindakan', 'terapi', 'obat_id', 'aturan', 'konsumsi', 'keputusan'];
+    protected $fillable = ['tgl_cek', 'karyawan_id', 'pemeriksa_id', 'analisa', 'diagnosa', 'tindakan', 'terapi', 'obat_id', 'jumlah', 'aturan', 'konsumsi', 'keputusan'];
 
     public function karyawan()
     {

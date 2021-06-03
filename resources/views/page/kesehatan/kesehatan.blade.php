@@ -29,6 +29,9 @@
                 <th>BMI</th>
                 <th>Vaksin</th>
                 <th>Buta warna</th>
+                <th>Suhu</th>
+                <th>SPO2</th>
+                <th>Pr</th>
                 <th></th>
               </tr>
             </thead>
@@ -101,16 +104,10 @@
                   <label for="lemak" style="text-align:right;">Kalori</label>
                   <input type="text" class="form-control" name="kalori" placeholder="Masukkan jumlah kalori">
                 </div>
-                <!-- <div class="form-group">
-                  <label for="lemak" style="text-align:right;">Body Mass Index</label>
-                  <input type="text" class="form-control" id="bmi" readonly>
-                </div>
-                <small id="status_bmi" class="form-text text-muted"></small> -->
               </div>
             </form>
           </div>
           <!-- /.card -->
-
           <div class="modal-footer">
             <button class="btn btn-success rounded-pill" id="button_tambah" onclick="return confirm('Data akan di ubah ?');"><i class="fas fa-plus"></i>&nbsp;Update Data</button>
           </div>
@@ -172,6 +169,15 @@
         },
         {
           data: 'status_mata'
+        },
+        {
+          data: 'suhu_k'
+        },
+        {
+          data: 'sp'
+        },
+        {
+          data: 'pr'
         },
         {
           data: 'button'

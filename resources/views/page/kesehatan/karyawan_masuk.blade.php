@@ -1,11 +1,8 @@
 @extends('adminlte.page')
-
 @section('title', 'Beta Version')
-
 @section('content_header')
 <h1 class="m-0 text-dark">Dashboard</h1>
 @stop
-
 @section('content')
 <div class="row">
   <div class="col-lg-12">
@@ -93,7 +90,7 @@
           data: 'tgl_cek'
         },
         {
-          data: 'alasan'
+          data: 'x'
         },
         {
           data: 'y'

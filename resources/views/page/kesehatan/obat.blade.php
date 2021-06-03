@@ -116,16 +116,26 @@
         },
         ajax: '/obat/detail/data/' + rows[0]['id'],
         columns: [{
-          data: 'DT_RowIndex',
-          orderable: false,
-          searchable: false
-        }, {
-          data: 'tgl_cek'
-        }, {
-          data: 'analisa'
-        }, {
-          data: 'diagnosa'
-        }],
+            data: 'DT_RowIndex',
+            orderable: false,
+            searchable: false
+          },
+          {
+            data: 'tgl_cek'
+          },
+          {
+            data: 'x'
+          },
+          {
+            data: 'y'
+          },
+          {
+            data: 'analisa'
+          },
+          {
+            data: 'diagnosa'
+          }
+        ],
       });
       $('#riwayat_mod').modal('show');
     })
