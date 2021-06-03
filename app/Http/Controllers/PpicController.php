@@ -311,6 +311,12 @@ class PPICController extends Controller
             ->make(true);
     }
 
+    public function bppb_pengembalian_barang_gudang($id)
+    {
+        $s = Bppb::find($id);
+        return view('page.ppic.bppb_pengembalian_barang_gudang_show', ['id' => $id, 's' => $s]);
+    }
+
     public function bppb_penyerahan_barang_jadi($id)
     {
         $s = Bppb::find($id);

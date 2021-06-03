@@ -89,7 +89,6 @@
                                 <th>No</th>
                                 <th>Tanggal</th>
                                 <th>No Seri</th>
-                                <th>Jumlah</th>
                                 <th>Divisi</th>
                                 <th>Status</th>
                                 <th>Aksi</th>
@@ -171,10 +170,6 @@
                 {
                     data: 'no_seri',
                     name: 'no_seri'
-                },
-                {
-                    data: 'jumlah',
-                    name: 'jumlah'
                 },
                 {
                     data: 'divisi_id',

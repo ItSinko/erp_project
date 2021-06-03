@@ -115,10 +115,14 @@
                                 <table id="tableitem" class="table table-hover table-bordered styled-table">
                                     <thead style="text-align: center;">
                                         <tr>
-                                            <th>No</th>
-                                            <th>Part</th>
-                                            <th>Jumlah</th>
-                                            <th>Aksi</th>
+                                            <th rowspan="2">No</th>
+                                            <th rowspan="2">Part</th>
+                                            <th colspan="2">Jumlah</th>
+                                            <th rowspan="2">Aksi</th>
+                                        </tr>
+                                        <tr>
+                                            <th><i class="fas fa-check-circle" style="color:green;"></i></th>
+                                            <th><i class="fas fa-times-circle" style="color:red;"></i></th>
                                         </tr>
                                     </thead>
                                     <tbody style="text-align: center;">

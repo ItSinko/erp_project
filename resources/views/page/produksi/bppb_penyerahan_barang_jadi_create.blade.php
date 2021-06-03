@@ -117,7 +117,6 @@
                                             <th>No</th>
                                             <th>Divisi</th>
                                             <th>No Seri</th>
-                                            <th>Jumlah</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
@@ -153,7 +152,6 @@
                                                     @endif
                                                     @endforeach
                                                 </select></td>
-                                            <td><input type="number" class="form-control jumlah" name="jumlah[{{$num-1}}]" id="jumlah{{$num-1}}" value="{{$s->countHasilPengemasanByHasil('nok')}}"></td>
                                             <td>
                                                 <button type="button" class="btn btn-danger karyawan-img-small" style="border-radius:50%;" id="closeitem"><i class="fas fa-times"></i></button>
                                             </td>

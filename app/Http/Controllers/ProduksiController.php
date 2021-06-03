@@ -75,13 +75,11 @@ class ProduksiController extends Controller
             $request->all(),
             [
                 'tanggal' => 'required',
-                'hasil_perakitan_id' => 'required',
-                'jumlah' => 'required'
+                'hasil_perakitan_id' => 'required'
             ],
             [
                 'tanggal.required' => "Tanggal harus diisi",
-                'hasil_perakitan_id.required' => "Hasil Perakitan harus diisi",
-                'jumlah.required' => "Jumlah harus diisi"
+                'hasil_perakitan_id.required' => "Hasil Perakitan harus diisi"
             ]
         );
 
@@ -95,7 +93,6 @@ class ProduksiController extends Controller
                     'bppb_id' => $id,
                     'divisi_id' => $request->divisi_id[$i],
                     'tanggal' => $request->tanggal,
-                    'jumlah' => $request->jumlah[$i],
                     'status' => 'dibuat',
                 ]);
 
@@ -113,7 +110,7 @@ class ProduksiController extends Controller
                 }
             }
 
-            if ($bool = true) {
+            if ($bool == true) {
                 return redirect()->back()->with('success', "Berhasil menambahkan Data");
             } else {
                 return redirect()->back()->with('error', "Gagal menambahkan Data");
@@ -1176,7 +1173,6 @@ class ProduksiController extends Controller
 
     public function pengemasan_laporan_status($id, $status)
     {
-        echo "HAAAAAAIIIIII";
         if ($status == "penyerahan") {
             $s = Pengemasan::find($id);
             $s->status = $status;

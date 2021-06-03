@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PenyerahanBarangJadi extends Model
 {
-    protected $fillable = ['bppb_id', 'divisi_id', 'tanggal', 'jumlah', 'status'];
+    protected $fillable = ['bppb_id', 'divisi_id', 'tanggal', 'status'];
 
     public function Bppb()
     {
