@@ -124,7 +124,7 @@
                 </div>
                 <!-- /.card-body -->
             </div>
-            @can('manager')
+            @can('admin')
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">Status Jadwal Produksi</h3>
@@ -386,6 +386,7 @@
 
     Echo.private('message-events')
         .listen('RealTimeMessage', function(e) {
+            global_e = e;
             console.log(e);
             insertAtIndex(e);
 

@@ -11,7 +11,7 @@ use App\Events\Notification;
 use Yajra\DataTables\Facades\DataTables;
 
 use App\User;
-use App\Bill_of_material;
+use App\BillOfMaterial;
 use App\DetailProduk;
 use App\Produk;
 use App\Part;
@@ -115,7 +115,7 @@ class PPICController extends Controller
 
     public function get_bom($id)
     {
-        $bom = Bill_of_material::where('produk_bill_of_material_id', $id)->get();
+        $bom = BillOfMaterial::where('produk_bill_of_material_id', $id)->get();
         $result = [];
 
         $min = INF;
