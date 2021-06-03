@@ -23,4 +23,14 @@ class Divisi extends Model
     {
         return $this->hasMany('App\Karyawan');
     }
+
+    public function PenyerahanBarangJadi()
+    {
+        return $this->hasMany(PenyerahanBarangJadi::class);
+    }
+
+    public function PermintaanBahanBaku()
+    {
+        return $this->hasMany(PermintaanBahanBaku::class);
+    }
 }

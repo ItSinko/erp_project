@@ -331,9 +331,14 @@ Route::group(['prefix' => '/peminjaman', 'middleware' => 'auth'], function () {
 Route::group(['prefix' => '/bppb', 'middleware' => 'auth'], function () {
     Route::get('/', 'PpicController@bppb')->name('bppb');
     Route::get('/permintaan_bahan_baku/{id}', 'PpicController@bppb_permintaan_bahan_baku')->name('bppb.permintaan_bahan_baku');
+    Route::get('/permintaan_bahan_baku/show/{id}', 'PpicController@bppb_permintaan_bahan_baku_show')->name('bppb.permintaan_bahan_baku.show');
+    Route::get('/permintaan_bahan_baku/status/{id}/{status}', 'PpicController@bppb_permintaan_bahan_baku_status')->name('bppb.permintaan_bahan_baku.status');
+    Route::get('/permintaan_bahan_baku/create/{id}', 'ProduksiController@bppb_permintaan_bahan_baku_create')->name('bppb.permintaan_bahan_baku.create');
+    Route::put('/permintaan_bahan_baku/store/{id}', 'ProduksiController@bppb_permintaan_bahan_baku_store')->name('bppb.permintaan_bahan_baku.store');
     Route::get('/pengembalian_barang_gudang/{id}', 'PpicController@bppb_pengembalian_barang_gudang')->name('bppb.pengembalian_barang_gudang');
     Route::get('/penyerahan_barang_jadi/{id}', 'PpicController@bppb_penyerahan_barang_jadi')->name('bppb.penyerahan_barang_jadi');
     Route::get('/penyerahan_barang_jadi/show/{id}', 'PpicController@bppb_penyerahan_barang_jadi_show')->name('bppb.penyerahan_barang_jadi.show');
+    Route::get('/penyerahan_barang_jadi/status/{id}/{status}', 'PpicController@bppb_penyerahan_barang_jadi_status')->name('bppb.penyerahan_barang_jadi.status');
     Route::get('/penyerahan_barang_jadi/create/{id}', 'ProduksiController@bppb_penyerahan_barang_jadi_create')->name('bppb.penyerahan_barang_jadi.create');
     Route::put('/penyerahan_barang_jadi/store/{id}', 'ProduksiController@bppb_penyerahan_barang_jadi_store')->name('bppb.penyerahan_barang_jadi.store');
     Route::get('/show', 'PpicController@bppb_show')->name('bppb.show');
@@ -512,6 +517,8 @@ Route::group(['prefix' => '/pengemasan', 'middleware' => 'auth'], function () {
     Route::put('/laporan/store/{bppb_id}', 'ProduksiController@pengemasan_laporan_store')->name('pengemasan.laporan.store');
     Route::get('/hasil/{id}', 'ProduksiController@pengemasan_hasil')->name('pengemasan.hasil');
     Route::get('/hasil/show/{id}', 'ProduksiController@pengemasan_hasil_show')->name('pengemasan.hasil.show');
+    Route::get('/hasil/create/{id}', 'ProduksiController@pengemasan_hasil_create')->name('pengemasan.hasil.create');
+    Route::put('/hasil/store/{id}', 'ProduksiController@pengemasan_hasil_store')->name('pengemasan.hasil.store');
 });
 
 

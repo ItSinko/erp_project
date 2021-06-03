@@ -19,12 +19,10 @@ use App\Bppb;
 use App\DetailPenyerahanBarangJadi;
 use App\KelompokProduk;
 use App\Event;
-use App\PartEng;
-
-use App\Events\RealTimeMessage;
 use App\PenyerahanBarangJadi;
 use Carbon\Carbon;
 use App\HasilPengemasan;
+use App\PermintaanBahanBaku;
 
 use App\Bom_Version;
 
@@ -35,6 +33,7 @@ class PPICController extends Controller
         $this->middleware('auth');
     }
 
+<<<<<<< HEAD
     public function schedule_show(Request $request)
     {
         $date = Event::toBase()->orderBy('tanggal_mulai', 'asc')->get();
@@ -60,9 +59,22 @@ class PPICController extends Controller
 
         $produk = DetailProduk::select('nama', 'id')->get();
         return view('page.ppic.jadwal_produksi', compact('event', 'produk', 'date'));
+=======
+    public function index()
+    {
+        $date = Event::toBase()->get();
+        $date = json_encode($date);
+        return view('page.ppic.jadwal_produksi', ['date' => $date]);
+>>>>>>> della
     }
 
-    public function schedule_create(Request $request)
+    public function ppic()
+    {
+        $list = Produk::toBase()->get();
+        return view("ppic.form_ppic", compact('list'));
+    }
+
+    public function calendar_create(Request $request)
     {
         $data = [
             'nama_produk' => $request->title,
@@ -82,39 +94,22 @@ class PPICController extends Controller
         }
 
         Event::create($data);
-        $result = Event::latest()->first();
-        return $result;
     }
 
-    public function schedule_delete(Request $request)
+    public function calendar_delete(Request $request)
     {
         if ($request->id != "") Event::destroy($request->id);
     }
 
-    public function schedule_notif(Request $request)
-    {
-        event(new RealTimeMessage(Auth::user(), $request->message, $request->status));
-
-        $date = Event::toBase()->orderBy('start', 'asc')->get();
-        $today = date('m');
-        foreach ($date as $d) {
-            $temp = strtotime($d->start);
-            if ($today == date('m', $temp)) {
-                $temp = Event::find($d->id);
-                $temp->status = $request->status;
-                $temp->save();
-            }
-        }
-    }
-
     public function bom()
     {
-        $list = DetailProduk::all();
+        $list = Produk::all();
         return view('page.ppic.bom', compact('list'));
     }
 
-    public function get_bom($id)
+    public function get_bom()
     {
+<<<<<<< HEAD
         $bom = BillOfMaterial::where('produk_bill_of_material_id', $id)->get();
         $result = [];
 
@@ -133,6 +128,8 @@ class PPICController extends Controller
 
         array_push($result, $min);
         return $result;
+=======
+>>>>>>> della
     }
 
     public function get_bom_version($id)
@@ -310,6 +307,79 @@ class PPICController extends Controller
         return redirect()->back();
     }
 
+    public function bppb_permintaan_bahan_baku($id)
+    {
+        $s = Bppb::find($id);
+        return view('page.ppic.bppb_permintaan_bahan_baku_show', ['id' => $id, 's' => $s]);
+    }
+
+    public function bppb_permintaan_bahan_baku_show($id)
+    {
+        $s = "";
+        if (Auth::user()->Divisi->nama == "Produksi" || Auth::user()->Divisi->nama == "PPIC") {
+            $s = PermintaanBahanBaku::where('bppb_id', $id)->get();
+        } else if (Auth::user()->Divisi->nama == "Gudang Bahan Material") {
+            $s = PermintaanBahanBaku::where([
+                ['bppb_id', '=', $id],
+                ['divisi_id', '=', Auth::user()->divisi_id]
+            ])->whereIn('status', ['req_permintaan', 'acc_permintaan', 'rej_permintaan'])->get();
+        }
+
+        return DataTables::of($s)
+            ->addIndexColumn()
+            ->editColumn('tanggal', function ($s) {
+                return Carbon::createFromFormat('Y-m-d', $s->tanggal)->format('d-m-Y');
+            })
+            ->editColumn('divisi_id', function ($s) {
+                return $s->Divisi->nama;
+            })
+            ->editColumn('status', function ($s) {
+                $btn = "";
+                if (Auth::user()->divisi->nama == "Produksi") {
+                    if ($s->status == "dibuat") {
+                        $btn = '<a href="/bppb/penyerahan_barang_jadi/status/' . $s->id . '/req_permintaan">
+                                <button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-paper-plane"></i></button>
+                                <div><small>Penyerahan</small></div></a>';
+                    } else if ($s->status == "req_permintaan") {
+                        $btn = '<div><small class="warning-text">Menunggu</small></div>';
+                    } else if ($s->status == "acc_permintaan") {
+                        $btn = '<div><small class="success-text">Diterima</small></div>';
+                    } else if ($s->status == "rej_permintaan") {
+                        $btn = '<div><small class="danger-text">Ditolak</small></div>';
+                    }
+                } else if (Auth::user()->divisi->nama == "PPIC") {
+                    if ($s->status == "dibuat") {
+                        $btn = '<div><small class="info-text">Sedang Dibuat</small></div>';
+                    } else if ($s->status == "req_permintaan") {
+                        $btn = '<div><small class="warning-text">Menunggu</small></div>';
+                    } else if ($s->status == "acc_permintaan") {
+                        $btn = '<div><small class="success-text">Diterima</small></div>';
+                    } else if ($s->status == "rej_permintaan") {
+                        $btn = '<div><small class="danger-text">Ditolak</small></div>';
+                    }
+                } else if (Auth::user()->Divisi->nama == "Gudang Bahan Material") {
+                    if ($s->status == "req_permintaan") {
+                        $btn = '<a href="/bppb/permintaan_bahan_baku/status/' . $s->id . '/terima"><button type="button" class="btn btn-success btn-sm m-1" style="border-radius:50%;"><i class="fas fa-check"></i></button></a>
+                                <a href="/bppb/permintaan_bahan_baku/status/' . $s->id . '/tolak"><button type="button" class="btn btn-danger btn-sm m-1" style="border-radius:50%;"><i class="fas fa-times"></i></button></a>';
+                    } else if ($s->status == "acc_permintaan") {
+                        $btn = '<div><small class="success-text">Diterima</small></div>';
+                    } else if ($s->status == "rej_permintaan") {
+                        $btn = '<div><small class="danger-text">Ditolak</small></div>';
+                    }
+                }
+
+                return $btn;
+            })
+            ->addColumn('aksi', function ($s) {
+                $btn = '<a href = "/bppb/penyerahan_barang_jadi/' . $s->id . '"><button class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-eye"></i></button></a>';
+                $btn .= '<a href = "/perakitan/laporan/edit/' . $s->id . '"><button class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-edit"></i></button></a>';
+                $btn .= '<a class="deletemodal" data-toggle="modal" data-target="#deletemodal" data-attr="/perakitan/laporan/delete/' . $s->id . '"><button class="btn btn-danger btn-sm m-1" style="border-radius:50%;"><i class="fas fa-trash"></i></button></a>';
+                return $btn;
+            })
+            ->rawColumns(['no_seri', 'aksi', 'status'])
+            ->make(true);
+    }
+
     public function bppb_penyerahan_barang_jadi($id)
     {
         $s = Bppb::find($id);
@@ -318,7 +388,16 @@ class PPICController extends Controller
 
     public function bppb_penyerahan_barang_jadi_show($id)
     {
-        $s = PenyerahanBarangJadi::where('bppb_id', $id)->get();
+        $s = "";
+        if (Auth::user()->Divisi->nama == "Produksi" || Auth::user()->Divisi->nama == "PPIC") {
+            $s = PenyerahanBarangJadi::where('bppb_id', $id)->get();
+        } else if (Auth::user()->Divisi->nama == "Gudang Barang Jadi" || Auth::user()->Divisi->nama == "Gudang Karantina") {
+            $s = PenyerahanBarangJadi::where([
+                ['bppb_id', '=', $id],
+                ['divisi_id', '=', Auth::user()->divisi_id]
+            ])->whereIn('status', ['req_penyerahan', 'penyerahan'])->get();
+        }
+
         return DataTables::of($s)
             ->addIndexColumn()
             ->editColumn('tanggal', function ($s) {
@@ -327,12 +406,44 @@ class PPICController extends Controller
             ->addColumn('no_seri', function ($s) {
                 $arr = [];
                 foreach ($s->DetailPenyerahanBarangJadi as $i) {
-                    array_push($arr, $i->HasilPerakitan->HasilPengemasan->no_barcode);
+                    array_push($arr, $i->HasilPerakitan->no_seri);
                 }
                 return implode("<br>", $arr);
             })
-            ->editColumn('divisi', function ($s) {
+            ->editColumn('divisi_id', function ($s) {
                 return $s->Divisi->nama;
+            })
+            ->editColumn('status', function ($s) {
+                $btn = "";
+                if (Auth::user()->divisi->nama == "Produksi") {
+                    if ($s->status == "dibuat") {
+                        $btn = '<a href="/bppb/penyerahan_barang_jadi/status/' . $s->id . '/req_penyerahan">
+                                <button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-paper-plane"></i></button>
+                                <div><small>Penyerahan</small></div></a>';
+                    } else if ($s->status == "req_penyerahan") {
+                        $btn = '<div><small class="warning-text">Menunggu</small></div>';
+                    } else if ($s->status == "penyerahan") {
+                        $btn = '<div><small class="success-text">Selesai</small></div>';
+                    }
+                } else if (Auth::user()->divisi->nama == "PPIC") {
+                    if ($s->status == "dibuat") {
+                        $btn = '<div><small class="info-text">Sedang Dibuat</small></div>';
+                    } else if ($s->status == "req_penyerahan") {
+                        $btn = '<div><small class="warning-text">Menunggu</small></div>';
+                    } else if ($s->status == "penyerahan") {
+                        $btn = '<div><small class="success-text">Selesai</small></div>';
+                    }
+                } else if (Auth::user()->Divisi->nama == "Gudang Barang Jadi" || Auth::user()->Divisi->nama == "Gudang Karantina") {
+                    if ($s->status == "req_penyerahan") {
+                        $btn = '<a href="/bppb/penyerahan_barang_jadi/status/' . $s->id . '/penyerahan">
+                                <button type="button" class="btn btn-success btn-sm m-1" style="border-radius:50%;"><i class="fas fa-check"></i></button>
+                                <div><small>Terima</small></div></a>';
+                    } else if ($s->status == "penyerahan") {
+                        $btn = '<div><small class="success-text">Selesai</small></div>';
+                    }
+                }
+
+                return $btn;
             })
             ->addColumn('aksi', function ($s) {
                 $btn = '<a href = "/bppb/penyerahan_barang_jadi/' . $s->id . '"><button class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-eye"></i></button></a>';
@@ -340,15 +451,18 @@ class PPICController extends Controller
                 $btn .= '<a class="deletemodal" data-toggle="modal" data-target="#deletemodal" data-attr="/perakitan/laporan/delete/' . $s->id . '"><button class="btn btn-danger btn-sm m-1" style="border-radius:50%;"><i class="fas fa-trash"></i></button></a>';
                 return $btn;
             })
-            ->rawColumns(['no_seri', 'aksi'])
+            ->rawColumns(['no_seri', 'aksi', 'status'])
             ->make(true);
     }
 
-    public function bppb_penyerahan_barang_jadi_create($id)
+    public function bppb_penyerahan_barang_jadi_status($id, $status)
     {
-        $s = HasilPengemasan::whereHas('Bppb', function ($q) use ($id) {
-            $q->where('id', $id);
-        })->get();
-        return view('page.produksi.bppb_penyerahan_barang_jadi_create');
+        $s = PenyerahanBarangJadi::find($id);
+        $s->status = $status;
+        $u = $s->save();
+
+        if ($u) {
+            return redirect()->back();
+        }
     }
 }

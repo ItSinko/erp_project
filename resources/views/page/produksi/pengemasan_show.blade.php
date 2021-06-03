@@ -127,6 +127,12 @@
                                 name: 'operator'
                             },
                             {
+                                data: 'status',
+                                name: 'status',
+                                orderable: false,
+                                searchable: false
+                            },
+                            {
                                 data: 'aksi',
                                 name: 'aksi',
                                 orderable: false,
