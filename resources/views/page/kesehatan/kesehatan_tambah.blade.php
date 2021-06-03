@@ -80,22 +80,7 @@
                                                 </div>
                                                 <span role="alert" id="no_seri-msg"></span>
                                             </div>
-                                            <div class="form-group row">
-                                                <label for="keterangan" class="col-sm-4 col-form-label" style="text-align:right;">Tinggi Badan</label>
-                                                <div class="col-sm-2">
-                                                    <div class="input-group mb-3">
-                                                        <input type="number" class="form-control" name="tinggi" id="tinggi" value="{{ old('tinggi') }}">
-                                                        <div class="input-group-append">
-                                                            <span class="input-group-text">Cm</span>
-                                                        </div>
-                                                    </div>
-                                                    @if($errors->has('tinggi'))
-                                                    <div class="text-danger">
-                                                        {{ $errors->first('tinggi')}}
-                                                    </div>
-                                                    @endif
-                                                </div>
-                                            </div>
+
                                             <div class="form-group row">
                                                 <label for="keterangan" class="col-sm-4 col-form-label" style="text-align:right;">Berat Badan</label>
                                                 <div class="col-sm-2">
@@ -113,23 +98,26 @@
                                                 </div>
                                             </div>
                                             <div class="form-group row">
+                                                <label for="keterangan" class="col-sm-4 col-form-label" style="text-align:right;">Tinggi Badan</label>
+                                                <div class="col-sm-2">
+                                                    <div class="input-group mb-3">
+                                                        <input type="number" class="form-control" name="tinggi" id="tinggi" value="{{ old('tinggi') }}">
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text">Cm</span>
+                                                        </div>
+                                                    </div>
+                                                    @if($errors->has('tinggi'))
+                                                    <div class="text-danger">
+                                                        {{ $errors->first('tinggi')}}
+                                                    </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
                                                 <label class="col-sm-4 col-form-label" style="text-align:right;">Body Mass Index</label>
                                                 <div class="col-sm-8">
                                                     <input type="text" class="form-control @error('data') is-invalid @enderror " id="bmi" style="width:15%;" disabled>
                                                     <small id="status_bmi" class="form-text text-muted"></small>
-                                                </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label class="col-sm-4 col-form-label" style="text-align:right;">Rabun Mata</label>
-                                                <div class="col-sm-8 ">
-                                                    <div class="col-sm-4  d-inline">
-                                                        <input type="text" class="form-control d-inline col-sm-4 " id="mata_kiri" style="width:15%;" placeholder="Mata Kiri" name="mata_kiri">
-                                                        <small id="mata_kiri_status" class="form-text text-muted d-inline"></small>
-                                                    </div>
-                                                    <div class="col-sm-4  d-inline">
-                                                        <input type="text" class="form-control d-inline col-sm-4" id="mata_kanan" style="width:15%;" placeholder="Mata Kanan" name="mata_kanan">
-                                                        <small id="mata_kanan_status" class="form-text text-muted d-inline"></small>
-                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
@@ -150,6 +138,7 @@
                                                     <span class="invalid-feedback" role="alert" id="kondisi-msg"></span>
                                                 </div>
                                             </div>
+
                                             <div class="card" id="detail_komposisi" style="display:none">
                                                 <div class="card-header bg-success">
                                                     <div class="card-title">&nbsp;Komposisi Tubuh</div>
@@ -215,6 +204,67 @@
                                                                 </table>
                                                             </div>
                                                         </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="keterangan" class="col-sm-4 col-form-label" style="text-align:right;">Suhu</label>
+                                                <div class="col-sm-2">
+                                                    <div class="input-group mb-3">
+                                                        <input type="text" class="form-control" name="suhu" id="suhu" value="{{ old('suhu') }}">
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text">°C</span>
+                                                        </div>
+                                                    </div>
+                                                    @if($errors->has('suhu'))
+                                                    <div class="text-danger">
+                                                        {{ $errors->first('suhu')}}
+                                                    </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="keterangan" class="col-sm-4 col-form-label" style="text-align:right;">SPO2</label>
+                                                <div class="col-sm-2">
+                                                    <div class="input-group mb-3">
+                                                        <input type="text" class="form-control" name="spo2" id="spo2" value="{{ old('spo2') }}">
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text">%</span>
+                                                        </div>
+                                                    </div>
+                                                    @if($errors->has('spo2'))
+                                                    <div class="text-danger">
+                                                        {{ $errors->first('spo2')}}
+                                                    </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="keterangan" class="col-sm-4 col-form-label" style="text-align:right;">PR</label>
+                                                <div class="col-sm-2">
+                                                    <div class="input-group mb-3">
+                                                        <input type="text" class="form-control" name="pr" id="pr" value="{{ old('pr') }}">
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text">bpm</span>
+                                                        </div>
+                                                    </div>
+                                                    @if($errors->has('pr'))
+                                                    <div class="text-danger">
+                                                        {{ $errors->first('pr')}}
+                                                    </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="col-sm-4 col-form-label" style="text-align:right;">Rabun Mata</label>
+                                                <div class="col-sm-8 ">
+                                                    <div class="col-sm-4  d-inline">
+                                                        <input type="text" class="form-control d-inline col-sm-4 " id="mata_kiri" style="width:15%;" placeholder="Mata Kiri" name="mata_kiri">
+                                                        <small id="mata_kiri_status" class="form-text text-muted d-inline"></small>
+                                                    </div>
+                                                    <div class="col-sm-4  d-inline">
+                                                        <input type="text" class="form-control d-inline col-sm-4" id="mata_kanan" style="width:15%;" placeholder="Mata Kanan" name="mata_kanan">
+                                                        <small id="mata_kanan_status" class="form-text text-muted d-inline"></small>
                                                     </div>
                                                 </div>
                                             </div>
@@ -502,7 +552,6 @@
                 }
             });
         });
-
         $(function() {
             $('#mata_kanan').keyup(function() {
                 var value1 = parseFloat($('#mata_kanan').val());

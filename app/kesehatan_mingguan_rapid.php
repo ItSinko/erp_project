@@ -8,10 +8,14 @@ class kesehatan_mingguan_rapid extends Model
 {
     protected $table = 'kesehatan_mingguan_rapids';
     protected $primaryKey = 'id';
-    protected $fillable = ['karyawan_id', 'tgl_cek', 'hasil', 'keterangan'];
+    protected $fillable = ['karyawan_id', 'pemeriksa_id', 'tgl_cek', 'hasil', 'keterangan'];
 
     public function Karyawan()
     {
         return $this->belongsTo('App\Karyawan');
+    }
+    public function Pemeriksa()
+    {
+        return $this->belongsTo('App\Karyawan', 'pemeriksa_id');
     }
 }

@@ -67,9 +67,9 @@
                         <div class="row">
                             <label for="tanggal" class="col-sm-6 col-form-label">Aksi</label>
                             <div class="col-sm-6 col-form-label" style="text-align:right;">
-                                @if(empty($s->PenyerahanBarangJadi))
-                                <a href='/bppb/penyerahan_barang_jadi/create/{{$id}}'><button type="button" class="btn btn-success rounded-pill btn-sm"><i class="fas fa-plus"></i>&nbsp;Tambah</button></a>
-                                @elseif(!empty($s->PenyerahanBarangJadi))
+                                @if(empty($s->PermintaanBahanBaku))
+                                <a href='/bppb/permintaan_bahan_baku/create/{{$id}}'><button type="button" class="btn btn-success rounded-pill btn-sm"><i class="fas fa-plus"></i>&nbsp;Tambah</button></a>
+                                @elseif(!empty($s->PermintaanBahanBaku))
                                 <button type="button" class="btn btn-warning rounded-pill btn-sm"><i class="fas fa-edit"></i>&nbsp;Ubah</button>
                                 @endif
                             </div>
@@ -82,15 +82,14 @@
         <div class="col-9">
             <div class="card">
                 <div class="card-body">
-                    <h4>Penyerahan Barang Jadi</h4><br>
+                    <h4>Permintaan Bahan Baku</h4><br>
                     <table id="example" class="table table-hover table-bordered styled-table">
                         <thead style="text-align: center;">
                             <tr>
                                 <th>No</th>
                                 <th>Tanggal</th>
-                                <th>No Seri</th>
-                                <th>Jumlah</th>
                                 <th>Divisi</th>
+                                <th>Jumlah</th>
                                 <th>Status</th>
                                 <th>Aksi</th>
                             </tr>
@@ -158,7 +157,7 @@
         $('#example').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('bppb.penyerahan_barang_jadi.show', ['id' => $id])}}",
+            ajax: "{{ route('bppb.permintaan_bahan_baku.show', ['id' => $id])}}",
             columns: [{
                     data: 'DT_RowIndex',
                     name: 'DT_RowIndex',
@@ -169,16 +168,12 @@
                     name: 'tanggal'
                 },
                 {
-                    data: 'no_seri',
-                    name: 'no_seri'
+                    data: 'divisi_id',
+                    name: 'divisi_id'
                 },
                 {
                     data: 'jumlah',
                     name: 'jumlah'
-                },
-                {
-                    data: 'divisi_id',
-                    name: 'divisi_id'
                 },
                 {
                     data: 'status',

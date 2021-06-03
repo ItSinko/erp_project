@@ -15,7 +15,9 @@
                                 <th>No</th>
                                 <th>Tanggal</th>
                                 <th>Operator</th>
+                                <th>Status</th>
                                 <th>Aksi</th>
+
                             </tr>
                         </thead>
                         <tbody style="text-align: center;">

@@ -111,6 +111,22 @@ class Bppb extends Model
         return $c;
     }
 
+    public function countHasilPengemasanByHasil($hasil)
+    {
+        $c = 0;
+        $p = $this->Pengemasan;
+        foreach ($p as $i) {
+            $s = HasilPengemasan::where([
+                ['pengemasan_id', '=', $i->id],
+                ['hasil', '=', $hasil]
+            ])->whereHas('HasilPerakitan', function ($q) {
+                $q->doesntHave('DetailPenyerahanBarangJadi');
+            })->count();
+            $c = $c + $s;
+        }
+        return $c;
+    }
+
     public function PerbaikanProduksi()
     {
         return $this->hasMany(PerbaikanProduksi::class);

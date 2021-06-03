@@ -140,6 +140,7 @@
                                     <tr>
                                         <th>No</th>
                                         <th>Tgl Pengecekan</th>
+                                        <th>Pemeriksa</th>
                                         <th>Hasil Rapid</th>
                                         <th>Catatan</th>
                                     </tr>
@@ -205,6 +206,9 @@
                 },
                 {
                     data: 'tgl_cek'
+                },
+                {
+                    data: 'z'
                 },
                 {
                     data: 'hasil'
