@@ -13,7 +13,7 @@
         {{--User Profile--}}
         <a href="#">
             <div class="card mb-3 user-panel-bg" id="user-panel-profil" style="max-width: 540px; margin-top:20px;">
-                <div class="row no-gutters">
+                <div class="row no-gutters" id="user-image">
                     <div class="col-md-4" style="margin:auto; text-align:center; padding-left:10px;">
                         @if(Auth::user()->foto != NULL)
                         <img src="{{url('assets/image/user')}}/{{Auth::user()->foto}}" class="karyawan-img-sm-md circle-button">
@@ -31,7 +31,7 @@
             </div>
         </a>
 
-        <div class="form-inline">
+        <div class="form-inline" id="search-widget">
             <div class="input-group" data-widget="sidebar-search">
                 <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
                 <div class="input-group-append">

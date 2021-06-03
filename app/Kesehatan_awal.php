@@ -8,7 +8,7 @@ class Kesehatan_awal extends Model
 {
     protected $table = 'kesehatan_awals';
     protected $primaryKey = 'id';
-    protected $fillable = ['karyawan_id', 'vaksin', 'ket_vaksin', 'tinggi', 'berat', 'lemak', 'kandungan_air', 'otot', 'tulang', 'kalori', 'status_mata', 'mata_kiri', 'mata_kanan', 'tes_covid', 'hasil_covid', 'file_covid', 'file_mcu'];
+    protected $fillable = ['karyawan_id', 'vaksin', 'ket_vaksin', 'tinggi', 'berat', 'lemak', 'kandungan_air', 'otot', 'tulang', 'kalori', 'status_mata', 'mata_kiri', 'mata_kanan', 'suhu', 'spo2', 'pr', 'tes_covid', 'tes_covid', 'hasil_covid', 'file_covid', 'file_mcu'];
 
     public function Karyawan()
     {

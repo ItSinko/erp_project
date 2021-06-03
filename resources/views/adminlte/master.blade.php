@@ -107,7 +107,7 @@
     <livewire:scripts />
     @endif
     @endif
-    
+
     {{-- Custom Scripts --}}
     @yield('adminlte_js')
     <script>
@@ -117,6 +117,19 @@
                 allowClear: true
             });
         });
+
+        var flag = 0;
+        $('[data-widget="pushmenu"]').click(function() {
+            if (flag == 0) {
+                $('#user-image').hide();
+                $('#search-widget').hide();
+                flag = 1;
+            } else if (flag == 1) {
+                $('#user-image').show();
+                $('#search-widget').show();
+                flag = 0;
+            }
+        })
     </script>
 </body>
 

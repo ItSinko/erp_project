@@ -11,7 +11,7 @@ use App\Events\Notification;
 use Yajra\DataTables\Facades\DataTables;
 
 use App\User;
-use App\Bill_of_material;
+use App\BillOfMaterial;
 use App\DetailProduk;
 use App\Produk;
 use App\Part;
@@ -19,56 +19,130 @@ use App\Bppb;
 use App\DetailPenyerahanBarangJadi;
 use App\KelompokProduk;
 use App\Event;
+use App\PartEng;
+
+use App\Events\RealTimeMessage;
 use App\PenyerahanBarangJadi;
 use Carbon\Carbon;
 use App\HasilPengemasan;
 use App\PermintaanBahanBaku;
+
+use App\Bom_Version;
 
 class PPICController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth');
+        
     }
 
-    public function index()
+    public function schedule_show(Request $request)
     {
-        $date = Event::toBase()->get();
-        $date = json_encode($date);
-        return view('page.ppic.jadwal_produksi', ['date' => $date]);
+        $date = Event::toBase()->orderBy('tanggal_mulai', 'asc')->get();
+        if (isset($request->month) && isset($request->year)) {
+            $month = $request->month;
+            $year = $request->year;
+        } else {
+            $month = date('m');
+            $year = date('Y');
+        }
+        $event = [];
+        foreach ($date as $d) {
+            $temp_date = strtotime($d->tanggal_mulai);
+
+            if (date('m', $temp_date) == $month && date('Y', $temp_date) == $year)
+                array_push($event, ['id' => $d->id, 'title' => $d->nama_produk, 'start' => $d->tanggal_mulai, 'end' => $d->tanggal_selesai, 'color' => $d->warna]);
+        }
+        $event = json_encode($event);
+
+        if (isset($request->month) && isset($request->year)) {
+            return $event;
+        }
+
+        $produk = DetailProduk::select('nama', 'id')->get();
+        return view('page.ppic.jadwal_produksi', compact('event', 'produk', 'date'));
     }
 
-    public function ppic()
-    {
-        $list = Produk::toBase()->get();
-        return view("ppic.form_ppic", compact('list'));
-    }
-
-    public function calendar_create(Request $request)
+    public function schedule_create(Request $request)
     {
         $data = [
-            'title' => $request->title,
-            'start' => $request->start,
-            'end' => $request->end,
+            'nama_produk' => $request->title,
+            'tanggal_mulai' => $request->start,
+            'tanggal_selesai' => $request->end,
+            'status' => $request->status,
+            'jumlah_produksi' => $request->jumlah,
+            'warna' => $request->color,
+            'id_produk' => $request->id_produk,
         ];
 
-        // return json_encode($data);
+        if ($request->bom != null) {
+            $data = Event::where('id_produk', $request->id_produk)->update(['bom' => $request->bom]);
+            // $data->bom = $request->bom;
+            // $data->save();
+            return $request->id_produk;
+        }
+
         Event::create($data);
+        $result = Event::latest()->first();
+        return $result;
     }
 
-    public function calendar_delete(Request $request)
+    public function schedule_delete(Request $request)
     {
         if ($request->id != "") Event::destroy($request->id);
     }
 
+    public function schedule_notif(Request $request)
+    {
+        event(new RealTimeMessage(Auth::user(), $request->message, $request->status));
+
+        // $date = Event::toBase()->orderBy('start', 'asc')->get();
+        // $today = date('m');
+        // foreach ($date as $d) {
+        //     $temp = strtotime($d->start);
+        //     if ($today == date('m', $temp)) {
+        //         $temp = Event::find($d->id);
+        //         $temp->status = $request->status;
+        //         $temp->save();
+        //     }
+        // }
+    }
+
     public function bom()
     {
-        $list = Produk::all();
+        $list = DetailProduk::all();
         return view('page.ppic.bom', compact('list'));
     }
 
-    public function get_bom()
+    public function get_bom($id)
     {
+        $bom = BillOfMaterial::where('produk_bill_of_material_id', $id)->get();
+        $result = [];
+
+        $min = INF;
+        foreach ($bom as $d) {
+            $part_eng = PartEng::where('kode_part', $d->part_eng_id)->first();
+            if (!isset($part_eng['nama'])) continue;
+            $part_gbmb = Part::where('kode', $part_eng['part_id'])->first();
+
+            if (isset($part_gbmb['jumlah'])) {
+                $count = (int)($part_gbmb['jumlah'] / $d->jumlah);
+                if ($count < $min) $min = $count;
+            }
+            array_push($result, ['nama' => $part_eng['nama'], 'jumlah' => $d->jumlah, 'stok' => $part_gbmb['jumlah']]);
+        }
+
+        array_push($result, $min);
+        return $result;
+    }
+
+    public function get_bom_version($id)
+    {
+        $bom_id = Bom_Version::where('detail_produk_id', $id)->get();
+        $bom_id = json_encode($bom_id);
+
+        return $bom_id;
     }
 
     public function bppb()

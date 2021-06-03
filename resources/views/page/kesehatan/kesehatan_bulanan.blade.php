@@ -50,7 +50,7 @@
           <table id="tensi_tabel" class="table table-hover styled-table table-striped" style="display:none">
             <thead style="text-align: center;">
               <tr>
-                <th colspan="12">
+                <th colspan="13">
                   <a href="/kesehatan_bulanan/tambah" style="color: white;"><button type="button" class="btn btn-block btn-success btn-sm" style="width: 200px;"><i class="fas fa-plus"></i> &nbsp; Tambah</i></button></a>
                 </th>
               </tr>
@@ -62,7 +62,7 @@
                 <th></th>
                 <th></th>
                 <th></th>
-                <th colspan="3">Komposisi</th>
+                <th colspan="5">Komposisi</th>
                 <th></th>
               </tr>
               <tr>
@@ -73,9 +73,11 @@
                 <th>Tinggi</th>
                 <th>Berat</th>
                 <th>BMI</th>
-                <th></th>
-                <th></th>
-                <th></th>
+                <th>Fat</th>
+                <th>Tbw</th>
+                <th>Muscle</th>
+                <th>Bone</th>
+                <th>Kalori</th>
                 <th></th>
               </tr>
             </thead>
@@ -228,6 +230,12 @@
             },
             {
               data: 'keterangan'
+            },
+            {
+              data: 'button'
+            },
+            {
+              data: 'button'
             },
             {
               data: 'button'
