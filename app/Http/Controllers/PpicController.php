@@ -33,7 +33,6 @@ class PPICController extends Controller
         $this->middleware('auth');
     }
 
-<<<<<<< HEAD
     public function schedule_show(Request $request)
     {
         $date = Event::toBase()->orderBy('tanggal_mulai', 'asc')->get();
@@ -59,13 +58,6 @@ class PPICController extends Controller
 
         $produk = DetailProduk::select('nama', 'id')->get();
         return view('page.ppic.jadwal_produksi', compact('event', 'produk', 'date'));
-=======
-    public function index()
-    {
-        $date = Event::toBase()->get();
-        $date = json_encode($date);
-        return view('page.ppic.jadwal_produksi', ['date' => $date]);
->>>>>>> della
     }
 
     public function ppic()
@@ -109,7 +101,6 @@ class PPICController extends Controller
 
     public function get_bom()
     {
-<<<<<<< HEAD
         $bom = BillOfMaterial::where('produk_bill_of_material_id', $id)->get();
         $result = [];
 
@@ -128,8 +119,6 @@ class PPICController extends Controller
 
         array_push($result, $min);
         return $result;
-=======
->>>>>>> della
     }
 
     public function get_bom_version($id)
