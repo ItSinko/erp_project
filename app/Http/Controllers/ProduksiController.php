@@ -36,6 +36,7 @@ use App\PartEng;
 use App\PerbaikanProduksi;
 use App\PersiapanPackingProduk;
 use App\DetailPersiapanPackingProduk;
+use App\PermintaanBahanBaku;
 use App\PenyerahanBarangJadi;
 
 class ProduksiController extends Controller
@@ -183,14 +184,16 @@ class ProduksiController extends Controller
         $b = [];
         $i = 0;
 
-        $be = Perakitan::all();
-
+        // $be = Perakitan::all();
+        $be = Bppb::whereDoesntHave('Perakitan')->whereHas('PermintaanBahanBaku', function ($q) {
+            $q->where('status', 'acc_permintaan');
+        })->get();
         foreach ($be as $bes) {
-            $b[$i] = $bes->bppb_id;
+            $b[$i] = $bes->id;
             $i++;
         }
 
-        $s = Bppb::where('divisi_id', '=', Auth::user()->divisi_id)->whereNotIn('id', $b)->get();
+        $s = Bppb::where('divisi_id', '=', Auth::user()->divisi_id)->whereIn('id', $b)->get();
         $kry = Karyawan::all();
         return view('page.produksi.perakitan_create', ['s' => $s, 'kry' => $kry]);
     }

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class BillOfMaterial extends Model
 {
-    protected $fillable = ['detail_produk_id', 'part_eng_id', 'jumlah', 'satuan', 'status'];
+    protected $fillable = ['produk_bill_of_material_id', 'part_eng_id', 'jumlah', 'satuan', 'status'];
 
     public function DetailProduk()
     {
@@ -15,6 +15,6 @@ class BillOfMaterial extends Model
 
     public function PartEng()
     {
-        return $this->belongsTo(PartEng::class);
+        return $this->belongsTo(PartEng::class, 'part_eng_id');
     }
 }

@@ -631,7 +631,7 @@ return [
             'text'    => 'BPPB',
             'icon'    => 'fas fa-project-diagram',
             'url' => '/bppb',
-            'auth' => [17],
+            'auth' => [17, 24],
         ],
         [
             'text'    => 'Perakitan',

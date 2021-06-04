@@ -155,6 +155,38 @@
                     </div>
                   </div>
                 </div>
+
+                <h3>Permintaan Bahan Baku</h3>
+                <div class="form-horizontal">
+                  <div class="form-group row">
+                    <label for="model" class="col-sm-4 col-form-label" style="text-align:right;">Model</label>
+                    <div class="col-sm-8">
+                      <select class="form-control select2 select2-info @error('model') is-invalid @enderror" data-dropdown-css-class="select2-info" style="width: 30%;" data-placeholder="Pilih Model" name="model" id="model">
+                        <option value=""></option>
+                      </select>
+                      @if ($errors->has('model'))
+                      <span class="invalid-feedback" role="alert">{{$errors->first('model')}}</span>
+                      @endif
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+
+                    <table id="tableitem" class="table table-hover table-bordered styled-table">
+                      <thead style="text-align: center;">
+                        <tr>
+                          <th>Part</th>
+                          <th>Jumlah</th>
+                          <th>Jumlah Diminta</th>
+                          <th>Aksi</th>
+                        </tr>
+                      </thead>
+                      <tbody style="text-align: center;" id="tbodies">
+
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
             </div>
             <!-- /.card -->
 
@@ -188,10 +220,12 @@
         return (user_str + pad).substring(0, pad.length);
       }
     }
+
     $('select[name="kelompok_produk_id"]').on('change', function() {
       var kelompok_produk_id = jQuery(this).val();
       console.log(kelompok_produk_id);
       if (kelompok_produk_id) {
+        $('#tbodies').empty();
         $.ajax({
           url: 'create/get_detail_produk_by_kelompok_produk/' + kelompok_produk_id,
           type: "GET",
@@ -216,12 +250,28 @@
       var detail_produk_id = $(this).val();
       console.log(detail_produk_id);
       if (detail_produk_id) {
+        $('#tbodies').empty();
         $.ajax({
           url: 'create/get_detail_produk_by_id/' + detail_produk_id,
           type: "GET",
           dataType: "json",
           success: function(data) {
             $('input[name="no_bppb_kode"]').val(data[0]['produk']['kode_barcode']);
+          }
+        });
+
+        $.ajax({
+          url: 'create/get_bom/' + detail_produk_id,
+          type: "GET",
+          dataType: "json",
+          success: function(data) {
+            console.log(data);
+            $('select[name="model"]').empty();
+            $('select[name="model"]').append('<option value=""></option>');
+            $.each(data, function(key, value) {
+              console.log(value);
+              $('select[name="model"]').append('<option value="' + value.id + '">Versi ' + value.versi + '</option>');
+            });
           }
         });
 
@@ -239,6 +289,37 @@
           })
         }
       }
+    });
+
+    $('select[name="model"]').on('change', function() {
+      var model = jQuery(this).val();
+      var jumlah = $('#jumlah').val();
+      console.log(model);
+      if (model) {
+        $('#tbodies').empty();
+        $.ajax({
+          url: 'create/get_model_bom/' + model,
+          type: "GET",
+          dataType: "json",
+          success: function(data) {
+            $.each(data, function(key, value) {
+              console.log(value.parteng);
+              $('#tableitem tr:last').after(`<tr>
+                <td><input name="part_id[]" value="` + value.id + `" hidden>` + value.part_eng_id + `</td>
+                <td><input name ="part_jumlah[]" id="part_jumlah" class="form-control" value="` + value.jumlah + `" readonly></td>
+                <td><input name ="part_jumlah_diminta[]" id="part_jumlah_diminta" class="form-control" value="` + (value.jumlah * jumlah) + `"></td>
+                <td><button class="btn btn-danger  btn-circle btn-circle-sm m-1" id="closetable"><i class="fas fa-times"></i></button></td>
+              </tr>`);
+            });
+          }
+        });
+      } else {
+        $('select[name="detail_produk_id"]').empty();
+      }
+    });
+
+    $('#tableitem').on('click', '#closetable', function(e) {
+      $(this).closest('tr').remove();
     });
 
     $('input[name="tanggal_bppb"]').on('change', function() {
@@ -259,6 +340,9 @@
         })
       }
     });
+
+
+
   });
 </script>
 @stop
