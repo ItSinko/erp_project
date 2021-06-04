@@ -1,5 +1,7 @@
 <?php
 
+use App\Event;
+use App\Events\cek_stok;
 use App\Http\Controllers\CommonController;
 use App\Http\Controllers\GetController;
 use App\Http\Controllers\QCController;
@@ -90,8 +92,10 @@ Route::get('/kesehatan_bulanan', 'KesehatanController@kesehatan_bulanan');
 Route::get('/kesehatan_bulanan/tambah', 'KesehatanController@kesehatan_bulanan_tambah');
 Route::get('/kesehatan_bulanan/tambah/data', 'KesehatanController@kesehatan_bulanan_tambah_data');
 Route::post('/kesehatan_bulanan_gcu/aksi_tambah', 'KesehatanController@kesehatan_bulanan_gcu_aksi_tambah');
+Route::post('/kesehatan_bulanan_berat/aksi_tambah', 'KesehatanController@kesehatan_bulanan_berat_aksi_tambah');
 Route::put('/kesehatan_bulanan_gcu/aksi_ubah', 'KesehatanController@kesehatan_bulanan_gcu_aksi_ubah');
 Route::get('/kesehatan_bulanan_gcu/data', 'KesehatanController@kesehatan_bulanan_gcu_data');
+Route::get('/kesehatan_bulanan_berat/data', 'KesehatanController@kesehatan_bulanan_gcu_data');
 Route::get('/kesehatan_bulanan/detail', 'KesehatanController@kesehatan_bulanan_gcu_detail');
 Route::get('/kesehatan_bulanan_gcu/detail/{karyawan_id}', 'KesehatanController@kesehatan_bulanan_gcu_detail_data');
 Route::get('/kesehatan_bulanan/detail/data/{karyawan_id}', 'KesehatanController@kesehatan_bulanan_detail_data_karyawan');
@@ -598,6 +602,10 @@ Route::get('/message', 'ChatController@fetchMessages');
 Route::post('/message', 'ChatController@sendMessage');
 
 Route::post('/notif', 'PpicController@schedule_notif')->middleware('auth');
+Route::get('/stok', function () {
+    event(new cek_stok('pesan'));
+    return "notif send";
+});
 
 Route::get('/welcome', function () {
     return view('welcome');

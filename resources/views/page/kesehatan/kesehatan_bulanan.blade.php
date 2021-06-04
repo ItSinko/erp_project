@@ -47,7 +47,7 @@
             <div class="col-lg-4 col-md-4">
             </div>
           </div>
-          <table id="tensi_tabel" class="table table-hover styled-table table-striped" style="display:none">
+          <table id="berat_tabel" class="table table-hover styled-table table-striped" style="display:none">
             <thead style="text-align: center;">
               <tr>
                 <th colspan="13">
@@ -207,7 +207,7 @@
           language: {
             processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
           },
-          ajax: '/kesehatan_mingguan_tensi/data',
+          ajax: '/kesehatan_bulanan_berat/data',
           columns: [{
               data: 'DT_RowIndex',
               orderable: false,

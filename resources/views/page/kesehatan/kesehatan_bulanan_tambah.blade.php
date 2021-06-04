@@ -61,7 +61,7 @@
         </div>
         <div class="col-lg-12" id="tensi" style="display:none">
             <div class="col-lg-12">
-                <form action="/kesehatan_mingguan_tensi/aksi_tambah" method="post">
+                <form action="/kesehatan_bulanan_berat/aksi_tambah" method="post">
                     {{ csrf_field() }}
                     <div class="card">
                         <div class="card-header bg-success">
@@ -120,6 +120,7 @@
                                                     <th>Otot</th>
                                                     <th>Tulang</th>
                                                     <th>Kalori</th>
+                                                    <th>Catatan</th>
                                                 </tr>
                                             </thead>
                                             <tbody style="text-align: center;">
@@ -252,7 +253,7 @@
                                     $('#date' + value['id'] + '').val($(this).val());
                                 });
                                 $('#tabel_tensi').append(`<tr> <td>` + no + `</td>
-                                <td><input id="date` + value[`id`] + `" type="date" class="form-control" readonly></td>
+                                <td><input id="date` + value[`id`] + `" type="date" class="form-control" readonly><input type="text" class="form-control d-none" name="kesehatan_awal_id[` + x + `]" value="` + value['kesehatan_awal']['id'] + `"></td>
                                                          <td>` + value[`nama`] + `</td>
                                                          <td>    
                                                          <div class="input-group mb-3">
@@ -311,6 +312,10 @@
                                                             <span class="input-group-text">kkal</span>
                                                         </div>
                                                         </div>
+                                                        </td>
+                                                        <td>    
+                                                        <div class="input-group mb-3">
+                                                         <textarea type="text" class="form-control" name="keterangan[` + x + `]" ></textarea>
                                                         </td>
                                                         </tr>`);
                                 x++;

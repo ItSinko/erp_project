@@ -10,7 +10,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class cek_stok
+class cek_stok implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -19,9 +19,10 @@ class cek_stok
      *
      * @return void
      */
-    public function __construct()
+    public $data;
+    public function __construct($data)
     {
-        //
+        $this->data = $data;
     }
 
     /**
@@ -31,6 +32,6 @@ class cek_stok
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('channel-name');
+        return new Channel('tes');
     }
 }

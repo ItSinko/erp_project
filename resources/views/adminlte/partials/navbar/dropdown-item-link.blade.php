@@ -1,12 +1,9 @@
 <li @if(isset($item['id'])) id="{{ $item['id'] }}" @endif>
-
-    <a class="dropdown-item" href="{{ $item['href'] }}"
-       @if(isset($item['target'])) target="{{ $item['target'] }}" @endif
-       {!! $item['data-compiled'] ?? '' !!}>
+    <a class="dropdown-item" href="{{ $item['href'] }}" @if(isset($item['target'])) target="{{ $item['target'] }}" @endif {!! $item['data-compiled'] ?? '' !!}>
 
         {{-- Icon (optional) --}}
         @if(isset($item['icon']))
-            <i class="{{ $item['icon'] ?? '' }} {{
+        <i class="{{ $item['icon'] ?? '' }} {{
                 isset($item['icon_color']) ? 'text-' . $item['icon_color'] : ''
             }}"></i>
         @endif
@@ -16,11 +13,9 @@
 
         {{-- Label (optional) --}}
         @if(isset($item['label']))
-            <span class="badge badge-{{ $item['label_color'] ?? 'primary' }}">
-                {{ $item['label'] }}
-            </span>
+        <span class="badge badge-{{ $item['label_color'] ?? 'primary' }}">
+            {{ $item['label'] }}
+        </span>
         @endif
-
     </a>
-
 </li>

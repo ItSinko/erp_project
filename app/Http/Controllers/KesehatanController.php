@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\berat_karyawan;
 use App\Charts\SampleChart;
 use App\Divisi;
 use App\gcu_karyawan;
@@ -40,7 +41,9 @@ class KesehatanController extends Controller
     }
     public function kesehatan_detail()
     {
-        $karyawan = Karyawan::all();
+        $karyawan = Karyawan::orderBy('nama', 'ASC')
+            ->has('Kesehatan_awal')
+            ->get();
         return view('page.kesehatan.kesehatan_detail', ['karyawan' => $karyawan]);
     }
     public function kesehatan_data()
@@ -79,7 +82,7 @@ class KesehatanController extends Controller
     }
     public function kesehatan_tambah()
     {
-        $karyawan = Karyawan::all();
+        $karyawan = Karyawan::orderBy('nama', 'ASC')->get();;
         return view('page.kesehatan.kesehatan_tambah', ['karyawan' => $karyawan]);
     }
     public function kesehatan_ubah($id)
@@ -181,6 +184,8 @@ class KesehatanController extends Controller
     public function kesehatan_harian_tambah_data($id)
     {
         $data = Karyawan::with('divisi', 'kesehatan_awal')
+            ->orderBy('nama', 'ASC')
+            ->has('kesehatan_awal')
             ->where('divisi_id', $id)->get();
         echo json_encode($data);
     }
@@ -273,7 +278,9 @@ class KesehatanController extends Controller
         // $chart->labels($kesehatan_harian_tgl->values());
         // $chart->dataset('Pagi', 'line', $kesehatan_harian_pagi->values())->color('red')->backgroundColor('transparent');
         // $chart->dataset('Siang', 'line', $kesehatan_harian_siang->values())->color('blue')->backgroundColor('transparent');
-        $karyawan = Karyawan::all();
+        $karyawan = Karyawan::orderBy('nama', 'ASC')
+            ->has('Kesehatan_harian')
+            ->get();;
         return view('page.kesehatan.kesehatan_harian_detail', ['karyawan' => $karyawan]);
     }
 
@@ -453,7 +460,7 @@ class KesehatanController extends Controller
 
     public function kesehatan_mingguan_detail()
     {
-        $karyawan = Karyawan::all();
+        $karyawan = Karyawan::orderBy('nama', 'ASC')->get();
         return view('page.kesehatan.kesehatan_mingguan_detail', ['karyawan' => $karyawan]);
     }
 
@@ -536,6 +543,41 @@ class KesehatanController extends Controller
         }
     }
 
+
+    public function kesehatan_bulanan_berat_aksi_tambah(Request $request)
+    {
+        $this->validate(
+            $request,
+            [
+                'divisi' => 'required',
+                'tgl_cek' => 'required',
+            ],
+            [
+                'divisi.required' => 'Divisi harus di pilih',
+                'tgl_cek.required' => 'Tanggal pengecekan harus dipilih',
+            ]
+        );
+
+        for ($i = 0; $i < count($request->karyawan_id); $i++) {
+            $berat_karyawan = berat_karyawan::create([
+                'kesehatan_awal_id' => $request->kesehatan_awal_id[$i],
+                'tgl_cek' => $request->tgl_cek,
+                'berat' => $request->berat[$i],
+                'lemak' => $request->lemak[$i],
+                'kandungan_air' => $request->kandungan_air[$i],
+                'otot' => $request->otot[$i],
+                'tulang' => $request->tulang[$i],
+                'kalori' => $request->kalori[$i],
+                'keterangan' => $request->keterangan[$i]
+            ]);
+        }
+
+        if ($berat_karyawan) {
+            return redirect()->back()->with('success', 'Berhasil menambahkan data');
+        } else {
+            return redirect()->back()->with('error', 'Gagal menambahkan data');
+        }
+    }
     public function kesehatan_bulanan_gcu_aksi_tambah(Request $request)
     {
         $this->validate(
@@ -610,6 +652,48 @@ class KesehatanController extends Controller
             ->make(true);
     }
 
+    public function kesehatan_bulanan_berat_data()
+    {
+        $data = gcu_karyawan::with('karyawan')
+            ->orderBy('tgl_cek', 'DESC');
+
+        return datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('x', function ($data) {
+                return $data->karyawan->divisi->nama;
+            })
+            ->addColumn('glu', function ($data) {
+                if ($data->glukosa != NULL) {
+                    return $data->glukosa;
+                } else {
+                    return '0 %';
+                }
+            })
+
+            ->addColumn('kol', function ($data) {
+                if ($data->kolesterol != NULL) {
+                    return $data->kolesterol;
+                } else {
+                    return '0 %';
+                }
+            })
+
+            ->addColumn('asam', function ($data) {
+                if ($data->asam_urat != NULL) {
+                    return $data->asam_urat;
+                } else {
+                    return '0 %';
+                }
+            })
+            ->addColumn('button', function ($data) {
+                $btn = '<div class="inline-flex"><button type="button" id="edit_gcu"  class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-edit"></i></button></div>';
+                $btn = $btn . ' <div class="inline-flex"><button type="button" class="btn btn-block btn-danger karyawan-img-small" style="border-radius:50%;" data-toggle="modal" data-target="#delete" ><i class="fas fa-trash"></i></button></div>';
+                return $btn;
+            })
+            ->rawColumns(['button'])
+            ->make(true);
+    }
+
     public function kesehatan_bulanan_gcu_aksi_ubah(Request $request)
     {
         $id = $request->id;
@@ -628,7 +712,7 @@ class KesehatanController extends Controller
     }
     public function kesehatan_bulanan_gcu_detail()
     {
-        $karyawan = Karyawan::all();
+        $karyawan = Karyawan::orderBy('nama', 'ASC')->get();
         return view('page.kesehatan.kesehatan_bulanan_detail', ['karyawan' => $karyawan]);
     }
 
@@ -678,9 +762,12 @@ class KesehatanController extends Controller
     }
     public function karyawan_sakit_tambah()
     {
-        $karyawan = Karyawan::all();
+        $karyawan = Karyawan::orderBy('nama', 'ASC')
+            ->has('kesehatan_awal')
+            ->get();
         $obat = Obat::all();
-        $pengecek = $karyawan->where('divisi_id', '28');
+        $pengecek = Karyawan::where('divisi_id', '28')
+            ->get();
         return view('page.kesehatan.karyawan_sakit_tambah', ['karyawan' => $karyawan, 'pengecek' => $pengecek, 'obat' => $obat]);
     }
     // public function obat_data()
@@ -717,6 +804,7 @@ class KesehatanController extends Controller
                 'tindakan' => $request->hasil_1,
                 'terapi' => $request->terapi,
                 'obat_id' => $request->obat_id,
+                'jumlah' => $request->jumlah,
                 'aturan' => $request->aturan_obat,
                 'konsumsi' => $request->dosis_obat_custom,
                 'keputusan' => $request->hasil_2
@@ -731,18 +819,17 @@ class KesehatanController extends Controller
                 'tindakan' => $request->hasil_1,
                 'terapi' => $request->terapi,
                 'obat_id' => $request->obat_id,
+                'jumlah' => $request->jumlah,
                 'aturan' => $request->aturan_obat,
                 'konsumsi' => $request->dosis_obat,
                 'keputusan' => $request->hasil_2
             ]);
         }
-
         if ($request->hasil_1 == 'Pengobatan') {
             $id = $request->obat_id;
             $jumlah = $request->jumlah;
             $obat = Obat::find($id)->decrement('stok', $jumlah);
         }
-
         if ($karyawan_sakit) {
             return redirect()->back()->with('success', 'Berhasil menambahkan data');
         } else {
@@ -811,9 +898,13 @@ class KesehatanController extends Controller
     }
     public function karyawan_masuk_tambah()
     {
-        $obat = Obat::all();
-        $karyawan = Karyawan::all();
-        $pengecek = $karyawan->where('divisi_id', '28');
+        $obat = Obat::orderBy('nama', 'ASC')
+            ->get();
+        $karyawan = Karyawan::orderBy('nama', 'ASC')
+            ->has('kesehatan_awal')
+            ->get();
+        $pengecek = Karyawan::where('divisi_id', '28')
+            ->get();
         return view('page.kesehatan.karyawan_masuk_tambah', ['karyawan' => $karyawan, 'pengecek' => $pengecek, 'obat' => $obat]);
     }
     public function obat()
@@ -822,7 +913,6 @@ class KesehatanController extends Controller
     }
     public function obat_tambah()
     {
-
         return view('page.kesehatan.obat_tambah');
     }
     public function obat_data()
@@ -853,6 +943,9 @@ class KesehatanController extends Controller
                 return $data->karyawan->divisi->nama;
             })
             ->addColumn('y', function ($data) {
+                return $data->karyawan->nama;
+            })
+            ->addColumn('z', function ($data) {
                 return $data->karyawan->nama;
             })
             ->make(true);
@@ -924,6 +1017,7 @@ class KesehatanController extends Controller
                     'tindakan' => $request->hasil_1,
                     'terapi' => $request->terapi,
                     'obat_id' => $request->obat_id,
+                    'jumlah' => $request->jumlah,
                     'aturan' => $request->aturan_obat,
                     'konsumsi' => $request->dosis_obat_custom,
                     'keputusan' => $request->hasil_2
@@ -938,6 +1032,7 @@ class KesehatanController extends Controller
                     'tindakan' => $request->hasil_1,
                     'terapi' => $request->terapi,
                     'obat_id' => $request->obat_id,
+                    'jumlah' => $request->jumlah,
                     'aturan' => $request->aturan_obat,
                     'konsumsi' => $request->dosis_obat,
                     'keputusan' => $request->hasil_2
@@ -960,6 +1055,12 @@ class KesehatanController extends Controller
                 'alasan' => $request->alasan,
                 'keterangan' => $request->keterangan
             ]);
+        }
+
+        if ($request->hasil_1 == 'Pengobatan') {
+            $id = $request->obat_id;
+            $jumlah = $request->jumlah;
+            $obat = Obat::find($id)->decrement('stok', $jumlah);
         }
         if ($karyawan_masuk) {
             return redirect()->back()->with('success', 'Berhasil menambahkan data');
@@ -1000,13 +1101,18 @@ class KesehatanController extends Controller
     }
     public function kesehatan_tahunan_detail()
     {
-        $karyawan = Karyawan::all();
+        $karyawan = Karyawan::orderBy('nama', 'ASC')
+            ->has('kesehatan_tahunan')
+            ->get();
         return view('page.kesehatan.kesehatan_tahunan_detail', ['karyawan' => $karyawan]);
     }
     public function kesehatan_tahunan_tambah()
     {
-        $karyawan = Karyawan::all();
-        $pengecek = $karyawan->where('divisi_id', '28');
+        $karyawan = Karyawan::orderBy('nama', 'ASC')
+            ->has('kesehatan_awal')
+            ->get();
+        $pengecek = Karyawan::where('divisi_id', '28')
+            ->get();
         return view('page.kesehatan.kesehatan_tahunan_tambah', ['karyawan' => $karyawan, 'pengecek' => $pengecek]);
     }
     public function kesehatan_tahunan_aksi_tambah(Request $request)

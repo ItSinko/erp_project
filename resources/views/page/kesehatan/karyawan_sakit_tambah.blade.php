@@ -187,7 +187,7 @@
                                                     <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;">Jumlah</label>
                                                     <div class="col-sm-1">
                                                         <div class="input-group mb-3">
-                                                            <input type="number" class="form-control" name="jumlah" id="jumlah" value="{{ old('jumlah') }}" min="1" required>
+                                                            <input type="number" class="form-control" name="jumlah" id="jumlah" value="{{ old('jumlah') }}" min="1">
                                                             <div class="input-group-append">
                                                                 <span class="input-group-text">Pc</span>
                                                             </div>
@@ -264,6 +264,7 @@
                 $('#dosis_obat_custom').val('');
                 $('#jumlah').val('');
                 $('select[name=obat_id]').prop("required", false);
+                $('input[name=jumlah]').prop("required", false);
                 $('input[name=aturan_obat]').prop("required", false);
                 $('input[name=dosis_obat]').prop("required", false);
                 $('input[name=aturan_obat]').prop("checked", false);
@@ -272,6 +273,7 @@
                 $('#obat').val(null).trigger('change');
                 $('#stok').text('');
             } else {
+                $('input[name=jumlah]').prop("required", true);
                 $('select[name=obat_id]').prop("required", true);
                 $('input[name=dosis_obat]').prop("required", true);
                 $('input[name=aturan_obat]').prop("required", true);
@@ -282,7 +284,6 @@
             }
         });
     });
-
     $(document).ready(function() {
         $('select[id="obat"]').on('change', function() {
             var id = jQuery(this).val();

@@ -14,7 +14,7 @@ class UpdateKesehatanJumlah extends Migration
     public function up()
     {
         Schema::table('karyawan_sakits', function (Blueprint $table) {
-            $table->integer('jumlah')->after('obat_id');
+            $table->integer('jumlah')->after('obat_id')->nullable();
         });
     }
 
