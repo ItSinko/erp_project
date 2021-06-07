@@ -37,7 +37,11 @@ use App\PerbaikanProduksi;
 use App\PersiapanPackingProduk;
 use App\DetailPersiapanPackingProduk;
 use App\PermintaanBahanBaku;
+use App\DetailPermintaanBahanBaku;
+use App\PengembalianBarangGudang;
+use App\DetailPengembalianBarangGudang;
 use App\PenyerahanBarangJadi;
+
 
 class ProduksiController extends Controller
 {
@@ -57,6 +61,46 @@ class ProduksiController extends Controller
     {
         $s = Bppb::find($id);
         return view('page.produksi.bppb_permintaan_bahan_baku_create', ['id' => $id, 's' => $s]);
+    }
+
+    public function bppb_pengembalian_barang_gudang_create($id)
+    {
+        $s = Bppb::find($id);
+        $pbb = DetailPermintaanBahanBaku::whereHas('PermintaanBahanBaku.Bppb', function ($q) use ($id) {
+            $q->where('id', $id);
+        })->distinct('bill_of_material_id')->sum('jumlah_diterima');
+        return view('page.produksi.bppb_pengembalian_barang_gudang_create', ['$id' => $id, '$s' => $s, 'pbb' => $pbb]);
+    }
+
+    public function bppb_pengembalian_barang_gudang_store(Request $request, $id)
+    {
+        $c = PengembalianBarangGudang::create([
+            'bppb_id' => $id,
+            'divisi_id' => $request->divisi_id,
+            'tanggal' => $request->tanggal,
+            'status' => 'dibuat',
+        ]);
+
+        if ($c) {
+            $bool = true;
+            for ($i = 0; $i < count($request->bill_of_material_id); $i++) {
+                $cs = DetailPengembalianBarangGudang::create([
+                    'pengembalian_id' => $c->id,
+                    'bill_of_material_id' => $request->bill_of_material_id[$i],
+                    'jumlah_pengembalian' => $request->jumlah_pengembalian[$i]
+                ]);
+
+                if (!$cs) {
+                    $bool = false;
+                }
+            }
+
+            if ($bool == true) {
+                return redirect()->back()->with('success', "Berhasil menambahkan Data");
+            } else {
+                return redirect()->back()->with('error', "Gagal menambahkan Data");
+            }
+        }
     }
 
     public function bppb_penyerahan_barang_jadi_create($id)

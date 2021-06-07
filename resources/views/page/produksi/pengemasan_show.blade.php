@@ -104,7 +104,6 @@
                 beforeSend: function() {
                     $('#loader').show();
                 },
-                // return the result
                 success: function(result) {
                     $('#detailmodal').modal("show");
                     $('#detail').html(result).show();

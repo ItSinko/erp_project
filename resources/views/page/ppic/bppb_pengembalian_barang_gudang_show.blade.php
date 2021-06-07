@@ -67,11 +67,7 @@
                         <div class="row">
                             <label for="tanggal" class="col-sm-6 col-form-label">Aksi</label>
                             <div class="col-sm-6 col-form-label" style="text-align:right;">
-                                @if(empty($s->PermintaanBahanBaku))
-                                <a href='/bppb/permintaan_bahan_baku/create/{{$id}}'><button type="button" class="btn btn-success rounded-pill btn-sm"><i class="fas fa-plus"></i>&nbsp;Tambah</button></a>
-                                @elseif(!empty($s->PermintaanBahanBaku))
-                                <button type="button" class="btn btn-warning rounded-pill btn-sm"><i class="fas fa-edit"></i>&nbsp;Ubah</button>
-                                @endif
+                                <a href='/bppb/pengembalian_barang_gudang/create/{{$id}}'><button type="button" class="btn btn-success rounded-pill btn-sm"><i class="fas fa-plus"></i>&nbsp;Tambah</button></a>
                             </div>
                         </div>
 
@@ -82,20 +78,18 @@
         <div class="col-9">
             <div class="card">
                 <div class="card-body">
-                    <h4>Permintaan Bahan Baku</h4><br>
+                    <h4>Pengembalian Barang Gudang</h4><br>
                     <table id="example" class="table table-hover table-bordered styled-table">
                         <thead style="text-align: center;">
                             <tr>
                                 <th>No</th>
                                 <th>Tanggal</th>
                                 <th>Divisi</th>
-                                <th>Jumlah</th>
                                 <th>Status</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody style="text-align:center;">
-
                         </tbody>
                     </table>
                 </div>
@@ -109,20 +103,6 @@
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         </div>
                         <div class="modal-body" id="detail">
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="modal fade" id="pemeriksaanprosesmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                <div class="modal-dialog modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header" style="background-color:	#006400;">
-                            <h4 class="modal-title" id="myModalLabel" style="color:white;">Laporan</h4>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        </div>
-                        <div class="modal-body" id="pemeriksaanproses">
 
                         </div>
                     </div>
@@ -157,7 +137,7 @@
         $('#example').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('bppb.permintaan_bahan_baku.show', ['id' => $id])}}",
+            ajax: "{{ route('bppb.pengembalian_barang_gudang.show', ['id' => $id])}}",
             columns: [{
                     data: 'DT_RowIndex',
                     name: 'DT_RowIndex',
@@ -191,6 +171,7 @@
 
         $(document).on('click', '.detailmodal', function(event) {
             event.preventDefault();
+            var href = $(this).attr('data-attr');
             var dataid = $(this).attr('data-id');
             $.ajax({
                 url: "{{route('bppb.permintaan_bahan_baku.detail')}}",
@@ -231,7 +212,7 @@
                 },
                 error: function(jqXHR, testStatus, error) {
                     console.log(error);
-                    alert("Page " + '/bppb/permintaan_bahan_baku/detail' + " cannot open. Error:" + error);
+                    alert("Page " + href + " cannot open. Error:" + error);
                     $('#loader').hide();
                 },
                 timeout: 8000

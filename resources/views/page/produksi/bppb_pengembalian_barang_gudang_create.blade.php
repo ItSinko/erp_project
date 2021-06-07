@@ -126,7 +126,12 @@
                                         </tr>
                                     </thead>
                                     <tbody style="text-align: center;">
-
+                                        @foreach($hp as $i)
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>

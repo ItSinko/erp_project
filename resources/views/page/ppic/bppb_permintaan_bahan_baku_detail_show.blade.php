@@ -8,6 +8,7 @@
                         <thead style="text-align: center;">
                             <tr>
                                 <th>No</th>
+                                <th>Part</th>
                                 <th>Jumlah Diminta</th>
                                 <th>Jumlah Diterima</th>
                             </tr>
