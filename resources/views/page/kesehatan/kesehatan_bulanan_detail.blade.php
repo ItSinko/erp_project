@@ -68,7 +68,7 @@
                                             </div>
                                             <div class="card-body">
                                                 <div class="card-body">
-                                                    <canvas id="tensi_diastolik_chart"></canvas>
+                                                    <canvas id="berat_chart"></canvas>
                                                 </div>
                                             </div>
                                         </div>
@@ -118,14 +118,17 @@
                     </div>
                     <div class="card-body">
                         <div class='table-responsive'>
-                            <table id="rapid_tabel" class="table table-hover styled-table table-striped">
-                                <thead style="text-align: center;">
+                            <table id="berat_tabel" class="table table-hover styled-table table-striped">
+                                <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Tgl Pengecekan</th>
-                                        <th>Glucose</th>
-                                        <th>Cholesterol</th>
-                                        <th>Uric Acid</th>
+                                        <th>Bulan</th>
+                                        <th>Berat</th>
+                                        <th>Fat</th>
+                                        <th>Tbw</th>
+                                        <th>Muscle</th>
+                                        <th>Bone</th>
+                                        <th>Kalori</th>
                                         <th>Catatan</th>
                                     </tr>
                                 </thead>
@@ -216,6 +219,47 @@
             ]
         });
 
+
+
+        var berat_tabel = $('#berat_tabel').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: '/kesehatan_bulanan_gcu/detail/' + karyawan_id,
+            language: {
+                processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
+            },
+            columns: [{
+                    data: 'DT_RowIndex',
+                    orderable: false,
+                    searchable: false
+                },
+                {
+                    data: 'tgl_cek'
+                },
+                {
+                    data: 'z'
+                },
+                {
+                    data: 'l'
+                },
+                {
+                    data: 'k'
+                },
+                {
+                    data: 'o'
+                },
+                {
+                    data: 't'
+                },
+                {
+                    data: 'ka'
+                },
+                {
+                    data: 'keterangan'
+                },
+            ]
+        });
+
     });
 </script>
 
@@ -260,14 +304,14 @@
             }
         }
     });
-    //Tenesi Diastolik
-    var ctx = document.getElementById("tensi_diastolik_chart");
-    var tensi_diastolik_chart = new Chart(ctx, {
+    //Berat
+    var ctx = document.getElementById("berat_chart");
+    var berat_chart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: [],
             datasets: [{
-                label: 'Diastolik',
+                label: 'Berat',
                 data: [],
                 borderWidth: 2,
                 backgroundColor: 'transparent',
@@ -288,7 +332,7 @@
     $('#karyawan_id').change(function() {
         var karyawan_id = $(this).val();
         $('#tensi_tabel').DataTable().ajax.url('/kesehatan_bulanan_gcu/detail/' + karyawan_id).load();
-        // $('#rapid_tabel').DataTable().ajax.url('/kesehatan_mingguan_rapid/detail/' + karyawan_id).load();
+        $('#berat_tabel').DataTable().ajax.url('/kesehatan_bulanan_berat/detail/' + karyawan_id).load();
         var updateChart = function() {
             $.ajax({
                 url: "/kesehatan_bulanan/detail/data/" + karyawan_id,
@@ -304,6 +348,11 @@
                     gcu_chart.data.datasets[1].data = data.labels3;
                     gcu_chart.data.datasets[2].data = data.labels4;
                     gcu_chart.update();
+
+                    berat_chart.data.labels = data.tgl2;
+                    berat_chart.data.datasets[0].data = data.labels5;
+                    berat_chart.update();
+
                 },
                 error: function(data) {
                     console.log(data);

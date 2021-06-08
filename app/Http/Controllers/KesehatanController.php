@@ -19,14 +19,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Collection;
 use Yajra\DataTables\Facades\DataTables;
+
 
 class KesehatanController extends Controller
 {
     public function kesehatan_harian()
     {
+
         return view('page.kesehatan.kesehatan_harian');
     }
     public function kesehatan()
@@ -420,6 +423,17 @@ class KesehatanController extends Controller
             ->addColumn('x', function ($data) {
                 return $data->karyawan->divisi->nama;
             })
+            ->addColumn('hasil', function ($data) {
+                if ($data->sistolik < 130 && $data->diastolik < 85) {
+                    return 'Normal';
+                } else if ($data->sistolik >= 130 && $data->sistolik <= 139 || $data->diastolik >= 85  && $data->diastolik >= 87) {
+                    return 'Pra-Hipertensi';
+                } else if ($data->sistolik >= 140 && $data->sistolik <= 159 || $data->diastolik >= 90  && $data->diastolik >= 99) {
+                    return 'Stadium 1 Hipertensi';
+                } else if ($data->sistolik >= 160  || $data->diastolik >= 100) {
+                    return 'Stadium 2 Hipertensi';
+                }
+            })
             ->addColumn('sis', function ($data) {
                 return $data->sistolik . ' mmHg';
             })
@@ -435,7 +449,6 @@ class KesehatanController extends Controller
             ->rawColumns(['button'])
             ->make(true);
     }
-
     public function kesehatan_mingguan_rapid_data()
     {
         $data = kesehatan_mingguan_rapid::with('karyawan')
@@ -473,6 +486,8 @@ class KesehatanController extends Controller
             ->addColumn('sis', function ($data) {
                 return $data->sistolik . ' mmHg';
             })
+
+
             ->addColumn('dias', function ($data) {
                 return $data->diastolik . ' mmHg';
             })
@@ -483,7 +498,6 @@ class KesehatanController extends Controller
         $data = kesehatan_mingguan_rapid::where('karyawan_id', $karyawan_id);
 
         return datatables::of($data)
-
             ->addIndexColumn()
             ->addColumn('z', function ($data) {
                 return $data->pemeriksa->nama;
@@ -560,7 +574,7 @@ class KesehatanController extends Controller
 
         for ($i = 0; $i < count($request->karyawan_id); $i++) {
             $berat_karyawan = berat_karyawan::create([
-                'kesehatan_awal_id' => $request->kesehatan_awal_id[$i],
+                'karyawan_id' => $request->karyawan_id[$i],
                 'tgl_cek' => $request->tgl_cek,
                 'berat' => $request->berat[$i],
                 'lemak' => $request->lemak[$i],
@@ -645,16 +659,14 @@ class KesehatanController extends Controller
             })
             ->addColumn('button', function ($data) {
                 $btn = '<div class="inline-flex"><button type="button" id="edit_gcu"  class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-edit"></i></button></div>';
-                $btn = $btn . ' <div class="inline-flex"><button type="button" class="btn btn-block btn-danger karyawan-img-small" style="border-radius:50%;" data-toggle="modal" data-target="#delete" ><i class="fas fa-trash"></i></button></div>';
                 return $btn;
             })
             ->rawColumns(['button'])
             ->make(true);
     }
-
     public function kesehatan_bulanan_berat_data()
     {
-        $data = gcu_karyawan::with('karyawan')
+        $data = berat_karyawan::with('karyawan')
             ->orderBy('tgl_cek', 'DESC');
 
         return datatables::of($data)
@@ -662,32 +674,37 @@ class KesehatanController extends Controller
             ->addColumn('x', function ($data) {
                 return $data->karyawan->divisi->nama;
             })
-            ->addColumn('glu', function ($data) {
-                if ($data->glukosa != NULL) {
-                    return $data->glukosa;
-                } else {
-                    return '0 %';
-                }
+            ->addColumn('y', function ($data) {
+                return $data->karyawan->nama;
+            })
+            ->addColumn('z', function ($data) {
+                return $data->berat . ' Kg';
+            })
+            ->addColumn('l', function ($data) {
+                return $data->lemak . ' gram';
+            })
+            ->addColumn('k', function ($data) {
+                return $data->kandungan_air . ' %';
+            })
+            ->addColumn('o', function ($data) {
+                return $data->otot . ' Kg';
+            })
+            ->addColumn('t', function ($data) {
+                return $data->tulang . ' Kg';
+            })
+            ->addColumn('ka', function ($data) {
+                return $data->kalori . ' kkal';
+            })
+            ->addColumn('ti', function ($data) {
+                return $data->karyawan->kesehatan_awal->tinggi . ' Cm';
             })
 
-            ->addColumn('kol', function ($data) {
-                if ($data->kolesterol != NULL) {
-                    return $data->kolesterol;
-                } else {
-                    return '0 %';
-                }
+            ->addColumn('bmi', function ($data) {
+                return  $data->berat / (($data->karyawan->kesehatan_awal->tinggi / 100) * ($data->karyawan->kesehatan_awal->tinggi / 100));
             })
 
-            ->addColumn('asam', function ($data) {
-                if ($data->asam_urat != NULL) {
-                    return $data->asam_urat;
-                } else {
-                    return '0 %';
-                }
-            })
             ->addColumn('button', function ($data) {
-                $btn = '<div class="inline-flex"><button type="button" id="edit_gcu"  class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-edit"></i></button></div>';
-                $btn = $btn . ' <div class="inline-flex"><button type="button" class="btn btn-block btn-danger karyawan-img-small" style="border-radius:50%;" data-toggle="modal" data-target="#delete" ><i class="fas fa-trash"></i></button></div>';
+                $btn = '<div class="inline-flex"><button type="button" id="edit_berat"  class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-edit"></i></button></div>';
                 return $btn;
             })
             ->rawColumns(['button'])
@@ -710,12 +727,67 @@ class KesehatanController extends Controller
             return redirect()->back()->with('error', 'Gagal menambahkan data');
         }
     }
+    public function kesehatan_bulanan_berat_aksi_ubah(Request $request)
+    {
+        $id = $request->id;
+        $berat_karyawan = berat_karyawan::find($id);
+        $berat_karyawan->berat = $request->berat;
+        $berat_karyawan->lemak = $request->lemak;
+        $berat_karyawan->otot = $request->otot;
+        $berat_karyawan->kandungan_air = $request->kandungan_air;
+        $berat_karyawan->tulang = $request->tulang;
+        $berat_karyawan->kalori = $request->kalori;
+        $berat_karyawan->keterangan = $request->catatan;
+        $berat_karyawan->save();
+
+        if ($berat_karyawan) {
+            return redirect()->back()->with('success', 'Data berhasil di ubah');
+        } else {
+            return redirect()->back()->with('error', 'Gagal menambahkan data');
+        }
+    }
     public function kesehatan_bulanan_gcu_detail()
     {
         $karyawan = Karyawan::orderBy('nama', 'ASC')->get();
         return view('page.kesehatan.kesehatan_bulanan_detail', ['karyawan' => $karyawan]);
     }
 
+
+    public function kesehatan_bulanan_berat_detail_data($karyawan_id)
+    {
+        $data = berat_karyawan::where('karyawan_id', $karyawan_id);
+        return datatables::of($data)
+            ->addIndexColumn()
+            // ->addColumn('tg', function ($data) {
+            //     return $data->tgl_cek ? with(new Carbon($data->tgl_cek))->format('F') : '';
+            // })
+            ->addColumn('z', function ($data) {
+                return $data->berat . ' Kg';
+            })
+            ->addColumn('l', function ($data) {
+                return $data->lemak . ' gram';
+            })
+            ->addColumn('k', function ($data) {
+                return $data->kandungan_air . ' %';
+            })
+            ->addColumn('o', function ($data) {
+                return $data->otot . ' Kg';
+            })
+            ->addColumn('t', function ($data) {
+                return $data->tulang . ' Kg';
+            })
+            ->addColumn('ka', function ($data) {
+                return $data->kalori . ' kkal';
+            })
+            ->addColumn('ti', function ($data) {
+                return $data->karyawan->kesehatan_awal->tinggi . ' Cm';
+            })
+
+            ->addColumn('bmi', function ($data) {
+                return  $data->berat / (($data->karyawan->kesehatan_awal->tinggi / 100) * ($data->karyawan->kesehatan_awal->tinggi / 100));
+            })
+            ->make(true);
+    }
     public function kesehatan_bulanan_gcu_detail_data($karyawan_id)
     {
         $data = gcu_karyawan::where('karyawan_id', $karyawan_id);
@@ -749,11 +821,14 @@ class KesehatanController extends Controller
     public function kesehatan_bulanan_detail_data_karyawan($karyawan_id)
     {
         $data = gcu_karyawan::where('karyawan_id', $karyawan_id)->get();
+        $data2 = berat_karyawan::where('karyawan_id', $karyawan_id)->get();
+        $tgl2 = $data2->pluck('tgl_cek');
         $tgl = $data->pluck('tgl_cek');
         $labels2 = $data->pluck('glukosa');
         $labels3 = $data->pluck('kolesterol');
         $labels4 = $data->pluck('asam_urat');
-        return response()->json(compact('tgl', 'labels2', 'labels3', 'labels4'));
+        $labels5 = $data2->pluck('berat');
+        return response()->json(compact('tgl', 'tgl2', 'labels2', 'labels3', 'labels4', 'labels5'));
     }
 
     public function karyawan_sakit()
@@ -1217,5 +1292,10 @@ class KesehatanController extends Controller
     {
         $data = Obat::where('id', $id)->get();
         echo json_encode($data);
+    }
+
+    public function laporan_harian()
+    {
+        return view('page.kesehatan.laporan_harian');
     }
 }

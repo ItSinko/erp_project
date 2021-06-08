@@ -66,6 +66,7 @@
               </tr>
               <tr>
                 <th>No</th>
+                <th>Hasil</th>
                 <th>Tgl Pengecekan</th>
                 <th>Divisi</th>
                 <th>Nama</th>
@@ -238,10 +239,6 @@
 <!-- End Modal Detail -->
 @stop
 @section('adminlte_js')
-
-<script>
-
-</script>
 <script>
   $('#form').change(function() {
     var form = $(this).val();
@@ -266,6 +263,9 @@
               searchable: false
             },
             {
+              data: 'hasil'
+            },
+            {
               data: 'tgl_cek'
             },
             {
@@ -288,8 +288,6 @@
             },
           ]
         });
-
-
         $('#tensi_tabel tbody').on('click', '#edit_tensi', function() {
           var rows = tensi_tabel.rows($(this).parents('tr')).data();
           $('.data_detail_head_tensi').html(rows[0].karyawan['nama']);

@@ -402,9 +402,9 @@ return [
                 ],
                 [
                     'icon' => 'far fa-circle',
-                    'text' => 'Laporan',
+                    'text' => 'Laporan Harian',
                     'auth' => [28],
-                    'url'  => '/obat',
+                    'url'  => '/laporan_harian',
                 ]
             ],
         ],

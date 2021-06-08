@@ -11,8 +11,6 @@
 
 <section class="content">
     <div class="row">
-
-
         <div class="col-lg-12">
             @if(session()->has('success'))
             <div class="alert alert-success alert-dismissible">
@@ -29,9 +27,7 @@
                 Data gagal ditambahkan
             </div>
             @endif
-
             <div class="col-lg-12">
-
                 <div class="card">
                     <div class="card-header bg-success">
                         <div class="card-title"><i class="fas fa-plus-circle"></i>&nbsp;Tambah</div>
@@ -46,8 +42,8 @@
                                             <div class="col-sm-8">
                                                 <select type="text" class="form-control @error('form') is-invalid @enderror select2" name="form" style="width:45%;" id="form">
                                                     <option value="0">Pilih Data</option>
-                                                    <option value="tensi">Berat Badan</option>
-                                                    <option value="rapid">GCU (Glucose, Cholesterol, Uric ACID)</option>
+                                                    <option value="berat">Berat Badan</option>
+                                                    <option value="gcu">GCU (Glucose, Cholesterol, Uric ACID)</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -59,7 +55,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-12" id="tensi" style="display:none">
+        <div class="col-lg-12" id="berat" style="display:none">
             <div class="col-lg-12">
                 <form action="/kesehatan_bulanan_berat/aksi_tambah" method="post">
                     {{ csrf_field() }}
@@ -100,14 +96,15 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <table id="tabel_tensi" class="table table-hover styled-table table-striped">
+                                        <table id="tabel_berat" class="table table-hover styled-table table-striped">
                                             <thead style="text-align: center;">
                                                 <tr>
                                                     <th></th>
                                                     <th></th>
                                                     <th></th>
                                                     <th></th>
-                                                    <th colspan="6">Tekanan Darah</th>
+                                                    <th colspan="6">Komposisi Tubuh</th>
+                                                    <th></th>
                                                 </tr>
                                                 <tr>
                                                     <th>No</th>
@@ -140,13 +137,13 @@
                 </form>
             </div>
         </div>
-        <div class="col-lg-12" id="rapid" style="display:none">
+        <div class="col-lg-12" id="gcu" style="display:none">
             <div class="col-lg-12">
                 <form action="/kesehatan_bulanan_gcu/aksi_tambah" method="post">
                     {{ csrf_field() }}
                     <div class="card">
                         <div class="card-header bg-success">
-                            <div class="card-title"><i class="fas fa-plus-circle"></i>&nbsp;Pemeriksaan GCU (Glucose, Cholesterol, Uric ACID) </div>
+                            <div class="card-title"><i class="fas fa-plus-circle"></i>&nbsp;Pemeriksaan GsCU (Glucose, Cholesterol, Uric ACID) </div>
                         </div>
                         <div class="card-body">
                             <div class="col-lg-12">
@@ -176,7 +173,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <table id="tabel_rapid" class="table table-hover styled-table table-striped">
+                                        <table id="tabel_gcu" class="table table-hover styled-table table-striped">
                                             <thead style="text-align: center;">
                                                 <tr>
                                                     <th>No</th>
@@ -212,18 +209,18 @@
 <script>
     $('#form').change(function() {
         var form = $(this).val();
-        if (form == 'tensi') {
-            $("#rapid").hide('1000');
+        if (form == 'berat') {
+            $("#gcu").hide('1000');
             $("#detail_gagal").hide('1000');
-            $("#tensi").show('1000');
-        } else if (form == 'rapid') {
+            $("#berat").show('1000');
+        } else if (form == 'gcu') {
             $("#detail_gagal").hide('1000');
-            $("#tensi").hide('1000');
-            $("#rapid").show('1000');
+            $("#berat").hide('1000');
+            $("#gcu").show('1000');
         } else {
-            $("#tensi").hide('1000');
+            $("#berat").hide('1000');
             $("#detail_gagal").show('1000');
-            $("#rapid").hide('1000');
+            $("#gcu").hide('1000');
         }
     });
 </script>
@@ -242,7 +239,7 @@
                         console.log(data);
                         // console.log(data.length);
                         if (data.length > 0) {
-                            jQuery('#tabel_tensi > tbody >tr').empty();
+                            jQuery('#tabel_berat > tbody >tr').empty();
                             var x = 0;
                             var no = 0;
                             $.each(data, function(key, value) {
@@ -252,7 +249,7 @@
                                 $('#tgl').change(function() {
                                     $('#date' + value['id'] + '').val($(this).val());
                                 });
-                                $('#tabel_tensi').append(`<tr> <td>` + no + `</td>
+                                $('#tabel_berat').append(`<tr> <td>` + no + `</td>
                                 <td><input id="date` + value[`id`] + `" type="date" class="form-control" readonly><input type="text" class="form-control d-none" name="kesehatan_awal_id[` + x + `]" value="` + value['kesehatan_awal']['id'] + `"></td>
                                                          <td>` + value[`nama`] + `</td>
                                                          <td>    
@@ -321,8 +318,8 @@
                                 x++;
                             });
                         } else {
-                            jQuery('#tabel_tensi > tbody >tr').empty();
-                            $('#tabel_tensi').append('<tr><td colspan="8">Data yang anda pilih tidak ada</td></tr>');
+                            jQuery('#tabel_berat > tbody >tr').empty();
+                            $('#tabel_berat').append('<tr><td colspan="8">Data yang anda pilih tidak ada</td></tr>');
                         }
                     },
                 });
@@ -345,7 +342,7 @@
                     success: function(data) {
                         console.log(data.length);
                         if (data.length > 0) {
-                            jQuery('#tabel_rapid > tbody >tr').empty();
+                            jQuery('#tabel_gcu > tbody >tr').empty();
                             var x = 0;
                             var no = 0;
                             $.each(data, function(key, value) {
@@ -354,7 +351,7 @@
                                 $('#tgls').change(function() {
                                     $('#dates' + value['id'] + '').val($(this).val());
                                 });
-                                $('#tabel_rapid').append(`<tr> <td>` + no + `</td>
+                                $('#tabel_gcu').append(`<tr> <td>` + no + `</td>
                                 <td><input id="dates` + value[`id`] + `" type="date" class="form-control" readonly></td>
                                                          <td>` + value[`nama`] + `</td>
                                                          <td>    
@@ -420,8 +417,8 @@
                                 });
                             });
                         } else {
-                            jQuery('#tabel_rapid > tbody >tr').empty();
-                            $('#tabel_rapid').append('<tr><td colspan="8">Data yang anda pilih tidak ada</td></tr>');
+                            jQuery('#tabel_gcu > tbody >tr').empty();
+                            $('#tabel_gcu').append('<tr><td colspan="8">Data yang anda pilih tidak ada</td></tr>');
                         }
                     },
                 });
