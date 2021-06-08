@@ -401,9 +401,12 @@ class PPICController extends Controller
                 return $btn;
             })
             ->addColumn('aksi', function ($s) {
-                $btn = '<a class="detailmodal" data-toggle="modal" data-target="#detailmodal" data-attr="/bppb/permintaan_bahan_baku/detail/show/' . $s->id . '" data-id="' . $s->id . '"><button class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-eye"></i></button></a>';
-                $btn .= '<a href = "/bppb/permintaan_bahan_baku/edit/' . $s->id . '"><button class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-edit"></i></button></a>';
-                $btn .= '<a class="deletemodal" data-toggle="modal" data-target="#deletemodal" data-attr="/perakitan/laporan/delete/' . $s->id . '"><button class="btn btn-danger btn-sm m-1" style="border-radius:50%;"><i class="fas fa-trash"></i></button></a>';
+                $btn = "";
+                $btn .= '<a class="detailmodal" data-toggle="modal" data-target="#detailmodal" data-attr="/bppb/permintaan_bahan_baku/detail/show/' . $s->id . '" data-id="' . $s->id . '"><button class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-eye"></i></button></a>';
+                if (Auth::user()->divisi->nama == "Gudang Bahan Material" || Auth::user()->divisi->nama == "PPIC") {
+                    $btn .= '<a href = "/bppb/permintaan_bahan_baku/edit/' . $s->id . '"><button class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-edit"></i></button></a>';
+                    $btn .= '<a class="deletemodal" data-toggle="modal" data-target="#deletemodal" data-attr="/perakitan/laporan/delete/' . $s->id . '"><button class="btn btn-danger btn-sm m-1" style="border-radius:50%;"><i class="fas fa-trash"></i></button></a>';
+                }
                 return $btn;
             })
             ->rawColumns(['no_seri', 'aksi', 'status'])
@@ -423,9 +426,9 @@ class PPICController extends Controller
         }
     }
 
-    public function bppb_permintaan_bahan_baku_detail()
+    public function bppb_permintaan_bahan_baku_detail($id)
     {
-        return view('page.ppic.bppb_permintaan_bahan_baku_detail_show');
+        return view('page.ppic.bppb_permintaan_bahan_baku_detail_show', ['id' => $id]);
     }
 
     public function bppb_permintaan_bahan_baku_detail_show($id)
@@ -449,16 +452,19 @@ class PPICController extends Controller
     public function bppb_permintaan_bahan_baku_update($id, Request $request)
     {
         if (!empty($request->detail_permintaan_bahan_baku_id)) {
+            $bool = true;
             for ($i = 0; $i < count($request->detail_permintaan_bahan_baku_id); $i++) {
                 $s = DetailPermintaanBahanBaku::find($request->detail_permintaan_bahan_baku_id[$i]);
                 $s->jumlah_diterima = $request->jumlah_diterima[$i];
                 $u = $s->save();
-
-                if ($u) {
-                    return redirect()->back()->with('success', "Berhasil menambahkan Data");
-                } else {
-                    return redirect()->back()->with('error', "Gagal menambahkan Data");
+                if (!$u) {
+                    $bool = false;
                 }
+            }
+            if ($bool == true) {
+                return redirect()->back()->with('success', "Berhasil menambahkan Data");
+            } else {
+                return redirect()->back()->with('error', "Gagal menambahkan Data");
             }
         }
     }
@@ -474,10 +480,10 @@ class PPICController extends Controller
         $s = PengembalianBarangGudang::where('bppb_id', $id)->get();
         return DataTables::of($s)
             ->addIndexColumn()
-            ->addColumn('', function ($s) {
+            ->addColumn('part_eng', function ($s) {
                 return $s->BillOfMaterial->PartEng->nama;
             })
-            ->rawColumns([''])
+            ->rawColumns(['part_eng'])
             ->make(true);
     }
 

@@ -20,6 +20,10 @@ use App\HasilMonitoringProses;
 use App\HasilPengemasan;
 use DirectoryIterator;
 use App\PerbaikanProduksi;
+use App\AnalisaPsPerakitan;
+use App\AnalisaPsPengujian;
+use App\AnalisaPsPengemasan;
+use App\BillOfMaterial;
 
 class EngController extends Controller
 {
@@ -173,6 +177,44 @@ class EngController extends Controller
             })
             ->rawColumns(['operator', 'produk', 'status', 'aksi'])
             ->make(true);
+    }
+
+    public function analisa_ps_perakitan_create($id)
+    {
+        $s = HasilPerakitan::find($id);
+        $bppbid = $s->Perakitan->Bppb->id;
+        $dp = $s->Perakitan->Bppb->detail_produk_id;
+
+
+        $hp = HasilPerakitan::whereHas('Perakitan', function ($q) use ($bppbid) {
+            $q->where('bppb_id', $bppbid);
+        })->whereIn('status', ['rej_pemeriksaan_terbuka', 'rej_pemeriksaan_tertutup'])
+            ->orWhereIn('tindak_lanjut_terbuka', ['perbaikan', 'produksi_spesialis'])
+            ->orWhereIn('tindak_lanjut_tertutup', ['perbaikan', 'produksi_spesialis'])
+            ->get();
+        return view('page.eng.analisa_ps_perakitan_create', ['id' => $id, 's' => $s]);
+    }
+
+    public function analisa_ps_perakitan_store($id, Request $request)
+    {
+        // if($request->){
+        // $s = AnalisaPsPerakitan::create([
+        //     'hasil_perakitan_id' => $request->hasil_perakitan_id,
+        //     'analisa' => $request->analisa,
+        //     'realisasi_pengerjaan' => $request->realisasi_pengerjaan,
+        //     'tindak_lanjut' => $request->tindak_lanjut
+        // ]);
+        // if ($s) {
+        //     if (!empty($request->bill_of_material_id)) {
+        //         $app = AnalisaPsPerakitan::find($s->id);
+        //         $app->BillOfMaterial()->sync($request->bill_of_material_id, false);
+        //         $app->save();
+        //     } else if (empty($request->bill_of_material_id)) {
+        //         return redirect()->back()->with('success', "Berhasil menambah Analisa");
+        //     }
+        // } else {
+        //     return redirect()->back()->with('error', "Gagal menambah Analisa");
+        // }}
     }
 
     public function pengujian()

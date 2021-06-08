@@ -88,8 +88,8 @@
                 </div>
                 @endif
                 <div class="card">
-                    <div class="card-header bg-success">
-                        <h3 class="card-title"><i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;Tambah BPPB</h3>
+                    <div class="card-header bg-warning">
+                        <h3 class="card-title"><i class="fa fa-pencil-alt" aria-hidden="true"></i>&nbsp;Ubah Permintaan Bahan Baku</h3>
                     </div>
                     <div class="card-body">
                         <div class="col-md-12">
@@ -113,7 +113,7 @@
                                                 <tr>
                                                     <td><input class="form-control" type="number" name="detail_permintaan_bahan_baku_id[]" id="detail_permintaan_bahan_baku_id" value="{{$i->id}}" hidden>{{$i->BillOfMaterial->PartEng->nama}}</td>
                                                     <td>{{$i->jumlah_diminta}}</td>
-                                                    <td><input class="form-control" type="number" name="jumlah_diterima[]" id="jumlah_diterima" value="{{$i->jumlah_diminta}}"></td>
+                                                    <td><input class="form-control" type="number" name="jumlah_diterima[]" id="jumlah_diterima" @if($i->jumlah_diterima === NULL) value="{{$i->jumlah_diminta}}" @elseif($i->jumlah_diterima !== NULL) value="{{$i->jumlah_diterima}}" @endif></td>
                                                     <td>
                                                         <button type="button" class="btn btn-danger karyawan-img-small" style="border-radius:50%;" id="closetable"><i class="fas fa-times-circle"></i></button>
                                                     </td>
@@ -132,7 +132,7 @@
                             <button type="button" class="btn btn-block btn-danger rounded-pill" style="width:200px;float:left;"><i class="fas fa-times"></i>&nbsp;Batal</button>
                         </span>
                         <span>
-                            <button type="submit" class="btn btn-block btn-success rounded-pill" style="width:200px;float:right;"><i class="fas fa-plus"></i>&nbsp;Tambahkan Data</button>
+                            <button type="submit" class="btn btn-block btn-warning rounded-pill" style="width:200px;float:right;"><i class="fas fa-save"></i>&nbsp;Simpan Data</button>
                         </span>
                     </div>
                 </div>

@@ -101,7 +101,7 @@
                 </div>
             </div>
 
-            <div class="modal fade" id="detailmodel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal fade" id="detailmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                 <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header" style="background-color:	#006400;">
@@ -193,18 +193,19 @@
             event.preventDefault();
             var dataid = $(this).attr('data-id');
             $.ajax({
-                url: "{{route('bppb.permintaan_bahan_baku.detail')}}",
+                url: "{{route('bppb.permintaan_bahan_baku.detail', ['id' => " + dataid + "])}}",
                 beforeSend: function() {
                     $('#loader').show();
                 },
                 success: function(result) {
                     $('#detailmodal').modal("show");
                     $('#detail').html(result).show();
+                    console.log("{{route('bppb.permintaan_bahan_baku.detail', ['id' => " + dataid + "])}}");
                     console.log(result);
                     $('#detaildata').DataTable({
                         processing: true,
                         serverSide: true,
-                        ajax: "{{route('bppb.permintaan_bahan_baku.detail.show', ['id' => " + dataid + "])}}",
+                        ajax: "/bppb/permintaan_bahan_baku/detail/show/" + dataid + "",
                         columns: [{
                                 data: 'DT_RowIndex',
                                 name: 'DT_RowIndex',

@@ -72,6 +72,7 @@
                     <label for="fk_kategori" class="col-sm-4 col-form-label" style="text-align:right;">No BPPB</label>
                     <div class="col-sm-8">
                       <select class="form-control select2 select2-info @error('bppb_id') is-invalid @enderror" data-dropdown-css-class="select2-info" data-placeholder="Pilih No BPPB" style="width: 30%;" name="bppb_id">
+                        <option value=""></option>
                         @foreach($s as $i)
                         <option value="{{$i->id}}">{{$i->no_bppb}}</option>
                         @endforeach

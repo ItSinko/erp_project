@@ -350,7 +350,7 @@ Route::group(['prefix' => '/bppb', 'middleware' => 'auth'], function () {
     Route::put('/permintaan_bahan_baku/store/{id}', 'ProduksiController@bppb_permintaan_bahan_baku_store')->name('bppb.permintaan_bahan_baku.store');
     Route::get('/permintaan_bahan_baku/edit/{id}', 'PpicController@bppb_permintaan_bahan_baku_edit')->name('bppb.permintaan_bahan_baku.edit');
     Route::put('/permintaan_bahan_baku/update/{id}', 'PpicController@bppb_permintaan_bahan_baku_update')->name('bppb.permintaan_bahan_baku.update');
-    Route::get('/permintaan_bahan_baku/detail', 'PpicController@bppb_permintaan_bahan_baku_detail')->name('bppb.permintaan_bahan_baku.detail');
+    Route::get('/permintaan_bahan_baku/detail/{id}', 'PpicController@bppb_permintaan_bahan_baku_detail')->name('bppb.permintaan_bahan_baku.detail');
     Route::get('/permintaan_bahan_baku/detail/show/{id}', 'PpicController@bppb_permintaan_bahan_baku_detail_show')->name('bppb.permintaan_bahan_baku.detail.show');
     Route::get('/pengembalian_barang_gudang/{id}', 'PpicController@bppb_pengembalian_barang_gudang')->name('bppb.pengembalian_barang_gudang');
     Route::get('/pengembalian_barang_gudang/show/{id}', 'PpicController@bppb_pengembalian_barang_gudang_show')->name('bppb.pengembalian_barang_gudang.show');

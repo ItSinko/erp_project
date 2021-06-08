@@ -13,6 +13,11 @@ class BillOfMaterial extends Model
         return $this->belongsTo(DetailProduk::class);
     }
 
+    public function DetailPermintaanBahanBaku()
+    {
+        return $this->hasMany(PermintaanBahanBaku::class);
+    }
+
     public function PartEng()
     {
         return $this->belongsTo(PartEng::class, 'part_eng_id');

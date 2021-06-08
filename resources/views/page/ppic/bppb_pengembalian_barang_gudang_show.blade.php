@@ -95,7 +95,7 @@
                 </div>
             </div>
 
-            <div class="modal fade" id="detailmodel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal fade" id="detailmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                 <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header" style="background-color:	#006400;">
@@ -169,55 +169,7 @@
             ]
         });
 
-        $(document).on('click', '.detailmodal', function(event) {
-            event.preventDefault();
-            var href = $(this).attr('data-attr');
-            var dataid = $(this).attr('data-id');
-            $.ajax({
-                url: "{{route('bppb.permintaan_bahan_baku.detail')}}",
-                beforeSend: function() {
-                    $('#loader').show();
-                },
-                success: function(result) {
-                    $('#detailmodal').modal("show");
-                    $('#detail').html(result).show();
-                    console.log(result);
-                    $('#detaildata').DataTable({
-                        processing: true,
-                        serverSide: true,
-                        ajax: "{{route('bppb.permintaan_bahan_baku.detail.show', ['id' => " + dataid + "])}}",
-                        columns: [{
-                                data: 'DT_RowIndex',
-                                name: 'DT_RowIndex',
-                                orderable: false,
-                                searchable: false
-                            },
-                            {
-                                data: 'part_eng',
-                                name: 'part_eng'
-                            },
-                            {
-                                data: 'jumlah_diminta',
-                                name: 'jumlah_diminta'
-                            },
-                            {
-                                data: 'jumlah_diterima',
-                                name: 'jumlah_diterima',
-                            },
-                        ]
-                    });
-                },
-                complete: function() {
-                    $('#loader').hide();
-                },
-                error: function(jqXHR, testStatus, error) {
-                    console.log(error);
-                    alert("Page " + href + " cannot open. Error:" + error);
-                    $('#loader').hide();
-                },
-                timeout: 8000
-            })
-        });
+
     });
 </script>
 @stop

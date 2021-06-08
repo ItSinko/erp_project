@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\BillOfMaterial;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -66,17 +67,23 @@ class ProduksiController extends Controller
     public function bppb_pengembalian_barang_gudang_create($id)
     {
         $s = Bppb::find($id);
-        $pbb = DetailPermintaanBahanBaku::whereHas('PermintaanBahanBaku.Bppb', function ($q) use ($id) {
-            $q->where('id', $id);
-        })->distinct('bill_of_material_id')->sum('jumlah_diterima');
-        return view('page.produksi.bppb_pengembalian_barang_gudang_create', ['$id' => $id, '$s' => $s, 'pbb' => $pbb]);
+        $pbb = DetailPermintaanBahanBaku::join('permintaan_bahan_bakus', 'detail_permintaan_bahan_bakus.permintaan_bahan_baku_id', '=', 'permintaan_bahan_bakus.id')
+            ->where([
+                ['permintaan_bahan_bakus.bppb_id', '=', $id],
+                ['permintaan_bahan_bakus.status', '=', 'acc_permintaan']
+            ])
+            ->groupby('detail_permintaan_bahan_bakus.bill_of_material_id')
+            ->selectRaw("distinct(detail_permintaan_bahan_bakus.bill_of_material_id) as bill_of_material_id, sum(detail_permintaan_bahan_bakus.jumlah_diterima) as jumlah_diterima")
+            ->get();
+        return view('page.produksi.bppb_pengembalian_barang_gudang_create', ['id' => $id, 's' => $s, 'pbb' => $pbb]);
     }
 
     public function bppb_pengembalian_barang_gudang_store(Request $request, $id)
     {
+        $div = Divisi::where('nama', '=', 'Gudang Bahan Material')->first();
         $c = PengembalianBarangGudang::create([
             'bppb_id' => $id,
-            'divisi_id' => $request->divisi_id,
+            'divisi_id' => $div->id,
             'tanggal' => $request->tanggal,
             'status' => 'dibuat',
         ]);
@@ -87,7 +94,8 @@ class ProduksiController extends Controller
                 $cs = DetailPengembalianBarangGudang::create([
                     'pengembalian_id' => $c->id,
                     'bill_of_material_id' => $request->bill_of_material_id[$i],
-                    'jumlah_pengembalian' => $request->jumlah_pengembalian[$i]
+                    'jumlah_ok' => $request->jumlah_ok[$i],
+                    'jumlah_nok' => $request->jumlah_nok[$i]
                 ]);
 
                 if (!$cs) {
