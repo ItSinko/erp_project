@@ -16,10 +16,16 @@
                     <div class="input-group-prepend">
                         <label class="input-group-text" for="input">Search</label>
                     </div>
-                    <select class="custom-select" id="input">
+                    <select class="select2" id="input">
                         <option selected>Choose...</option>
-                        @foreach ($list as $li)
-                        <option value="{{ $li->id }}">{{ $li->nama }}</option>
+                        @foreach ($detail_produk as $d)
+                        <optgroup label="{{ $d->nama }}">
+                            @foreach ($produk_bom as $b)
+                            @if ($d->id == $b->detail_produk_id)
+                            <option value="{{ $b->id }}">versi {{ $b->versi }}</option>
+                            @endif
+                            @endforeach
+                        </optgroup>
                         @endforeach
                     </select>
                 </div>
@@ -60,6 +66,7 @@
 
             if (value == "Choose...") $("#card").html("");
             else {
+                console.log(value);
                 $.ajax({
                     url: "/ppic/get_bom/" + value,
                     success: function(result) {
@@ -114,7 +121,7 @@
                         });
                     },
                     error: function(xhr, status, error) {
-                        $('#card').html('BOM not found')
+                        $('#card').html('BOM tidak ditemukan')
                         bootbox.alert({
                             centerVertical: true,
                             message: "BOM tidak ditemukan",

@@ -28,6 +28,7 @@ use App\HasilPengemasan;
 use App\PermintaanBahanBaku;
 use App\DetailPermintaanBahanBaku;
 use App\Bom_Version;
+use App\ProdukBillOfMaterial;
 
 class PPICController extends Controller
 {
@@ -110,30 +111,22 @@ class PPICController extends Controller
 
     public function bom()
     {
-        $list = DetailProduk::all();
-        return view('page.ppic.bom', compact('list'));
+        $produk = Produk::all();
+        $detail_produk = DetailProduk::all();
+        $produk_bom = ProdukBillOfMaterial::all();
+
+        return view('page.ppic.bom', compact('produk', 'detail_produk', 'produk_bom'));
     }
 
     public function get_bom($id)
     {
         $bom = BillOfMaterial::where('produk_bill_of_material_id', $id)->get();
-        $result = [];
-
-        $min = INF;
-        foreach ($bom as $d) {
-            $part_eng = PartEng::where('kode_part', $d->part_eng_id)->first();
-            if (!isset($part_eng['nama'])) continue;
-            $part_gbmb = Part::where('kode', $part_eng['part_id'])->first();
-
-            if (isset($part_gbmb['jumlah'])) {
-                $count = (int)($part_gbmb['jumlah'] / $d->jumlah);
-                if ($count < $min) $min = $count;
-            }
-            array_push($result, ['nama' => $part_eng['nama'], 'jumlah' => $d->jumlah, 'stok' => $part_gbmb['jumlah']]);
+        $part_eng = [];
+        $part = [];
+        foreach ($bom as $b) {
+            array_push($part_eng, $b->PartEng->PartGudang);
         }
-
-        array_push($result, $min);
-        return $result;
+        dd($part_eng);
     }
 
     public function get_bom_version($id)
