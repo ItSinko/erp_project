@@ -39,7 +39,7 @@ class PPICController extends Controller
 
     public function schedule_show(Request $request)
     {
-        $date = Event::toBase()->orderBy('tanggal_mulai', 'asc')->get();
+        $date = Event::orderBy('tanggal_mulai', 'asc')->get();
         if (isset($request->month) && isset($request->year)) {
             $month = $request->month;
             $year = $request->year;
@@ -52,7 +52,7 @@ class PPICController extends Controller
             $temp_date = strtotime($d->tanggal_mulai);
 
             if (date('m', $temp_date) == $month && date('Y', $temp_date) == $year)
-                array_push($event, ['id' => $d->id, 'title' => $d->nama_produk, 'start' => $d->tanggal_mulai, 'end' => $d->tanggal_selesai, 'color' => $d->warna]);
+                array_push($event, ['id' => $d->id, 'title' => $d->detail_produk->nama, 'start' => $d->tanggal_mulai, 'end' => $d->tanggal_selesai, 'color' => $d->warna]);
         }
         $event = json_encode($event);
 
@@ -67,30 +67,35 @@ class PPICController extends Controller
     public function schedule_create(Request $request)
     {
         $data = [
-            'nama_produk' => $request->title,
+            'detail_produk_id' => $request->id_produk,
             'tanggal_mulai' => $request->start,
             'tanggal_selesai' => $request->end,
             'status' => $request->status,
             'jumlah_produksi' => $request->jumlah,
             'warna' => $request->color,
-            'id_produk' => $request->id_produk,
         ];
 
         if ($request->bom != null) {
             $data = Event::where('id_produk', $request->id_produk)->update(['bom' => $request->bom]);
-            // $data->bom = $request->bom;
-            // $data->save();
             return $request->id_produk;
         }
 
         Event::create($data);
-        $result = Event::latest()->first();
-        return $result;
+        $data['nama'] = Event::latest()->first()->detail_produk->nama;
+        $data['id'] = Event::latest()->first()->id;
+        return $data;
     }
 
     public function schedule_delete(Request $request)
     {
         if ($request->id != "") Event::destroy($request->id);
+    }
+
+    public function get_part()
+    {
+        $part = Part::all();
+
+        return view('test', ['part' => []]);
     }
 
     public function schedule_notif(Request $request)
@@ -118,15 +123,20 @@ class PPICController extends Controller
         return view('page.ppic.bom', compact('produk', 'detail_produk', 'produk_bom'));
     }
 
-    public function get_bom($id)
+    public function get_bom(Request $request)
     {
-        $bom = BillOfMaterial::where('produk_bill_of_material_id', $id)->get();
-        $part_eng = [];
-        $part = [];
-        foreach ($bom as $b) {
-            array_push($part_eng, $b->PartEng->PartGudang);
+        if ($request->detail_id != null) {
+            $event = Event::find($request->detail_id);
+            return DetailProduk::where('detail_produks.id', $event->detail_produk_id)->join('produk_bill_of_materials', 'detail_produk_id', 'detail_produks.id')->select('versi', 'produk_bill_of_materials.id')->get();
         }
-        dd($part_eng);
+
+        if ($request->produk_bill_of_material_id) {
+            $bom = BillOfMaterial::where('produk_bill_of_material_id', (int)$request->produk_bill_of_material_id)
+                ->join('part_gudang_part_engs', 'bill_of_materials.part_eng_id', '=', 'part_gudang_part_engs.kode_eng')
+                ->join('parts', 'part_gudang_part_engs.kode_gudang', '=', 'parts.kode')
+                ->join('part_engs', 'part_gudang_part_engs.kode_eng', '=', 'part_engs.kode_part')->select('part_engs.nama', 'bill_of_materials.jumlah', 'parts.jumlah as stok')->get();
+            return $bom;
+        }
     }
 
     public function get_bom_version($id)

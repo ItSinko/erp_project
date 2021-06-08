@@ -21,8 +21,8 @@
         <h1 id="page_header" class="m-0 text-dark">Jadwal Produksi</h1>
     </div>
     <div class="col-6">
-        <div class="btn-toolbar justify-content-between float-right" role="toolbar" aria-label="Toolbar with button groups">
-            <div class="btn-group" role="group" aria-label="First group">
+        <div class="btn-toolbar justify-content-between float-right" role="toolbar">
+            <div class="btn-group" role="group">
                 <button type="button" class="btn btn-primary view">Kalender</button>
                 <button type="button" class="btn btn-info view">Tabel</button>
                 <button type="button" class="btn btn-warning view">Daftar</button>
@@ -38,51 +38,12 @@
     #calendar {
         padding: 20px;
     }
-
-    #loader {
-        opacity: 0.8;
-        background-color: #ccc;
-        position: fixed;
-        width: 100%;
-        height: 100%;
-        top: 0px;
-        left: 0px;
-        z-index: 10000;
-    }
-
-    #loading_gif {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        z-index: 1;
-        width: 120px;
-        height: 120px;
-        margin: -76px 0 0 -76px;
-        border: 16px solid #f3f3f3;
-        border-radius: 50%;
-        border-top: 16px solid #3498db;
-        -webkit-animation: spin 2s linear infinite;
-        animation: spin 2s linear infinite;
-    }
-
-    @keyframes spin {
-        0% {
-            transform: rotate(0deg);
-        }
-
-        100% {
-            transform: rotate(360deg);
-        }
-    }
 </style>
 @stop
 
 @section('content')
-<div id="loader">
-    <div id="loading_gif"></div>
-</div>
-<div class="row" id="page">
-    <div class="col-3 calendar-view">
+<div class="row">
+    <div class="col-md-3 calendar-view">
         <div class="sticky-top">
             <div class="alert alert-info alert-dismissible" id="status_penyusunan" style="display: none;">
                 <h5><i class="icon fas fa-info"></i> Status </h5>
@@ -107,15 +68,13 @@
                         <tbody id="product_list_body">
                             @foreach($date as $d)
                             <tr id="row_{{ $d->id_produk }}">
-                                <td>{{$d->nama_produk}}</td>
+                                <td>{{$d->detail_produk->nama}}</td>
                                 <td>
-                                    <button class="btn btn-info choose-bom" id="{{ $d->id_produk }}">
-                                        @if ($d->bom == NULL)
-                                        Pilih BOM
-                                        @else
-                                        Versi {{$d->bom}}
-                                        @endif
-                                    </button>
+                                    @if ($d->bom == NULL)
+                                    null
+                                    @else
+                                    Versi {{$d->bom}}
+                                    @endif
                                 </td>
                             </tr>
                             @endforeach
@@ -143,7 +102,7 @@
             @endcan
         </div>
     </div>
-    <div class="col-9 calendar-view">
+    <div class="col-md-9 calendar-view">
         <div class="card">
             <div class="card-body">
                 <div id='calendar'></div>
@@ -152,13 +111,13 @@
             </div>
         </div>
     </div>
-    <div class="col-12">
-        <div class="card" id="table-view" style="display: none;">
+    <div class="col-12 table-view" style="display: none;">
+        <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Table View</h3>
             </div>
             <!-- /.card-header -->
-            <div class="card-body">
+            <div class="card-body" style="overflow-x: auto;">
                 <table class="table table-bordered center">
                     <thead>
                         <tr>
@@ -187,8 +146,8 @@
             </div>
         </div>
     </div>
-    <div class="col-12">
-        <div class="card" id="list-view" style="display: none;">
+    <div class="col-12 list-view" style="display: none;">
+        <div class="card">
             <div class="card-header">
                 <h3 class="card-title">List View</h3>
 
@@ -237,42 +196,33 @@
     </div>
 </div>
 
-<div class="row">
-
-</div>
-
-<div class="modal fade" id="date_form" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+<div class="modal fade" id="date-form">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header text-center">
-                <h4 class="modal-title w-100 font-weight-bold">Pilih Tanggal</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <h4 class="modal-title w-100 font-weight-bold">Produksi</h4>
+                <button type="button" class="close" data-dismiss="modal">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body mx-3">
-                <div class="btn-group" style="width: 100%; margin-bottom: 10px;">
-                    <ul class="fc-color-picker" id="color-chooser">
-                        <li><a class="text-primary" href="#"><i class="fas fa-square"></i></a></li>
-                        <li><a class="text-warning" href="#"><i class="fas fa-square"></i></a></li>
-                        <li><a class="text-success" href="#"><i class="fas fa-square"></i></a></li>
-                        <li><a class="text-danger" href="#"><i class="fas fa-square"></i></a></li>
-                        <li><a class="text-muted" href="#"><i class="fas fa-square"></i></a></li>
-                    </ul>
+            <div class="modal-body">
+                <div class="form-group row">
+                    <label for="color-chooser" class="col-sm-2 col-form-label">Pilih warna</label>
+                    <input type="color" id="color-chooser">
                 </div>
                 <div class="form-group row">
-                    <label for="activity" class="col-sm-2 col-form-label">Produksi</label>
+                    <label for="product" class="col-sm-2 col-form-label">Produksi</label>
                     <div class="col-sm-10">
-                        <select name="" id="activity" class="form-control select2" data-placeholder="Pilih Produk...">
+                        <select name="" id="product" class="form-control select2" data-placeholder="Pilih Produk...">
                             <option value=""></option>
                             @foreach($produk as $d)
-                            <option value="{{ $d->nama.','.$d->id }}">{{ $d->nama }}</option>
+                            <option value="{{ $d->id }}">{{ $d->nama }}</option>
                             @endforeach
                         </select>
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="days" class="col-sm-2 col-form-label">Jumlah Produksi</label>
+                    <label for="quantity" class="col-sm-2 col-form-label">Jumlah Produksi</label>
                     <div class="col-sm-10">
                         <input type="number" class="form-control" id="jumlah-produksi" placeholder="Jumlah produksi" min="1" autocomplete="off">
                     </div>
@@ -294,15 +244,15 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer d-flex justify-content-center">
+            <div class="modal-footer justify-content-center">
                 <button type="submit" class="btn btn-primary" id="save">Simpan</button>
             </div>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="show-bom" tabindex="-1">
-    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" role="document">
+<div class="modal fade" id="show-bom">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header text-center">
                 <h4 class="modal-title w-100 font-weight-bold">Pilih BOM</h4>
@@ -310,16 +260,12 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body mx-3">
+            <div class="modal-body">
                 <div class="input-group col-6" style="margin-left: auto; margin-right: auto; margin-bottom: 10px">
                     <div class="input-group-prepend">
                         <label class="input-group-text" for="input">Search</label>
                     </div>
                     <select class="custom-select" id="bom-input">
-                        <option selected>Choose...</option>
-                        @foreach ($produk as $li)
-                        <option value="{{ $li->id }}">{{ $li->nama }}</option>
-                        @endforeach
                     </select>
                 </div>
                 <table class="table table-bordered" id="table-bom">
@@ -340,7 +286,8 @@
                 </table>
             </div>
             <div class="modal-footer justify-content-center">
-                <button type="submit" class="btn btn-primary" id="choosen">Pilih</button>
+                <button type="submit" class="btn btn-primary" id="choose-bom">Pilih</button>
+                <button class="btn btn-danger" id="delete-event">Hapus</button>
             </div>
         </div>
     </div>
@@ -404,15 +351,12 @@
 
     var bom_id;
 
-    function date_diff(date1, date2) {
+    function get_work_day(date1, date2) {
         const date1utc = Date.UTC(date1.getFullYear(), date1.getMonth(), date1.getDate());
         const date2utc = Date.UTC(date2.getFullYear(), date2.getMonth(), date2.getDate());
         day = 1000 * 60 * 60 * 24;
-        return (date2utc - date1utc) / day
-    }
 
-    function get_work_day(date1, date2) {
-        var days = date_diff(date1, date2);
+        var days = (date2utc - date1utc) / day;
         var weeks = Math.floor(days / 7);
         days = days - (weeks * 2);
 
@@ -437,16 +381,17 @@
     function choose_view(view) {
         if (view == 'Kalender') {
             $('.calendar-view').show(500);
-            $('#table-view, #list-view').hide();
+            $('.table-view, .list-view').hide();
         } else if (view == 'Tabel') {
-            $('#table-view').show(500);
-            $('.calendar-view, #list-view').hide();
+            $('.table-view').show(500);
+            $('.calendar-view, .list-view').hide();
         } else if (view == 'Daftar') {
-            $('#list-view').show(500);
-            $('.calendar-view, #table-view').hide();
+            $('.list-view').show(500);
+            $('.calendar-view, .table-view').hide();
         }
     }
 
+    // todo: change this function
     function choose_status(status) {
         if (status == 'penyusunan') {
             $('#status_penyusunan').show();
@@ -465,14 +410,6 @@
         }
     }
 
-    function showPage() {
-        $('#loader').hide();
-    }
-
-    function hidePage() {
-        $('#loader').show();
-    }
-
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -481,20 +418,18 @@
 
     $(document).ready(function() {
 
-        setTimeout(showPage, 2000);
-
         var Calendar = FullCalendar.Calendar;
         var calendarEl = document.getElementById('calendar');
 
-        var status;
-        var currColor = '#3c8dbc';
+        // var status;
+        var event_info;
 
-        if (initial_event.length != 0) {
-            status = initial_event[0].status;
-        } else {
-            status = 'penyusunan';
-        }
-        choose_status(status);
+        // if (initial_event.length != 0) {
+        //     status = initial_event[0].status;
+        // } else {
+        //     status = 'penyusunan';
+        // }
+        // choose_status(status);
 
         var calendar = new Calendar(calendarEl, {
             locale: 'id',
@@ -524,9 +459,9 @@
                 $('#days').val(days);
 
                 if (date1.getMonth() == date2.getMonth()) {
-                    $('#date_form').modal();
+                    $('#date-form').modal();
                 } else if ((date1.getMonth() + 1 == date2.getMonth()) && (date2.getDate() == 1)) {
-                    $('#date_form').modal();
+                    $('#date-form').modal();
                 } else {
                     bootbox.alert({
                         message: "Harap pilih tanggal produksi pada bulan yang sama",
@@ -536,66 +471,44 @@
             },
 
             eventClick: function(info) {
-                bootbox.confirm({
-                    centerVertical: true,
-                    message: "Apakah Anda ingin menghapus produksi ini?",
-                    buttons: {
-                        confirm: {
-                            label: 'Ya',
-                            className: 'btn-success'
-                        },
-                        cancel: {
-                            label: 'Tidak',
-                            className: 'btn-danger'
-                        }
+                $('#show-bom').modal('show');
+                event_info = info;
+                $.ajax({
+                    url: "/ppic/get_bom",
+                    method: "GET",
+                    data: {
+                        detail_id: info.event._def.publicId
                     },
-                    callback: function(result) {
-                        if (result) {
-                            $.ajax({
-                                url: "/ppic/schedule/delete",
-                                data: {
-                                    id: info.event._def.publicId
-                                },
-                                method: "POST",
-                                success: function() {
-                                    // console.log('event deleted');
-                                    // console.log('row_' + info.event._def.publicId);
-                                    // console.log($('#product_list_body').children());
-                                    info.event.remove();
-                                    $('#row_' + info.event._def.publicId).remove();
-                                    console.log($('#row_' + info.event._def.publicId));
-                                },
-                                error: function() {
-                                    console.log('error delete an event');
-                                }
-                            })
-                        }
+                    success: function(result) {
+                        $('#bom-input').empty();
+                        $('#bom-input').append(`<option value="">Pilih versi...</option>`);
+                        result.forEach(element => {
+                            $('#bom-input').append(`<option value="` + element.id + `">` + element.versi + `</option>`);
+                        });
                     }
-                });
+                })
             },
         });
         calendar.render();
 
 
-        $('#color-chooser > li > a').click(function(e) {
-            e.preventDefault();
-            currColor = $(this).css('color');
-            console.log(currColor);
-            $('#save, #add-new-event').css({
+        $('#color-chooser').change(function(e) {
+            var currColor = $(this).val();
+            $('#save').css({
                 'background-color': currColor,
                 'border-color': currColor
             })
         });
 
+        $('.view').click(function() {
+            choose_view($(this).text());
+        });
+
         $('#save').click(function() {
             var color = $(this).css('background-color');
-            var arr = $('#activity').val().split(',');
-            var produk = arr[0];
-            var id_produk = arr[1];
-            if ($('#activity').val()) {
+            if ($('#product').val()) {
                 var data_saved = {
-                    title: produk,
-                    id_produk: id_produk,
+                    id_produk: $('#product').val(),
                     start: $('#date_start').val(),
                     end: $('#date_end').val(),
                     status: "penyusunan",
@@ -610,37 +523,17 @@
                     success: function(result) {
                         calendar.addEvent({
                             id: result.id,
-                            title: result.nama_produk,
+                            title: result.nama,
                             start: result.tanggal_mulai,
                             end: result.tanggal_selesai,
                             backgroundColor: color,
                             borderColor: color,
                         });
-                        $('#date_form').modal('hide');
-                        $('#product_list_body').append(`<tr id="row_` + result.id + `">
-                            <td>` + result.nama_produk + `</td>
-                            <td>
-                                <button class="btn btn-info choose-bom" id="` + result.id + `">
-                                    Pilih BOM
-                                </button>
-                            </td>
+                        $('#date-form').modal('hide');
+                        $('#product_list_body').append(`<tr id="row_` + result.id + `" >
+                            <td>` + result.nama + `</td>
+                            <td>null</td>
                         </tr>`);
-                        $('.choose-bom').click(function() {
-                            console.log("test")
-                            $('#show-bom').modal('show');
-                            bom_id = this.id;
-                            var input_bom = $('#bom-input').html(`<option selected>Choose...</option>`);
-                            $.ajax({
-                                url: '/ppic/get_bom_version/' + bom_id,
-                                method: 'GET',
-                                success: function(result) {
-                                    var data = JSON.parse(result);
-                                    for (var i = 0; i < data.length; i++) {
-                                        input_bom.append(`<option value="` + data[i].id + " " + data[i].versi + " " + data[i].detail_produk_id + `">Versi ` + data[i].versi + `</option>`)
-                                    }
-                                }
-                            });
-                        });
                     },
                     error: function(err) {
                         console.log(err);
@@ -654,86 +547,94 @@
             }
         });
 
-        $('#choosen').click(function() {
-            var versi = $("#bom-input").val().split(' ')[1];
-            var id = $("#bom-input").val().split(' ')[2];
-            console.log($("#bom-input").val().split(' '));
-            $.ajax({
-                url: "/ppic/schedule/create",
-                method: "POST",
-                data: {
-                    id_produk: id,
-                    bom: versi,
+        $('#delete-event').click(function() {
+            bootbox.confirm({
+                centerVertical: true,
+                message: "Apakah Anda ingin menghapus produksi ini?",
+                buttons: {
+                    confirm: {
+                        label: 'Ya',
+                        className: 'btn-success'
+                    },
+                    cancel: {
+                        label: 'Tidak',
+                        className: 'btn-danger'
+                    }
                 },
-                success: function(data) {
-
-                    console.log(data);
-                    $('#' + bom_id).html("Versi " + versi);
-                    $('#show-bom').modal('hide');
-                },
-                error: function(xhr, status, error) {
-                    console.log(error);
+                callback: function(result) {
+                    if (result) {
+                        $.ajax({
+                            url: "/ppic/schedule/delete",
+                            data: {
+                                id: event_info.event._def.publicId
+                            },
+                            method: "POST",
+                            success: function() {
+                                event_info.event.remove();
+                                $('#row_' + event_info.event._def.publicId).remove();
+                                $('#show-bom').modal('hide');
+                            }
+                        });
+                    }
                 }
             });
         });
 
-        $('.status').on('click', function() {
-            var message, status;
-            if ($(this).attr('id') == 'acc') {
-                choose_status('acc')
-                message = "Jadwal telah di ACC";
-                status = 'acc';
-                $.ajax({
-                    url: '/notif',
-                    type: 'POST',
-                    data: {
-                        message: message,
-                        status: status,
-                    },
-                    success: function() {
-                        console.log('notif sent');
-                    },
-                    error: function(err) {
-                        console.log('error: ' + err);
-                    }
-                });
 
-            } else {
-                var add_message;
-                if (user.nama == "Anna") {
-                    bootbox.prompt({
-                        title: "Keterangan",
-                        centerVertical: true,
-                        callback: function(result) {
-                            add_message = result;
-                            message = "Jadwal dibatalkan untuk di ACC:<br>" + add_message;
-                            status = 'penyusunan';
-                            $.ajax({
-                                url: '/notif',
-                                type: 'POST',
-                                data: {
-                                    message: message,
-                                    status: status,
-                                },
-                                success: function() {
-                                    console.log('notif sent');
-                                },
-                                error: function(err) {
-                                    console.log('error: ' + err);
-                                }
-                            });
-                        }
-                    });
-                }
-            }
-        });
+        // $('.status').on('click', function() {
+        //     var message, status;
+        //     if ($(this).attr('id') == 'acc') {
+        //         choose_status('acc')
+        //         message = "Jadwal telah di ACC";
+        //         status = 'acc';
+        //         $.ajax({
+        //             url: '/notif',
+        //             type: 'POST',
+        //             data: {
+        //                 message: message,
+        //                 status: status,
+        //             },
+        //             success: function() {
+        //                 console.log('notif sent');
+        //             },
+        //             error: function(err) {
+        //                 console.log('error: ' + err);
+        //             }
+        //         });
 
-        $('.view').click(function() {
-            choose_view($(this).text());
-        });
+        //     } else {
+        //         var add_message;
+        //         if (user.nama == "Anna") {
+        //             bootbox.prompt({
+        //                 title: "Keterangan",
+        //                 centerVertical: true,
+        //                 callback: function(result) {
+        //                     add_message = result;
+        //                     message = "Jadwal dibatalkan untuk di ACC:<br>" + add_message;
+        //                     status = 'penyusunan';
+        //                     $.ajax({
+        //                         url: '/notif',
+        //                         type: 'POST',
+        //                         data: {
+        //                             message: message,
+        //                             status: status,
+        //                         },
+        //                         success: function() {
+        //                             console.log('notif sent');
+        //                         },
+        //                         error: function(err) {
+        //                             console.log('error: ' + err);
+        //                         }
+        //                     });
+        //                 }
+        //             });
+        //         }
+        //     }
+        // });
+
 
         $("#bom-input").change(function() {
-            var value = $("#bom-input").val().split(' ')[0];
+            var value = $("#bom-input").val();
             $('#table-bom').hide();
             $('#table-bom tbody').html('');
             $('#table-bom tfoot').html('');
@@ -741,13 +642,21 @@
 
             if (value != "Choose...") {
                 $.ajax({
-                    url: "/ppic/get_bom/" + value,
+                    url: "/ppic/get_bom",
+                    method: "GET",
+                    data: {
+                        produk_bill_of_material_id: value
+                    },
                     success: function(result) {
-                        var_result = result;
                         var data = $('#table-bom tbody')
 
+                        var min = INF;
                         for (var j = 0; j < result.length - 1; j++) {
-                            var pemotongan = parseInt(result[j].jumlah) * parseInt(var_result[var_result.length - 1]);
+
+                        }
+
+                        for (var j = 0; j < result.length - 1; j++) {
+                            var pemotongan = parseInt(result[j].jumlah) * parseInt(result[result.length - 1]);
                             var sisa = parseInt(result[j].stok) - pemotongan;
                             var child;
                             if (sisa == 0) {
@@ -778,7 +687,7 @@
                         var last_child = `
                                 <tr>
                                     <th colspan="5">Jumlah Maksimum Produksi</th>
-                                    <th>` + var_result[var_result.length - 1] + `</th>
+                                    <th>` + result[result.length - 1] + `</th>
                                 </tr>
                         `;
 
@@ -794,23 +703,6 @@
                     }
                 });
             }
-        });
-
-        $('.choose-bom').click(function() {
-            console.log("test")
-            $('#show-bom').modal('show');
-            bom_id = this.id;
-            var input_bom = $('#bom-input').html(`<option selected>Choose...</option>`);
-            $.ajax({
-                url: '/ppic/get_bom_version/' + bom_id,
-                method: 'GET',
-                success: function(result) {
-                    var data = JSON.parse(result);
-                    for (var i = 0; i < data.length; i++) {
-                        input_bom.append(`<option value="` + data[i].id + " " + data[i].versi + " " + data[i].detail_produk_id + `">Versi ` + data[i].versi + `</option>`)
-                    }
-                }
-            });
         });
     });
 </script>

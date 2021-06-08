@@ -78,10 +78,49 @@
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="{{ asset('favicon/ms-icon-144x144.png') }}">
     @endif
+
+    <style>
+        #loader {
+            opacity: 0.8;
+            background-color: #ccc;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0px;
+            left: 0px;
+            z-index: 10000;
+        }
+
+        #loading_gif {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 120px;
+            height: 120px;
+            margin: -76px 0 0 -76px;
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid #3498db;
+            -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
 </head>
 
 <body class="@yield('classes_body')" style="font-family:Inter;" @yield('body_data')>
-
+    <div id="loader">
+        <div id="loading_gif"></div>
+    </div>
     {{-- Body Content --}}
     @yield('body')
 
@@ -129,7 +168,13 @@
                 $('#search-widget').show();
                 flag = 0;
             }
-        })
+        });
+
+        $(document).ready(function() {
+            setTimeout(function() {
+                $('#loader').hide();
+            }, 1000);
+        });
     </script>
 </body>
 
