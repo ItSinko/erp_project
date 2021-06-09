@@ -1294,8 +1294,9 @@ class KesehatanController extends Controller
         echo json_encode($data);
     }
 
-    public function laporan_harian()
+    public function laporan_divisi()
     {
-        return view('page.kesehatan.laporan_harian');
+        $divisi = Divisi::all();
+        return view('page.kesehatan.laporan_divisi', ['divisi' => $divisi]);
     }
 }

@@ -402,9 +402,9 @@ return [
                 ],
                 [
                     'icon' => 'far fa-circle',
-                    'text' => 'Laporan Harian',
+                    'text' => 'Laporan Divisi',
                     'auth' => [28],
-                    'url'  => '/laporan_harian',
+                    'url'  => '/laporan_divisi',
                 ]
             ],
         ],
@@ -804,11 +804,6 @@ return [
                     'type' => 'js',
                     'asset' => true,
                     'location' => 'vendor/datatables/dataTables.responsive.min.js',
-                ],
-                [
-                    'type' => 'js',
-                    'asset' => true,
-                    'location' => 'vendor/datatables/responsive.bootstrap4.min.js',
                 ],
                 [
                     'type' => 'css',
