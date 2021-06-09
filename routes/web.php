@@ -410,6 +410,7 @@ Route::group(['prefix' => '/perakitan', 'middleware' => 'auth'], function () {
         Route::get('/show/{id}', 'ProduksiController@perakitan_laporan_show')->name('perakitan.laporan.show');
         Route::get('/create/{bppb_id}', 'ProduksiController@perakitan_laporan_create')->name('perakitan.laporan.create');   /* Create */
         Route::get('/create/get_kode_perakitan_exist_not_in/{bppb}/{no_seri}', 'GetController@get_kode_perakitan_exist_not_in');
+        Route::get('/create/get_alias_operator/{acc}', 'GetController@get_alias_operator');
         Route::put('/store/{bppb_id}', 'ProduksiController@perakitan_laporan_store')->name('perakitan.laporan.store');
         Route::get('/edit/{id}', 'ProduksiController@perakitan_laporan_edit')->name('perakitan.laporan.edit');  /* Edit */
         Route::get('/edit/get_kode_perakitan_exist_not_in/{bppb}/{no_seri}', 'GetController@get_kode_perakitan_exist_not_in');
@@ -424,6 +425,7 @@ Route::group(['prefix' => '/perakitan', 'middleware' => 'auth'], function () {
         Route::get('/{id}', 'ProduksiController@perakitan_hasil')->name('perakitan.hasil');
         Route::get('/show/{id}', 'ProduksiController@perakitan_hasil_show')->name('perakitan.hasil.show');
         Route::get('/create/{id}', 'ProduksiController@perakitan_hasil_create')->name('perakitan.hasil.create');    /* Create */
+        Route::get('/create/get_count_hasil_perakitan/{id}', 'GetController@get_count_hasil_perakitan');    /* Create */
         Route::get('/create/get_kode_perakitan_exist_not_in/{bppb}/{no_seri}', 'GetController@get_kode_perakitan_exist_not_in');
         Route::put('/store/{id}', 'ProduksiController@perakitan_hasil_store')->name('perakitan.hasil.store');
         Route::put('/import/{id}', 'ProduksiController@perakitan_hasil_import_store')->name('perakitan.hasil.import');  /* Import */

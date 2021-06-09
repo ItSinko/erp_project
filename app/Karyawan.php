@@ -9,7 +9,7 @@ use App\DivisiInventory;
 
 class Karyawan extends Model
 {
-    protected $fillable = ['nama', 'divisi_id', 'jabatan', 'foto'];
+    protected $fillable = ['nama', 'kode_karyawan', 'divisi_id', 'jabatan', 'foto'];
     public function HasilPerakitanKaryawan()
     {
         return $this->hasMany(HasilPerakitanKaryawan::class);

@@ -10,7 +10,7 @@ use App\Karyawan;
 
 class Perakitan extends Model
 {
-    protected $fillable = ['bppb_id', 'pic_id', 'tanggal', 'status'];
+    protected $fillable = ['bppb_id', 'pic_id', 'tanggal', 'status', 'alias_tim'];
 
     public function Bppb()
     {

@@ -141,14 +141,6 @@
                     </div>
 
                     <div class="form-group row">
-                      <label for="import_file" class="col-sm-4 col-form-label" style="text-align:right;">Import No Seri (Excel)</label>
-                      <div class="col-sm-8">
-                        <input type="file" class="form-control" name="file">
-
-                      </div>
-                    </div>
-
-                    <div class="form-group row">
                       <table id="tableitem" class="table table-hover">
                         <thead style="text-align: center;">
                           <!-- <tr style="text-align: left;">

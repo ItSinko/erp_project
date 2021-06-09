@@ -106,48 +106,54 @@
       @endif
       <div class="card">
         <div class="card-header bg-success">
-          <div class="card-title"><i class="fas fa-plus-circle"></i>&nbsp;Tambah Hasil Perakitan</div>
+          <div class="card-title"><i class="fas fa-plus-circle"></i>&nbsp;Tambah </div>
         </div>
         <!-- /.card-header -->
         <div class="card-body">
           <form action="{{ route('perakitan.hasil.store', ['id' => $sh->id]) }}" method="post" enctype="multipart/form-data">
             {{ csrf_field() }}
             {{ method_field('PUT') }}
-            <table id="tableitem" class="table table-hover styled-table">
-              <thead style="text-align: center;">
-                <tr>
-                  <th>No</th>
-                  <th>Tanggal</th>
-                  <th>No Seri</th>
-                  <th>Aksi</th>
-                </tr>
-              </thead>
-              <tbody style="text-align:center;">
-                <tr>
-                  <td>1</td>
-                  <td>
-                    <div class="input-group">
-                      <input type="date" class="form-control" name="tanggals[]" id="tanggals">
-                    </div>
-                  </td>
-                  <td>
-                    <div class="form-group">
-                      <div class="input-group">
-                        <input type="text" class="form-control @error('hasil_perakitans.*.no_seri') is-invalid @enderror" name="no_seri[]" id="no_seri">
-                      </div>
-                      @if ($errors->has('hasil_perakitans.*.no_seri'))
-                      <span class="invalid-feedback" role="alert">{{$errors->first('hasil_perakitans.*.no_seri')}}</span>
-                      @endif
-                      <span id="no_seri-message[]" role="alert"></span>
-                    </div>
-                  </td>
-                  <td>
-                    <button type="button" class="btn btn-success btn-sm m-1" style="border-radius:50%;" id="tambahitem"><i class="fas fa-plus-circle"></i></button>
-                  </td>
-                </tr>
-              </tbody>
+            <div class="form-horizontal">
 
-            </table>
+
+              <div class="form-group row">
+                <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;">Tanggal</label>
+                <div class="col-sm-8">
+                  <input type="date" class="form-control @error('tanggal') is-invalid @enderror" name="tanggal" id="tanggal" value="" style="width: 30%;">
+                  @if ($errors->has('tanggal'))
+                  <span class="invalid-feedback" role="alert">{{$errors->first('tanggal')}}</span>
+                  @endif
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="produk" class="col-sm-4 col-form-label" style="text-align:right;">Jumlah</label>
+                <div class="col-sm-3">
+                  <input type="number" class="form-control @error('jumlah') is-invalid @enderror" name="jumlah" id="jumlah" value="">
+                  @if ($errors->has('jumlah'))
+                  <span class="invalid-feedback" role="alert">{{$errors->first('jumlah')}}</span>
+                  @endif
+                  <span id="jumlah-message" role="alert"></span>
+                </div>
+              </div>
+
+
+              <div class="form-group row">
+                <div class="table-responsive">
+                  <table id="tableitem" class="table table-hover styled-table">
+                    <thead style="text-align: center;">
+                      <tr>
+                        <th>No</th>
+                        <th>Kode Perakitan</th>
+                      </tr>
+                    </thead>
+                    <tbody style="text-align:center;">
+
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
         </div>
         <div class="card-footer">
           <span>
@@ -175,6 +181,16 @@
 @section('adminlte_js')
 <script>
   $(function() {
+    function formatted_string(pad, user_str, pad_pos) {
+      if (typeof user_str === 'undefined')
+        return pad;
+      if (pad_pos == 'l') {
+        return (pad + user_str).slice(-pad.length);
+      } else {
+        return (user_str + pad).substring(0, pad.length);
+      }
+    }
+
     function numberRows($t) {
       var c = 0 - 1;
       $t.find("tr").each(function(ind, el) {
@@ -185,32 +201,42 @@
       });
     }
 
-    $('#tambahitem').click(function(e) {
-      $('#tableitem tr:last').after(`<tr>
-      <td></td>
-      <td>
-        <div class="input-group">
-          <input type="date" class="form-control" name="tanggals[]" id="tanggals">
-        </div>
-      </td>
-      <td>
-        <div class="form-group">
-          <div class="input-group">
-            <input type="text" class="form-control @error('hasil_perakitans.*.no_seri') is-invalid @enderror"" name="no_seri[]" id="no_seri">
-          </div>
-          @if ($errors->has('no_seri'))
-            <span class="invalid-feedback" role="alert" >{{$errors->first('hasil_perakitans.*.no_seri')}}</span>
-          @endif
-          <span id="no_seri-message" role="alert"></span>
-        </div>
-      </td>
-      <td>
-        <button type="button" class="btn btn-danger btn-sm m-1" style="border-radius:50%;" id="closetable" ><i class="fas fa-times-circle"></i></button>
-      </td>
-      </tr>`);
-      numberRows($("#tableitem"));
-    });
+    $('#jumlah').on('keyup change', function() {
+      var jumlah = $('#jumlah').val();
+      var alias_tim = "{{$sh->alias_tim}}";
+      if (jumlah !== 0) {
+        $('#tableitem tbody').empty();
+        $.ajax({
+          url: 'get_count_hasil_perakitan/' + "{{$sh->id}}",
+          type: "GET",
+          dataType: "json",
+          success: function(data) {
+            datatables = "";
+            for (var i = 0; i < jumlah; i++) {
+              datatables += `<tr>
+                        <td>` + (i + 1) + `</td>
+                        <td>
+                        <div class="form-group row">
+                          <input type="text" class="form-control @error('hasil_perakitans.*.alias') is-invalid @enderror col-sm-3" name="alias[]" id="alias" value="{{$sh->alias_tim}}" readonly>
+                          <input type="text" class="form-control @error('hasil_perakitans.*.no_seri') is-invalid @enderror col-sm-5" name="no_seri[]" id="no_seri" value="` + formatted_string('00000', (data + i + 1), 'l') + `" readonly>
+                          @if ($errors->has('hasil_perakitans.*.no_seri'))
+                          <span class="invalid-feedback" role="alert">{{$errors->first('hasil_perakitans.*.no_seri')}}</span>
+                          @endif
+                          <span id="no_seri-message[]" role="alert"></span>
+                        </div>
+                        </td>
+                        </tr>`;
 
+
+            }
+            console.log(datatables);
+            $("#tableitem").append(datatables);
+          }
+        });
+      } else {
+        $('#tableitem tbody').empty();
+      }
+    });
 
     $('#tableitem').on('click', '#closetable', function(e) {
       $(this).closest('tr').remove();

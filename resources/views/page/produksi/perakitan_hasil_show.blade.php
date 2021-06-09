@@ -136,7 +136,7 @@
                 <tr>
                   <th>No</th>
                   <th>Tanggal</th>
-                  <th>No Seri</th>
+                  <th>Kode Perakitan</th>
                   <th>Status</th>
                   <th>Aksi</th>
                 </tr>

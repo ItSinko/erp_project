@@ -24,6 +24,7 @@ use App\AnalisaPsPerakitan;
 use App\AnalisaPsPengujian;
 use App\AnalisaPsPengemasan;
 use App\BillOfMaterial;
+use App\PermintaanBahanBaku;
 
 class EngController extends Controller
 {
@@ -184,8 +185,6 @@ class EngController extends Controller
         $s = HasilPerakitan::find($id);
         $bppbid = $s->Perakitan->Bppb->id;
         $dp = $s->Perakitan->Bppb->detail_produk_id;
-
-
         $hp = HasilPerakitan::whereHas('Perakitan', function ($q) use ($bppbid) {
             $q->where('bppb_id', $bppbid);
         })->whereIn('status', ['rej_pemeriksaan_terbuka', 'rej_pemeriksaan_tertutup'])
