@@ -576,6 +576,9 @@ Route::get('/doc/test', function (Request $request) {
 });
 
 //GUDANG
+Route::get('gudang_view', function(){
+    return view('page.gudang.gudang');
+});
 Route::get('/gudang', 'GudangController@index')->name('gudang');
 Route::get('/gudang/data', 'GudangController@get_data')->name('gudang.data');
 

@@ -67,13 +67,13 @@
                         </thead>
                         <tbody id="product_list_body">
                             @foreach($date as $d)
-                            <tr id="row_{{ $d->id_produk }}">
+                            <tr id="row1_{{ $d->id }}">
                                 <td>{{$d->detail_produk->nama}}</td>
                                 <td>
-                                    @if ($d->bom == NULL)
+                                    @if ($d->versi_bom == NULL)
                                     null
                                     @else
-                                    Versi {{$d->bom}}
+                                    {{$d->versi_bom}}
                                     @endif
                                 </td>
                             </tr>
@@ -100,6 +100,7 @@
                 </div>
             </div>
             @endcan
+            <button class="btn btn-info btn-block" id="show-bppb">Buat bppb</button>
         </div>
     </div>
     <div class="col-md-9 calendar-view">
@@ -293,6 +294,49 @@
     </div>
 </div>
 
+<div class="modal fade" id="create-bppb">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h4 class="modal-title w-100 font-weight-bold">Pilih BOM</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered" id="table-bppb" style="text-align: center">
+                    <thead>
+                        <tr>
+                            <th>Nama Produk</th>
+                            <th>Jumlah</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($date as $d)
+                        <tr id="row2_{{ $d->id }}">
+                            <td>{{ $d->detail_produk->nama }}</td>
+                            <td>{{ $d->jumlah_produksi }}</td>
+                            <td><button class="btn btn-info send" value="{{ $d->id }}">
+                            @if ($d->status == "permintaan")
+                            <i class="fas fa-check"></i>
+                            @else
+                            Kirim
+                            @endif
+                            </button></td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="submit" class="btn btn-primary" id="done-bppb">Selesai</button>
+                <button type="submit" class="btn btn-danger" id="send-all">Kirim Semua</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @stop
 
 @section('adminlte_js')
@@ -473,6 +517,7 @@
             eventClick: function(info) {
                 $('#show-bom').modal('show');
                 event_info = info;
+                console.log(event)
                 $.ajax({
                     url: "/ppic/get_bom",
                     method: "GET",
@@ -515,7 +560,6 @@
                     jumlah: $('#jumlah-produksi').val(),
                     color: color,
                 }
-                console.log(data_saved);
                 $.ajax({
                     url: "/ppic/schedule/create",
                     method: "POST",
@@ -530,10 +574,13 @@
                             borderColor: color,
                         });
                         $('#date-form').modal('hide');
-                        $('#product_list_body').append(`<tr id="row_` + result.id + `" >
+                        $('#product_list_body').append(`<tr id="row1_` + result.id + `" >
                             <td>` + result.nama + `</td>
                             <td>null</td>
                         </tr>`);
+
+                        $('#product').val(null);
+                        $('#jumlah-produksi').val(null);
                     },
                     error: function(err) {
                         console.log(err);
@@ -571,7 +618,8 @@
                             method: "POST",
                             success: function() {
                                 event_info.event.remove();
-                                $('#row_' + event_info.event._def.publicId).remove();
+                                $('#row1_' + event_info.event._def.publicId).remove();
+                                $('#row2_' + event_info.event._def.publicId).remove();
                                 $('#show-bom').modal('hide');
                             }
                         });
@@ -581,6 +629,7 @@
         });
 
 
+        // todo: change this
         // $('.status').on('click', function() {
         //     var message, status;
         //     if ($(this).attr('id') == 'acc') {
@@ -648,15 +697,18 @@
                         produk_bill_of_material_id: value
                     },
                     success: function(result) {
-                        var data = $('#table-bom tbody')
+                        var data = $('#table-bom tbody');
 
-                        var min = INF;
+                        var min = Infinity;
                         for (var j = 0; j < result.length - 1; j++) {
-
+                            var temp = parseInt(result[j].stok/result[j].jumlah);
+                            if (temp < min){
+                                min = temp;
+                            }
                         }
 
                         for (var j = 0; j < result.length - 1; j++) {
-                            var pemotongan = parseInt(result[j].jumlah) * parseInt(result[result.length - 1]);
+                            var pemotongan = parseInt(result[j].jumlah) * min;
                             var sisa = parseInt(result[j].stok) - pemotongan;
                             var child;
                             if (sisa == 0) {
@@ -687,7 +739,7 @@
                         var last_child = `
                                 <tr>
                                     <th colspan="5">Jumlah Maksimum Produksi</th>
-                                    <th>` + result[result.length - 1] + `</th>
+                                    <th>` + min + `</th>
                                 </tr>
                         `;
 
@@ -700,6 +752,65 @@
                         });
 
                         console.log(error);
+                    }
+                });
+            }
+        });
+
+        $("#choose-bom").click(function(){
+            console.log(event_info.event._def.publicId);
+            $.ajax({
+                url: "/ppic/schedule/create",
+                method: "POST",
+                data: {
+                    versi: $("#bom-input").val(),
+                    id_event: event_info.event._def.publicId,
+                },
+                success: function(result){
+                    $('.row_' + event_info.event._def.publicId + " td:nth-child(2)").html(result.versi_bom);
+                    $('#show-bom').modal('hide');
+
+                    $('#table-bppb tbody').append(`<tr id="row2_` + result.id + `" >
+                            <td>` + result.nama + `</td>
+                            <td>` + result.jumlah + `</td>
+                            <td><button class="btn btn-info send" value="` + result.id + `">Kirim</button></td>
+                        </tr>`);
+                },
+                error: function(error){
+                    console.log(error);
+                }
+            });
+        });
+
+        $("#show-bppb").click(function(){
+            $("#create-bppb").modal('show');
+        });
+
+        $(".send").click(function(){
+            $(this).html(`<i class="fas fa-check"></i>`)
+        });
+
+        $("#send-all").click(function(){
+            $(".send").html(`<i class="fas fa-check"></i>`)
+        });
+
+        $("#done-bppb").click(function(){
+            $("#create-bppb").modal("hide");
+        });
+
+        $(".send").on("click", function(){
+            if ($(this).val() != "permintaan")
+            {
+                $.ajax({
+                    url: "/ppic/schedule/create",
+                    method: "POST",
+                    data: {
+                        status_update: true,
+                        status: "permintaan",
+                        id: $(this).val(),
+                    },
+                    success: function(result){
+                        console.log(result);
                     }
                 });
             }

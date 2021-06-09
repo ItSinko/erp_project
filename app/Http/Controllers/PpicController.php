@@ -66,6 +66,26 @@ class PPICController extends Controller
 
     public function schedule_create(Request $request)
     {
+        if ($request->versi != NULL){
+            $versi = ProdukBillOfMaterial::find($request->versi);
+            $event = Event::find($request->id_event);
+
+            $event->versi_bom = $versi->versi;
+            $event->save();
+
+            return $event;
+        }
+
+        if ($request->status_update != NULL && $request->status_update == true){
+            $event = Event::find((int)$request->id);
+            $event->status = $request->status;
+            $event->save();
+
+            event(new RealTimeMessage(Auth::user(), (string)$event->detail_produk->nama, (string)$event->jumlah_produksi));
+
+            return $event;
+        }
+
         $data = [
             'detail_produk_id' => $request->id_produk,
             'tanggal_mulai' => $request->start,
