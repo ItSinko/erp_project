@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use App\Part;
+use App\Event;
+use App\ProdukBillOfMaterial;
 
 class GudangController extends Controller
 {
@@ -15,7 +17,15 @@ class GudangController extends Controller
 
     public function index()
     {
-        return view('page.gudang.data_gudang');
+        $event = Event::where('status', 'permintaan')->get();
+
+        $result = [];
+        foreach ($event as $e){
+            $bom = ProdukBillOfMaterial::where('versi', $e->versi_bom)->where('detail_produk_id', $e->detail_produk_id)->first();
+            array_push($result, $bom);
+        }
+        // return view('page.gudang.gudang', compact('result'));
+        return $result;
     }
 
     public function get_data()
