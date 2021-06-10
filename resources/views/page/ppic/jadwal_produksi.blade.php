@@ -47,11 +47,15 @@
         <div class="sticky-top">
             <div class="alert alert-info alert-dismissible" id="status_penyusunan" style="display: none;">
                 <h5><i class="icon fas fa-info"></i> Status </h5>
-                Proses penyusunan jadwal
+                Penyusunan
             </div>
-            <div class="alert alert-success alert-dismissible" id="status_acc" style="display: none;">
+            <div class="alert alert-warning alert-dismissible" id="status_pelaksanaan" style="display: none;">
+                <h5><i class="icon fas fa-hard-hat"></i> Status</h5>
+                Pelaksanaan
+            </div>
+            <div class="alert alert-success alert-dismissible" id="status_selesai" style="display: none;">
                 <h5><i class="icon fas fa-check"></i> Status</h5>
-                Jadwal telah Ditetapkan
+                Selesai
             </div>
             <div class="card">
                 <div class="card-header">
@@ -66,14 +70,14 @@
                             </tr>
                         </thead>
                         <tbody id="product_list_body">
-                            @foreach($date as $d)
-                            <tr id="row1_{{ $d->id }}">
-                                <td>{{$d->detail_produk->nama}}</td>
+                            @foreach($event as $e)
+                            <tr id="row1_{{ $e->id }}">
+                                <td>{{$e->detail_produk->nama}}</td>
                                 <td>
-                                    @if ($d->versi_bom == NULL)
+                                    @if ($e->versi_bom == NULL)
                                     null
                                     @else
-                                    {{$d->versi_bom}}
+                                    {{$e->versi_bom}}
                                     @endif
                                 </td>
                             </tr>
@@ -84,40 +88,37 @@
                 <!-- /.card-body -->
             </div>
             @can('admin')
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Status Jadwal Produksi</h3>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <button type="button" class="btn btn-primary btn-block status" id="acc">ACC</button>
-                        </div>
-                        <div class="col-sm-6">
-                            <button type="button" class="btn btn-danger btn-block status" id="penyusunan">Tolak</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            @if ($status == "penyusunan")
+            <button class="btn btn-danger btn-block" id="acc-button">Persetujuan</button>
+            @endif
             @endcan
-            <button class="btn btn-info btn-block" id="show-bppb">Buat bppb</button>
+            @if (Auth::user()->divisi_id == 3)
+            <button class="btn btn-info btn-block" id="bppb-button" style="display: none;">BPPB</button>
+            @endif
         </div>
     </div>
     <div class="col-md-9 calendar-view">
         <div class="card">
             <div class="card-body">
-                <div id='calendar'></div>
-                <div id="date" hidden>{{ $event }}</div> <!-- catch data from controller -->
+                <div id="calendar"></div>
+                <!-- catch data from controller -->
+                <div id="date" hidden>{{ json_encode($event) }}</div> 
                 <div id="user" hidden>{{ (Auth::user()) }}</div>
+                <div id="status" hidden>{{ $status }}</div>
             </div>
         </div>
     </div>
     <div class="col-12 table-view" style="display: none;">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Table View</h3>
+                    <h3 class="card-title">Table View</h3>
+                    <div class="card-tools">
+                        <div class="btn-group" role="group" id="button-date">
+                            <button type="button" class="btn btn-secondary"><i class="fas fa-less-than"></i></button>
+                            <button type="button" class="btn btn-secondary"><i class="fas fa-greater-than"></i></button>
+                        </div>
+                    </div>
             </div>
-            <!-- /.card-header -->
             <div class="card-body" style="overflow-x: auto;">
                 <table class="table table-bordered center">
                     <thead>
@@ -128,11 +129,11 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($date as $d)
+                        @foreach($event as $e)
                         <tr>
-                            <td>{{$d->nama_produk}}</td>
-                            @for ($i = 1; $i <= date('t'); $i++) @php $start=date('d', strtotime($d->tanggal_mulai));
-                                $end = date('d', strtotime($d->tanggal_selesai));
+                            <td>{{$e->detail_produk->nama}}</td>
+                            @for ($i = 1; $i <= date('t'); $i++) @php $start=date('d', strtotime($e->tanggal_mulai));
+                                $end = date('d', strtotime($e->tanggal_selesai));
                                 @endphp
                                 @if ($i >= $start && $i <= $end) <td style="background: yellow;">
                                     </td>
@@ -151,7 +152,6 @@
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">List View</h3>
-
                 <div class="card-tools">
                     <div class="input-group input-group-sm" style="width: 150px;">
                         <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
@@ -162,8 +162,7 @@
                     </div>
                 </div>
             </div>
-            <!-- /.card-header -->
-            <div class="card-body table-responsive p-0" style="height: 600px;">
+            <div class="card-body table-responsive p-0">
                 <table class="table table-head-fixed text-nowrap">
                     <thead>
                         <tr>
@@ -175,11 +174,11 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($date as $d)
+                        @foreach($event as $e)
                         <tr>
-                            <td>{{$d->nama_produk}}</td>
-                            <td>{{$d->tanggal_mulai}}</td>
-                            <td>{{$d->tanggal_selesai}}</td>
+                            <td>{{$e->detail_produk->nama}}</td>
+                            <td>{{$e->tanggal_mulai}}</td>
+                            <td>{{$e->tanggal_selesai}}</td>
                             <td>On Progress</td>
                             <td>
                                 <div class="progress progress-xs">
@@ -216,8 +215,8 @@
                     <div class="col-sm-10">
                         <select name="" id="product" class="form-control select2" data-placeholder="Pilih Produk...">
                             <option value=""></option>
-                            @foreach($produk as $d)
-                            <option value="{{ $d->id }}">{{ $d->nama }}</option>
+                            @foreach($produk as $e)
+                            <option value="{{ $e->id }}">{{ $e->nama }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -313,12 +312,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($date as $d)
-                        <tr id="row2_{{ $d->id }}">
-                            <td>{{ $d->detail_produk->nama }}</td>
-                            <td>{{ $d->jumlah_produksi }}</td>
-                            <td><button class="btn btn-info send" value="{{ $d->id }}">
-                            @if ($d->status == "permintaan")
+                        @foreach($event as $e)
+                        <tr id="row2_{{ $e->id }}">
+                            <td>{{ $e->detail_produk->nama }}</td>
+                            <td>{{ $e->jumlah_produksi }}</td>
+                            <td><button class="btn btn-info send" value="{{ $e->id }}">
+                            @if ($e->status == "permintaan")
                             <i class="fas fa-check"></i>
                             @else
                             Kirim
@@ -344,56 +343,22 @@
 <script src="{{ asset('vendor/fullcalendar/locales-all.js') }}"></script>
 <script src="{{ asset('vendor/bootbox/bootbox.js') }}"></script>
 <script src="{{ asset('js/notif.js') }}"></script>
+
 <script>
-    var count = $('#notif a#notif-item').length;
-
-    $('#notif-header').text(count + ' notifications');
-    $('span.badge').text(count);
-    if (count != 0) {
-        $('span.badge').show();
+    // load data from controller
+    var event = JSON.parse($("#date").html());
+    var initial_event = [];
+    for (var i = 0; i < event.length; i++){
+        initial_event[i] = {
+            id: event[i].id,
+            title: event[i].detail_produk.nama,
+            start: event[i].tanggal_mulai,
+            end: event[i].tanggal_selesai,
+            color: event[i].warna,
+        }
     }
-
-    function insertAtIndex(e) {
-        var content = `
-            <div class="dropdown-divider"></div>
-            <a href="#" class="dropdown-item" id="notif-item">
-                <!-- Message Start -->
-                <div class="media">
-                    <img src="{{ asset('assets/image/user/index.png') }}" alt="User Avatar" class="img-size-50 mr-3 img-circle">
-                    <div class="media-body">
-                        <h3 class="dropdown-item-title">` +
-            e.user.nama +
-            `</h3>
-                        <p class="text-sm">` + e.message + `</p>
-                    </div>
-                </div>
-                <!-- Message End -->
-            </a>
-            `;
-
-        $("#notif").prepend(content);
-        choose_status(e.status);
-    }
-
-    Echo.private('message-events')
-        .listen('RealTimeMessage', function(e) {
-            global_e = e;
-            console.log(e);
-            insertAtIndex(e);
-
-
-            count = $('#notif a#notif-item').length;
-
-            $('#notif-header').text(count + ' notifications');
-            $('span.badge').text(count);
-            $('span.badge').show();
-        });
-</script>
-<script>
-    var initial_event = JSON.parse($('#date').html()); // load event from database
-    var user = JSON.parse($('#user').html()); // load user authorisation
-
-    var bom_id;
+    var user = JSON.parse($("#user").html());
+    var status_page =  $("#status").html();
 
     function get_work_day(date1, date2) {
         const date1utc = Date.UTC(date1.getFullYear(), date1.getMonth(), date1.getDate());
@@ -435,47 +400,39 @@
         }
     }
 
-    // todo: change this function
     function choose_status(status) {
         if (status == 'penyusunan') {
             $('#status_penyusunan').show();
-            $('#status_acc').hide();
-            $('#acc').removeClass('disabled');
+            $('#status_pelaksanaan').hide();
+            $('#status_selesai').hide();
             console.log("penyusunan");
-        } else if (status == 'acc') {
-            $('#status_penyusunan').hide();
-            $('#status_acc').show();
-            $('#acc').addClass("disabled");
-            $('#penyusunan').removeClass('disabled');
-            console.log('acc');
         } else if (status == 'pelaksanaan') {
-            // todo:
-            // add pelaksanaan status
+            $('#status_penyusunan').hide();
+            $('#status_pelaksanaan').show();
+            $('#status_selesai').hide();
+        } else if (status == 'selesai') {
+            $('#status_penyusunan').hide();
+            $('#status_pelaksanaan').hide();
+            $('#status_selesai').show();
         }
     }
 
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-
     $(document).ready(function() {
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
 
         var Calendar = FullCalendar.Calendar;
         var calendarEl = document.getElementById('calendar');
 
-        // var status;
         var event_info;
 
-        // if (initial_event.length != 0) {
-        //     status = initial_event[0].status;
-        // } else {
-        //     status = 'penyusunan';
-        // }
-        // choose_status(status);
+        choose_status(status_page);
 
-        var calendar = new Calendar(calendarEl, {
+        var calendar_setting = { 
             locale: 'id',
 
             weekends: false,
@@ -483,12 +440,6 @@
 
             selectable: true,
             editable: false,
-
-            headerToolbar: {
-                start: 'title',
-                center: '',
-                end: 'today prev,next',
-            },
 
             events: initial_event,
 
@@ -533,9 +484,31 @@
                     }
                 })
             },
-        });
+        }
+
+        var calendar = new Calendar(calendarEl, calendar_setting);
         calendar.render();
 
+        var create_bppb = false;
+        for (var i = 0; i < event.length; i++){
+            console.log(event[i].status);
+            if (event[i].status == 'disetujui' || event[i].status == 'permintaan'){
+                create_bppb = true;
+                break;
+            }
+        }
+        if (create_bppb){
+            bootbox.alert({
+                centerVertical: true,
+                message: "<p>Jadwal telah disetujui</p>" + 
+                        "<p>Silahkan kirim bppb untuk penyusunan bulan ini</p>",
+            });
+            $('#bppb-button').show();
+        }
+
+        $('.view').click(function() {
+            choose_view($(this).text());
+        });
 
         $('#color-chooser').change(function(e) {
             var currColor = $(this).val();
@@ -544,11 +517,6 @@
                 'border-color': currColor
             })
         });
-
-        $('.view').click(function() {
-            choose_view($(this).text());
-        });
-
         $('#save').click(function() {
             var color = $(this).css('background-color');
             if ($('#product').val()) {
@@ -593,6 +561,7 @@
                 }, 1000);
             }
         });
+        
 
         $('#delete-event').click(function() {
             bootbox.confirm({
@@ -628,59 +597,48 @@
             });
         });
 
-
-        // todo: change this
-        // $('.status').on('click', function() {
-        //     var message, status;
-        //     if ($(this).attr('id') == 'acc') {
-        //         choose_status('acc')
-        //         message = "Jadwal telah di ACC";
-        //         status = 'acc';
-        //         $.ajax({
-        //             url: '/notif',
-        //             type: 'POST',
-        //             data: {
-        //                 message: message,
-        //                 status: status,
-        //             },
-        //             success: function() {
-        //                 console.log('notif sent');
-        //             },
-        //             error: function(err) {
-        //                 console.log('error: ' + err);
-        //             }
-        //         });
-
-        //     } else {
-        //         var add_message;
-        //         if (user.nama == "Anna") {
-        //             bootbox.prompt({
-        //                 title: "Keterangan",
-        //                 centerVertical: true,
-        //                 callback: function(result) {
-        //                     add_message = result;
-        //                     message = "Jadwal dibatalkan untuk di ACC:<br>" + add_message;
-        //                     status = 'penyusunan';
-        //                     $.ajax({
-        //                         url: '/notif',
-        //                         type: 'POST',
-        //                         data: {
-        //                             message: message,
-        //                             status: status,
-        //                         },
-        //                         success: function() {
-        //                             console.log('notif sent');
-        //                         },
-        //                         error: function(err) {
-        //                             console.log('error: ' + err);
-        //                         }
-        //                     });
-        //                 }
-        //             });
-        //         }
-        //     }
-        // });
-
+        $('#acc-button').on('click', function() {
+            bootbox.confirm({
+                centerVertical: true,
+                message: "Apakah Anda menyetujui jadwal produksi bulan ini?",
+                buttons: {
+                    confirm: {
+                        label: 'Setuju',
+                    },
+                    cancel: {
+                        label: 'Tolak',
+                    }
+                },
+                callback: function(result) {
+                    if (result) {
+                        $.ajax({
+                            url: "/notif",
+                            method: "POST",
+                            data: {
+                                status: "Setuju",
+                                message: "Jadwal telah disetujui"
+                            }
+                        });
+                    }
+                    else{
+                        bootbox.prompt({
+                            title: "Keterangan atas penolakan jadwal produksi",
+                            centerVertical: true,
+                            callback: function(result){
+                                $.ajax({
+                                    url: "/notif",
+                                    method: "POST",
+                                    data: {
+                                        status: "Tolak",
+                                        message: result
+                                    }       
+                                })
+                            }
+                        })
+                    }
+                }
+            });
+        });
 
         $("#bom-input").change(function() {
             var value = $("#bom-input").val();
@@ -782,7 +740,7 @@
             });
         });
 
-        $("#show-bppb").click(function(){
+        $("#bppb-button").click(function(){
             $("#create-bppb").modal('show');
         });
 
@@ -816,5 +774,52 @@
             }
         });
     });
+</script>
+
+
+<script>
+    var count = $('#notif a#notif-item').length;
+
+    $('#notif-header').text(count + ' notifications');
+    $('span.badge').text(count);
+    if (count != 0) {
+        $('span.badge').show();
+    }
+
+    function insertAtIndex(e) {
+        var content = `
+            <div class="dropdown-divider"></div>
+            <a href="#" class="dropdown-item" id="notif-item">
+                <!-- Message Start -->
+                <div class="media">
+                    <img src="{{ asset('assets/image/user/index.png') }}" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+                    <div class="media-body">
+                        <h3 class="dropdown-item-title">` +
+            e.user.nama +
+            `</h3>
+                        <p class="text-sm">` + e.message + `</p>
+                    </div>
+                </div>
+                <!-- Message End -->
+            </a>
+            `;
+
+        $("#notif").prepend(content);
+        choose_status(e.status);
+    }
+
+    Echo.private('message-events')
+        .listen('RealTimeMessage', function(e) {
+            global_e = e;
+            console.log(e);
+            insertAtIndex(e);
+
+
+            count = $('#notif a#notif-item').length;
+
+            $('#notif-header').text(count + ' notifications');
+            $('span.badge').text(count);
+            $('span.badge').show();
+        });
 </script>
 @stop

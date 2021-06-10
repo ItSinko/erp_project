@@ -37,7 +37,7 @@ class PPICController extends Controller
         $this->middleware('auth');
     }
 
-    public function schedule_show(Request $request)
+    public function schedule_show2(Request $request)
     {
         $date = Event::orderBy('tanggal_mulai', 'asc')->get();
         if (isset($request->month) && isset($request->year)) {
@@ -62,6 +62,30 @@ class PPICController extends Controller
 
         $produk = DetailProduk::select('nama', 'id')->get();
         return view('page.ppic.jadwal_produksi', compact('event', 'produk', 'date'));
+    }
+
+    public function schedule_show(Request $request)
+    {
+        
+        $month = date('m');
+        $year = date('Y');
+        $event = Event::orderBy('tanggal_mulai', 'asc')->whereYear('tanggal_mulai', $year)->whereMonth('tanggal_mulai', $month)->get();
+        $status = null;
+
+        if ($request->pelaksanaan == true) {
+            $event = Event::orderBy('tanggal_mulai', 'asc')->whereYear('tanggal_mulai', $year)->whereMonth('tanggal_mulai', $month)->get();
+            $status = 'pelaksanaan';
+        } else if ($request->penyusunan == true) {
+            $month += 1;
+            $event = Event::orderBy('tanggal_mulai', 'asc')->where('tanggal_mulai', '>=', "$year-$month-01")->get();
+            $status = 'penyusunan';
+        }else if ($request->selesai == true){
+            $event = Event::orderBy('tanggal_mulai', 'asc')->where('tanggal_mulai', '<', "$year-$month-01")->get();
+            $status = 'selesai';
+        }
+        
+        $produk = DetailProduk::select('nama', 'id')->get();
+        return view('page.ppic.jadwal_produksi', compact('event', 'produk', 'status'));
     }
 
     public function schedule_create(Request $request)
