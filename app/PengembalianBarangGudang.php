@@ -4,10 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class PenyerahanBarangJadi extends Model
+class PengembalianBarangGudang extends Model
 {
     protected $fillable = ['bppb_id', 'divisi_id', 'tanggal', 'status'];
-
     public function Bppb()
     {
         return $this->belongsTo(Bppb::class);
@@ -18,8 +17,8 @@ class PenyerahanBarangJadi extends Model
         return $this->belongsTo(Divisi::class);
     }
 
-    public function DetailPenyerahanBarangJadi()
+    public function DetailPengembalianBarangGudang()
     {
-        return $this->hasMany(DetailPenyerahanBarangJadi::class);
+        return $this->hasMany(DetailPengembalianBarangGudang::class);
     }
 }

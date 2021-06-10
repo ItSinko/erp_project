@@ -92,7 +92,7 @@
       @endif
       <div class="card">
         <div class="card-header bg-success">
-          <div class="card-title"><i class="fas fa-plus-circle"></i>&nbsp;Tambah Laporan</div>
+          <div class="card-title"><i class="fas fa-plus-circle"></i>&nbsp;Tambah Laporan Tim</div>
         </div>
         <!-- /.card-header -->
         <div class="card-body">
@@ -100,78 +100,47 @@
             {{ csrf_field() }}
             {{ method_field('PUT') }}
             <div class="form-group row">
-              <label for="tanggal_laporan" class="col-sm-4 col-form-label" style="text-align:right;">Tanggal Laporan</label>
-              <div class="col-sm-8">
-                <input type="date" class="form-control" name="tanggal_laporan" id="tanggal_laporan" value="{{old('tanggal_laporan')}}" style="width: 30%;">
-                @if ($errors->has('tanggal_laporan'))
-                <span class="invalid-feedback" role="alert">{{$errors->first('tanggal_laporan')}}</span>
-                @endif
-              </div>
-            </div>
-
-            <div class="form-group row">
-              <label for="karyawan_id" class="col-sm-4 col-form-label" style="text-align:right;">Karyawan</label>
-              <div class="col-sm-5">
-                <div class="select2-info">
-                  <select class="select2 form-control @error('karyawan_id') is-invalid @enderror karyawan_id" multiple="multiple" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;" name="karyawan_id[]" id="karyawan_id">
-                    @foreach($kry as $i)
-                    <option value="{{$i->id}}">{{$i->nama}}</option>
-                    @endforeach
-                  </select>
-                  @if ($errors->has('karyawan_id'))
-                  <span class="invalid-feedback" role="alert">{{$errors->first('karyawan_id.*')}}</span>
-                  @endif
-                </div>
-              </div>
-            </div>
-
-            <div class="form-group row">
-              <label for="import_file" class="col-sm-4 col-form-label" style="text-align:right;">Import No Seri (Excel)</label>
-              <div class="col-sm-8">
-                <input type="file" class="form-control" name="file">
-              </div>
-            </div>
-
-            <div class="form-group row">
-              <table id="tableitem" class="table table-hover">
-                <thead style="text-align: center;">
-                  <tr>
-                    <th>No</th>
-                    <th>Tanggal</th>
-                    <th>No Seri</th>
-                    <th>Aksi</th>
-                  </tr>
-                </thead>
-                <tbody style="text-align:center;">
-                  <tr>
-                    <td>1</td>
-                    <td>
-                      <div class="input-group">
-                        <input type="date" class="form-control" name="tanggals[]" id="tanggals">
-                      </div>
-                    </td>
-                    <td>
-                      <div class="form-group">
+              <div class="table-responsive">
+                <table id="tableitem" class="table table-hover">
+                  <thead style="text-align: center;">
+                    <tr>
+                      <th>No</th>
+                      <th>Alias</th>
+                      <th>Karyawan</th>
+                      <th>Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody style="text-align:center;">
+                    <tr>
+                      <td>1</td>
+                      <td>
                         <div class="input-group">
-                          <input type="text" class="form-control @error('hasil_perakitans.*.no_seri') is-invalid @enderror" name="no_seri[]" id="no_seri">
+                          <input type="text" class="form-control @error('alias') is-invalid @enderror" name="alias[]" id="alias">
+                          @if ($errors->has('alias'))
+                          <span class="invalid-feedback" role="alert">{{$errors->first('alias.*')}}</span>
+                          @endif
                         </div>
-                        @if ($errors->has('no_seri'))
-                        <span class="invalid-feedback" role="alert">{{$errors->first('hasil_perakitans.*.no_seri')}}</span>
-                        @endif
-                        <span id="no_seri-message" role="alert"></span>
-                      </div>
-                    </td>
-                    <td>
-                      <button type="button" class="btn btn-block btn-success btn-sm karyawan-img-small" style="border-radius:50%;" id="tambahitem"><i class="fas fa-plus-circle"></i></button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                      </td>
+                      <td>
+                        <div class="select2-info">
+                          <select class="select2 form-control @error('karyawan_id') is-invalid @enderror karyawan_id" multiple="multiple" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;" name="karyawan_id[][]" id="karyawan_id">
+                            @foreach($kry as $i)
+                            <option value="{{$i->id}}">{{$i->nama}}</option>
+                            @endforeach
+                          </select>
+                          @if ($errors->has('karyawan_id'))
+                          <span class="invalid-feedback" role="alert">{{$errors->first('karyawan_id.*')}}</span>
+                          @endif
+                        </div>
+                      </td>
+                      <td>
+                        <button type="button" class="btn btn-block btn-success btn-sm karyawan-img-small" style="border-radius:50%;" id="tambahitem"><i class="fas fa-plus-circle"></i></button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
-
-
-
-
         </div>
         <div class="card-footer">
           <span>
@@ -206,34 +175,39 @@
       $t.find("tr").each(function(ind, el) {
         $(el).find("td:eq(0)").html(++c);
         var j = c - 1;
-        $(el).find('input[id="tanggals"]').attr('name', 'tanggals[' + j + ']');
-        $(el).find('input[id="no_seri"]').attr('name', 'no_seri[' + j + ']');
+        $(el).find('.karyawan_id').attr('name', 'karyawan_id[' + j + '][]');
+        $(el).find('.karyawan_id').attr('id', 'karyawan_id' + j);
+        $(el).find('input[id="alias"]').attr('name', 'alias[' + j + ']');
+        $('.karyawan_id').select2();
       });
     }
 
-    $('input[name="tanggal_laporan"]').val();
     $('#tambahitem').click(function(e) {
-      $('#tableitem tr:last').after(`<tr>
-      <td></td>
-      <td>
-        <div class="input-group">
-          <input type="date" class="form-control" name="tanggals[]" id="tanggals">
-        </div>
-      </td>
-      <td>
-        <div class="form-group">
+      $('#tableitem tr:last').after(` <tr>
+        <td>1</td>
+        <td>
           <div class="input-group">
-            <input type="text" class="form-control @error('hasil_perakitans.*.no_seri') is-invalid @enderror" name="no_seri[]" id="no_seri">
+            <input type="text" class="form-control @error('karyawan_id') is-invalid @enderror" name="alias[]" id="alias">
+            @if ($errors->has('alias'))
+            <span class="invalid-feedback" role="alert">{{$errors->first('alias.*')}}</span>
+            @endif
           </div>
-          @if ($errors->has('no_seri'))
-            <span class="invalid-feedback" role="alert" >{{$errors->first('hasil_perakitans.*.no_seri')}}</span>
-          @endif
-          <span id="no_seri-message[]" role="alert"></span>
-        </div>
-      </td>
-      <td>
-        <button type="button" class="btn btn-block btn-danger btn-sm"  style="border-radius:50%;" id="closetable" ><i class="fas fa-times-circle"></i></button>
-      </td>
+        </td>
+        <td>
+          <div class="select2-info">
+            <select class="select2 form-control @error('karyawan_id') is-invalid @enderror karyawan_id" multiple="multiple" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;" name="karyawan_id[][]" id="karyawan_id">
+              @foreach($kry as $i)
+              <option value="{{$i->id}}">{{$i->nama}}</option>
+              @endforeach
+            </select>
+            @if ($errors->has('karyawan_id'))
+            <span class="invalid-feedback" role="alert">{{$errors->first('karyawan_id.*')}}</span>
+            @endif
+          </div>
+        </td>
+        <td>
+          <button type="button" class="btn btn-block btn-danger btn-sm karyawan-img-small" style="border-radius:50%;" id="closetable"><i class="fas fa-times-circle"></i></button>
+        </td>
       </tr>`);
       numberRows($("#tableitem"));
     });
@@ -241,6 +215,33 @@
     $('#tableitem').on('click', '#closetable', function(e) {
       $(this).closest('tr').remove();
       numberRows($("#tableitem"));
+    });
+
+    $('#tableitem').on("change", ".karyawan_id", function() {
+      var arr = [];
+      var arr = $(this).closest('tr').find('.karyawan_id').val();
+      var alias = $(this).closest('tr').find('input[id="alias"]');
+      if (arr.length == 1) {
+        var kry_id = arr.toString();
+        $.ajax({
+          url: 'get_alias_operator/' + kry_id,
+          type: "GET",
+          dataType: "json",
+          success: function(data) {
+            if (data !== "") {
+              alias.val(data);
+            } else if (data === "") {
+              alias.val("");
+            }
+          },
+          error: function(xhr, status, error) {
+            var err = eval("(" + xhr.responseText + ")");
+            alert(err.Message);
+          }
+        });
+      } else if (arr.length == 0 || arr.length > 1) {
+        alias.val("");
+      }
     });
 
     $('#tableitem').on("change keyup", 'input[id="no_seri"]', function() {

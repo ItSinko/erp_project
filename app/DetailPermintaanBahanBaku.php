@@ -6,15 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class DetailPermintaanBahanBaku extends Model
 {
-    protected $fillable = ['permintaan_bahan_baku_id', 'part_eng_id', 'jumlah_diminta', 'jumlah_diserahkan'];
+    protected $fillable = ['permintaan_bahan_baku_id', 'bill_of_material_id', 'jumlah_diminta', 'jumlah_diterima'];
 
     public function PermintaanBahanBaku()
     {
         return $this->belongsTo(PermintaanBahanBaku::class);
     }
 
-    public function PartEng()
+    public function BillOfMaterial()
     {
-        return $this->belongsTo(PartEng::class);
+        return $this->belongsTo(BillOfMaterial::class);
     }
 }

@@ -115,14 +115,28 @@
                                 <table id="tableitem" class="table table-hover table-bordered styled-table">
                                     <thead style="text-align: center;">
                                         <tr>
-                                            <th>No</th>
-                                            <th>Part</th>
-                                            <th>Jumlah</th>
-                                            <th>Aksi</th>
+                                            <th rowspan="2">No</th>
+                                            <th rowspan="2">Part</th>
+                                            <th colspan="2">Jumlah</th>
+                                            <th rowspan="2">Aksi</th>
+                                        </tr>
+                                        <tr>
+                                            <th><i class="fas fa-check-circle" style="color:green;"></i></th>
+                                            <th><i class="fas fa-times-circle" style="color:red;"></i></th>
                                         </tr>
                                     </thead>
                                     <tbody style="text-align: center;">
-
+                                        @foreach($pbb as $i)
+                                        <tr>
+                                            <td>{{$loop->iteration}}</td>
+                                            <td><input type="text" name="bill_of_material_id[]" hidden>{{$i->BillOfMaterial->PartEng->nama}}</td>
+                                            <td><input class="form-control" type="number" name="jumlah_ok[]" max="{{$i->jumlah_diterima}}" min="0" value="{{$i->jumlah_diterima}}"></td>
+                                            <td><input class="form-control" type="number" name="jumlah_nok[]" max="{{$i->jumlah_diterima}}" min="0" value="0"></td>
+                                            <td>
+                                                <button type="button" class="btn btn-danger karyawan-img-small" style="border-radius:50%;" id="closetable"><i class="fas fa-times-circle"></i></button>
+                                            </td>
+                                        </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -149,8 +163,20 @@
 @section('adminlte_js')
 <script>
     $(function() {
+        function numberRows($t) {
+            var c = 0 - 2;
+            $t.find("tr").each(function(ind, el) {
+                $(el).find("td:eq(0)").html(++c);
+            });
+        }
+
         $('select[name="versi"]').on('change', function() {
             $("#tableitem").after();
+        });
+
+        $('#tableitem').on('click', '#closetable', function(e) {
+            $(this).closest('tr').remove();
+            numberRows($("#tableitem"));
         });
     });
 </script>

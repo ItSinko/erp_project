@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\BillOfMaterial;
 use Illuminate\Http\Request;
 use App\Http\Controllers\KategoriProdukController;
 use App\Http\Controllers\ProdukController;
@@ -12,6 +13,8 @@ use App\DetailProduk;
 use App\DivisiInventory;
 use App\HasilPerakitan;
 use App\KategoriProduk;
+use App\ProdukBillOfMaterial;
+use App\Karyawan;
 use Carbon\Carbon;
 
 class GetController extends Controller
@@ -199,6 +202,31 @@ class GetController extends Controller
     public function inventory_kode_exist($kode)
     {
         $s = DivisiInventory::where('kode', '=', $kode)->count();
+        return $s;
+    }
+
+    public function get_bom($id)
+    {
+        $s = ProdukBillOfMaterial::where('detail_produk_id', $id)->get();
+        return $s;
+    }
+
+    public function get_model_bom($id)
+    {
+        $s = BillOfMaterial::where('produk_bill_of_material_id', $id)->get();
+        return $s;
+    }
+
+    public function get_alias_operator($arr)
+    {
+        $s = Karyawan::find($arr);
+        $tes = $s->kode_karyawan;
+        echo json_encode($tes);
+    }
+
+    public function get_count_hasil_perakitan($id)
+    {
+        $s = HasilPerakitan::where('perakitan_id', $id)->count();
         return $s;
     }
 }

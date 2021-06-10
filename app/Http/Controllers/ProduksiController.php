@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\BillOfMaterial;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -36,7 +37,12 @@ use App\PartEng;
 use App\PerbaikanProduksi;
 use App\PersiapanPackingProduk;
 use App\DetailPersiapanPackingProduk;
+use App\PermintaanBahanBaku;
+use App\DetailPermintaanBahanBaku;
+use App\PengembalianBarangGudang;
+use App\DetailPengembalianBarangGudang;
 use App\PenyerahanBarangJadi;
+
 
 class ProduksiController extends Controller
 {
@@ -58,6 +64,53 @@ class ProduksiController extends Controller
         return view('page.produksi.bppb_permintaan_bahan_baku_create', ['id' => $id, 's' => $s]);
     }
 
+    public function bppb_pengembalian_barang_gudang_create($id)
+    {
+        $s = Bppb::find($id);
+        $pbb = DetailPermintaanBahanBaku::join('permintaan_bahan_bakus', 'detail_permintaan_bahan_bakus.permintaan_bahan_baku_id', '=', 'permintaan_bahan_bakus.id')
+            ->where([
+                ['permintaan_bahan_bakus.bppb_id', '=', $id],
+                ['permintaan_bahan_bakus.status', '=', 'acc_permintaan']
+            ])
+            ->groupby('detail_permintaan_bahan_bakus.bill_of_material_id')
+            ->selectRaw("distinct(detail_permintaan_bahan_bakus.bill_of_material_id) as bill_of_material_id, sum(detail_permintaan_bahan_bakus.jumlah_diterima) as jumlah_diterima")
+            ->get();
+        return view('page.produksi.bppb_pengembalian_barang_gudang_create', ['id' => $id, 's' => $s, 'pbb' => $pbb]);
+    }
+
+    public function bppb_pengembalian_barang_gudang_store(Request $request, $id)
+    {
+        $div = Divisi::where('nama', '=', 'Gudang Bahan Material')->first();
+        $c = PengembalianBarangGudang::create([
+            'bppb_id' => $id,
+            'divisi_id' => $div->id,
+            'tanggal' => $request->tanggal,
+            'status' => 'dibuat',
+        ]);
+
+        if ($c) {
+            $bool = true;
+            for ($i = 0; $i < count($request->bill_of_material_id); $i++) {
+                $cs = DetailPengembalianBarangGudang::create([
+                    'pengembalian_id' => $c->id,
+                    'bill_of_material_id' => $request->bill_of_material_id[$i],
+                    'jumlah_ok' => $request->jumlah_ok[$i],
+                    'jumlah_nok' => $request->jumlah_nok[$i]
+                ]);
+
+                if (!$cs) {
+                    $bool = false;
+                }
+            }
+
+            if ($bool == true) {
+                return redirect()->back()->with('success', "Berhasil menambahkan Data");
+            } else {
+                return redirect()->back()->with('error', "Gagal menambahkan Data");
+            }
+        }
+    }
+
     public function bppb_penyerahan_barang_jadi_create($id)
     {
         $s = Bppb::find($id);
@@ -75,13 +128,11 @@ class ProduksiController extends Controller
             $request->all(),
             [
                 'tanggal' => 'required',
-                'hasil_perakitan_id' => 'required',
-                'jumlah' => 'required'
+                'hasil_perakitan_id' => 'required'
             ],
             [
                 'tanggal.required' => "Tanggal harus diisi",
-                'hasil_perakitan_id.required' => "Hasil Perakitan harus diisi",
-                'jumlah.required' => "Jumlah harus diisi"
+                'hasil_perakitan_id.required' => "Hasil Perakitan harus diisi"
             ]
         );
 
@@ -95,7 +146,6 @@ class ProduksiController extends Controller
                     'bppb_id' => $id,
                     'divisi_id' => $request->divisi_id[$i],
                     'tanggal' => $request->tanggal,
-                    'jumlah' => $request->jumlah[$i],
                     'status' => 'dibuat',
                 ]);
 
@@ -113,7 +163,7 @@ class ProduksiController extends Controller
                 }
             }
 
-            if ($bool = true) {
+            if ($bool == true) {
                 return redirect()->back()->with('success', "Berhasil menambahkan Data");
             } else {
                 return redirect()->back()->with('error', "Gagal menambahkan Data");
@@ -186,14 +236,16 @@ class ProduksiController extends Controller
         $b = [];
         $i = 0;
 
-        $be = Perakitan::all();
-
+        // $be = Perakitan::all();
+        $be = Bppb::whereDoesntHave('Perakitan')->whereHas('PermintaanBahanBaku', function ($q) {
+            $q->where('status', 'acc_permintaan');
+        })->get();
         foreach ($be as $bes) {
-            $b[$i] = $bes->bppb_id;
+            $b[$i] = $bes->id;
             $i++;
         }
 
-        $s = Bppb::where('divisi_id', '=', Auth::user()->divisi_id)->whereNotIn('id', $b)->get();
+        $s = Bppb::where('divisi_id', '=', Auth::user()->divisi_id)->whereIn('id', $b)->get();
         $kry = Karyawan::all();
         return view('page.produksi.perakitan_create', ['s' => $s, 'kry' => $kry]);
     }
@@ -416,140 +468,48 @@ class ProduksiController extends Controller
 
     public function perakitan_laporan_store($id, Request $request)
     {
-        $v = [];
-        if (!empty($request->no_seri) && !empty($request->file)) {
-            $v = Validator::make(
-                $request->all(),
-                [
-                    'file' => 'mimes:csv,xls,xlsx',
-                    'tanggal_laporan' => 'required',
-                    'no_seri' => 'required|unique:hasil_perakitans',
-                ],
-                [
-                    'files.mimes' => "Ekstensi file harus menggunakan csv, xls, xlsx",
-                    'tanggal_laporan.required' => "Tanggal laporan harus diisi",
-                    'no_seri.required' => "No Seri harus diisi",
-                    'no_seri.unique' => "No Seri sudah digunakan, silahkan ganti dengan yang lain",
-                ]
-            );
-        } else if (!empty($request->no_seri) || !empty($request->file)) {
-            if (!empty($request->no_seri) && empty($request->file)) {
-                $v = Validator::make(
-                    $request->all(),
-                    [
-                        'tanggal_laporan' => 'required',
-                        'no_seri' => 'required|unique:hasil_perakitans',
-                    ],
-                    [
-                        'tanggal_laporan.required' => "Tanggal laporan harus diisi",
-                        'no_seri.required' => "No Seri harus diisi",
-                        'no_seri.unique' => "No Seri sudah digunakan, silahkan ganti dengan yang lain",
-                    ]
-                );
-            } else if (empty($request->no_seri) && !empty($request->file)) {
-                $v = Validator::make(
-                    $request->all(),
-                    [
-                        'file' => 'mimes:csv,xls,xlsx',
-                        'tanggal_laporan' => 'required',
-                    ],
-                    [
-                        'files.mimes' => "Ekstensi file harus menggunakan csv, xls, xlsx",
-                        'tanggal_laporan.required' => "Tanggal laporan harus diisi",
-                    ]
-                );
-            }
-        }
-
+        $v = Validator::make(
+            $request->all(),
+            [
+                'alias' => 'required',
+                'karyawan_id' => 'required'
+            ],
+            [
+                'karyawan_id.required' => "Karyawan harus diisi",
+                'alias.required' => "Alias harus diisi",
+            ]
+        );
         if ($v->fails()) {
             return redirect()->back()->withErrors($v);
         } else {
             $bppb = Bppb::find($id);
-            $c = Perakitan::create([
-                'bppb_id' => $id,
-                'tanggal' => $request->tanggal_laporan,
-                'pic_id' => Auth::user()->id
-            ]);
-
-            if ($c) {
-                $k = Perakitan::find($c->id);
-                $k->Karyawan()->sync($request->karyawan_id, false);
-                $k->save();
+            if (!empty($request->alias)) {
                 $bool = true;
-                if (!empty($request->file) || !empty($request->no_seri)) {
-                    if (!empty($request->file) && empty($request->no_seri)) {
-                        $e = Excel::import(new HasilPerakitanImport($c->id), $request->file('file'));
-                        if ($e) {
-                            $u = User::where('divisi_id', '14')->get();
-                            foreach ($u as $i) {
-                                $cs = $this->NotifikasiController->create("Perakitan", "telah menambahkan Laporan Perakitan", Auth::user()->id, $i->id, "/perakitan");
-                            }
-                            $this->UserLogController->create(Auth::user()->id, $id, 'Perakitan BPPB ' . $bppb->no_bppb . ' tanggal ' . $request->tanggal_laporan, 'Tambah', "");
-                            return redirect()->back()->with('success', "Berhasil menambahkan Data");
-                        } else {
-                            return redirect()->back()->with('error', "Gagal melakukan Import");
-                        }
-                    } else if (empty($request->file) && !empty($request->no_seri)) {
-                        for ($i = 0; $i < count($request->no_seri); $i++) {
-                            $s = HasilPerakitan::create([
-                                'perakitan_id' => $c->id,
-                                'tanggal' => $request->tanggals[$i],
-                                'no_seri' => $request->no_seri[$i],
-                                'status' => 'req_pemeriksaan_terbuka'
-                            ]);
-                            if (!$s) {
-                                $bool = false;
-                            }
-                        }
-                        if ($bool == true) {
-                            $u = User::where('divisi_id', '14')->get();
-                            foreach ($u as $i) {
-                                $cs = $this->NotifikasiController->create("Perakitan", "telah menambahkan Laporan Perakitan", Auth::user()->id, $i->id, "/perakitan");
-                            }
-                            $this->UserLogController->create(Auth::user()->id, $id, 'Perakitan BPPB ' . $bppb->no_bppb . ' tanggal ' . $request->tanggal_laporan, 'Tambah', "");
-                            return redirect()->back()->with('success', "Berhasil menambahkan Data");
-                        } else {
-                            return redirect()->back()->with('error', "Gagal menambah no seri Data");
-                        }
-                    }
-                } else if (!empty($request->file) && !empty($request->no_seri)) {
-                    for ($i = 0; $i < count($request->no_seri); $i++) {
-                        $s = HasilPerakitan::create([
-                            'perakitan_id' => $c->id,
-                            'tanggal' => $request->tanggals[$i],
-                            'no_seri' => $request->no_seri[$i],
-                            'status' => 'req_pemeriksaan_terbuka'
-                        ]);
-                        if (!$s) {
+                for ($i = 0; $i < count($request->alias); $i++) {
+                    $c = Perakitan::create([
+                        'bppb_id' => $id,
+                        'alias_tim' => $request->alias[$i],
+                        'tanggal' => Carbon::now()->toDateString(),
+                        'pic_id' => Auth::user()->id,
+                        'status' => '0'
+                    ]);
+
+                    if ($c) {
+                        $p = Perakitan::find($c->id);
+                        $p->Karyawan()->sync($request->karyawan_id[$i], false);
+                        $u = $p->save();
+                        if (!$u) {
                             $bool = false;
                         }
-                    }
-
-                    $e = Excel::import(new HasilPerakitanImport($c->id), $request->file('file'));
-                    if (!$e) {
+                    } else {
                         $bool = false;
                     }
-
-                    if ($bool == true) {
-                        $u = User::where('divisi_id', '14')->get();
-                        foreach ($u as $i) {
-                            $cs = $this->NotifikasiController->create("Perakitan", "telah menambahkan Laporan Perakitan", Auth::user()->id, $i->id, "/perakitan");
-                        }
-                        $this->UserLogController->create(Auth::user()->id, $id, 'Perakitan BPPB ' . $bppb->no_bppb . ' tanggal ' . $request->tanggal_laporan, 'Tambah', "");
-                        return redirect()->back()->with('success', "Berhasil menambahkan Data");
-                    } else {
-                        return redirect()->back()->with('error', "Gagal menambahkan Data");
-                    }
-                } else {
-                    $u = User::where('divisi_id', '14')->get();
-                    foreach ($u as $i) {
-                        $cs = $this->NotifikasiController->create("Perakitan", "telah menambahkan Laporan Perakitan", Auth::user()->id, $i->id, "/perakitan");
-                    }
-                    $this->UserLogController->create(Auth::user()->id, $id, 'Perakitan BPPB ' . $bppb->no_bppb . ' tanggal ' . $request->tanggal_laporan, 'Tambah', "");
-                    return redirect()->back()->with('success', "Berhasil menambahkan Data");
                 }
-            } else {
-                return redirect()->back()->with('error', "Gagal menambahkan Data");
+                if ($bool == true) {
+                    return redirect()->back()->with('success', "Berhasil menambahkan Data");
+                } else if ($bool == false) {
+                    return redirect()->back()->with('error', "Gagal melakukan Import");
+                }
             }
         }
     }
@@ -679,6 +639,9 @@ class ProduksiController extends Controller
             ->addIndexColumn()
             ->editColumn('tanggal', function ($s) {
                 return Carbon::createFromFormat('Y-m-d', $s->tanggal)->format('d-m-Y');
+            })
+            ->editColumn('no_seri', function ($s) {
+                return $s->Perakitan->alias_tim . $s->no_seri;
             })
             ->editColumn('status', function ($s) {
                 $btn = "";
@@ -813,9 +776,11 @@ class ProduksiController extends Controller
         $v = Validator::make(
             $request->all(),
             [
-                'no_seri' => 'required',
+                'tanggal' => 'required',
+                'no_seri' => 'required'
             ],
             [
+                'tanggal.required' => 'Tanggal harus diisi',
                 'no_seri.required' => 'No Seri harus diisi'
             ]
         );
@@ -827,7 +792,7 @@ class ProduksiController extends Controller
             for ($i = 0; $i < count($request->no_seri); $i++) {
                 $s = HasilPerakitan::create([
                     'perakitan_id' => $id,
-                    'tanggal' => $request->tanggals[$i],
+                    'tanggal' => $request->tanggal,
                     'no_seri' => $request->no_seri[$i],
                     'status' => 'req_pemeriksaan_terbuka'
                 ]);
@@ -1176,7 +1141,6 @@ class ProduksiController extends Controller
 
     public function pengemasan_laporan_status($id, $status)
     {
-        echo "HAAAAAAIIIIII";
         if ($status == "penyerahan") {
             $s = Pengemasan::find($id);
             $s->status = $status;

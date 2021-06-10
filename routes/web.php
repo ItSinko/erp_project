@@ -351,12 +351,23 @@ Route::group(['prefix' => '/peminjaman', 'middleware' => 'auth'], function () {
 //BPPB
 Route::group(['prefix' => '/bppb', 'middleware' => 'auth'], function () {
     Route::get('/', 'PpicController@bppb')->name('bppb');
+    Route::get('/create/get_bom/{id}', 'GetController@get_bom')->name('bppb.get_bom');
+    Route::get('/create/get_model_bom/{id}', 'GetController@get_model_bom')->name('bppb.get_model_bom');
     Route::get('/permintaan_bahan_baku/{id}', 'PpicController@bppb_permintaan_bahan_baku')->name('bppb.permintaan_bahan_baku');
     Route::get('/permintaan_bahan_baku/show/{id}', 'PpicController@bppb_permintaan_bahan_baku_show')->name('bppb.permintaan_bahan_baku.show');
     Route::get('/permintaan_bahan_baku/status/{id}/{status}', 'PpicController@bppb_permintaan_bahan_baku_status')->name('bppb.permintaan_bahan_baku.status');
     Route::get('/permintaan_bahan_baku/create/{id}', 'ProduksiController@bppb_permintaan_bahan_baku_create')->name('bppb.permintaan_bahan_baku.create');
     Route::put('/permintaan_bahan_baku/store/{id}', 'ProduksiController@bppb_permintaan_bahan_baku_store')->name('bppb.permintaan_bahan_baku.store');
+    Route::get('/permintaan_bahan_baku/edit/{id}', 'PpicController@bppb_permintaan_bahan_baku_edit')->name('bppb.permintaan_bahan_baku.edit');
+    Route::put('/permintaan_bahan_baku/update/{id}', 'PpicController@bppb_permintaan_bahan_baku_update')->name('bppb.permintaan_bahan_baku.update');
+    Route::get('/permintaan_bahan_baku/detail/{id}', 'PpicController@bppb_permintaan_bahan_baku_detail')->name('bppb.permintaan_bahan_baku.detail');
+    Route::get('/permintaan_bahan_baku/detail/show/{id}', 'PpicController@bppb_permintaan_bahan_baku_detail_show')->name('bppb.permintaan_bahan_baku.detail.show');
     Route::get('/pengembalian_barang_gudang/{id}', 'PpicController@bppb_pengembalian_barang_gudang')->name('bppb.pengembalian_barang_gudang');
+    Route::get('/pengembalian_barang_gudang/show/{id}', 'PpicController@bppb_pengembalian_barang_gudang_show')->name('bppb.pengembalian_barang_gudang.show');
+    Route::get('/pengembalian_barang_gudang/create/{id}', 'ProduksiController@bppb_pengembalian_barang_gudang_create')->name('bppb.pengembalian_barang_gudang.create');
+    Route::put('/pengembalian_barang_gudang/store/{id}', 'ProduksiController@bppb_pengembalian_barang_gudang_store')->name('bppb.pengembalian_barang_gudang.store');
+    Route::get('/pengembalian_barang_gudang/edit/{id}', 'ProduksiController@bppb_pengembalian_barang_gudang_edit')->name('bppb.pengembalian_barang_gudang.edit');
+    Route::put('/pengembalian_barang_gudang/update/{id}', 'ProduksiController@bppb_pengembalian_barang_gudang_update')->name('bppb.pengembalian_barang_gudang.update');
     Route::get('/penyerahan_barang_jadi/{id}', 'PpicController@bppb_penyerahan_barang_jadi')->name('bppb.penyerahan_barang_jadi');
     Route::get('/penyerahan_barang_jadi/show/{id}', 'PpicController@bppb_penyerahan_barang_jadi_show')->name('bppb.penyerahan_barang_jadi.show');
     Route::get('/penyerahan_barang_jadi/status/{id}/{status}', 'PpicController@bppb_penyerahan_barang_jadi_status')->name('bppb.penyerahan_barang_jadi.status');
@@ -409,6 +420,7 @@ Route::group(['prefix' => '/perakitan', 'middleware' => 'auth'], function () {
         Route::get('/show/{id}', 'ProduksiController@perakitan_laporan_show')->name('perakitan.laporan.show');
         Route::get('/create/{bppb_id}', 'ProduksiController@perakitan_laporan_create')->name('perakitan.laporan.create');   /* Create */
         Route::get('/create/get_kode_perakitan_exist_not_in/{bppb}/{no_seri}', 'GetController@get_kode_perakitan_exist_not_in');
+        Route::get('/create/get_alias_operator/{acc}', 'GetController@get_alias_operator');
         Route::put('/store/{bppb_id}', 'ProduksiController@perakitan_laporan_store')->name('perakitan.laporan.store');
         Route::get('/edit/{id}', 'ProduksiController@perakitan_laporan_edit')->name('perakitan.laporan.edit');  /* Edit */
         Route::get('/edit/get_kode_perakitan_exist_not_in/{bppb}/{no_seri}', 'GetController@get_kode_perakitan_exist_not_in');
@@ -423,6 +435,7 @@ Route::group(['prefix' => '/perakitan', 'middleware' => 'auth'], function () {
         Route::get('/{id}', 'ProduksiController@perakitan_hasil')->name('perakitan.hasil');
         Route::get('/show/{id}', 'ProduksiController@perakitan_hasil_show')->name('perakitan.hasil.show');
         Route::get('/create/{id}', 'ProduksiController@perakitan_hasil_create')->name('perakitan.hasil.create');    /* Create */
+        Route::get('/create/get_count_hasil_perakitan/{id}', 'GetController@get_count_hasil_perakitan');    /* Create */
         Route::get('/create/get_kode_perakitan_exist_not_in/{bppb}/{no_seri}', 'GetController@get_kode_perakitan_exist_not_in');
         Route::put('/store/{id}', 'ProduksiController@perakitan_hasil_store')->name('perakitan.hasil.store');
         Route::put('/import/{id}', 'ProduksiController@perakitan_hasil_import_store')->name('perakitan.hasil.import');  /* Import */
