@@ -22,4 +22,9 @@ class BillOfMaterial extends Model
     {
         return $this->belongsTo(PartEng::class, 'part_eng_id');
     }
+
+    public function ProdukBillOfMaterial()
+    {
+        return $this->belongsTo(ProdukBillOfMaterial::class);
+    }
 }

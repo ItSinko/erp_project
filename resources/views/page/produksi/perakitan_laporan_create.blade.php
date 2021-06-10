@@ -105,7 +105,7 @@
                   <thead style="text-align: center;">
                     <tr>
                       <th>No</th>
-                      <th>Alias</th>
+                      <th>Kode Tim</th>
                       <th>Karyawan</th>
                       <th>Aksi</th>
                     </tr>
@@ -119,13 +119,16 @@
                           @if ($errors->has('alias'))
                           <span class="invalid-feedback" role="alert">{{$errors->first('alias.*')}}</span>
                           @endif
+                          <span id="alias-message[]" role="alert"></span>
                         </div>
                       </td>
                       <td>
                         <div class="select2-info">
                           <select class="select2 form-control @error('karyawan_id') is-invalid @enderror karyawan_id" multiple="multiple" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;" name="karyawan_id[][]" id="karyawan_id">
                             @foreach($kry as $i)
-                            <option value="{{$i->id}}">{{$i->nama}}</option>
+                            <option value="{{$i->id}}" @if($kry2->contains('id', $i->id))
+                              disabled
+                              @endif>{{$i->nama}}</option>
                             @endforeach
                           </select>
                           @if ($errors->has('karyawan_id'))
@@ -134,7 +137,7 @@
                         </div>
                       </td>
                       <td>
-                        <button type="button" class="btn btn-block btn-success btn-sm karyawan-img-small" style="border-radius:50%;" id="tambahitem"><i class="fas fa-plus-circle"></i></button>
+                        <button type="button" class="btn btn-success btn-sm karyawan-img-small" style="border-radius:50%;" id="tambahitem"><i class="fas fa-plus-circle"></i></button>
                       </td>
                     </tr>
                   </tbody>
@@ -154,7 +157,41 @@
         <!-- /.card-body -->
       </div>
       <!-- /.card -->
-
+      <div class="card">
+        <div class="card-body">
+          <h4>Tim Perakitan</h4>
+          <div class="form-group row">
+            <div class="table-responsive">
+              <table class="table table-bordered table-striped">
+                <thead style="text-align: center;">
+                  <tr>
+                    <th>No</th>
+                    <th>Kode Tim</th>
+                    <th>Karyawan</th>
+                    <th>Hasil Rakit</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @if($b->Perakitan !== "")
+                  @foreach($b->Perakitan as $i)
+                  <tr style="text-align: center;">
+                    <td>{{$loop->iteration}}</td>
+                    <td>{{$i->alias_tim}}</td>
+                    <td style="text-align: left;">@foreach ($i->Karyawan as $krys)
+                      {{ $loop->first ? '' : '' }}
+                      <div>{{ $krys->nama}}</div>
+                      @endforeach
+                    </td>
+                    <td>{{$i->HasilPerakitan->count()}}</td>
+                  </tr>
+                  @endforeach
+                  @endif
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <!-- /.card -->
     </div>
@@ -206,7 +243,7 @@
           </div>
         </td>
         <td>
-          <button type="button" class="btn btn-block btn-danger btn-sm karyawan-img-small" style="border-radius:50%;" id="closetable"><i class="fas fa-times-circle"></i></button>
+          <button type="button" class="btn btn-danger btn-sm karyawan-img-small" style="border-radius:50%;" id="closetable"><i class="fas fa-times-circle"></i></button>
         </td>
       </tr>`);
       numberRows($("#tableitem"));
@@ -215,6 +252,40 @@
     $('#tableitem').on('click', '#closetable', function(e) {
       $(this).closest('tr').remove();
       numberRows($("#tableitem"));
+    });
+
+    $('#tableitem').on("keyup", "input[id='alias']", function() {
+      var id = $(this).closest('tr').find('input[id="alias"]').val();
+      var alias = $(this).closest('tr').find('input[id="alias"]');
+      var message = $(this).closest('tr').find('span[id="alias-message[]"]');
+      var bppb = "{{$b->id}}";
+      if (id) {
+        $.ajax({
+          url: 'get_alias_exist/' + bppb + '/' + id,
+          type: "GET",
+          dataType: "json",
+          success: function(data) {
+            if (data > 0) {
+              message.addClass("invalid-feedback");
+              alias.addClass("is-invalid");
+              message.html("Kode Tim sudah terpakai");
+              console.log(message.val());
+            } else {
+              message.removeClass("invalid-feedback");
+              alias.removeClass("is-invalid");
+              message.empty();
+            }
+          },
+          error: function(xhr, status, error) {
+            var err = eval("(" + xhr.responseText + ")");
+            alert(err.Message);
+          }
+        });
+      } else {
+        message.removeClass("invalid-feedback");
+        alias.removeClass("is-invalid");
+        message.empty();
+      }
     });
 
     $('#tableitem').on("change", ".karyawan_id", function() {

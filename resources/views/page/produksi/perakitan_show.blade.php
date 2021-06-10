@@ -28,11 +28,11 @@
         <div class="card-body">
           <table id="example" class="table table-hover styled-table">
             <thead style="text-align: center;">
-              <tr>
+              <!-- <tr>
                 <th colspan="12">
                   <a href="{{route('perakitan.create')}}" style="color: white;"><button type="button" class="btn btn-block btn-success btn-sm" style="width: 200px;"><i class="fas fa-plus"></i> &nbsp; Tambah Perakitan BPPB</i></button></a>
                 </th>
-              </tr>
+              </tr> -->
               <tr>
                 <th>No</th>
                 <th>No BPPB</th>

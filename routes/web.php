@@ -411,6 +411,7 @@ Route::group(['prefix' => '/perakitan', 'middleware' => 'auth'], function () {
         Route::get('/create/{bppb_id}', 'ProduksiController@perakitan_laporan_create')->name('perakitan.laporan.create');   /* Create */
         Route::get('/create/get_kode_perakitan_exist_not_in/{bppb}/{no_seri}', 'GetController@get_kode_perakitan_exist_not_in');
         Route::get('/create/get_alias_operator/{acc}', 'GetController@get_alias_operator');
+        Route::get('/create/get_alias_exist/{id}/{alias}', 'GetController@get_alias_exist');
         Route::put('/store/{bppb_id}', 'ProduksiController@perakitan_laporan_store')->name('perakitan.laporan.store');
         Route::get('/edit/{id}', 'ProduksiController@perakitan_laporan_edit')->name('perakitan.laporan.edit');  /* Edit */
         Route::get('/edit/get_kode_perakitan_exist_not_in/{bppb}/{no_seri}', 'GetController@get_kode_perakitan_exist_not_in');
@@ -455,6 +456,9 @@ Route::group(['prefix' => '/perakitan', 'middleware' => 'auth'], function () {
         Route::get('/bppb/{id}', 'QCController@perakitan_pemeriksaan_bppb')->name('perakitan.pemeriksaan.bppb');
         Route::get('/bppb/show/{id}', 'QCController@perakitan_pemeriksaan_bppb_show')->name('perakitan.pemeriksaan.bppb.show');
     });
+
+    Route::get('/analisa_ps/create/{id}', 'EngController@perakitan_analisa_ps_create')->name('perakitan.analisa_ps.create');
+    Route::put('/analisa_ps/store/{id}', 'EngController@perakitan_analisa_ps_store')->name('perakitan.analisa_ps.store');
 });
 
 

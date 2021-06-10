@@ -10,14 +10,10 @@ use App\DivisiInventory;
 class Karyawan extends Model
 {
     protected $fillable = ['nama', 'kode_karyawan', 'divisi_id', 'jabatan', 'foto'];
-    public function HasilPerakitanKaryawan()
-    {
-        return $this->hasMany(HasilPerakitanKaryawan::class);
-    }
 
     public function Perakitan()
     {
-        return $this->belongsToMany(HasilPerakitan::class, 'perakitan_karyawans')->withPivot('operator_custom');
+        return $this->belongsToMany(Perakitan::class, 'perakitan_karyawans')->withPivot('operator_custom');
     }
 
     public function DivisiInventory()

@@ -224,6 +224,14 @@ class GetController extends Controller
         echo json_encode($tes);
     }
 
+    public function get_alias_exist($id, $alias)
+    {
+        $s = Bppb::whereHas('Perakitan', function ($q) use ($alias) {
+            $q->where('alias_tim', $alias);
+        })->where('id', '=', $id)->count();
+        return $s;
+    }
+
     public function get_count_hasil_perakitan($id)
     {
         $s = HasilPerakitan::where('perakitan_id', $id)->count();

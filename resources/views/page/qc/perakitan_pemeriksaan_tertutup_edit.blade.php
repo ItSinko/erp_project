@@ -232,7 +232,6 @@
     $(function() {
         var countStatus = "{{$s->countStatus('perbaikan_pemeriksaan_tertutup')}}";
         $('input[type="radio"][name="hasil_tertutup"]').on("change", function() {
-
             if (this.value == 'ok') {
                 // $('select').select2('val', '');
                 $('select').val('').trigger('change');
@@ -252,13 +251,13 @@
                 }
             }
         });
-        $('select[name="tindak_lanjut_tertutup"]').on("change", function() {
-            if (this.value == 'aging' || this.value == '') {
-                $('textarea[name="keterangan_tindak_lanjut_tertutup"]').attr('disabled', true);
-            } else {
-                $('textarea[name="keterangan_tindak_lanjut_tertutup"]').attr('disabled', false);
-            }
-        });
+        // $('select[name="tindak_lanjut_tertutup"]').on("change", function() {
+        //     if (this.value == 'aging' || this.value == '') {
+        //         $('textarea[name="keterangan_tindak_lanjut_tertutup"]').attr('disabled', true);
+        //     } else {
+        //         $('textarea[name="keterangan_tindak_lanjut_tertutup"]').attr('disabled', false);
+        //     }
+        // });
     });
 </script>
 @endsection

@@ -182,7 +182,8 @@ class ProduksiController extends Controller
     {
         $p = array();
         if (Auth::user()->Divisi->nama == "Produksi") {
-            $p = Bppb::has('perakitan')->get();
+            // $p = Bppb::has('perakitan')->get();
+            $p = Bppb::has('PermintaanBahanBaku')->get();
         } else if (Auth::user()->Divisi->nama == "Quality Control") {
             $p = Bppb::whereHas('perakitan', function ($query) {
                 $query->whereNotIn('status', ['0']);
@@ -240,6 +241,7 @@ class ProduksiController extends Controller
         $be = Bppb::whereDoesntHave('Perakitan')->whereHas('PermintaanBahanBaku', function ($q) {
             $q->where('status', 'acc_permintaan');
         })->get();
+
         foreach ($be as $bes) {
             $b[$i] = $bes->id;
             $i++;
@@ -418,7 +420,7 @@ class ProduksiController extends Controller
     {
         $s = Perakitan::whereHas('Bppb', function ($query) use ($id) {
             $query->where('id', '=', $id);
-        })->get();
+        })->orderBy('id', 'desc')->get();
 
         return DataTables::of($s)
             ->addIndexColumn()
@@ -451,8 +453,10 @@ class ProduksiController extends Controller
             // })
             ->addColumn('aksi', function ($s) {
                 $btn = '<a href = "/perakitan/hasil/' . $s->id . '"><button class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-eye"></i></button></a>';
-                $btn .= '<a href = "/perakitan/laporan/edit/' . $s->id . '"><button class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-edit"></i></button></a>';
-                $btn .= '<a class="deletemodal" data-toggle="modal" data-target="#deletemodal" data-attr="/perakitan/laporan/delete/' . $s->id . '"><button class="btn btn-danger btn-sm m-1" style="border-radius:50%;"><i class="fas fa-trash"></i></button></a>';
+                if ($s->HasilPerakitan->count() <= 0) {
+                    $btn .= '<a href = "/perakitan/laporan/edit/' . $s->id . '"><button class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-edit"></i></button></a>';
+                    $btn .= '<a class="deletemodal" data-toggle="modal" data-target="#deletemodal" data-attr="/perakitan/laporan/delete/' . $s->id . '"><button class="btn btn-danger btn-sm m-1" style="border-radius:50%;"><i class="fas fa-trash"></i></button></a>';
+                }
                 return $btn;
             })
             ->rawColumns(['status', 'aksi', 'operator'])
@@ -462,8 +466,15 @@ class ProduksiController extends Controller
     public function perakitan_laporan_create($id)
     {
         $b = Bppb::find($id);
+
+        $kry2 = Karyawan::whereHas('Perakitan', function ($q) use ($id) {
+            $q->where('perakitans.bppb_id', $id);
+        })->get();
+
         $kry = Karyawan::all();
-        return view('page.produksi.perakitan_laporan_create', ['b' => $b, 'id' => $id, 'kry' => $kry]);
+
+        $p = Perakitan::where('bppb_id', $id)->get();
+        return view('page.produksi.perakitan_laporan_create', ['b' => $b, 'id' => $id, 'kry' => $kry, 'kry2' => $kry2, 'p' => $p]);
     }
 
     public function perakitan_laporan_store($id, Request $request)
@@ -856,36 +867,48 @@ class ProduksiController extends Controller
         $hp->status = $status;
         $u = $hp->save();
         if ($u) {
-            // if ($status == "perbaikan_pemeriksaan_terbuka" || $status == "perbaikan_pemeriksaan_tertutup") {
-            //     $cs = PerbaikanProduksi::create([
-            //         "bppb_id" => $hp->Perakitan->Bppb->id,
-            //         "tanggal_permintaan" => Carbon::now()->toDateString(),
-            //         "status" => "req_perbaikan",
-            //         "ketidaksesuaian_proses" => "perakitan"
-            //     ]);
+            if ($status == "perbaikan_pemeriksaan_terbuka" || $status == "perbaikan_pemeriksaan_tertutup") {
+                if ($status == "perbaikan_pemeriksaan_terbuka") {
+                    $c = HistoriHasilPerakitan::create([
+                        "hasil_perakitan_id" => $id,
+                        "kegiatan" => $status,
+                        "tanggal" => Carbon::now()->toDateString(),
+                        "hasil" => "ok",
+                        "keterangan" => "",
+                        "tindak_lanjut" => "ok"
+                    ]);
+                    if ($c) {
+                        return redirect()->back();
+                    }
+                } else if ($status == "perbaikan_pemeriksaan_tertutup") {
+                    $cs = PerbaikanProduksi::create([
+                        "bppb_id" => $hp->Perakitan->Bppb->id,
+                        "tanggal_permintaan" => Carbon::now()->toDateString(),
+                        "status" => "req_perbaikan",
+                        "ketidaksesuaian_proses" => "perakitan"
+                    ]);
 
-            //     if ($cs) {
-            //         $p = PerbaikanProduksi::find($cs->id);
-            //         $p->HasilPerakitan()->syncWithoutDetaching([$id]);
-            //         $p->save();
-            //     }
+                    if ($cs) {
+                        $p = PerbaikanProduksi::find($cs->id);
+                        $p->HasilPerakitan()->syncWithoutDetaching([$id]);
+                        $p->save();
+                    }
 
-            //     if ($status == "perbaikan_pemeriksaan_terbuka") {
-            //         $c = HistoriHasilPerakitan::create([
-            //             "hasil_perakitan_id" => $id,
-            //             "kegiatan" => $status,
-            //             "tanggal" => Carbon::now()->toDateString(),
-            //             "hasil" => "ok",
-            //             "keterangan" => "",
-            //             "tindak_lanjut" => "ok"
-            //         ]);
-            //         if ($c) {
-            //             return redirect()->back();
-            //         }
-            //     }
-            // } else {
-            return redirect()->back();
-            // }
+                    $c = HistoriHasilPerakitan::create([
+                        "hasil_perakitan_id" => $id,
+                        "kegiatan" => $status,
+                        "tanggal" => Carbon::now()->toDateString(),
+                        "hasil" => "ok",
+                        "keterangan" => "",
+                        "tindak_lanjut" => "ok"
+                    ]);
+                    if ($c) {
+                        return redirect()->back();
+                    }
+                }
+            } else {
+                return redirect()->back();
+            }
         } else {
             return redirect()->back();
         }
@@ -1511,7 +1534,7 @@ class ProduksiController extends Controller
             $bppbid = $s->Perakitan->Bppb->id;
             $dp = $s->Perakitan->Bppb->detail_produk_id;
             $p = PartEng::whereHas(
-                'BillOfMaterial',
+                'BillOfMaterial.ProdukBillOfMaterial',
                 function ($q) use ($dp) {
                     $q->where('detail_produk_id', $dp);
                 }

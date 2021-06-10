@@ -82,6 +82,7 @@
       </div>
     </div>
     <div class="col-9">
+
       @if(session()->has('success'))
       <div class="alert alert-success alert-dismissible fade show" role="alert">
         <strong><i class="fas fa-check"></i></strong> {{session()->get('success')}}
@@ -104,72 +105,109 @@
         </button>
       </div>
       @endif
-      <div class="card">
-        <div class="card-header bg-success">
-          <div class="card-title"><i class="fas fa-plus-circle"></i>&nbsp;Tambah </div>
-        </div>
-        <!-- /.card-header -->
-        <div class="card-body">
-          <form action="{{ route('perakitan.hasil.store', ['id' => $sh->id]) }}" method="post" enctype="multipart/form-data">
-            {{ csrf_field() }}
-            {{ method_field('PUT') }}
-            <div class="form-horizontal">
+      <form action="{{ route('perakitan.hasil.store', ['id' => $sh->id]) }}" method="post" enctype="multipart/form-data">
+        {{ csrf_field() }}
+        {{ method_field('PUT') }}
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header bg-success">
+                <div class="card-title"><i class="fas fa-plus-circle"></i>&nbsp;Tambah </div>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <div class="form-horizontal">
+                  <div class="form-group row">
+                    <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;">Tanggal</label>
+                    <div class="col-sm-8">
+                      <input type="date" class="form-control @error('tanggal') is-invalid @enderror" name="tanggal" id="tanggal" value="" style="width: 30%;">
+                      @if ($errors->has('tanggal'))
+                      <span class="invalid-feedback" role="alert">{{$errors->first('tanggal')}}</span>
+                      @endif
+                    </div>
+                  </div>
 
-
-              <div class="form-group row">
-                <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;">Tanggal</label>
-                <div class="col-sm-8">
-                  <input type="date" class="form-control @error('tanggal') is-invalid @enderror" name="tanggal" id="tanggal" value="" style="width: 30%;">
-                  @if ($errors->has('tanggal'))
-                  <span class="invalid-feedback" role="alert">{{$errors->first('tanggal')}}</span>
-                  @endif
+                  <div class="form-group row">
+                    <label for="produk" class="col-sm-4 col-form-label" style="text-align:right;">Jumlah</label>
+                    <div class="col-sm-3">
+                      <input type="number" class="form-control @error('jumlah') is-invalid @enderror" name="jumlah" id="jumlah" value="">
+                      @if ($errors->has('jumlah'))
+                      <span class="invalid-feedback" role="alert">{{$errors->first('jumlah')}}</span>
+                      @endif
+                      <span id="jumlah-message" role="alert"></span>
+                    </div>
+                  </div>
                 </div>
               </div>
-
-              <div class="form-group row">
-                <label for="produk" class="col-sm-4 col-form-label" style="text-align:right;">Jumlah</label>
-                <div class="col-sm-3">
-                  <input type="number" class="form-control @error('jumlah') is-invalid @enderror" name="jumlah" id="jumlah" value="">
-                  @if ($errors->has('jumlah'))
-                  <span class="invalid-feedback" role="alert">{{$errors->first('jumlah')}}</span>
-                  @endif
-                  <span id="jumlah-message" role="alert"></span>
-                </div>
+              <div class="card-footer">
+                <span>
+                  <button type="button" class="btn btn-block btn-danger" style="width:200px;float:left;">Batal</button>
+                </span>
+                <span>
+                  <button type="submit" class="btn btn-block btn-success btn" style="width:200px;float:right;">Tambahkan</button>
+                </span>
               </div>
 
-
-              <div class="form-group row">
-                <div class="table-responsive">
-                  <table id="tableitem" class="table table-hover styled-table">
-                    <thead style="text-align: center;">
-                      <tr>
-                        <th>No</th>
-                        <th>Kode Perakitan</th>
-                      </tr>
-                    </thead>
-                    <tbody style="text-align:center;">
-
-                    </tbody>
-                  </table>
+              <!-- /.card-body -->
+            </div>
+          </div>
+          <!-- /.card -->
+          <!-- /.card -->
+          <div class="col-6">
+            <div class="card">
+              <div class="card-body">
+                <h6>Hasil Saat Ini</h6>
+                <div class="form-group row">
+                  <div class="table-responsive">
+                    <table class="table table-hover table-bordered styled-table">
+                      <thead style="text-align: center;">
+                        <tr>
+                          <th>No</th>
+                          <th>Kode Perakitan</th>
+                        </tr>
+                      </thead>
+                      <tbody style="text-align:center;">
+                        @if($sh->HasilPerakitan != "")
+                        @foreach($sh->HasilPerakitan as $i)
+                        <tr>
+                          <td>{{$loop->iteration}}</td>
+                          <td>{{$i->Perakitan->alias_tim}}{{$i->no_seri}}</td>
+                        </tr>
+                        @endforeach
+                        @endif
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>
-        </div>
-        <div class="card-footer">
-          <span>
-            <button type="button" class="btn btn-block btn-danger" style="width:200px;float:left;">Batal</button>
-          </span>
-          <span>
-            <button type="submit" class="btn btn-block btn-success btn" style="width:200px;float:right;">Tambahkan</button>
-          </span>
-        </div>
-        </form>
-        <!-- /.card-body -->
-      </div>
-      <!-- /.card -->
+          </div>
+          <div class="col-6">
+            <div class="card">
+              <div class="card-header bg-warning">
+                Hasil Baru
+              </div>
+              <div class="card-body">
+                <div class="form-group row">
+                  <div class="table-responsive">
+                    <table id="tableitem" class="table table-hover styled-table">
+                      <thead style="text-align: center;">
+                        <tr>
+                          <th>No</th>
+                          <th>Kode Perakitan</th>
+                        </tr>
+                      </thead>
+                      <tbody style="text-align:center;">
 
-
-      <!-- /.card -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
     </div>
 
 
@@ -201,24 +239,35 @@
       });
     }
 
-    $('#jumlah').on('keyup change', function() {
+    $('#jumlah').on('keyup', function() {
       var jumlah = $('#jumlah').val();
       var alias_tim = "{{$sh->alias_tim}}";
-      if (jumlah !== 0) {
-        $('#tableitem tbody').empty();
-        $.ajax({
-          url: 'get_count_hasil_perakitan/' + "{{$sh->id}}",
-          type: "GET",
-          dataType: "json",
-          success: function(data) {
-            datatables = "";
-            for (var i = 0; i < jumlah; i++) {
-              datatables += `<tr>
+      var jum_rakit = "{{$sh->Bppb->countHasilPerakitan()}}";
+      var jum_rencana = "{{$sh->Bppb->jumlah}}";
+      var kuota = parseInt(jum_rencana) - (parseInt(jum_rakit) + parseInt(jumlah));
+
+      var jumlah_id = $('input[id="jumlah"]');
+      var message = $('span[id="jumlah-message"]');
+      $('#tableitem tbody').empty();
+      console.log("kuota " + kuota + ", rakit " + jum_rakit + ", rencana " + jum_rencana + ", jumlah " + jumlah + " hasil " + (jum_rencana - (jum_rakit + jumlah)));
+      if (kuota >= 0) {
+        message.removeClass("invalid-feedback");
+        jumlah_id.removeClass("is-invalid");
+        message.empty();
+        if (jumlah !== 0) {
+          $.ajax({
+            url: 'get_count_hasil_perakitan/' + "{{$sh->id}}",
+            type: "GET",
+            dataType: "json",
+            success: function(data) {
+              datatables = "";
+              for (var i = 0; i < jumlah; i++) {
+                datatables += `<tr>
                         <td>` + (i + 1) + `</td>
                         <td>
                         <div class="form-group row">
                           <input type="text" class="form-control @error('hasil_perakitans.*.alias') is-invalid @enderror col-sm-3" name="alias[]" id="alias" value="{{$sh->alias_tim}}" readonly>
-                          <input type="text" class="form-control @error('hasil_perakitans.*.no_seri') is-invalid @enderror col-sm-5" name="no_seri[]" id="no_seri" value="` + formatted_string('00000', (data + i + 1), 'l') + `" readonly>
+                          <input type="text" class="form-control @error('hasil_perakitans.*.no_seri') is-invalid @enderror col-sm-9" name="no_seri[]" id="no_seri" value="` + formatted_string('00000', (data + i + 1), 'l') + `" readonly>
                           @if ($errors->has('hasil_perakitans.*.no_seri'))
                           <span class="invalid-feedback" role="alert">{{$errors->first('hasil_perakitans.*.no_seri')}}</span>
                           @endif
@@ -228,13 +277,19 @@
                         </tr>`;
 
 
+              }
+              console.log(datatables);
+              $("#tableitem").append(datatables);
             }
-            console.log(datatables);
-            $("#tableitem").append(datatables);
-          }
-        });
-      } else {
-        $('#tableitem tbody').empty();
+          });
+        } else {
+          $('#tableitem tbody').empty();
+        }
+      } else if (kuota < 0) {
+        message.addClass("invalid-feedback");
+        jumlah_id.addClass("is-invalid");
+        message.html("Melebihi batas permintaan");
+        console.log(message.val());
       }
     });
 
