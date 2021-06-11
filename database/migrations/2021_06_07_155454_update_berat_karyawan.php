@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UpdateKesehatanJumlah extends Migration
+class UpdateBeratKaryawan extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class UpdateKesehatanJumlah extends Migration
      */
     public function up()
     {
-        Schema::table('karyawan_sakits', function (Blueprint $table) {
-            $table->integer('jumlah')->after('obat_id')->nullable();
+        Schema::table('berat_karyawans', function (Blueprint $table) {
+            $table->renameColumn('kesehatan_awal_id', 'karyawan_id');
         });
     }
 
@@ -25,8 +25,9 @@ class UpdateKesehatanJumlah extends Migration
      */
     public function down()
     {
-        Schema::table('karyawan_sakits', function (Blueprint $table) {
-            $table->dropColumn('jumlah');
+
+        Schema::table('berat_karyawans', function (Blueprint $table) {
+            $table->renameColumn('karyawan_id', 'kesehatan_awal_id');
         });
     }
 }

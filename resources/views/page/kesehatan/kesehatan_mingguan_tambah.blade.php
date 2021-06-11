@@ -287,7 +287,6 @@
 </script>
 <script>
     $(document).ready(function() {
-
         $('select[name="divisi"]').on('change', function() {
             var id = jQuery(this).val();
             console.log(id);
@@ -375,8 +374,6 @@
             } else {
                 alert('Harap memuat ulang');
             }
-
-
         });
     });
 </script>

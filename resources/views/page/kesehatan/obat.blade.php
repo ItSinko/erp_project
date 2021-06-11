@@ -60,6 +60,7 @@
                   <th>Nama</th>
                   <th>Analisa</th>
                   <th>Diagnosa</th>
+                  <th>Jumlah</th>
                 </tr>
               </thead>
               <tbody>
@@ -134,6 +135,9 @@
           },
           {
             data: 'diagnosa'
+          },
+          {
+            data: 'jumlah'
           }
         ],
       });

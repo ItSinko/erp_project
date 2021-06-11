@@ -208,6 +208,20 @@
                                                             <span class="invalid-feedback" role="alert" id="kondisi-msg"></span>
                                                         </div>
                                                     </div>
+                                                    <div class="form-group row">
+                                                        <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;">Jumlah</label>
+                                                        <div class="col-sm-1">
+                                                            <div class="input-group mb-3">
+                                                                <input type="number" class="form-control" name="jumlah" id="jumlah" value="{{ old('jumlah') }}" min="1">
+                                                                <div class="input-group-append">
+                                                                    <span class="input-group-text">Pc</span>
+                                                                </div>
+
+                                                            </div>
+                                                            <small id="stok" class="form-text text-muted"> </small>
+                                                        </div>
+                                                        <span role="alert" id="no_seri-msg"></span>
+                                                    </div>
                                                 </div>
                                                 <div class="form-group row">
                                                     <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;">Tindak lanjut</label>
@@ -292,6 +306,7 @@
                 $('input[name=aturan_obat]').prop("checked", false);
                 $('input[name=dosis_obat]').prop("checked", false);
                 $('textarea[id=terapi]').prop("required", true);
+                $('input[id=jumlah]').prop("required", false);
             } else {
                 $('#terapi').val('');
                 $('input[name=dosis_obat]').prop("required", true);
@@ -300,6 +315,7 @@
                 $("#tipe_1").css('display', 'none')
                 $("#tipe_2").removeAttr("style");
                 $('textarea[id=terapi]').prop("required", false);
+                $('input[id=jumlah]').prop("required", true);
             }
         });
         $('input[type=radio][name=alasan]').on('change', function() {
@@ -309,7 +325,9 @@
                 $('textarea[id=keterangan]').prop("required", false);
                 $('input[name=hasil_1]').prop("required", true);
                 $('input[name=hasil_2]').prop("required", true);
+                $('input[id=jumlah]').prop("required", true);
             } else {
+                $('input[id=jumlah]').prop("required", false);
                 $('input[name=aturan_obat]').prop("required", false);
                 $('input[name=dosis_obat]').prop("required", false);
                 $('input[id=dosis_obat_custom]').prop("required", false);
@@ -329,6 +347,26 @@
                 $('#diagnosa').val('');
                 $("#ijin").removeAttr("style");
             }
+        });
+    });
+
+
+    $(document).ready(function() {
+        $('select[id="obat"]').on('change', function() {
+            var id = jQuery(this).val();
+            $.ajax({
+                url: '/obat/data/' + id,
+                type: "GET",
+                dataType: "json",
+                success: function(data) {
+                    $('#stok').text("Jumlah Stok : " + data[0].stok);
+                    $('#jumlah').prop('max', data[0].stok);
+                    $('#jumlah').prop('min', 1);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
         });
     });
 </script>

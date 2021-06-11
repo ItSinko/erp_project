@@ -1,5 +1,7 @@
 <?php
 
+use App\Event;
+use App\Events\cek_stok;
 use App\Http\Controllers\CommonController;
 use App\Http\Controllers\GetController;
 use App\Http\Controllers\QCController;
@@ -90,9 +92,13 @@ Route::get('/kesehatan_bulanan', 'KesehatanController@kesehatan_bulanan');
 Route::get('/kesehatan_bulanan/tambah', 'KesehatanController@kesehatan_bulanan_tambah');
 Route::get('/kesehatan_bulanan/tambah/data', 'KesehatanController@kesehatan_bulanan_tambah_data');
 Route::post('/kesehatan_bulanan_gcu/aksi_tambah', 'KesehatanController@kesehatan_bulanan_gcu_aksi_tambah');
+Route::post('/kesehatan_bulanan_berat/aksi_tambah', 'KesehatanController@kesehatan_bulanan_berat_aksi_tambah');
+Route::put('/kesehatan_bulanan_berat/aksi_ubah', 'KesehatanController@kesehatan_bulanan_berat_aksi_ubah');
 Route::put('/kesehatan_bulanan_gcu/aksi_ubah', 'KesehatanController@kesehatan_bulanan_gcu_aksi_ubah');
 Route::get('/kesehatan_bulanan_gcu/data', 'KesehatanController@kesehatan_bulanan_gcu_data');
+Route::get('/kesehatan_bulanan_berat/data', 'KesehatanController@kesehatan_bulanan_berat_data');
 Route::get('/kesehatan_bulanan/detail', 'KesehatanController@kesehatan_bulanan_gcu_detail');
+Route::get('/kesehatan_bulanan_berat/detail/{karyawan_id}', 'KesehatanController@kesehatan_bulanan_berat_detail_data');
 Route::get('/kesehatan_bulanan_gcu/detail/{karyawan_id}', 'KesehatanController@kesehatan_bulanan_gcu_detail_data');
 Route::get('/kesehatan_bulanan/detail/data/{karyawan_id}', 'KesehatanController@kesehatan_bulanan_detail_data_karyawan');
 
@@ -127,6 +133,10 @@ Route::get('/obat/data/{id}', 'KesehatanController@obat_data_id');
 Route::get('/obat/detail/data/{id}', 'KesehatanController@obat_detail_data');
 Route::get('/obat/tambah', 'KesehatanController@obat_tambah');
 Route::post('/obat/aksi_tambah', 'KesehatanController@obat_aksi_tambah');
+
+//Laporan
+Route::get('/laporan_divisi', 'KesehatanController@laporan_divisi');
+
 
 //Karyawan
 Route::group(['prefix' => '/karyawan', 'middleware' => 'auth'], function () {
@@ -587,6 +597,9 @@ Route::get('/doc/test', function (Request $request) {
 });
 
 //GUDANG
+Route::get('gudang_view', function(){
+    return view('page.gudang.gudang');
+});
 Route::get('/gudang', 'GudangController@index')->name('gudang');
 Route::get('/gudang/data', 'GudangController@get_data')->name('gudang.data');
 
@@ -597,8 +610,9 @@ Route::group(['prefix' => 'ppic', 'middleware' => 'auth'], function () {
     Route::post('/schedule/create', 'PpicController@schedule_create');
     Route::post('/schedule/delete', 'PpicController@schedule_delete');
     Route::get('/bom', 'PpicController@bom');
-    Route::get('/get_bom/{id}', 'PpicController@get_bom');
+    Route::get('/get_bom', 'PpicController@get_bom');
     Route::get('/get_bom_version/{id}', 'PpicController@get_bom_version');
+    Route::get('/get_part', 'PpicController@get_part');
 });
 
 
@@ -615,6 +629,10 @@ Route::get('/message', 'ChatController@fetchMessages');
 Route::post('/message', 'ChatController@sendMessage');
 
 Route::post('/notif', 'PpicController@schedule_notif')->middleware('auth');
+Route::get('/stok', function () {
+    event(new cek_stok('pesan'));
+    return "notif send";
+});
 
 Route::get('/welcome', function () {
     return view('welcome');
