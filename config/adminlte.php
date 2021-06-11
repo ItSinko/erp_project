@@ -402,10 +402,17 @@ return [
                 ],
                 [
                     'icon' => 'far fa-circle',
-                    'text' => 'Laporan Divisi',
+                    'text' => 'Laporan',
                     'auth' => [28],
-                    'url'  => '/laporan_divisi',
-                ]
+                    'submenu' => [
+                        [
+                            'icon' => 'far fa-circle',
+                            'text' => 'Harian',
+                            'auth' => [28],
+                            'url'  => '/laporan_harian',
+                        ]
+                    ],
+                ],
             ],
         ],
         [

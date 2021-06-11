@@ -26,8 +26,8 @@
                     <div class="col-sm-10">
                       <select type="text" class="form-control select2" id="divisi_id">
                         <option value="">Semua data</option>
-                        @foreach($karyawan as $k)
-                        <option value="{{$k->id}}">{{$k->nama}}</option>
+                        @foreach($karyawan as $d)
+                        <option value="{{$d->id}}">{{$d->nama}}</option>
                         @endforeach
                       </select>
                     </div>
@@ -54,7 +54,7 @@
                         <div class="input-group-append">
                           <span class="input-group-text"> <i class="far fa-calendar-alt"></i></span>
                         </div>
-                        <input type="text" class="form-control " id="tgl" name="dates">
+                        <input type="text" class="form-control " id="tgl" name="datefilter">
                       </div>
                       @if($errors->has('berat'))
                       <div class="text-danger">
@@ -77,7 +77,7 @@
       </div>
     </div>
   </div>
-  <div class="col-lg-12" id="harian_card" style="display: none;">
+  <div class="col-lg-12" id="harian_card">
     <div class="card">
       <div class="card-body">
         <div class='table-responsive'>
@@ -102,32 +102,21 @@
       </div>
     </div>
   </div>
+
 </div>
 @stop
 @section('adminlte_js')
 <script>
   $('#cari').click(function() {
-    var divisi_id = $("#divisi_id").val();
+    var karyawan_id = $("#divisi_id").val();
     var jenis = $("#jenis").val();
-    var tgl = $("#tgl").val();
-    console.log(divisi_id);
+    var tgl_1 = $("#tgl").val().startDate;
+    console.log(karyawan_id);
     console.log(jenis);
-    console.log(tgl);
-    // if (jenis == 'harian') {
-    //   //style 
-    //   $("#tensi_card").css('display', 'none');
-    //   $("#harian").removeAttr("style");
-    //   $("#harian_card").removeAttr("style");
-    //   var y = 2;
-    //   $('#harian').DataTable().ajax.url('/laporan_harian/data/' + y).load();
-    // } else if (jenis == 'tensi') {
-    //   //style   
-    //   $("#harian_card").css('display', 'none');
-    //   $("#tensi_card").removeAttr("style");
-    //   $('#tensi').DataTable().ajax.url('/laporan_tensi/data/' + y).load();
-    // } else {
-    //   // alert('ok');
-    // }
+    console.log(tgl_1);
+
+    $('#harian').DataTable().ajax.url('/laporan_harian/data/' + karyawan_id + '/' + start + '/' + end).load();
+
   });
 </script>
 <!-- <script>
@@ -141,15 +130,43 @@
   });
 </script> -->
 <script>
-  divisi_id = 0;
+  karyawan_id = 0;
+  start = 0;
+  end = 0;
   $(function() {
+    $('input[name="datefilter"]').daterangepicker({
+      autoUpdateInput: false,
+      locale: {
+        cancelLabel: 'Clear'
+      }
+    });
+    $('input[name="datefilter"]').on('apply.daterangepicker', function(ev, picker) {
+      $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+      var start = picker.startDate.format('MM/DD/YYYY');
+      var end = picker.endDate.format('MM/DD/YYYY');
+      console.log(start);
+      console.log(end);
+    });
+    $('input[name="datefilter"]').on('cancel.daterangepicker', function(ev, picker) {
+      $(this).val('');
+    });
     var harian = $('#harian').DataTable({
       processing: true,
+      dom: 'Bfrtip',
       serverSide: true,
       language: {
         processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
       },
-      ajax: '/laporan_harian/data/' + divisi_id,
+      buttons: [{
+          extend: 'excel',
+          title: 'Contoh File Excel Datatables'
+        },
+        {
+          extend: 'print',
+          title: 'Contoh Print Datatables'
+        },
+      ],
+      ajax: '/laporan_harian/data/' + karyawan_id + '/' + start + '/' + end,
       columns: [{
           data: 'DT_RowIndex',
           orderable: false,
@@ -171,7 +188,6 @@
             $n = '<br><span class="badge bg-success">Normal</span>';
             $w = '<br><span class="badge bg-warning">Hiperpireksia</span>';
             $i = '<br><span class="badge bg-info">Hiperpireksia</span>';
-
             if (data > 40) {
               return data + ' °C' + $w;
             } else if (data < 35) {
@@ -243,18 +259,12 @@
         }
       ]
     });
+
+
+
+
   });
 </script>
-
-
-
-
-
-
-
-
-
-
 <script>
   $(function() {
     $('input[name="dates"]').daterangepicker();
@@ -263,4 +273,7 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<script src="https://cdn.datatables.net/buttons/1.0.3/js/dataTables.buttons.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.0.3/css/buttons.dataTables.min.css">
+<script src="/vendor/datatables/buttons.server-side.js"></script>
 @endsection

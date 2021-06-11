@@ -135,8 +135,8 @@ Route::get('/obat/tambah', 'KesehatanController@obat_tambah');
 Route::post('/obat/aksi_tambah', 'KesehatanController@obat_aksi_tambah');
 
 //Laporan
-Route::get('/laporan_divisi', 'KesehatanController@laporan_divisi');
-
+Route::get('/laporan_harian', 'KesehatanController@laporan_harian');
+Route::get('/laporan_harian/data/{divisi_id}/{start}/{end}', 'KesehatanController@laporan_harian_data');
 
 //Karyawan
 Route::group(['prefix' => '/karyawan', 'middleware' => 'auth'], function () {
@@ -395,6 +395,9 @@ Route::group(['prefix' => '/persiapan_packing_produk', 'middleware' => 'auth'], 
 Route::group(['prefix' => '/perakitan', 'middleware' => 'auth'], function () {
     Route::get('/eng', 'EngController@perakitan')->name('perakitan.eng');
     Route::get('/show/eng', 'EngController@perakitan_show')->name('perakitan.show.eng');
+
+    Route::get('/mtc', 'MtcController@perakitan')->name('perakitan.mtc');
+    Route::get('/show/mtc', 'MtcController@perakitan_show')->name('perakitan.show.mtc');
 
     Route::get('/', 'ProduksiController@perakitan')->name('perakitan');
     Route::get('/show', 'ProduksiController@perakitan_show')->name('perakitan.show');

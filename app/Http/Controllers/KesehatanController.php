@@ -1294,9 +1294,60 @@ class KesehatanController extends Controller
         echo json_encode($data);
     }
 
-    public function laporan_divisi()
+    public function laporan_harian()
     {
-        $divisi = Divisi::all();
-        return view('page.kesehatan.laporan_divisi', ['divisi' => $divisi]);
+        $karyawan = karyawan::all();
+        return view('page.kesehatan.laporan_harian', ['karyawan' => $karyawan]);
+    }
+
+
+
+    public function laporan_harian_data($karyawan_id, $start, $end)
+    {
+        $data = Kesehatan_harian::with('karyawan')
+            ->orderBy('tgl_cek', 'DESC')
+            ->where('karyawan_id', $karyawan_id)
+            ->whereBetween('tgl_cek', [$start, $end]);
+
+        return datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('x', function ($data) {
+                return $data->karyawan->divisi->nama;
+            })
+            ->addColumn('pagi', function ($data) {
+                if ($data->suhu_pagi != NULL) {
+                    return $data->suhu_pagi;
+                } else {
+                    return '0 %';
+                }
+            })
+            ->addColumn('siang', function ($data) {
+                if ($data->suhu_siang != NULL) {
+                    return $data->suhu_siang;
+                } else {
+                    return '0 %';
+                }
+            })
+            ->addColumn('sp', function ($data) {
+                if ($data->spo2 != NULL) {
+                    return $data->spo2;
+                } else {
+                    return '0 %';
+                }
+            })
+            ->addColumn('prx', function ($data) {
+                if ($data->pr != NULL) {
+                    return $data->pr;
+                } else {
+                    return '0 %';
+                }
+            })
+            ->addColumn('button', function ($data) {
+                $btn = '<div class="inline-flex"><button type="button" id="edit" class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-edit"></i></button></div>';
+                $btn = $btn . ' <div class="inline-flex"><button type="button" class="btn btn-block btn-danger karyawan-img-small" style="border-radius:50%;" data-toggle="modal" data-target="#delete" ><i class="fas fa-trash"></i></button></div>';
+                return $btn;
+            })
+            ->rawColumns(['button'])
+            ->make(true);
     }
 }
