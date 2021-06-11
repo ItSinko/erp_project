@@ -120,28 +120,29 @@
             <strong>{{ $success }}</strong>
           </div>
           @endif
+          <div class="table-responsive">
+            <table id="example" class="table table-hover styled-table">
+              <thead style="text-align: center;">
+                @if(($sh->Bppb->countHasilPerakitan() < $sh->Bppb->jumlah) && Auth::user()->divisi->nama == "Produksi")
+                  <tr style="text-align: left;">
+                    <th colspan="12">
+                      <a href="{{route('perakitan.hasil.create', ['id' => $id])}}" style="color: white; display:inline-block;"><button type="button" class="btn btn-block btn-success btn-sm"><i class="fas fa-plus"></i> &nbsp; Tambah No Seri Perakitan</i></button></a>
+                    </th>
+                  </tr>
+                  @endif
+                  <tr>
+                    <th>No</th>
+                    <th>Tanggal</th>
+                    <th>Kode Perakitan</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                  </tr>
+              </thead>
+              <tbody style="text-align:center;">
+              </tbody>
 
-          <table id="example" class="table table-hover styled-table">
-            <thead style="text-align: center;">
-              @if(($sh->Bppb->countHasilPerakitan() < $sh->Bppb->jumlah) && Auth::user()->divisi->nama == "Produksi")
-                <tr style="text-align: left;">
-                  <th colspan="12">
-                    <a href="{{route('perakitan.hasil.create', ['id' => $id])}}" style="color: white; display:inline-block;"><button type="button" class="btn btn-block btn-success btn-sm"><i class="fas fa-plus"></i> &nbsp; Tambah No Seri Perakitan</i></button></a>
-                  </th>
-                </tr>
-                @endif
-                <tr>
-                  <th>No</th>
-                  <th>Tanggal</th>
-                  <th>Kode Perakitan</th>
-                  <th>Status</th>
-                  <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody style="text-align:center;">
-            </tbody>
-
-          </table>
+            </table>
+          </div>
         </div>
         <!-- /.card-body -->
       </div>
@@ -198,6 +199,20 @@
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           </div>
           <div class="modal-body" id="deletenoseri">
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="analisapsmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header" style="background-color:	#006400;">
+            <h4 class="modal-title" id="myModalLabel" style="color:white;">Laporan Analisa</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          </div>
+          <div class="modal-body" id="analisaps">
 
           </div>
         </div>
@@ -320,6 +335,32 @@
         success: function(result) {
           $('#perbaikanproduksimodal').modal("show");
           $('#perbaikanproduksi').html(result).show();
+          console.log(result);
+        },
+        complete: function() {
+          $('#loader').hide();
+        },
+        error: function(jqXHR, testStatus, error) {
+          console.log(error);
+          alert("Page " + href + " cannot open. Error:" + error);
+          $('#loader').hide();
+        },
+        timeout: 8000
+      })
+    });
+
+    $(document).on('click', '.analisapsmodal', function(event) {
+      event.preventDefault();
+      var href = $(this).attr('data-attr');
+      var dataid = $(this).attr('data-id');
+      $.ajax({
+        url: href,
+        beforeSend: function() {
+          $('#loader').show();
+        },
+        success: function(result) {
+          $('#analisapsmodal').modal("show");
+          $('#analisaps').html(result).show();
           console.log(result);
         },
         complete: function() {

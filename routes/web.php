@@ -406,6 +406,8 @@ Route::group(['prefix' => '/persiapan_packing_produk', 'middleware' => 'auth'], 
 Route::group(['prefix' => '/perakitan', 'middleware' => 'auth'], function () {
     Route::get('/eng', 'EngController@perakitan')->name('perakitan.eng');
     Route::get('/show/eng', 'EngController@perakitan_show')->name('perakitan.show.eng');
+    Route::get('/mtc', 'MtcController@perakitan')->name('perakitan.mtc');
+    Route::get('/show/mtc', 'MtcController@perakitan_show')->name('perakitan.show.mtc');
 
     Route::get('/', 'ProduksiController@perakitan')->name('perakitan');
     Route::get('/show', 'ProduksiController@perakitan_show')->name('perakitan.show');
@@ -466,7 +468,7 @@ Route::group(['prefix' => '/perakitan', 'middleware' => 'auth'], function () {
         Route::get('/bppb/{id}', 'QCController@perakitan_pemeriksaan_bppb')->name('perakitan.pemeriksaan.bppb');
         Route::get('/bppb/show/{id}', 'QCController@perakitan_pemeriksaan_bppb_show')->name('perakitan.pemeriksaan.bppb.show');
     });
-
+    Route::get('/analisa_ps/show/{id}', 'EngController@perakitan_analisa_ps_show')->name('perakitan.analisa_ps.show');
     Route::get('/analisa_ps/create/{id}', 'EngController@perakitan_analisa_ps_create')->name('perakitan.analisa_ps.create');
     Route::put('/analisa_ps/store/{id}', 'EngController@perakitan_analisa_ps_store')->name('perakitan.analisa_ps.store');
 });
@@ -597,7 +599,7 @@ Route::get('/doc/test', function (Request $request) {
 });
 
 //GUDANG
-Route::get('gudang_view', function(){
+Route::get('gudang_view', function () {
     return view('page.gudang.gudang');
 });
 Route::get('/gudang', 'GudangController@index')->name('gudang');

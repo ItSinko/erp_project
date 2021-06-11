@@ -106,7 +106,7 @@
                                         @foreach($hp as $i)
                                         <option value="{{$i->id}}" @if($id==$i->id)) selected @endif>
                                             @if($proses == 'perakitan')
-                                            {{$i->no_seri}}
+                                            {{$i->Perakitan->alias_tim}}{{$i->no_seri}}
                                             @elseif($proses == 'pengujian' || $proses == "pengemasan")
                                             {{$i->HasilPerakitan->no_seri}}
                                             @endif
@@ -238,25 +238,14 @@
                         <div class="form-group row">
                             <label for="realisasi_pengerjaan" class="col-sm-4 col-form-label" style="text-align:right;">Keperluan Part</label>
                             <div class="col-sm-8">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" name="part[]" id="part">
+                                @foreach($p as $i)
+                                <div class="form-check  col-form-label">
+                                    <input class="form-check-input" type="checkbox" value="{{$i->bill_of_material_id}}" name="part[]" id="part">
                                     <label class="form-check-label" for="part">
-                                        Default checkbox
+                                        {{$i->BillOfMaterial->part_eng_id}} - {{$i->BillOfMaterial->PartEng->nama}}
                                     </label>
                                 </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" name="part[]" id="part">
-                                    <label class="form-check-label" for="part">
-                                        Default checkbox
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" name="part[]" id="part">
-                                    <label class="form-check-label" for="part">
-                                        Default checkbox
-                                    </label>
-                                </div>
-
+                                @endforeach
                             </div>
                         </div>
 

@@ -99,20 +99,35 @@ class EngController extends Controller
     public function perakitan_show()
     {
         $id = Auth::user()->id;
-        $hp1 = HasilPerakitan::whereHas('Perakitan.Bppb.DetailProduk.Produk', function ($q) use ($id) {
+        // $hp1 = HasilPerakitan::whereHas('Perakitan.Bppb.DetailProduk.Produk', function ($q) use ($id) {
+        //     $q->where('ppic_id', $id);
+        // })->where('tindak_lanjut_terbuka', '=', 'produk_spesialis')->orWhereIn('status', ['analisa_pemeriksaan_terbuka_ps', 'analisa_pemeriksaan_tertutup_ps', 'rej_pemeriksaan_terbuka', 'rej_pemeriksaan_tertutup'])->get();
+
+        // $hp2 = HasilPerakitan::whereHas('Perakitan.Bppb.DetailProduk.Produk', function ($q) use ($id) {
+        //     $q->where('ppic_id', $id);
+        // })->where('tindak_lanjut_tertutup', '=', 'produk_spesialis')->orWhereIn('status', ['analisa_pemeriksaan_terbuka_ps', 'analisa_pemeriksaan_tertutup_ps'])->get();
+
+        $hp = HasilPerakitan::whereHas('HistoriHasilPerakitan', function ($q) {
+            $q->where([
+                ['tindak_lanjut', '=', 'produk_spesialis'],
+                ['kegiatan', '=', 'pemeriksaan_terbuka']
+            ])->orWhere([
+                ['tindak_lanjut', '=', 'produk_spesialis'],
+                ['kegiatan', '=', 'pemeriksaan_tertutup']
+            ]);
+        })->whereHas('Perakitan.Bppb.DetailProduk.Produk', function ($q) use ($id) {
             $q->where('ppic_id', $id);
-        })->where('tindak_lanjut_terbuka', '=', 'produk_spesialis')->orWhereIn('status', ['analisa_pemeriksaan_terbuka_ps', 'analisa_pemeriksaan_tertutup_ps', 'rej_pemeriksaan_terbuka', 'rej_pemeriksaan_tertutup'])->get();
+        })->get();
 
-        $hp2 = HasilPerakitan::whereHas('Perakitan.Bppb.DetailProduk.Produk', function ($q) use ($id) {
-            $q->where('ppic_id', $id);
-        })->where('tindak_lanjut_tertutup', '=', 'produk_spesialis')->orWhereIn('status', ['analisa_pemeriksaan_terbuka_ps', 'analisa_pemeriksaan_tertutup_ps'])->get();
 
-        $hp = $hp1->merge($hp2);
-
+        // $hp = $hp1->merge($hp2);
         return DataTables::of($hp)
             ->addIndexColumn()
             ->addColumn('no_bppb', function ($s) {
                 return $s->Perakitan->Bppb->no_bppb;
+            })
+            ->editColumn('no_seri', function ($s) {
+                return $s->Perakitan->alias_tim . $s->no_seri;
             })
             ->addColumn('produk', function ($s) {
                 $btn = '<hgroup><h6 class="heading">' . $s->Perakitan->Bppb->DetailProduk->nama . '</h6><div class="subheading text-muted">' . $s->Perakitan->Bppb->DetailProduk->Produk->KelompokProduk->nama . '</div></hgroup>';
@@ -131,7 +146,7 @@ class EngController extends Controller
             ->editColumn('status', function ($s) {
                 $btn = "";
                 $id = $s->id;
-                $p = PerbaikanProduksi::whereHas('HasilPerakitan', function ($q) use ($id) {
+                $p = AnalisaPsPerakitan::whereHas('HasilPerakitan', function ($q) use ($id) {
                     $q->where('id', $id);
                 })->orderBy('updated_at', 'desc')->first();
                 if ($s->status == 'rej_pemeriksaan_terbuka') {
@@ -146,7 +161,7 @@ class EngController extends Controller
                     }
                 } else if ($s->status == 'rej_pemeriksaan_tertutup') {
                     if ($s->tindak_lanjut_tertutup == "produk_spesialis") {
-                        $btn = '<a href="/perbaikan/produksi/create/' . $s->id . '/perakitan"><button type="button" class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-wrench"></i></button>
+                        $btn = '<a href="/perakitan/analisa_ps/create/' . $s->id . '"><button type="button" class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-wrench"></i></button>
                         <div><small> Permohonan Analisa Pemeriksaan Tertutup</small></div></a>
                         <div><small class="danger-text">Pemeriksaan Tertutup</small></div>';
                         if ($p) {
@@ -156,15 +171,16 @@ class EngController extends Controller
                     }
                 } else if ($s->status = 'analisa_pemeriksaan_terbuka_ps') {
                     if ($p) {
-                        $btn = '<div><small class="success-text">Analisa Pemeriksaan Terbuka Selesai</small></div>
-                        <a class="perbaikanproduksimodal" data-toggle="modal" data-target="#perbaikanproduksimodal" data-attr="/perbaikan/produksi/detail/' . $p->id . '" data-id="' . $p->id . '">
-                                <button class="btn btn-sm btn-info"><i class="fas fa-cog"></i>&nbsp;Hasil Perbaikan</button></a>';
+                        $btn = '<a class="analisapsmodal" data-toggle="modal" data-target="#analisapsmodal" data-attr="/perakitan/analisa_ps/show/' . $p->id . '"><button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-search"></i></button>
+                        <div><small> Lihat Analisa</small></div></a>
+                        <div><small class="success-text">Analisa Pemeriksaan Terbuka Selesai</small></div>';
                     }
                 } else if ($s->status = 'analisa_pemeriksaan_tertutup_ps') {
                     if ($p) {
-                        $btn = '<div><small class="success-text">Analisa Pemeriksaan Tertutup Selesai</small></div>
-                        <a class="perbaikanproduksimodal" data-toggle="modal" data-target="#perbaikanproduksimodal" data-attr="/perbaikan/produksi/detail/' . $p->id . '" data-id="' . $p->id . '">
-                                <button class="btn btn-sm btn-info"><i class="fas fa-cog"></i>&nbsp;Hasil Perbaikan</button></a>';
+                        $btn = '
+                        <a class="analisapsmodal" data-toggle="modal" data-target="#analisapsmodal" data-attr="/perakitan/analisa_ps/show/' . $p->id . '"><button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-search"></i></button>
+                        <div><small> Lihat Analisa</small></div></a>
+                        <div><small class="success-text">Analisa Pemeriksaan Tertutup Selesai</small></div>';
                     }
                 }
                 return $btn;
@@ -172,16 +188,20 @@ class EngController extends Controller
             ->addColumn('aksi', function ($s) {
                 $btn = '<a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="Klik untuk melihat detail BPPB">';
                 $btn .= '<i class="fa fa-ellipsis-v" aria-hidden="true"></i> </a>';
-
                 $btn .= '<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">';
                 $btn .= '<a class="dropdown-item" href="/bppb/edit/' . $s->id . '"><span style="color: black;"><i class="fa fa-edit" aria-hidden="true"></i>&nbsp;Ubah</span></a>';
                 $btn .= '<a class="dropdown-item deletemodal" data-toggle="modal" data-target="#deletemodal" data-url="/bppb/delete/' . $s->id . '"><span style="color: black;"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp;Hapus</span></a></div>';
                 return $btn;
             })
-            ->rawColumns(['operator', 'produk', 'status', 'aksi'])
+            ->rawColumns(['operator', 'produk', 'status', 'aksi', 'no_seri'])
             ->make(true);
     }
 
+    public function perakitan_analisa_ps_show($id)
+    {
+        $s = AnalisaPsPerakitan::find($id);
+        return view('page.engineering.analisa_ps_perakitan_show', ['id' => $id, 's' => $s]);
+    }
     public function perakitan_analisa_ps_create($id)
     {
         $s = HasilPerakitan::find($id);

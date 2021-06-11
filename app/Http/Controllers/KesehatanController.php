@@ -29,7 +29,6 @@ class KesehatanController extends Controller
 {
     public function kesehatan_harian()
     {
-
         return view('page.kesehatan.kesehatan_harian');
     }
     public function kesehatan()

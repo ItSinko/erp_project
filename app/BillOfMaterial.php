@@ -27,4 +27,9 @@ class BillOfMaterial extends Model
     {
         return $this->belongsTo(ProdukBillOfMaterial::class);
     }
+
+    public function PerbaikanProduksi()
+    {
+        return $this->belongsToMany(PerbaikanProduksi::class, 'perbaikan_produksi_parts', 'bill_of_material_id', 'perbaikan_produksi_id')->withTimestamps();
+    }
 }

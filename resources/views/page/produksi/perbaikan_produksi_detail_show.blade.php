@@ -48,9 +48,9 @@
                             </tr>
                             <tr>
                                 <td>Part</td>
-                                <th>@if(!empty($s->PartEng))
-                                    {{$s->PartEng->implode('kode',', ')}}
-                                    @elseif(empty($s->PartEng))
+                                <th>@if(!empty($s->BillOfMaterial))
+                                    {{$s->BillOfMaterial->implode('part_eng_id', ', ')}}
+                                    @elseif(empty($s->BillOfMaterial))
                                     <span class="text-muted">Tidak ada</span>
                                     @endif
                                 </th>
