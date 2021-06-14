@@ -110,29 +110,6 @@
                                         </div>
 
                                         <div class="form-group row">
-                                            <label for="brc" class="col-sm-4 col-form-label" style="text-align:right;">Barcode</label>
-                                            <div class="col-sm-1 col-form-label">
-                                                <div class="icheck-primary d-inline">
-                                                    <input type="radio" id="brc_ya" name="brc" value="ya" checked>
-                                                    <label for="brc_ya">
-                                                        Buat
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-2 col-form-label">
-                                                <div class="icheck-primary d-inline">
-                                                    <input type="radio" id="brc_tidak" name="brc" value="tidak">
-                                                    <label for="brc_tidak">
-                                                        Tidak
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            @if ($errors->has('brc'))
-                                            <span class="invalid-feedback" role="alert">{{$errors->first('brc')}}</span>
-                                            @endif
-                                        </div>
-
-                                        <div class="form-group row">
                                             <label for="kode_barcode" class="col-sm-4 col-form-label" style="text-align:right;">Kode Barcode</label>
                                             <div class="col-sm-1">
                                                 <input type="text" class="form-control  @error('inisial_produk') is-invalid @enderror " name="inisial_produk" id="inisial_produk" value="{{old('inisial_produk')}}">
@@ -190,7 +167,7 @@
                                                                     <select class="select2 form-control @error('no_seri') is-invalid @enderror no_seri" data-placeholder="Pilih No Seri" data-dropdown-css-class="select2-info" style="width: 100%;" name="no_seri[0]" id="no_seri">
                                                                         <option value=""></option>
                                                                         @foreach($s as $i)
-                                                                        <option value="{{$i->HasilPerakitan->id}}">{{$i->HasilPerakitan->no_seri}}
+                                                                        <option value="{{$i->HasilPerakitan->id}}">{{$i->HasilPerakitan->Perakitan->alias_tim}}{{$i->HasilPerakitan->no_seri}}
                                                                         </option>
                                                                         @endforeach
                                                                     </select>

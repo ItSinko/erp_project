@@ -150,8 +150,8 @@
                                                 </label>
                                             </div>
                                         </div>
-                                        @if ($errors->has('kondisi_saat_proses_perakitan'))
-                                        <span class="invalid-feedback" role="alert">{{$errors->first('kondisi_saat_proses_perakitan')}}</span>
+                                        @if ($errors->has('kondisi_setelah_proses'))
+                                        <span class="invalid-feedback" role="alert">{{$errors->first('kondisi_setelah_proses')}}</span>
                                         @endif
                                     </div>
 
@@ -198,7 +198,7 @@
                                     <div class="form-group row">
                                         <label for="divisi_id" class="col-sm-4 col-form-label" style="text-align:right;">Keterangan</label>
                                         <div class="col-sm-8">
-                                            <textarea name="keterangan_tindak_lanjut_tertutup" id="keterangan_tindak_lanjut_tertutup" class="form-control @error('keterangan_tindak_lanjut_tertutup') is-invalid @enderror" disabled></textarea>
+                                            <textarea name="keterangan_tindak_lanjut_tertutup" id="keterangan_tindak_lanjut_tertutup" class="form-control @error('keterangan_tindak_lanjut_tertutup') is-invalid @enderror"></textarea>
                                             @if ($errors->has('keterangan_tindak_lanjut_tertutup'))
                                             <span class="invalid-feedback" role="alert">{{$errors->first('keterangan_tindak_lanjut_tertutup')}}</span>
                                             @endif
@@ -231,6 +231,72 @@
 <script>
     $(function() {
         var countStatus = "{{$s->countStatus('perbaikan_pemeriksaan_tertutup')}}";
+        $('input[type="radio"][name="kondisi_setelah_proses"]').on("change", function() {
+            var f = $('input[type="radio"][name="fungsi"]:checked').val();
+            if (this.value == 'nok') {
+                $("input[name='hasil_tertutup'][value='nok']").prop("checked", true);
+                $('select').val('').trigger('change');
+                $("select option[value='aging']").attr('disabled', true);
+                if (countStatus < 1) {
+                    $("select option[value='perbaikan']").attr('disabled', false);
+                } else if (countStatus >= 1) {
+                    $("select option[value='produk_spesialis']").attr('disabled', false);
+                    $("select option[value='perbaikan']").attr('disabled', false);
+                }
+            } else if (this.value == 'ok') {
+                if (f == 'ok') {
+                    $("input[name='hasil_tertutup'][value='ok']").prop("checked", true);
+                    $('select').val('').trigger('change');
+                    $("select option[value='aging']").attr('disabled', false);
+                    $("select option[value='perbaikan']").attr('disabled', true);
+                    $("select option[value='produk_spesialis']").attr('disabled', true);
+                } else if (f == 'nok') {
+                    $("input[name='hasil_tertutup'][value='nok']").prop("checked", true);
+                    $('select').val('').trigger('change');
+                    $("select option[value='aging']").attr('disabled', true);
+                    if (countStatus < 1) {
+                        $("select option[value='perbaikan']").attr('disabled', false);
+                    } else if (countStatus >= 1) {
+                        $("select option[value='produk_spesialis']").attr('disabled', false);
+                        $("select option[value='perbaikan']").attr('disabled', false);
+                    }
+                }
+            }
+        });
+
+        $('input[type="radio"][name="fungsi"]').on("change", function() {
+            var ksp = $('input[type="radio"][name="kondisi_setelah_proses"]:checked').val();
+            if (this.value == 'nok') {
+                $("input[name='hasil_tertutup'][value='nok']").prop("checked", true);
+                $('select').val('').trigger('change');
+                $("select option[value='aging']").attr('disabled', true);
+                if (countStatus < 1) {
+                    $("select option[value='perbaikan']").attr('disabled', false);
+                } else if (countStatus >= 1) {
+                    $("select option[value='produk_spesialis']").attr('disabled', false);
+                    $("select option[value='perbaikan']").attr('disabled', false);
+                }
+            } else if (this.value == 'ok') {
+                if (ksp == 'ok') {
+                    $("input[name='hasil_tertutup'][value='ok']").prop("checked", true);
+                    $('select').val('').trigger('change');
+                    $("select option[value='aging']").attr('disabled', false);
+                    $("select option[value='perbaikan']").attr('disabled', true);
+                    $("select option[value='produk_spesialis']").attr('disabled', true);
+                } else if (ksp == 'nok') {
+                    $("input[name='hasil_tertutup'][value='nok']").prop("checked", true);
+                    $('select').val('').trigger('change');
+                    $("select option[value='aging']").attr('disabled', true);
+                    if (countStatus < 1) {
+                        $("select option[value='perbaikan']").attr('disabled', false);
+                    } else if (countStatus >= 1) {
+                        $("select option[value='produk_spesialis']").attr('disabled', false);
+                        $("select option[value='perbaikan']").attr('disabled', false);
+                    }
+                }
+            }
+        });
+
         $('input[type="radio"][name="hasil_tertutup"]').on("change", function() {
             if (this.value == 'ok') {
                 // $('select').select2('val', '');

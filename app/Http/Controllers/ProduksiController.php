@@ -1251,23 +1251,35 @@ class ProduksiController extends Controller
                 'karyawan_id' => 'required',
                 'tanggal_laporan' => 'required',
                 'no_seri' => 'required',
+                'no_barcode' => 'required',
+                'inisial_produk' => 'required',
+                'tipe_produk' => 'required',
+                'waktu_produksi' => 'required',
+                'urutan_bb' => 'required'
 
             ],
             [
                 'karyawan_id.required' => 'Operator harus dipilih',
                 'tanggal_laporan.reqired' => 'Tanggal Laporan harus diisi',
                 'no_seri.required' => 'No Seri harus diisi',
+                'no_barcode.required' => 'No Barcode harus diisi',
+                'inisial_produk.required' => 'Barcode harus diisi',
+                'tipe_produk.required' => 'Barcode harus diisi',
+                'waktu_produksi.required' => 'Barcode harus diisi',
+                'urutan_bb.required' => 'Barcode harus diisi'
             ]
         );
 
         if ($v->fails()) {
             return redirect()->back()->withErrors($v);
         } else {
+            $alias_barcode = $request->inisial_produk . "/" . $request->tipe_produk . "/" . $request->waktu_produksi . "/" . $request->urutan_bb;
             $c = Pengemasan::create([
                 'bppb_id' => $id,
                 'pic_id' => Auth::user()->id,
                 'karyawan_id' => $request->karyawan_id,
-                'tanggal' => $request->tanggal_laporan
+                'tanggal' => $request->tanggal_laporan,
+                'alias_barcode' => $alias_barcode
             ]);
 
             if (!empty($request->no_seri)) {
