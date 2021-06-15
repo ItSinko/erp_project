@@ -199,7 +199,7 @@
                                     <div class="form-group row">
                                         <label for="divisi_id" class="col-sm-5 col-form-label" style="text-align:right;">Keterangan</label>
                                         <div class="col-sm-7">
-                                            <textarea name="keterangan_tindak_lanjut_terbuka" id="keterangan_tindak_lanjut_terbuka" class="form-control @error('keterangan_tindak_lanjut_terbuka') is-invalid @enderror" disabled></textarea>
+                                            <textarea name="keterangan_tindak_lanjut_terbuka" id="keterangan_tindak_lanjut_terbuka" class="form-control @error('keterangan_tindak_lanjut_terbuka') is-invalid @enderror"></textarea>
                                             @if ($errors->has('keterangan_tindak_lanjut_terbuka'))
                                             <span class="invalid-feedback" role="alert">{{$errors->first('keterangan_tindak_lanjut_terbuka')}}</span>
                                             @endif
@@ -232,6 +232,19 @@
 <script>
     $(function() {
         var countStatus = "{{$s->countStatus('perbaikan_pemeriksaan_terbuka')}}";
+        console.log(countStatus);
+        $('input[type="radio"][name="kondisi_fisik_bahan_baku"]').on("change", function() {
+            if (this.value == 'nok') {
+                $("input[name='hasil_terbuka'][value='nok']").prop("checked", true);
+            }
+        });
+
+        $('input[type="radio"][name="kondisi_saat_proses_perakitan"]').on("change", function() {
+            if (this.value == 'nok') {
+                $("input[name='hasil_terbuka'][value='nok']").prop("checked", true);
+            }
+        });
+
         $('input[type="radio"][name="hasil_terbuka"]').on("change", function() {
             if (this.value == 'ok') {
                 // $('select').select2('val', '');
@@ -251,13 +264,15 @@
                 }
             }
         });
-        $('select[name="tindak_lanjut_terbuka"]').on("change", function() {
-            if (this.value == 'ok' || this.value == '') {
-                $('textarea[name="keterangan_tindak_lanjut_terbuka"]').attr('disabled', true);
-            } else {
-                $('textarea[name="keterangan_tindak_lanjut_terbuka"]').attr('disabled', false);
-            }
-        });
+        // $('select[name="tindak_lanjut_terbuka"]').on("change", function() {
+        //     if (this.value == 'ok' || this.value == '') {
+        //         $('textarea[name="keterangan_tindak_lanjut_terbuka"]').attr('disabled', true);
+        //     } else {
+        //         $('textarea[name="keterangan_tindak_lanjut_terbuka"]').attr('disabled', false);
+        //     }
+        // });
+
+
     });
 </script>
 @endsection

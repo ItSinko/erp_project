@@ -126,17 +126,14 @@
               @if(($sh->Bppb->countHasilPerakitan() < $sh->Bppb->jumlah) && Auth::user()->divisi->nama == "Produksi")
                 <tr style="text-align: left;">
                   <th colspan="12">
-
                     <a href="{{route('perakitan.hasil.create', ['id' => $id])}}" style="color: white; display:inline-block;"><button type="button" class="btn btn-block btn-success btn-sm"><i class="fas fa-plus"></i> &nbsp; Tambah No Seri Perakitan</i></button></a>
-                    <button type="button" class="btn btn-block btn-primary btn-sm" style="width: 100px; display:inline-block;" data-toggle="modal" data-target="#importExcel"><i class="fas fa-plus"></i> &nbsp; Import</i></button>
-
                   </th>
                 </tr>
                 @endif
                 <tr>
                   <th>No</th>
                   <th>Tanggal</th>
-                  <th>No Seri</th>
+                  <th>Kode Perakitan</th>
                   <th>Status</th>
                   <th>Aksi</th>
                 </tr>

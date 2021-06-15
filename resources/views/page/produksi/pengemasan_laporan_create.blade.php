@@ -64,7 +64,6 @@
                                         <label for="no_bppb" class="col-sm-4 col-form-label" style="text-align:right;">No BPPB</label>
                                         <div class="col-sm-8">
                                             <input type="text" class="form-control" name="no_bppb" id="no_bppb" value="{{$b->no_bppb}}" style="width: 50%;" readonly>
-
                                         </div>
                                     </div>
 

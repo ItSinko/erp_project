@@ -225,14 +225,7 @@ return [
     */
     'menu' => [
         [
-            'text' => 'search',
-            'search' => true,
-            'topnav' => true,
-        ],
-        [
-            'text' => 'blog',
-            'url'  => 'admin/blog',
-            'can'  => 'manage-blog',
+            'header' => '',
         ],
         [
             'text'        => 'Beranda',
@@ -240,21 +233,8 @@ return [
             'icon'        => 'nav-icon fa fa-home',
         ],
         [
-            'header' => 'account_settings'
-        ],
-        [
-            'text' => 'profile',
-            'url'  => '#',
-            'icon' => 'fas fa-fw fa-user',
-        ],
-        [
-            'text' => 'change_password',
-            'url'  => '#',
-            'icon' => 'fas fa-fw fa-lock',
-        ],
-        [
-            'header' => 'DATA MASTER',
-            'auth'   => [26, 14]
+            'header' => 'MASTER DATA',
+            'auth' => [14, 17, 26, 23, 24, 1]
         ],
         [
             'text' => 'Penjualan Produk',
@@ -475,13 +455,9 @@ return [
             ],
         ],
         [
-            'header' => 'MASTER DATA',
-            'auth' => [14, 17, 26, 23, 24]
-        ],
-        [
             'text'  =>  'Stok',
-            'icon'  =>  'fas fa-table',
-            'auth'  => [24],
+            'icon'  =>  'fas fa-boxes',
+            'auth'  => [24, 1],
             'submenu'   =>  [
                 [
                     'text'  =>  'Gudang',
@@ -497,8 +473,8 @@ return [
         ],
         [
             'text'  =>  'Laporan',
-            'icon'  =>  'fas fa-table',
-            'auth'  => [24],
+            'icon'  =>  'fas fa-file',
+            'auth'  => [24, 1],
             'submenu'   =>  [
                 [
                     'text'  =>  'Pembelian',
@@ -606,19 +582,35 @@ return [
         ],
         [
             'header'    =>  'PPIC',
-            'auth'  =>  [24]
+            'auth'  =>  [24, 1]
         ],
         [
             'text' => 'Jadwal Produksi',
-            'url'  => '/ppic/schedule',
-            'icon' => 'fas fa-table',
-            'auth' => [24]
+            'icon' => 'fas fa-calendar-alt',
+            'auth' => [24, 1],
+            'submenu'   =>  [
+                [
+                    'text'  =>  'Pelaksanaan',
+                    'icon'  =>  'far fa-circle',
+                    'url'   =>  '/ppic/schedule?pelaksanaan=true'
+                ],
+                [
+                    'text'  =>  'Penyusunan',
+                    'icon'  =>  'far fa-circle',
+                    'url'   =>  '/ppic/schedule?penyusunan=true',
+                ],
+                [
+                    'text'  =>  'Selesai',
+                    'icon'  =>  'far fa-circle',
+                    'url'   =>  '/ppic/schedule?selesai=true'
+                ],
+            ]
         ],
         [
             'text' => 'BOM',
             'url'  => '/ppic/bom',
-            'icon' => 'fas fa-table',
-            'auth' => [24]
+            'icon' => 'fas fa-list-alt',
+            'auth' => [24, 1]
         ],
         [
             'header' => 'PERSIAPAN',
@@ -644,7 +636,7 @@ return [
             'text'    => 'BPPB',
             'icon'    => 'fas fa-project-diagram',
             'url' => '/bppb',
-            'auth' => [17],
+            'auth' => [17, 24, 1],
         ],
         [
             'text'    => 'Perakitan',

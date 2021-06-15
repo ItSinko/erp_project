@@ -72,6 +72,7 @@
                     <label for="fk_kategori" class="col-sm-4 col-form-label" style="text-align:right;">No BPPB</label>
                     <div class="col-sm-8">
                       <select class="form-control select2 select2-info @error('bppb_id') is-invalid @enderror" data-dropdown-css-class="select2-info" data-placeholder="Pilih No BPPB" style="width: 30%;" name="bppb_id">
+                        <option value=""></option>
                         @foreach($s as $i)
                         <option value="{{$i->id}}">{{$i->no_bppb}}</option>
                         @endforeach
@@ -136,14 +137,6 @@
                           <span class="invalid-feedback" role="alert">{{$errors->first('karyawan_id.*')}}</span>
                           @endif
                         </div>
-                      </div>
-                    </div>
-
-                    <div class="form-group row">
-                      <label for="import_file" class="col-sm-4 col-form-label" style="text-align:right;">Import No Seri (Excel)</label>
-                      <div class="col-sm-8">
-                        <input type="file" class="form-control" name="file">
-
                       </div>
                     </div>
 

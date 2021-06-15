@@ -6,17 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class PartEng extends Model
 {
-    protected $table = "part_engs";
-    protected $fillable = ['part_id', 'kode_part', 'nama', 'foto', 'deskripsi', 'spesifikasi', 'status'];
+    protected $primaryKey = "kode_part";
+    protected $fillable = ['kode_part', 'nama', 'foto', 'deskripsi', 'spesifikasi', 'status'];
 
-    public function Part()
+    public function PartGudang()
     {
-        return $this->belongsTo(Part::class);
+        return $this->hasMany(PartGudangPartEng::class, 'kode_eng');
     }
 
     public function BillOfMaterial()
     {
-        return $this->hasMany(BillOfMaterial::class);
+        return $this->hasMany(BillOfMaterial::class, 'part_eng_id');
     }
 
     public function PerbaikanProduksi()

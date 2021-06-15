@@ -1,25 +1,25 @@
-<?php
+j<?php
 
-namespace App;
+    namespace App;
 
-use Illuminate\Database\Eloquent\Model;
+    use Illuminate\Database\Eloquent\Model;
 
-class PersiapanPackingProduk extends Model
-{
-    protected $fillable = ['bppb_id', 'user_id', 'status'];
-
-    public function Bppb()
+    class PersiapanPackingProduk extends Model
     {
-        return $this->belongsTo(Bppb::class);
-    }
+        protected $fillable = ['bppb_id', 'user_id', 'status'];
 
-    public function User()
-    {
-        return $this->belongsTo(User::class);
-    }
+        public function Bppb()
+        {
+            return $this->belongsTo(Bppb::class);
+        }
 
-    public function DetailPersiapanPackingProduk()
-    {
-        return $this->hasMany(DetailPersiapanPackingProduk::class, 'persiapan_id');
+        public function User()
+        {
+            return $this->belongsTo(User::class);
+        }
+
+        public function DetailPersiapanPackingProduk()
+        {
+            return $this->hasMany(DetailPersiapanPackingProduk::class, 'persiapan_id');
+        }
     }
-}
