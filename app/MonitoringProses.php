@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class MonitoringProses extends Model
 {
-    protected $fillable = ['bppb_id', 'tanggal', 'karyawan_id', 'user_id'];
+    protected $fillable = ['bppb_id', 'tanggal', 'karyawan_id', 'user_id', 'alias_barcode'];
 
     public function Bppb()
     {

@@ -482,12 +482,12 @@ class ProduksiController extends Controller
         $v = Validator::make(
             $request->all(),
             [
-                'alias' => 'required',
-                'karyawan_id' => 'required'
+                'alias.*' => 'required',
+                'karyawan_id.*' => 'required'
             ],
             [
-                'karyawan_id.required' => "Karyawan harus diisi",
-                'alias.required' => "Alias harus diisi",
+                'karyawan_id.*.required' => "Karyawan harus diisi",
+                'alias.*.required' => "Alias harus diisi",
             ]
         );
         if ($v->fails()) {
@@ -1260,7 +1260,7 @@ class ProduksiController extends Controller
             ],
             [
                 'karyawan_id.required' => 'Operator harus dipilih',
-                'tanggal_laporan.reqired' => 'Tanggal Laporan harus diisi',
+                'tanggal_laporan.required' => 'Tanggal Laporan harus diisi',
                 'no_seri.required' => 'No Seri harus diisi',
                 'no_barcode.required' => 'No Barcode harus diisi',
                 'inisial_produk.required' => 'Barcode harus diisi',

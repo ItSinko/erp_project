@@ -130,7 +130,7 @@
                   <div class="form-group row">
                     <label for="produk" class="col-sm-4 col-form-label" style="text-align:right;">Jumlah</label>
                     <div class="col-sm-3">
-                      <input type="number" class="form-control @error('jumlah') is-invalid @enderror" name="jumlah" id="jumlah" value="">
+                      <input type="number" class="form-control @error('jumlah') is-invalid @enderror" name="jumlah" id="jumlah" value="" disabled>
                       @if ($errors->has('jumlah'))
                       <span class="invalid-feedback" role="alert">{{$errors->first('jumlah')}}</span>
                       @endif
@@ -141,10 +141,10 @@
               </div>
               <div class="card-footer">
                 <span>
-                  <button type="button" class="btn btn-block btn-danger" style="width:200px;float:left;">Batal</button>
+                  <button type="button" class="btn btn-block btn-danger" style="width:200px;float:left;" disabled>Batal</button>
                 </span>
                 <span>
-                  <button type="submit" class="btn btn-block btn-success btn" style="width:200px;float:right;">Tambahkan</button>
+                  <button type="submit" class="btn btn-block btn-success btn" style="width:200px;float:right;" id="tambahdata" disabled>Tambahkan</button>
                 </span>
               </div>
 
@@ -229,6 +229,7 @@
       }
     }
 
+
     function numberRows($t) {
       var c = 0 - 1;
       $t.find("tr").each(function(ind, el) {
@@ -250,19 +251,21 @@
       var message = $('span[id="jumlah-message"]');
       $('#tableitem tbody').empty();
       console.log("kuota " + kuota + ", rakit " + jum_rakit + ", rencana " + jum_rencana + ", jumlah " + jumlah + " hasil " + (jum_rencana - (jum_rakit + jumlah)));
-      if (kuota >= 0) {
-        message.removeClass("invalid-feedback");
-        jumlah_id.removeClass("is-invalid");
-        message.empty();
-        if (jumlah !== 0) {
-          $.ajax({
-            url: 'get_count_hasil_perakitan/' + "{{$sh->id}}",
-            type: "GET",
-            dataType: "json",
-            success: function(data) {
-              datatables = "";
-              for (var i = 0; i < jumlah; i++) {
-                datatables += `<tr>
+      if (jumlah) {
+        if (kuota >= 0) {
+          message.removeClass("invalid-feedback");
+          jumlah_id.removeClass("is-invalid");
+          message.empty();
+          if (jumlah != 0) {
+            $.ajax({
+              url: 'get_count_hasil_perakitan/' + "{{$sh->id}}",
+              type: "GET",
+              dataType: "json",
+              success: function(data) {
+                $("#tambahdata").removeAttr('disabled');
+                datatables = "";
+                for (var i = 0; i < jumlah; i++) {
+                  datatables += `<tr>
                         <td>` + (i + 1) + `</td>
                         <td>
                         <div class="form-group row">
@@ -277,21 +280,36 @@
                         </tr>`;
 
 
+                }
+                console.log(datatables);
+                $("#tableitem").append(datatables);
               }
-              console.log(datatables);
-              $("#tableitem").append(datatables);
-            }
-          });
-        } else {
-          $('#tableitem tbody').empty();
+            });
+          } else {
+            $("#tambahdata").attr('disabled', true);
+            $('#tableitem tbody').empty();
+          }
+        } else if (kuota < 0) {
+          $("#tambahdata").attr('disabled', true);
+          message.addClass("invalid-feedback");
+          jumlah_id.addClass("is-invalid");
+          message.html("Melebihi batas permintaan");
+          console.log(message.val());
         }
-      } else if (kuota < 0) {
-        message.addClass("invalid-feedback");
-        jumlah_id.addClass("is-invalid");
-        message.html("Melebihi batas permintaan");
-        console.log(message.val());
+      } else {
+        $("#tambahdata").attr('disabled', true);
       }
     });
+
+    $('#tanggal').on('change', function() {
+      var tgl = $(this).val();
+      if (tgl != "") {
+        $("#jumlah").removeAttr('disabled');
+      } else if (tgl == "") {
+        $("#tambahdata").attr('disabled', true);
+        $("#jumlah").attr('disabled', true);
+      }
+    })
 
     $('#tableitem').on('click', '#closetable', function(e) {
       $(this).closest('tr').remove();

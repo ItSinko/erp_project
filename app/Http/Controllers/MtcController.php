@@ -94,7 +94,7 @@ class MtcController extends Controller
                             $btn .= '<a href="/perbaikan/produksi/create/' . $s->id . '/perakitan"><button type="button" class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-wrench"></i></button>
                             <div><small>Lakukan Perbaikan</small></div></a>
                             <div><a href="#" class="analisapsmodal" data-toggle="modal" data-target="#analisapsmodal" data-attr="/perakitan/analisa_ps/show/' . $a->id . '"></div>
-                            <small class="success-text"><i class="fas fa-search"> Lihat Hasil Analisa</small></a>';
+                            <small class="success-text"><i class="fas fa-search"></i> Lihat Hasil Analisa</small></a>';
                         }
                     }
                     // $btn .= '<div><small class="success-text">Pemeriksaan Terbuka PS</small></div>';

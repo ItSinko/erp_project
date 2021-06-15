@@ -107,7 +107,7 @@ class EngController extends Controller
         //     $q->where('ppic_id', $id);
         // })->where('tindak_lanjut_tertutup', '=', 'produk_spesialis')->orWhereIn('status', ['analisa_pemeriksaan_terbuka_ps', 'analisa_pemeriksaan_tertutup_ps'])->get();
 
-        $hp = HasilPerakitan::whereHas('HistoriHasilPerakitan', function ($q) {
+        $s = HasilPerakitan::whereHas('HistoriHasilPerakitan', function ($q) {
             $q->where([
                 ['tindak_lanjut', '=', 'produk_spesialis'],
                 ['kegiatan', '=', 'pemeriksaan_terbuka']
@@ -119,9 +119,8 @@ class EngController extends Controller
             $q->where('ppic_id', $id);
         })->get();
 
-
         // $hp = $hp1->merge($hp2);
-        return DataTables::of($hp)
+        return DataTables::of($s)
             ->addIndexColumn()
             ->addColumn('no_bppb', function ($s) {
                 return $s->Perakitan->Bppb->no_bppb;
@@ -145,40 +144,51 @@ class EngController extends Controller
             })
             ->editColumn('status', function ($s) {
                 $btn = "";
+                $status = $s->status;
                 $id = $s->id;
-                $p = AnalisaPsPerakitan::whereHas('HasilPerakitan', function ($q) use ($id) {
+                $app = AnalisaPsPerakitan::whereHas('HasilPerakitan', function ($q) use ($id) {
                     $q->where('id', $id);
                 })->orderBy('updated_at', 'desc')->first();
-                if ($s->status == 'rej_pemeriksaan_terbuka') {
+                if ($status == 'rej_pemeriksaan_terbuka') {
                     if ($s->tindak_lanjut_terbuka == "produk_spesialis") {
-                        $btn = '<a href="/perakitan/analisa_ps/create/' . $s->id . '"><button type="button" class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-wrench"></i></button>
+                        $btn .= '<a href="/perakitan/analisa_ps/create/' . $s->id . '"><button type="button" class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-wrench"></i></button>
                         <div><small> Permohonan Analisa Pemeriksaan Terbuka</small></div></a>
                         <div><small class="danger-text">Pemeriksaan Terbuka Ditolak</small></div>';
-                        if ($p) {
-                            $btn .= '<a class="perbaikanproduksimodal" data-toggle="modal" data-target="#perbaikanproduksimodal" data-attr="/perbaikan/produksi/detail/' . $p->id . '" data-id="' . $p->id . '">
+                        if ($app) {
+                            $btn .= '<a class="perbaikanproduksimodal" data-toggle="modal" data-target="#perbaikanproduksimodal" data-attr="/perbaikan/produksi/detail/' . $app->id . '" data-id="' . $app->id . '">
                                     <button class="btn btn-sm btn-info"><small><i class="fas fa-cog"></i>&nbsp;Hasil Perbaikan</small></button></a>';
                         }
+                    } else if ($s->tindak_lanjut_terbuka == "operator") {
+                        $btn .= '<div><small class="warning-text">Perbaikan Pemeriksaan Terbuka</small></div>';
                     }
-                } else if ($s->status == 'rej_pemeriksaan_tertutup') {
+                } else if ($status == "req_pemeriksaan_terbuka") {
+                    $btn .= '<div><small class="warning-text">Pemeriksaan Terbuka</small></div>';
+                } else if ($status == "acc_pemeriksaan_terbuka") {
+                    $btn .= '<div><small class="warning-text">Pemeriksaan Terbuka</small></div>';
+                } else if ($status == 'rej_pemeriksaan_tertutup') {
                     if ($s->tindak_lanjut_tertutup == "produk_spesialis") {
-                        $btn = '<a href="/perakitan/analisa_ps/create/' . $s->id . '"><button type="button" class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-wrench"></i></button>
+                        $btn .= '<a href="/perakitan/analisa_ps/create/' . $s->id . '"><button type="button" class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-wrench"></i></button>
                         <div><small> Permohonan Analisa Pemeriksaan Tertutup</small></div></a>
                         <div><small class="danger-text">Pemeriksaan Tertutup</small></div>';
-                        if ($p) {
-                            $btn .= '<a class="perbaikanproduksimodal" data-toggle="modal" data-target="#perbaikanproduksimodal" data-attr="/perbaikan/produksi/detail/' . $p->id . '" data-id="' . $p->id . '">
+                        if ($app) {
+                            $btn .= '<a class="perbaikanproduksimodal" data-toggle="modal" data-target="#perbaikanproduksimodal" data-attr="/perbaikan/produksi/detail/' . $app->id . '" data-id="' . $app->id . '">
                                     <button class="btn btn-sm btn-info"><small><i class="fas fa-cog"></i>&nbsp;Hasil Perbaikan</small></button></a>';
                         }
                     }
-                } else if ($s->status = 'analisa_pemeriksaan_terbuka_ps') {
-                    if ($p) {
-                        $btn = '<a class="analisapsmodal" data-toggle="modal" data-target="#analisapsmodal" data-attr="/perakitan/analisa_ps/show/' . $p->id . '"><button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-search"></i></button>
+                } else if ($status == "req_pemeriksaan_tertutup") {
+                    $btn .= '<div><small class="warning-text">Pemeriksaan Tertutup</small></div>';
+                } else if ($status == "acc_pemeriksaan_tertutup") {
+                    $btn .= '<div><small class="warning-text">Pemeriksaan Tertutup</small></div>';
+                } else if ($status == 'analisa_pemeriksaan_terbuka_ps') {
+                    if ($app) {
+                        $btn .= '<a class="analisapsmodal" data-toggle="modal" data-target="#analisapsmodal" data-attr="/perakitan/analisa_ps/show/' . $app->id . '"><button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-search"></i></button>
                         <div><small> Lihat Analisa</small></div></a>
                         <div><small class="success-text">Analisa Pemeriksaan Terbuka Selesai</small></div>';
                     }
-                } else if ($s->status = 'analisa_pemeriksaan_tertutup_ps') {
-                    if ($p) {
-                        $btn = '
-                        <a class="analisapsmodal" data-toggle="modal" data-target="#analisapsmodal" data-attr="/perakitan/analisa_ps/show/' . $p->id . '"><button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-search"></i></button>
+                } else if ($status == 'analisa_pemeriksaan_tertutup_ps') {
+
+                    if ($app) {
+                        $btn .= '<a class="analisapsmodal" data-toggle="modal" data-target="#analisapsmodal" data-attr="/perakitan/analisa_ps/show/' . $app->id . '"><button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-search"></i></button>
                         <div><small> Lihat Analisa</small></div></a>
                         <div><small class="success-text">Analisa Pemeriksaan Tertutup Selesai</small></div>';
                     }
@@ -274,6 +284,29 @@ class EngController extends Controller
                             ]);
 
                             if ($c) {
+                                return redirect()->back()->with('success', "Berhasil menambah Analisa");
+                            } else if (!$c) {
+                                return redirect()->back()->with('error', "Gagal menambah Analisa");
+                            }
+                        }
+                    } else if ($h->status == "rej_pemeriksaan_tertutup") {
+                        if ($h->tindak_lanjut_tertutup == "produk_spesialis") {
+                            $h->status = "analisa_pemeriksaan_tertutup_ps";
+                            $h->save();
+
+                            $c = HistoriHasilPerakitan::create([
+                                "hasil_perakitan_id" => $id,
+                                "kegiatan" => 'analisa_pemeriksaan_tertutup_ps',
+                                "tanggal" => Carbon::now()->toDateString(),
+                                "hasil" => "ok",
+                                "keterangan" => "",
+                                "tindak_lanjut" => $request->tindak_lanjut
+                            ]);
+
+                            if ($c) {
+                                return redirect()->back()->with('success', "Berhasil menambah Analisa");
+                            } else {
+                                return redirect()->back()->with('error', "Gagal menambah Analisa");
                             }
                         }
                     }

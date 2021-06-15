@@ -115,7 +115,7 @@
                       <td>1</td>
                       <td>
                         <div class="input-group">
-                          <input type="text" class="form-control @error('alias') is-invalid @enderror" name="alias[]" id="alias">
+                          <input type="text" class="form-control @error('alias') is-invalid @enderror" name="alias[]" id="alias" disabled>
                           @if ($errors->has('alias'))
                           <span class="invalid-feedback" role="alert">{{$errors->first('alias.*')}}</span>
                           @endif
@@ -137,7 +137,7 @@
                         </div>
                       </td>
                       <td>
-                        <button type="button" class="btn btn-success btn-sm karyawan-img-small" style="border-radius:50%;" id="tambahitem"><i class="fas fa-plus-circle"></i></button>
+                        <button type="button" class="btn btn-success btn-sm karyawan-img-small buttonaksi" style="border-radius:50%;" id="tambahitem" disabled><i class="fas fa-plus-circle"></i></button>
                       </td>
                     </tr>
                   </tbody>
@@ -147,10 +147,10 @@
         </div>
         <div class="card-footer">
           <span>
-            <button type="button" class="btn btn-block btn-danger" style="width:200px;float:left;">Batal</button>
+            <button type="button" class="btn btn-block btn-danger" style="width:200px;float:left;" id="batal" disabled>Batal</button>
           </span>
           <span>
-            <button type="submit" class="btn btn-block btn-success" style="width:200px;float:right;">Tambah Data</button>
+            <button type="submit" class="btn btn-block btn-success" style="width:200px;float:right;" id="tambahdata" disabled>Tambah Data</button>
           </span>
         </div>
         </form>
@@ -220,11 +220,13 @@
     }
 
     $('#tambahitem').click(function(e) {
-      $('#tableitem tr:last').after(` <tr>
+      $('#tambahdata').attr('disabled', true);
+      $('#tambahitem').attr('disabled', true);
+      $('#tableitem tr:last').after(`<tr>
         <td>1</td>
         <td>
           <div class="input-group">
-            <input type="text" class="form-control @error('karyawan_id') is-invalid @enderror" name="alias[]" id="alias">
+            <input type="text" class="form-control @error('karyawan_id') is-invalid @enderror" name="alias[]" id="alias" disabled>
             @if ($errors->has('alias'))
             <span class="invalid-feedback" role="alert">{{$errors->first('alias.*')}}</span>
             @endif
@@ -243,7 +245,7 @@
           </div>
         </td>
         <td>
-          <button type="button" class="btn btn-danger btn-sm karyawan-img-small" style="border-radius:50%;" id="closetable"><i class="fas fa-times-circle"></i></button>
+          <button type="button" class="btn btn-danger btn-sm karyawan-img-small buttonaksi" style="border-radius:50%;" id="closetable"><i class="fas fa-times-circle"></i></button>
         </td>
       </tr>`);
       numberRows($("#tableitem"));
@@ -255,6 +257,7 @@
     });
 
     $('#tableitem').on("keyup", "input[id='alias']", function() {
+
       var id = $(this).closest('tr').find('input[id="alias"]').val();
       var alias = $(this).closest('tr').find('input[id="alias"]');
       var message = $(this).closest('tr').find('span[id="alias-message[]"]');
@@ -266,11 +269,16 @@
           dataType: "json",
           success: function(data) {
             if (data > 0) {
+              $('#tambahitem').attr('disabled', true);
+              $('#tambahdata').attr('disabled', true);
               message.addClass("invalid-feedback");
               alias.addClass("is-invalid");
               message.html("Kode Tim sudah terpakai");
               console.log(message.val());
+
             } else {
+              $('#tambahitem').removeAttr('disabled');
+              $('#tambahdata').removeAttr('disabled');
               message.removeClass("invalid-feedback");
               alias.removeClass("is-invalid");
               message.empty();
@@ -282,6 +290,8 @@
           }
         });
       } else {
+        $('#tambahitem').attr('disabled', true);
+        $('#tambahdata').attr('disabled', true);
         message.removeClass("invalid-feedback");
         alias.removeClass("is-invalid");
         message.empty();
@@ -293,6 +303,7 @@
       var arr = $(this).closest('tr').find('.karyawan_id').val();
       var alias = $(this).closest('tr').find('input[id="alias"]');
       if (arr.length == 1) {
+        alias.removeAttr('disabled');
         var kry_id = arr.toString();
         $.ajax({
           url: 'get_alias_operator/' + kry_id,
@@ -303,6 +314,8 @@
               alias.val(data);
             } else if (data === "") {
               alias.val("");
+              $('#tambahitem').attr('disabled', true);
+              $('#tambahdata').attr('disabled', true);
             }
           },
           error: function(xhr, status, error) {
@@ -310,7 +323,15 @@
             alert(err.Message);
           }
         });
-      } else if (arr.length == 0 || arr.length > 1) {
+      } else if (arr.length == 0) {
+        alias.attr('disabled', true);
+        $('#tambahitem').attr('disabled', true);
+        $('#tambahdata').attr('disabled', true);
+        alias.val("");
+      } else if (arr.length > 1) {
+        $('#tambahitem').attr('disabled', true);
+        $('#tambahdata').attr('disabled', true);
+        alias.removeAttr('disabled');
         alias.val("");
       }
     });
