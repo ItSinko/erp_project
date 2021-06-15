@@ -1297,22 +1297,42 @@ class KesehatanController extends Controller
     public function laporan_harian()
     {
         $karyawan = karyawan::all();
-        return view('page.kesehatan.laporan_harian', ['karyawan' => $karyawan]);
+        $divisi = Divisi::all();
+        return view('page.kesehatan.laporan_harian', ['karyawan' => $karyawan, 'divisi' => $divisi]);
     }
 
 
 
-    public function laporan_harian_data($karyawan_id, $start, $end)
+    public function laporan_harian_data($filter, $id, $start, $end)
     {
-        $data = Kesehatan_harian::with('karyawan')
-            ->orderBy('tgl_cek', 'DESC')
-            ->where('karyawan_id', $karyawan_id)
-            ->whereBetween('tgl_cek', [$start, $end]);
+
+        if ($filter == 'divisi') {
+            $data = Kesehatan_harian::wherehas('karyawan', function ($divisi) use ($id) {
+                $divisi->where('divisi_id', $id);
+            })
+                ->orderBy('tgl_cek', 'DESC')
+                ->whereBetween('tgl_cek', [$start, $end]);
+        } else if ($filter == 'karyawan') {
+            $data = Kesehatan_harian::with('karyawan')
+                ->orderBy('tgl_cek', 'DESC')
+                ->where('karyawan_id', $id)
+                ->whereBetween('tgl_cek', [$start, $end]);
+        } else {
+            $data = Kesehatan_harian::wherehas('karyawan', function ($divisi) {
+                $divisi->where('divisi_id', '0');
+            })
+                ->orderBy('tgl_cek', 'DESC')
+                ->whereBetween('tgl_cek', [$start, $end]);
+        }
+
 
         return datatables::of($data)
             ->addIndexColumn()
             ->addColumn('x', function ($data) {
                 return $data->karyawan->divisi->nama;
+            })
+            ->addColumn('y', function ($data) {
+                return $data->karyawan->nama;
             })
             ->addColumn('pagi', function ($data) {
                 if ($data->suhu_pagi != NULL) {
@@ -1348,6 +1368,97 @@ class KesehatanController extends Controller
                 return $btn;
             })
             ->rawColumns(['button'])
+            ->make(true);
+    }
+
+    public function laporan_mingguan()
+    {
+        $karyawan = karyawan::all();
+        $divisi = Divisi::all();
+        return view('page.kesehatan.laporan_mingguan', ['karyawan' => $karyawan, 'divisi' => $divisi]);
+    }
+
+    public function laporan_mingguan_data($tabel, $filter, $id, $tgl1, $tgl2)
+    {
+
+        // if ($filter == 'divisi' && $tabel == 'rapid') {
+        //     $data = kesehatan_mingguan_rapid::wherehas('karyawan', function ($divisi) use ($id) {
+        //         $divisi->where('divisi_id', $id);
+        //     })
+        //         ->orderBy('tgl_cek', 'DESC')
+        //         ->whereBetween('tgl_cek', [$start, $end]);
+        // } else if ($filter ==  'divisi' && $tabel == 'tensi') {
+        //     $data = kesehatan_mingguan_tensi::wherehas('karyawan', function ($divisi) use ($id) {
+        //         $divisi->where('divisi_id', $id);
+        //     })
+        //         ->orderBy('tgl_cek', 'DESC')
+        //         ->whereBetween('tgl_cek', [$start, $end]);
+
+        //     return datatables::of($data)
+        //         ->addIndexColumn()
+        //         ->addColumn('x', function ($data) {
+        //             return $data->karyawan->divisi->nama;
+        //         })
+        //         ->addColumn('hasil', function ($data) {
+        //             if ($data->sistolik < 130 && $data->diastolik < 85) {
+        //                 return 'Normal';
+        //             } else if ($data->sistolik >= 130 && $data->sistolik <= 139 || $data->diastolik >= 85  && $data->diastolik >= 87) {
+        //                 return 'Pra-Hipertensi';
+        //             } else if ($data->sistolik >= 140 && $data->sistolik <= 159 || $data->diastolik >= 90  && $data->diastolik >= 99) {
+        //                 return 'Stadium 1 Hipertensi';
+        //             } else if ($data->sistolik >= 160  || $data->diastolik >= 100) {
+        //                 return 'Stadium 2 Hipertensi';
+        //             }
+        //         })
+        //         ->addColumn('sis', function ($data) {
+        //             return $data->sistolik . ' mmHg';
+        //         })
+        //         ->addColumn('dias', function ($data) {
+        //             return $data->diastolik . ' mmHg';
+        //         })
+        //         ->make(true);
+        // } else if ($filter == 'karyawan' && $tabel == 'rapid') {
+        //     $data = kesehatan_mingguan_rapid::with('karyawan')
+        //         ->orderBy('tgl_cek', 'DESC')
+        //         ->where('karyawan_id', $id)
+        //         ->whereBetween('tgl_cek', [$start, $end]);
+        // } else if ($filter == 'karyawan' && $tabel == 'tensi') {
+        //     $data = kesehatan_mingguan_tensi::with('karyawan')
+        //         ->orderBy('tgl_cek', 'DESC')
+        //         ->where('karyawan_id', $id)
+        //         ->whereBetween('tgl_cek', [$start, $end]);
+        // }
+
+        $data = kesehatan_mingguan_tensi::wherehas('karyawan', function ($divisi) use ($id) {
+            $divisi->where('divisi_id', $id);
+        })
+            ->orderBy('tgl_cek', 'DESC')
+            ->whereBetween('tgl_cek', [$start, $end]);
+        return datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('x', function ($data) {
+                return $data->karyawan->divisi->nama;
+            })
+            ->addColumn('y', function ($data) {
+                return $data->karyawan->nama;
+            })
+            ->addColumn('hasil', function ($data) {
+                if ($data->sistolik < 130 && $data->diastolik < 85) {
+                    return 'Normal';
+                } else if ($data->sistolik >= 130 && $data->sistolik <= 139 || $data->diastolik >= 85  && $data->diastolik >= 87) {
+                    return 'Pra-Hipertensi';
+                } else if ($data->sistolik >= 140 && $data->sistolik <= 159 || $data->diastolik >= 90  && $data->diastolik >= 99) {
+                    return 'Stadium 1 Hipertensi';
+                } else if ($data->sistolik >= 160  || $data->diastolik >= 100) {
+                    return 'Stadium 2 Hipertensi';
+                }
+            })
+            ->addColumn('sis', function ($data) {
+                return $data->sistolik . ' mmHg';
+            })
+            ->addColumn('dias', function ($data) {
+                return $data->diastolik . ' mmHg';
+            })
             ->make(true);
     }
 }

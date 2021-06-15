@@ -410,6 +410,12 @@ return [
                             'text' => 'Harian',
                             'auth' => [28],
                             'url'  => '/laporan_harian',
+                        ],
+                        [
+                            'icon' => 'far fa-circle',
+                            'text' => 'Mingguan',
+                            'auth' => [28],
+                            'url'  => '/laporan_mingguan',
                         ]
                     ],
                 ],
