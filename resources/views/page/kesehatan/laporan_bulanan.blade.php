@@ -70,13 +70,13 @@
                       <div class="icheck-success d-inline col-sm-4">
                         <input type="radio" name="filter_mingguan" value="rapid">
                         <label for="no">
-                          Rapid
+                          Berat Badan
                         </label>
                       </div>
                       <div class="icheck-warning d-inline col-sm-4">
                         <input type="radio" name="filter_mingguan" value="tensi">
                         <label for="sample">
-                          Tensi
+                          GCU
                         </label>
                       </div>
                       <span class="invalid-feedback" role="alert" id="kondisi-msg"></span>
@@ -132,7 +132,7 @@
     <div class="card">
       <div class="card-body">
         <div class='table-responsive'>
-          <h2>Tensi</h2>
+          <h2>Berat Badan</h2>
           <table id="tensi_tabel" class="table table-hover styled-table table-striped">
             <thead style="text-align: center;">
               <tr>
@@ -166,7 +166,7 @@
     <div class="card">
       <div class="card-body">
         <div class='table-responsive'>
-          <h2>Rapid</h2>
+          <h2>GCU</h2>
           <table id="rapid" class="table table-hover styled-table table-striped">
             <thead style="text-align: center;">
               <tr>

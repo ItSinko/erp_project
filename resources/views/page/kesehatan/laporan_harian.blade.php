@@ -6,6 +6,10 @@
 <h1 class="m-0 text-dark">Dashboard</h1>
 @stop
 
+@section('adminlte_css')
+
+@stop
+
 @section('content')
 <div class="row">
   <div class="col-lg-12">
@@ -147,6 +151,13 @@
 
 @stop
 @section('adminlte_js')
+<script src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.print.min.js "></script>
+
 <script>
   $(document).ready(function() {
     $('input[type=radio][name=filter]').on('change', function() {
@@ -223,11 +234,12 @@
       },
       buttons: [{
           extend: 'excel',
-          title: 'Contoh File Excel Datatables'
+          title: 'Laporan Kesehatan Harian',
+          text: '<i class="fas fa-calendar-alt"></i'
         },
         {
           extend: 'print',
-          title: 'Contoh Print Datatables'
+          title: 'Laporan Kesehatan Harian'
         },
       ],
       ajax: '/laporan_harian/data/' + '' + ' / ' + 0 + ' / ' + 0 + ' / ' + 0,
@@ -334,11 +346,5 @@
     $('input[name="dates"]').daterangepicker();
   })
 </script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-<script src="https://cdn.datatables.net/buttons/1.0.3/js/dataTables.buttons.min.js"></script>
-<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.0.3/css/buttons.dataTables.min.css">
-<script src="/vendor/datatables/buttons.server-side.js"></script>
 
 @endsection

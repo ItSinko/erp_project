@@ -396,6 +396,12 @@ return [
                             'text' => 'Mingguan',
                             'auth' => [28],
                             'url'  => '/laporan_mingguan',
+                        ],
+                        [
+                            'icon' => 'far fa-circle',
+                            'text' => 'Bulanan',
+                            'auth' => [28],
+                            'url'  => '/laporan_bulanan',
                         ]
                     ],
                 ],
