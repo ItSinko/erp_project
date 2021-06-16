@@ -1293,9 +1293,171 @@ class KesehatanController extends Controller
         echo json_encode($data);
     }
 
-    public function laporan_divisi()
+    public function laporan_harian()
     {
+        $karyawan = karyawan::all();
         $divisi = Divisi::all();
-        return view('page.kesehatan.laporan_divisi', ['divisi' => $divisi]);
+        return view('page.kesehatan.laporan_harian', ['karyawan' => $karyawan, 'divisi' => $divisi]);
+    }
+
+
+
+    public function laporan_harian_data($filter, $id, $start, $end)
+    {
+
+        if ($filter == 'divisi') {
+            $data = Kesehatan_harian::wherehas('karyawan', function ($divisi) use ($id) {
+                $divisi->where('divisi_id', $id);
+            })
+                ->orderBy('tgl_cek', 'DESC')
+                ->whereBetween('tgl_cek', [$start, $end]);
+        } else if ($filter == 'karyawan') {
+            $data = Kesehatan_harian::with('karyawan')
+                ->orderBy('tgl_cek', 'DESC')
+                ->where('karyawan_id', $id)
+                ->whereBetween('tgl_cek', [$start, $end]);
+        } else {
+            $data = Kesehatan_harian::wherehas('karyawan', function ($divisi) {
+                $divisi->where('divisi_id', '0');
+            })
+                ->orderBy('tgl_cek', 'DESC')
+                ->whereBetween('tgl_cek', [$start, $end]);
+        }
+
+
+        return datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('x', function ($data) {
+                return $data->karyawan->divisi->nama;
+            })
+            ->addColumn('y', function ($data) {
+                return $data->karyawan->nama;
+            })
+            ->addColumn('pagi', function ($data) {
+                if ($data->suhu_pagi != NULL) {
+                    return $data->suhu_pagi;
+                } else {
+                    return '0 %';
+                }
+            })
+            ->addColumn('siang', function ($data) {
+                if ($data->suhu_siang != NULL) {
+                    return $data->suhu_siang;
+                } else {
+                    return '0 %';
+                }
+            })
+            ->addColumn('sp', function ($data) {
+                if ($data->spo2 != NULL) {
+                    return $data->spo2;
+                } else {
+                    return '0 %';
+                }
+            })
+            ->addColumn('prx', function ($data) {
+                if ($data->pr != NULL) {
+                    return $data->pr;
+                } else {
+                    return '0 %';
+                }
+            })
+            ->addColumn('button', function ($data) {
+                $btn = '<div class="inline-flex"><button type="button" id="edit" class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-edit"></i></button></div>';
+                $btn = $btn . ' <div class="inline-flex"><button type="button" class="btn btn-block btn-danger karyawan-img-small" style="border-radius:50%;" data-toggle="modal" data-target="#delete" ><i class="fas fa-trash"></i></button></div>';
+                return $btn;
+            })
+            ->rawColumns(['button'])
+            ->make(true);
+    }
+
+    public function laporan_mingguan()
+    {
+        $karyawan = karyawan::all();
+        $divisi = Divisi::all();
+        return view('page.kesehatan.laporan_mingguan', ['karyawan' => $karyawan, 'divisi' => $divisi]);
+    }
+
+    public function laporan_mingguan_data($tabel, $filter, $id, $tgl1, $tgl2)
+    {
+
+        // if ($filter == 'divisi' && $tabel == 'rapid') {
+        //     $data = kesehatan_mingguan_rapid::wherehas('karyawan', function ($divisi) use ($id) {
+        //         $divisi->where('divisi_id', $id);
+        //     })
+        //         ->orderBy('tgl_cek', 'DESC')
+        //         ->whereBetween('tgl_cek', [$start, $end]);
+        // } else if ($filter ==  'divisi' && $tabel == 'tensi') {
+        //     $data = kesehatan_mingguan_tensi::wherehas('karyawan', function ($divisi) use ($id) {
+        //         $divisi->where('divisi_id', $id);
+        //     })
+        //         ->orderBy('tgl_cek', 'DESC')
+        //         ->whereBetween('tgl_cek', [$start, $end]);
+
+        //     return datatables::of($data)
+        //         ->addIndexColumn()
+        //         ->addColumn('x', function ($data) {
+        //             return $data->karyawan->divisi->nama;
+        //         })
+        //         ->addColumn('hasil', function ($data) {
+        //             if ($data->sistolik < 130 && $data->diastolik < 85) {
+        //                 return 'Normal';
+        //             } else if ($data->sistolik >= 130 && $data->sistolik <= 139 || $data->diastolik >= 85  && $data->diastolik >= 87) {
+        //                 return 'Pra-Hipertensi';
+        //             } else if ($data->sistolik >= 140 && $data->sistolik <= 159 || $data->diastolik >= 90  && $data->diastolik >= 99) {
+        //                 return 'Stadium 1 Hipertensi';
+        //             } else if ($data->sistolik >= 160  || $data->diastolik >= 100) {
+        //                 return 'Stadium 2 Hipertensi';
+        //             }
+        //         })
+        //         ->addColumn('sis', function ($data) {
+        //             return $data->sistolik . ' mmHg';
+        //         })
+        //         ->addColumn('dias', function ($data) {
+        //             return $data->diastolik . ' mmHg';
+        //         })
+        //         ->make(true);
+        // } else if ($filter == 'karyawan' && $tabel == 'rapid') {
+        //     $data = kesehatan_mingguan_rapid::with('karyawan')
+        //         ->orderBy('tgl_cek', 'DESC')
+        //         ->where('karyawan_id', $id)
+        //         ->whereBetween('tgl_cek', [$start, $end]);
+        // } else if ($filter == 'karyawan' && $tabel == 'tensi') {
+        //     $data = kesehatan_mingguan_tensi::with('karyawan')
+        //         ->orderBy('tgl_cek', 'DESC')
+        //         ->where('karyawan_id', $id)
+        //         ->whereBetween('tgl_cek', [$start, $end]);
+        // }
+
+        $data = kesehatan_mingguan_tensi::wherehas('karyawan', function ($divisi) use ($id) {
+            $divisi->where('divisi_id', $id);
+        })
+            ->orderBy('tgl_cek', 'DESC')
+            ->whereBetween('tgl_cek', [$start, $end]);
+        return datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('x', function ($data) {
+                return $data->karyawan->divisi->nama;
+            })
+            ->addColumn('y', function ($data) {
+                return $data->karyawan->nama;
+            })
+            ->addColumn('hasil', function ($data) {
+                if ($data->sistolik < 130 && $data->diastolik < 85) {
+                    return 'Normal';
+                } else if ($data->sistolik >= 130 && $data->sistolik <= 139 || $data->diastolik >= 85  && $data->diastolik >= 87) {
+                    return 'Pra-Hipertensi';
+                } else if ($data->sistolik >= 140 && $data->sistolik <= 159 || $data->diastolik >= 90  && $data->diastolik >= 99) {
+                    return 'Stadium 1 Hipertensi';
+                } else if ($data->sistolik >= 160  || $data->diastolik >= 100) {
+                    return 'Stadium 2 Hipertensi';
+                }
+            })
+            ->addColumn('sis', function ($data) {
+                return $data->sistolik . ' mmHg';
+            })
+            ->addColumn('dias', function ($data) {
+                return $data->diastolik . ' mmHg';
+            })
+            ->make(true);
     }
 }
