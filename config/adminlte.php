@@ -396,7 +396,8 @@ return [
                             'text' => 'Mingguan',
                             'auth' => [28],
                             'url'  => '/laporan_mingguan',
-                        ]
+                        ],
+
                     ],
                 ],
             ],

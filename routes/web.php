@@ -138,8 +138,7 @@ Route::post('/obat/aksi_tambah', 'KesehatanController@obat_aksi_tambah');
 Route::get('/laporan_harian', 'KesehatanController@laporan_harian');
 Route::get('/laporan_mingguan', 'KesehatanController@laporan_mingguan');
 Route::get('/laporan_harian/data/{filter}/{id}/{start}/{end}', 'KesehatanController@laporan_harian_data');
-Route::get('/laporan_mingguan/data/{tabel}', 'KesehatanController@laporan_mingguan_data');
-
+Route::get('/laporan_mingguan/data/{filter_mingguan}/{filter}/{id}/{start}/{end}', 'KesehatanController@laporan_mingguan_data');
 
 //Karyawan
 Route::group(['prefix' => '/karyawan', 'middleware' => 'auth'], function () {
@@ -603,7 +602,7 @@ Route::get('/doc/test', function (Request $request) {
 });
 
 //GUDANG
-Route::get('gudang_view', function(){
+Route::get('gudang_view', function () {
     return view('page.gudang.gudang');
 });
 Route::get('/gudang', 'GudangController@index')->name('gudang');

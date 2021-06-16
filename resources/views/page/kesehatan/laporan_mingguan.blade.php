@@ -140,6 +140,7 @@
                 <th></th>
                 <th></th>
                 <th></th>
+                <th></th>
                 <th colspan="2">Pengukuran Tensi</th>
                 <th></th>
               </tr>
@@ -229,11 +230,15 @@
       if (filter_mingguan == 'tensi') {
         $('#tensi_card').removeAttr('hidden');
         $('#rapid_card').attr('hidden', 'hidden');
-      } else {
+        $('#tensi_tabel').removeAttr('style');
+        $('#tensi_tabel').DataTable().ajax.url('/laporan_mingguan/data/' + filter_mingguan + '/' + filter + '/' + id + '/' + tgl_1 + '/' + tgl_2).load();
+
+      } else if (filter_mingguan == 'rapid') {
         $('#rapid_card').removeAttr('hidden');
         $('#tensi_card').attr('hidden', 'hidden');
+        $('#rapid').removeAttr('style');
+        $('#rapid').DataTable().ajax.url('/laporan_mingguan/data/' + filter_mingguan + '/' + filter + '/' + id + '/' + tgl_1 + '/' + tgl_2).load();
       }
-      $('#tensi_tabel').DataTable().ajax.url('/laporan_mingguan/data/' + tensi + '/' + filter + '/' + id + '/' + tgl_1 + '/' + tgl_2).load();
       //********
     } else if (date1 >= date2 || id == "" || filter == "") {
       $('#alert').removeAttr('hidden');
@@ -243,11 +248,15 @@
       if (filter_mingguan == 'tensi') {
         $('#tensi_card').removeAttr('hidden');
         $('#rapid_card').attr('hidden', 'hidden');
-      } else {
+        $('#tensi_tabel').removeAttr('style');
+        $('#tensi_tabel').DataTable().ajax.url('/laporan_mingguan/data/' + filter_mingguan + '/' + filter + '/' + id + '/' + tgl_1 + '/' + tgl_2).load();
+
+      } else if (filter_mingguan == 'rapid') {
         $('#rapid_card').removeAttr('hidden');
         $('#tensi_card').attr('hidden', 'hidden');
+        $('#rapid').removeAttr('style');
+        $('#rapid').DataTable().ajax.url('/laporan_mingguan/data/' + filter_mingguan + '/' + filter + '/' + id + '/' + tgl_1 + '/' + tgl_2).load();
       }
-      $('#tensi_tabel').DataTable().ajax.url('/laporan_mingguan/data/' + tensi + '/' + filter + '/' + id + '/' + tgl_1 + '/' + tgl_2).load();
       //********
     } else {
       $('#alert').removeAttr('hidden');
@@ -255,11 +264,15 @@
     console.log(filter);
     console.log(filter_mingguan);
     console.log(id);
+    console.log(tgl_1);
+    console.log(tgl_2);
+
   });
 
-  // $('#reset').click(function() {
-  //   $('#tensi_tabel').DataTable().ajax.url('/laporan_mingguan/data/' + '' + '/' + '' + ' / ' + 0 + ' / ' + 0 + ' / ' + 0).load();
-  // });
+  $('#reset').click(function() {
+    $('#tensi_tabel').DataTable().ajax.url('/laporan_mingguan/data/' + 'y' + '/' + 'x' + '/' + 0 + '/' + 0 + '/' + 0).load();
+    $('#rapid').DataTable().ajax.url('/laporan_mingguan/data/' + 'y' + '/' + 'x' + '/' + 0 + '/' + 0 + '/' + 0).load();
+  });
 </script>
 <script>
   $(function() {
@@ -269,7 +282,7 @@
       language: {
         processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
       },
-      ajax: '/laporan_mingguan/data/' + 'tensi' + '/' + '' + '/' + 0 + '/' + 0 + '/' + 0,
+      ajax: '/laporan_mingguan/data/' + 'y' + '/' + 'x' + '/' + 0 + '/' + 0 + '/' + 0,
       columns: [{
           data: 'DT_RowIndex',
           orderable: false,
@@ -292,6 +305,41 @@
         },
         {
           data: 'dias'
+        },
+        {
+          data: 'keterangan'
+        },
+      ]
+    });
+  });
+
+  $(function() {
+    var rapid_tabel = $('#rapid').DataTable({
+      processing: true,
+      serverSide: true,
+      language: {
+        processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
+      },
+      ajax: '/laporan_mingguan/data/' + 'y' + '/' + 'x' + '/' + 0 + '/' + 0 + '/' + 0,
+      columns: [{
+          data: 'DT_RowIndex',
+          orderable: false,
+          searchable: false
+        },
+        {
+          data: 'x'
+        },
+        {
+          data: 'tgl_cek'
+        },
+        {
+          data: 'x'
+        },
+        {
+          data: 'x'
+        },
+        {
+          data: 'hasil'
         },
         {
           data: 'keterangan'
