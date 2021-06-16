@@ -40,6 +40,7 @@ Route::post('/logout', function () {
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/form-template', 'ItController@form_template')->name('form-template');
     Route::get('/template_form_delete', 'ItController@template_form_delete')->name('template-form-delete');
+    Route::get('/template_form_cancel', 'ItController@template_form_cancel')->name('template-form-cancel');
 });
 
 
@@ -429,6 +430,7 @@ Route::group(['prefix' => '/perakitan', 'middleware' => 'auth'], function () {
         Route::get('/create/{bppb_id}', 'ProduksiController@perakitan_laporan_create')->name('perakitan.laporan.create');   /* Create */
         Route::get('/create/get_kode_perakitan_exist_not_in/{bppb}/{no_seri}', 'GetController@get_kode_perakitan_exist_not_in');
         Route::get('/create/get_alias_operator/{acc}', 'GetController@get_alias_operator');
+        Route::get('/create/get_karyawan_divisi/{arr}', 'GetController@get_karyawan_divisi');
         Route::get('/create/get_alias_exist/{id}/{alias}', 'GetController@get_alias_exist');
         Route::put('/store/{bppb_id}', 'ProduksiController@perakitan_laporan_store')->name('perakitan.laporan.store');
         Route::get('/edit/{id}', 'ProduksiController@perakitan_laporan_edit')->name('perakitan.laporan.edit');  /* Edit */

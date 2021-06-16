@@ -130,7 +130,7 @@
                   <div class="form-group row">
                     <label for="produk" class="col-sm-4 col-form-label" style="text-align:right;">Jumlah</label>
                     <div class="col-sm-3">
-                      <input type="number" class="form-control @error('jumlah') is-invalid @enderror" name="jumlah" id="jumlah" value="" disabled>
+                      <input type="number" class="form-control @error('jumlah') is-invalid @enderror" name="jumlah" id="jumlah" value="">
                       @if ($errors->has('jumlah'))
                       <span class="invalid-feedback" role="alert">{{$errors->first('jumlah')}}</span>
                       @endif
@@ -141,7 +141,7 @@
               </div>
               <div class="card-footer">
                 <span>
-                  <button type="button" class="btn btn-block btn-danger" style="width:200px;float:left;" disabled>Batal</button>
+                  <a class="cancelmodal" data-toggle="modal" data-target="#cancelmodal" data-href="/perakitan/hasil/{{$sh->id}}"><button type="button" class="btn btn-block btn-danger" style="width:200px;float:left;">Batal</button></a>
                 </span>
                 <span>
                   <button type="submit" class="btn btn-block btn-success btn" style="width:200px;float:right;" id="tambahdata" disabled>Tambahkan</button>
@@ -206,6 +206,20 @@
               </div>
             </div>
           </div>
+          <div class="modal fade" id="cancelmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+              <div class="modal-content">
+                <div class="modal-header" style="background-color:	#778899;">
+                  <h4 class="modal-title" id="myModalLabel" style="color:white;">Keluar Halaman</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body" id="cancel">
+
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </form>
     </div>
@@ -246,12 +260,13 @@
       var jum_rakit = "{{$sh->Bppb->countHasilPerakitan()}}";
       var jum_rencana = "{{$sh->Bppb->jumlah}}";
       var kuota = parseInt(jum_rencana) - (parseInt(jum_rakit) + parseInt(jumlah));
-
+      var datatables = "";
       var jumlah_id = $('input[id="jumlah"]');
       var message = $('span[id="jumlah-message"]');
       $('#tableitem tbody').empty();
-      console.log("kuota " + kuota + ", rakit " + jum_rakit + ", rencana " + jum_rencana + ", jumlah " + jumlah + " hasil " + (jum_rencana - (jum_rakit + jumlah)));
       if (jumlah) {
+        datatables = "";
+        $('#tableitem tbody').empty();
         if (kuota >= 0) {
           message.removeClass("invalid-feedback");
           jumlah_id.removeClass("is-invalid");
@@ -278,18 +293,19 @@
                         </div>
                         </td>
                         </tr>`;
-
-
                 }
                 console.log(datatables);
                 $("#tableitem").append(datatables);
               }
             });
           } else {
-            $("#tambahdata").attr('disabled', true);
+            datatables = "";
             $('#tableitem tbody').empty();
+            $("#tambahdata").attr('disabled', true);
           }
         } else if (kuota < 0) {
+          datatables = "";
+          $('#tableitem tbody').empty();
           $("#tambahdata").attr('disabled', true);
           message.addClass("invalid-feedback");
           jumlah_id.addClass("is-invalid");
@@ -297,6 +313,8 @@
           console.log(message.val());
         }
       } else {
+        datatables = "";
+        $('#tableitem tbody').empty();
         $("#tambahdata").attr('disabled', true);
       }
     });
@@ -344,6 +362,33 @@
         no_seri.removeClass("is-invalid");
         message.empty();
       }
+    });
+
+    $(document).on('click', '.cancelmodal', function(event) {
+      event.preventDefault();
+      var href = $(this).attr('data-href');
+      console.log(href);
+      $.ajax({
+        url: '/template_form_cancel',
+        beforeSend: function() {
+          $('#loader').show();
+        },
+        // return the result
+        success: function(result) {
+          $('#cancelmodal').modal("show");
+          $('#cancel').html(result).show();
+          $("#cancelform").attr("href", href);
+        },
+        complete: function() {
+          $('#loader').hide();
+        },
+        error: function(jqXHR, testStatus, error) {
+          console.log(error);
+          alert("Page " + href + " cannot open. Error:" + error);
+          $('#loader').hide();
+        },
+        timeout: 8000
+      })
     });
   })
 </script>

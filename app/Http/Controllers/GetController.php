@@ -232,6 +232,16 @@ class GetController extends Controller
         return $s;
     }
 
+    public function get_karyawan_divisi($arr)
+    {
+        $larr = explode(",", $arr);
+        $s = Karyawan::whereIn('divisi_id', $larr)
+            ->select('id', 'nama')
+            ->get();
+
+        echo json_encode($s);
+    }
+
     public function get_count_hasil_perakitan($id)
     {
         $s = HasilPerakitan::where('perakitan_id', $id)->count();
