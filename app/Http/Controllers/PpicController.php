@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Collection;
 use App\Events\Notification;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\DB;
 
 use App\User;
 use App\BillOfMaterial;
@@ -165,31 +166,34 @@ class PPICController extends Controller
         $detail_produk = DetailProduk::all();
         $produk_bom = ProdukBillOfMaterial::all();
 
-        return view('page.ppic.bom', compact('produk', 'detail_produk', 'produk_bom'));
+        return view('page.ppic.bom_show', compact('produk', 'detail_produk', 'produk_bom'));
     }
 
-    public function get_bom(Request $request)
+    public function get_bom(Request $request, $id)
     {
-        if ($request->detail_id != null) {
-            $event = Event::find($request->detail_id);
-            return DetailProduk::where('detail_produks.id', $event->detail_produk_id)->join('produk_bill_of_materials', 'detail_produk_id', 'detail_produks.id')->select('versi', 'produk_bill_of_materials.id')->get();
-        }
+        // if ($request->detail_id != null) {
+        //     $event = Event::find($request->detail_id);
+        //     return DetailProduk::where('detail_produks.id', $event->detail_produk_id)->join('produk_bill_of_materials', 'detail_produk_id', 'detail_produks.id')->select('versi', 'produk_bill_of_materials.id')->get();
+        // }
 
-        if ($request->produk_bill_of_material_id) {
-            $bom = BillOfMaterial::where('produk_bill_of_material_id', (int)$request->produk_bill_of_material_id)
-                ->join('part_gudang_part_engs', 'bill_of_materials.part_eng_id', '=', 'part_gudang_part_engs.kode_eng')
-                ->join('parts', 'part_gudang_part_engs.kode_gudang', '=', 'parts.kode')
-                ->join('part_engs', 'part_gudang_part_engs.kode_eng', '=', 'part_engs.kode_part')->select('part_engs.nama', 'bill_of_materials.jumlah', 'parts.jumlah as stok')->get();
-            return $bom;
-        }
-    }
+        // if ($request->produk_bill_of_material_id) {
+        //     $bom = BillOfMaterial::where('produk_bill_of_material_id', (int)$request->produk_bill_of_material_id)
+        //         ->join('part_gudang_part_engs', 'bill_of_materials.part_eng_id', '=', 'part_gudang_part_engs.kode_eng')
+        //         ->join('parts', 'part_gudang_part_engs.kode_gudang', '=', 'parts.kode')
+        //         ->join('part_engs', 'part_gudang_part_engs.kode_eng', '=', 'part_engs.kode_part')->select('part_engs.nama', 'bill_of_materials.jumlah', 'parts.jumlah as stok')->get();
+        //     return $bom;
+        // }
 
-    public function get_bom_version($id)
-    {
-        $bom_id = Bom_Version::where('detail_produk_id', $id)->get();
-        $bom_id = json_encode($bom_id);
-
-        return $bom_id;
+        $bom = DB::table('bill_of_materials')
+            ->where('produk_bill_of_material_id', '=', $id)
+            ->join('part_gudang_part_engs', 'bill_of_materials.part_eng_id', '=', 'part_gudang_part_engs.kode_eng')
+            ->join('part_engs', 'part_gudang_part_engs.kode_eng', '=', 'part_engs.kode_part')
+            ->join('parts', 'part_gudang_part_engs.kode_gudang', '=', 'parts.kode')
+            ->select('bill_of_materials.id', 'part_engs.nama', 'bill_of_materials.jumlah', 'parts.jumlah as stok')
+            ->get();
+        return DataTables::of($bom)
+            ->addindexColumn()
+            ->make(true);
     }
 
     public function bppb()
