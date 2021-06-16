@@ -7,16 +7,16 @@
 @stop
 
 @section('content')
+<div class="container-fluid">
 <div class="row">
     <div class="col-12">
-        <!-- Default box -->
         <div class="card">
             <div class="card-header">
-                <div class="input-group col-6">
+                <div class="input-group col-md-6">
                     <div class="input-group-prepend">
                         <label class="input-group-text" for="input">Search</label>
                     </div>
-                    <select class="select2" id="input">
+                    <select class="form-control select2" id="input">
                         <option selected>Choose...</option>
                         @foreach ($detail_produk as $d)
                         <optgroup label="{{ $d->nama }}">
@@ -30,8 +30,8 @@
                     </select>
                 </div>
             </div>
-            <div class="card-body" id="table" style="display: none;">
-                <table class="table table-bordered">
+            <div class="card-body" id="table">
+                <table class="table table-bordered" style="display: none;">
                     <thead>
                         <tr style="text-align: center;">
                             <th>#</th>
@@ -50,6 +50,7 @@
             </div>
         </div>
     </div>
+</div>
 </div>
 @endsection
 

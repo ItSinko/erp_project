@@ -590,14 +590,14 @@ return [
             'auth' => [24, 1],
             'submenu'   =>  [
                 [
-                    'text'  =>  'Pelaksanaan',
-                    'icon'  =>  'far fa-circle',
-                    'url'   =>  '/ppic/schedule?pelaksanaan=true'
-                ],
-                [
                     'text'  =>  'Penyusunan',
                     'icon'  =>  'far fa-circle',
-                    'url'   =>  '/ppic/schedule?penyusunan=true',
+                    'url'   =>  '/ppic/schedule?penyusunan=true'
+                ],
+                [
+                    'text'  =>  'Pelaksanaan',
+                    'icon'  =>  'far fa-circle',
+                    'url'   =>  '/ppic/schedule?pelaksanaan=true',
                 ],
                 [
                     'text'  =>  'Selesai',
