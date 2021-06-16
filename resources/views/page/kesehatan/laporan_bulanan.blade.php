@@ -6,10 +6,6 @@
 <h1 class="m-0 text-dark">Dashboard</h1>
 @stop
 
-@section('adminlte_css')
-
-@stop
-
 @section('content')
 <div class="row">
   <div class="col-lg-12">
@@ -69,9 +65,21 @@
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label for="inputPassword3" class="col-sm-2 col-form-label">Laporan</label>
-                    <div class="col-sm-10">
-                      <label for="inputPassword3" class="col-sm-10 col-form-label">Suhu Harian & SPO2</label>
+                    <label for="inputEmail3" class="col-sm-2 col-form-label">Laporan</label>
+                    <div class="col-sm-8" style="margin-top:7px;">
+                      <div class="icheck-success d-inline col-sm-4">
+                        <input type="radio" name="filter_mingguan" value="rapid">
+                        <label for="no">
+                          Berat Badan
+                        </label>
+                      </div>
+                      <div class="icheck-warning d-inline col-sm-4">
+                        <input type="radio" name="filter_mingguan" value="tensi">
+                        <label for="sample">
+                          GCU
+                        </label>
+                      </div>
+                      <span class="invalid-feedback" role="alert" id="kondisi-msg"></span>
                     </div>
                   </div>
                   <div class="form-group row">
@@ -120,22 +128,31 @@
       </div>
     </div>
   </div>
-  <div class="col-lg-12" id="harian_card">
+  <div class="col-lg-12" id="tensi_card" hidden>
     <div class="card">
       <div class="card-body">
         <div class='table-responsive'>
-          <h2>Harian</h2>
-          <table id="harian" class="table table-hover styled-table table-striped">
+          <h2>Berat Badan</h2>
+          <table id="tensi_tabel" class="table table-hover styled-table table-striped">
             <thead style="text-align: center;">
               <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th colspan="2">Pengukuran Tensi</th>
+                <th></th>
+              </tr>
+              <tr>
                 <th>No</th>
+                <th>Hasil</th>
                 <th>Tgl Pengecekan</th>
                 <th>Divisi</th>
                 <th>Nama</th>
-                <th>Pagi</th>
-                <th>Siang</th>
-                <th>SpO2 (%)</th>
-                <th>PR (bpm)</th>
+                <th>Sistolik</th>
+                <th>Diastolik</th>
+                <th>Catatan</th>
               </tr>
             </thead>
             <tbody style="text-align: center;">
@@ -145,19 +162,33 @@
       </div>
     </div>
   </div>
-
+  <div class="col-lg-12" id="rapid_card" hidden>
+    <div class="card">
+      <div class="card-body">
+        <div class='table-responsive'>
+          <h2>GCU</h2>
+          <table id="rapid" class="table table-hover styled-table table-striped">
+            <thead style="text-align: center;">
+              <tr>
+                <th>No</th>
+                <th>Pengecekan</th>
+                <th>Tgl Pengecekan</th>
+                <th>Divisi</th>
+                <th>Nama</th>
+                <th>Hasil Rapid</th>
+                <th>Catatan</th>
+              </tr>
+            </thead>
+            <tbody style="text-align: center;">
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-
-
 @stop
 @section('adminlte_js')
-<script src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-<script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.print.min.js "></script>
-
 <script>
   $(document).ready(function() {
     $('input[type=radio][name=filter]').on('change', function() {
@@ -172,6 +203,7 @@
   });
   $('#cari').click(function() {
     var filter = $("input[name='filter']:checked").val();
+    var filter_mingguan = $("input[name='filter_mingguan']:checked").val();
 
     if (filter == "divisi") {
       var id = $("#divisi_id").val();
@@ -193,60 +225,71 @@
     if (date1 > date2 || id == "" || filter == "") {
       $('#alert').removeAttr('hidden');
     } else if (date1 < date2) {
+      //********
       $('#alert').attr('hidden', 'hidden');
-      $('#harian').DataTable().ajax.url('/laporan_harian/data/' + filter + '/' + id + '/' + tgl_1 + '/' + tgl_2).load();
+      if (filter_mingguan == 'tensi') {
+        $('#tensi_card').removeAttr('hidden');
+        $('#rapid_card').attr('hidden', 'hidden');
+        $('#tensi_tabel').removeAttr('style');
+        $('#tensi_tabel').DataTable().ajax.url('/laporan_mingguan/data/' + filter_mingguan + '/' + filter + '/' + id + '/' + tgl_1 + '/' + tgl_2).load();
+
+      } else if (filter_mingguan == 'rapid') {
+        $('#rapid_card').removeAttr('hidden');
+        $('#tensi_card').attr('hidden', 'hidden');
+        $('#rapid').removeAttr('style');
+        $('#rapid').DataTable().ajax.url('/laporan_mingguan/data/' + filter_mingguan + '/' + filter + '/' + id + '/' + tgl_1 + '/' + tgl_2).load();
+      }
+      //********
     } else if (date1 >= date2 || id == "" || filter == "") {
       $('#alert').removeAttr('hidden');
     } else if (date1 <= date2) {
+      //********
       $('#alert').attr('hidden', 'hidden');
-      $('#harian').DataTable().ajax.url('/laporan_harian/data/' + filter + '/' + id + '/' + tgl_1 + '/' + tgl_2).load();
+      if (filter_mingguan == 'tensi') {
+        $('#tensi_card').removeAttr('hidden');
+        $('#rapid_card').attr('hidden', 'hidden');
+        $('#tensi_tabel').removeAttr('style');
+        $('#tensi_tabel').DataTable().ajax.url('/laporan_mingguan/data/' + filter_mingguan + '/' + filter + '/' + id + '/' + tgl_1 + '/' + tgl_2).load();
+
+      } else if (filter_mingguan == 'rapid') {
+        $('#rapid_card').removeAttr('hidden');
+        $('#tensi_card').attr('hidden', 'hidden');
+        $('#rapid').removeAttr('style');
+        $('#rapid').DataTable().ajax.url('/laporan_mingguan/data/' + filter_mingguan + '/' + filter + '/' + id + '/' + tgl_1 + '/' + tgl_2).load();
+      }
+      //********
     } else {
       $('#alert').removeAttr('hidden');
     }
-
     console.log(filter);
+    console.log(filter_mingguan);
     console.log(id);
+    console.log(tgl_1);
+    console.log(tgl_2);
+
   });
 
   $('#reset').click(function() {
-    $('#harian').DataTable().ajax.url('/laporan_harian/data/' + '' + ' / ' + 0 + ' / ' + 0 + ' / ' + 0).load();
+    $('#tensi_tabel').DataTable().ajax.url('/laporan_mingguan/data/' + 'y' + '/' + 'x' + '/' + 0 + '/' + 0 + '/' + 0).load();
+    $('#rapid').DataTable().ajax.url('/laporan_mingguan/data/' + 'y' + '/' + 'x' + '/' + 0 + '/' + 0 + '/' + 0).load();
   });
 </script>
-<!-- <script>
-  $(document).ready(function() {
-    $('#harian').DataTable({
-      "paging": false,
-      "ordering": false,
-      "searching": false,
-      "info": false
-    });
-  });
-</script> -->
 <script>
-  id = 0;
   $(function() {
-    var harian = $('#harian').DataTable({
+    var tensi_tabel = $('#tensi_tabel').DataTable({
       processing: true,
-      dom: 'Bfrtip',
       serverSide: true,
       language: {
         processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
       },
-      buttons: [{
-          extend: 'excel',
-          title: 'Laporan Kesehatan Harian',
-          text: '<i class="fas fa-calendar-alt"></i'
-        },
-        {
-          extend: 'print',
-          title: 'Laporan Kesehatan Harian'
-        },
-      ],
-      ajax: '/laporan_harian/data/' + '' + ' / ' + 0 + ' / ' + 0 + ' / ' + 0,
+      ajax: '/laporan_mingguan/data/' + 'y' + '/' + 'x' + '/' + 0 + '/' + 0 + '/' + 0,
       columns: [{
           data: 'DT_RowIndex',
           orderable: false,
           searchable: false
+        },
+        {
+          data: 'hasil'
         },
         {
           data: 'tgl_cek'
@@ -258,93 +301,57 @@
           data: 'y'
         },
         {
-          data: 'pagi',
-          render: function(data) {
-            $l = '<br><span class="badge bg-danger">Hiportemia</span>';
-            $n = '<br><span class="badge bg-success">Normal</span>';
-            $w = '<br><span class="badge bg-warning">Hiperpireksia</span>';
-            $i = '<br><span class="badge bg-info">Hiperpireksia</span>';
-            if (data > 40) {
-              return data + ' °C' + $w;
-            } else if (data < 35) {
-              return data + ' °C' + $l;
-            } else if (data >= 35 && data <= 37.5) {
-              return data + ' °C' + $n;
-            } else if (data >= 37.6 && data <= 40) {
-              return data + ' °C' + $i;
-            } else {
-              return '';
-            }
-          }
+          data: 'sis'
         },
         {
-          data: 'siang',
-          render: function(data) {
-            $l = '<br><span class="badge bg-danger">Hiportemia</span>';
-            $n = '<br><span class="badge bg-success">Normal</span>';
-            $w = '<br><span class="badge bg-warning">Hiperpireksia</span>';
-            $i = '<br><span class="badge bg-info">Hiperpireksia</span>';
-
-            if (data > 40) {
-              return data + ' °C' + $w;
-            } else if (data < 35) {
-              return data + ' °C' + $l;
-            } else if (data >= 35 && data <= 37.5) {
-              return data + ' °C' + $n;
-            } else if (data >= 37.6 && data <= 40) {
-              return data + ' °C' + $i;
-            } else {
-              return '';
-            }
-          }
+          data: 'dias'
         },
         {
-          data: 'sp',
-          render: function(data) {
-            $l = '<br><span class="badge bg-danger">Rendah</span>';
-            $n = '<br><span class="badge bg-success">Normal</span>';
-            $w = '<br><span class="badge bg-warning">Tinggi</span>';
-            if (data > 100) {
-              return data + ' %' + $w;
-            } else if (data < 59) {
-              return data + ' %' + $l;
-            } else if (data >= 60 || data <= 100) {
-              return data + ' %' + $n;
-            } else {
-              return '';
-            }
-          }
+          data: 'keterangan'
         },
-        {
-          data: 'prx',
-          render: function(data) {
-            $l = '<br><span class="badge bg-danger">Rendah</span>';
-            $n = '<br><span class="badge bg-success">Normal</span>';
-            $w = '<br><span class="badge bg-warning">Tinggi</span>';
-            if (data > 100) {
-              return data + ' bpm' + $w;
-            } else if (data < 59) {
-              return data + ' bpm' + $l;
-            } else if (data >= 60 || data <= 100) {
-              return data + ' bpm' + $n;
-            } else {
-              return '';
-            }
-
-          }
-        }
       ]
     });
+  });
 
-
-
-
+  $(function() {
+    var rapid_tabel = $('#rapid').DataTable({
+      processing: true,
+      serverSide: true,
+      language: {
+        processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
+      },
+      ajax: '/laporan_mingguan/data/' + 'y' + '/' + 'x' + '/' + 0 + '/' + 0 + '/' + 0,
+      columns: [{
+          data: 'DT_RowIndex',
+          orderable: false,
+          searchable: false
+        },
+        {
+          data: 'x'
+        },
+        {
+          data: 'tgl_cek'
+        },
+        {
+          data: 'x'
+        },
+        {
+          data: 'x'
+        },
+        {
+          data: 'hasil'
+        },
+        {
+          data: 'keterangan'
+        },
+      ]
+    });
   });
 </script>
-<script>
-  $(function() {
-    $('input[name="dates"]').daterangepicker();
-  })
-</script>
-
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<script src="https://cdn.datatables.net/buttons/1.0.3/js/dataTables.buttons.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.0.3/css/buttons.dataTables.min.css">
+<script src="/vendor/datatables/buttons.server-side.js"></script>
 @endsection

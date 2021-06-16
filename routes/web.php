@@ -137,6 +137,7 @@ Route::post('/obat/aksi_tambah', 'KesehatanController@obat_aksi_tambah');
 //Laporan
 Route::get('/laporan_harian', 'KesehatanController@laporan_harian');
 Route::get('/laporan_mingguan', 'KesehatanController@laporan_mingguan');
+Route::get('/laporan_bulanan', 'KesehatanController@laporan_bulanan');
 Route::get('/laporan_harian/data/{filter}/{id}/{start}/{end}', 'KesehatanController@laporan_harian_data');
 Route::get('/laporan_mingguan/data/{filter_mingguan}/{filter}/{id}/{start}/{end}', 'KesehatanController@laporan_mingguan_data');
 

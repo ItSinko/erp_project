@@ -1507,4 +1507,11 @@ class KesehatanController extends Controller
                 ->make(true);
         }
     }
+
+    public function laporan_bulanan()
+    {
+        $karyawan = karyawan::all();
+        $divisi = Divisi::all();
+        return view('page.kesehatan.laporan_bulanan', ['karyawan' => $karyawan, 'divisi' => $divisi]);
+    }
 }
