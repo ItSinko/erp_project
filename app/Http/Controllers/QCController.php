@@ -99,6 +99,9 @@ class QCController extends Controller
             ->editColumn('tanggal', function ($s) {
                 return Carbon::createFromFormat('Y-m-d', $s->tanggal)->format('d-m-Y');
             })
+            ->editColumn('no_seri', function ($s) {
+                return $s->Perakitan->alias_tim .  $s->no_seri;
+            })
             ->editColumn('kondisi_fisik_bahan_baku', function ($s) {
                 $btn = "";
                 if ($s->kondisi_fisik_bahan_baku == "ok") {
@@ -778,7 +781,7 @@ class QCController extends Controller
         return DataTables::of($s)
             ->addIndexColumn()
             ->addColumn('no_seri', function ($s) {
-                return $s->HasilPerakitan->no_seri;
+                return $s->HasilPerakitan->Perakitan->alias_tim . $s->HasilPerakitan->no_seri;
             })
             ->editColumn('no_barcode', function ($s) {
                 $b = "";
@@ -873,22 +876,21 @@ class QCController extends Controller
     public function pengujian_monitoring_proses_store(Request $request, $bppb_id)
     {
         $v = [];
-        echo ($request->brc);
         if ($request->brc == "tidak") {
             $v = Validator::make(
                 $request->all(),
                 [
                     'tanggal_laporan' => 'required',
                     'karyawan_id' => 'required',
-                    'no_seri' => 'required',
-                    'tindak_lanjut' => 'required',
+                    'no_seri.*' => 'required',
+                    'tindak_lanjut.*' => 'required',
                     'hasil' => 'required',
                 ],
                 [
                     'tanggal_laporan.required' => "Tanggal harus diisi",
                     'no_seri.*.required' => "No Seri harus diisi",
                     'karyawan_id.required' => "Karyawan harus dipilih",
-                    'tindak_lanjut.required' => "Tindak Lanjut harus dipilih",
+                    'tindak_lanjut.*.required' => "Tindak Lanjut harus dipilih",
                     'hasil.required' => "Hasil harus dipilih",
                 ]
             );
@@ -899,17 +901,25 @@ class QCController extends Controller
                     'tanggal_laporan' => 'required',
                     'karyawan_id' => 'required',
                     'no_seri' => 'required',
-                    'tindak_lanjut' => 'required',
+                    'tindak_lanjut.*' => 'required',
                     'no_barcode.*' => 'required',
                     'hasil' => 'required',
+                    'inisial_produk' => 'required',
+                    'tipe_produk' => 'required',
+                    'waktu_produksi' => 'required',
+                    'urutan_bb' => 'required'
                 ],
                 [
                     'tanggal_laporan.required' => "Tanggal harus diisi",
                     'no_seri.*.required' => "No Seri harus diisi",
                     'karyawan_id.required' => "Karyawan harus dipilih",
-                    'tindak_lanjut.required' => "Tindak Lanjut harus dipilih",
+                    'tindak_lanjut.*.required' => "Tindak Lanjut harus dipilih",
                     'no_barcode.*.required' => "No Barcode harus diisi",
                     'hasil.required' => "Hasil harus dipilih",
+                    'inisial_produk.required' => 'Barcode harus diisi',
+                    'tipe_produk.required' => 'Barcode harus diisi',
+                    'waktu_produksi.required' => 'Barcode harus diisi',
+                    'urutan_bb.required' => 'Barcode harus diisi'
                 ]
             );
         }
@@ -917,11 +927,15 @@ class QCController extends Controller
         if ($v->fails()) {
             return redirect()->back()->withErrors($v);
         } else {
-
+            $alias_barcode = "";
+            if ($request->brc == "ya") {
+                $alias_barcode = $request->inisial_produk . "/" . $request->tipe_produk . "/" . $request->waktu_produksi . "/" . $request->urutan_bb;
+            }
             $c = MonitoringProses::create([
                 'bppb_id' => $bppb_id,
                 'tanggal' => $request->tanggal_laporan,
                 'karyawan_id' => $request->karyawan_id,
+                'alias_barcode' => $alias_barcode,
                 'user_id' => Auth::user()->id
             ]);
 

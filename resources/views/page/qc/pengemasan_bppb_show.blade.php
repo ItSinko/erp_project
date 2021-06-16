@@ -100,7 +100,7 @@
                             <tr>
                                 <td>{{$loop->iteration}}</td>
                                 <td>{{$i->HasilPerakitan->no_seri}}</td>
-                                <td></td>
+                                <td>{{str_replace("/", "", $i->Pengemasan->alias_barcode)}}{{$i->no_barcode}}</td>
                                 <td>
                                     @if($i->kondisi_unit == "baik")
                                     <i class="fas fa-check-circle" style="color:green;"></i>

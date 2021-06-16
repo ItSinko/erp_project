@@ -64,6 +64,13 @@
                                 </div>
                             </div>
 
+                            <div class="row">
+                                <label for="no_seri" class="col-sm-5 col-form-label">Kode Perakitan</label>
+                                <div class="col-sm-7 col-form-label" style="text-align:right;">
+                                    {{$s->Perakitan->alias_tim}}{{$s->no_seri}}
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -234,14 +241,64 @@
         var countStatus = "{{$s->countStatus('perbaikan_pemeriksaan_terbuka')}}";
         console.log(countStatus);
         $('input[type="radio"][name="kondisi_fisik_bahan_baku"]').on("change", function() {
+            var kspp = $('input[type="radio"][name="kondisi_saat_proses_perakitan"]:checked').val();
             if (this.value == 'nok') {
                 $("input[name='hasil_terbuka'][value='nok']").prop("checked", true);
+                $('select').val('').trigger('change');
+                $("select option[value='ok']").attr('disabled', true);
+                if (countStatus < 2) {
+                    $("select option[value='operator']").attr('disabled', false);
+                } else if (countStatus >= 2) {
+                    $("select option[value='produk_spesialis']").attr('disabled', false);
+                }
+            } else if (this.value == 'ok') {
+                if (kspp == 'ok') {
+                    $("input[name='hasil_terbuka'][value='ok']").prop("checked", true);
+                    $('select').val('').trigger('change');
+                    $("select option[value='ok']").attr('disabled', false);
+                    $("select option[value='operator']").attr('disabled', true);
+                    $("select option[value='produk_spesialis']").attr('disabled', true);
+                } else if (kspp == 'nok') {
+                    $("input[name='hasil_terbuka'][value='nok']").prop("checked", true);
+                    $('select').val('').trigger('change');
+                    $("select option[value='ok']").attr('disabled', true);
+                    if (countStatus < 2) {
+                        $("select option[value='operator']").attr('disabled', false);
+                    } else if (countStatus >= 2) {
+                        $("select option[value='produk_spesialis']").attr('disabled', false);
+                    }
+                }
             }
         });
 
         $('input[type="radio"][name="kondisi_saat_proses_perakitan"]').on("change", function() {
+            var kfbb = $('input[type="radio"][name="kondisi_fisik_bahan_baku"]:checked').val();
             if (this.value == 'nok') {
                 $("input[name='hasil_terbuka'][value='nok']").prop("checked", true);
+                $('select').val('').trigger('change');
+                $("select option[value='ok']").attr('disabled', true);
+                if (countStatus < 2) {
+                    $("select option[value='operator']").attr('disabled', false);
+                } else if (countStatus >= 2) {
+                    $("select option[value='produk_spesialis']").attr('disabled', false);
+                }
+            } else if (this.value == 'ok') {
+                if (kfbb == 'ok') {
+                    $("input[name='hasil_terbuka'][value='ok']").prop("checked", true);
+                    $('select').val('').trigger('change');
+                    $("select option[value='ok']").attr('disabled', false);
+                    $("select option[value='operator']").attr('disabled', true);
+                    $("select option[value='produk_spesialis']").attr('disabled', true);
+                } else if (kfbb == 'nok') {
+                    $("input[name='hasil_terbuka'][value='nok']").prop("checked", true);
+                    $('select').val('').trigger('change');
+                    $("select option[value='ok']").attr('disabled', true);
+                    if (countStatus < 2) {
+                        $("select option[value='operator']").attr('disabled', false);
+                    } else if (countStatus >= 2) {
+                        $("select option[value='produk_spesialis']").attr('disabled', false);
+                    }
+                }
             }
         });
 

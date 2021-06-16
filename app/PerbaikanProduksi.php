@@ -33,8 +33,8 @@ class PerbaikanProduksi extends Model
         return $this->belongsToMany(HasilPengemasan::class, 'perbaikan_produksi_pengemasans')->withTimestamps();
     }
 
-    public function PartEng()
+    public function BillOfMaterial()
     {
-        return $this->belongsToMany(PartEng::class, 'perbaikan_produksi_parts', 'perbaikan_produksi_id', 'part_id')->withTimestamps();
+        return $this->belongsToMany(BillOfMaterial::class, 'perbaikan_produksi_parts', 'perbaikan_produksi_id', 'bill_of_material_id')->withTimestamps();
     }
 }

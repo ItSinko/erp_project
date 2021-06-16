@@ -88,7 +88,7 @@
                                                 <thead style="text-align: center;">
                                                     <tr>
                                                         <th rowspan="2">No</th>
-                                                        <th rowspan="2">No Seri</th>
+                                                        <th rowspan="2">Kode Perakitan</th>
                                                         <th rowspan="2">Barcode</th>
                                                         <th rowspan="2">Kondisi Unit</th>
                                                         @foreach($c as $cps)
@@ -114,7 +114,7 @@
                                                             <input type="text" name="hasil_pengemasan_id[{{$loop->iteration - 1}}]" id="hasil_pengemasan_id" value="{{$i->id}}" hidden>{{$i->HasilPerakitan->no_seri}}
                                                         </td>
                                                         <td>
-                                                            {{$i->no_barcode}}
+                                                            {{str_replace('/', '', $i->Pengemasan->alias_barcode)}}{{$i->no_barcode}}
                                                         </td>
                                                         <td>
                                                             @if($i->kondisi_unit == "tidak")

@@ -59,7 +59,7 @@
                         <div class="form-group row">
                             <label for="no_seri" class="col-sm-4 col-form-label" style="text-align:right;">Kode Perakitan</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" name="no_seri" id="no_seri" value="{{$s->Perakitan->alias_tim}} {{$s->no_seri}}" style="width: 30%;" readonly>
+                                <input type="text" class="form-control" name="no_seri" id="no_seri" value="{{$s->Perakitan->alias_tim}}{{$s->no_seri}}" style="width: 30%;" readonly>
                                 @if ($errors->has('no_seri'))
                                 <span class="invalid-feedback" role="alert">{{$errors->first('no_seri')}}</span>
                                 @endif
@@ -145,7 +145,7 @@
                             <label for="realisasi_pengerjaan" class="col-sm-4 col-form-label" style="text-align:right;">Keperluan Part</label>
                             <div class="col-sm-8">
                                 @foreach($bom as $i)
-                                <div class="form-check">
+                                <div class="form-check col-form-label">
                                     <input class="form-check-input" type="checkbox" value="{{$i->bill_of_material_id}}" name="part[]" id="part">
                                     <label class="form-check-label" for="part">
                                         {{$i->BillOfMaterial->part_eng_id}} - {{$i->BillOfMaterial->PartEng->nama}}

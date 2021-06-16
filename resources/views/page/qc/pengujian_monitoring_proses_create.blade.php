@@ -25,7 +25,38 @@
     <div class="container-fluid">
         <div class="row">
             <!-- left column -->
-            <div class="col-md-12">
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h3><i class="fas fa-info-circle"></i>&nbsp;Informasi</h3><br>
+                        <div class="form-horizontal">
+                            <div class="row">
+                                <label for="no_seri" class="col-sm-6 col-form-label">No BPPB</label>
+                                <div class="col-sm-6 col-form-label" style="text-align:right;">
+                                    {{$b->no_bppb}}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <label for="no_seri" class="col-sm-4 col-form-label">Produk</label>
+                                <div class="col-sm-8 col-form-label" style="text-align:right;">
+                                    {{$b->DetailProduk->nama}}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <label for="tanggal" class="col-sm-6 col-form-label">Jumlah</label>
+                                <div class="col-sm-6 col-form-label" style="text-align:right;">
+                                    {{$b->jumlah}}
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9">
                 @if(session()->has('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     <strong><i class="fas fa-check"></i></strong> {{session()->get('success')}}
@@ -53,41 +84,18 @@
                         <h3 class="card-title" style="color:white;"><i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;Tambahkan Monitoring Proses</h3>
                     </div>
                     <div class="card-body">
-
                         <div class="col-md-12">
                             <form action="{{ route('pengujian.monitoring_proses.store', ['bppb_id' => $bppb_id]) }}" method="post" enctype="multipart/form-data">
                                 {{ csrf_field() }}
                                 {{ method_field('PUT') }}
-                                <h3>Info BPPB</h3>
                                 <div class="form-horizontal">
-                                    <div class="form-group row">
-                                        <label for="no_bppb" class="col-sm-4 col-form-label" style="text-align:right;">No BPPB</label>
-                                        <div class="col-sm-8">
-                                            <input type="text" class="form-control" name="no_bppb" id="no_bppb" value="{{$b->no_bppb}}" style="width: 50%;" readonly>
-
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label for="nama_produk" class="col-sm-4 col-form-label" style="text-align:right;">Nama Produk</label>
-                                        <div class="col-sm-8">
-                                            <input type="text" class="form-control" name="nama_produk" id="nama_produk" value="{{old('nama_produk', $b->DetailProduk->nama)}}" style="width: 50%;" readonly>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label for="jumlah" class="col-sm-4 col-form-label" style="text-align:right;">Jumlah Rencana Produksi</label>
-                                        <div class="col-sm-8">
-                                            <input type="text" class="form-control" name="jumlah" id="jumlah" value="{{old('jumlah', $b->jumlah)}}" style="width: 10%;" readonly>
-                                        </div>
-                                    </div>
 
                                     <h3>Data Monitoring Proses</h3>
                                     <div class="form-horizontal">
                                         <div class="form-group row">
                                             <label for="tanggal_laporan" class="col-sm-4 col-form-label" style="text-align:right;">Tanggal Laporan</label>
                                             <div class="col-sm-8">
-                                                <input type="date" class="form-control  @error('tanggal_laporan') is-invalid @enderror " name="tanggal_laporan" id="tanggal_laporan" value="{{old('tanggal_laporan')}}" style="width: 20%;">
+                                                <input type="date" class="form-control  @error('tanggal_laporan') is-invalid @enderror " name="tanggal_laporan" id="tanggal_laporan" value="{{old('tanggal_laporan')}}" style="width: 40%;">
                                                 @if ($errors->has('tanggal_laporan'))
                                                 <span class="invalid-feedback" role="alert">{{$errors->first('tanggal_laporan')}}</span>
                                                 @endif
@@ -166,7 +174,7 @@
                                                 <thead style="text-align: center;">
                                                     <tr>
                                                         <th>No</th>
-                                                        <th>No Seri</th>
+                                                        <th>Kode Perakitan</th>
                                                         <th>Barcode</th>
                                                         <th>Hasil Cek</th>
                                                         <th>Permasalahan</th>
@@ -181,10 +189,11 @@
                                                         <td>
                                                             <div class="form-group">
                                                                 <div class="select2-info">
-                                                                    <select class="select2 form-control @error('no_seri') is-invalid @enderror no_seri" data-placeholder="Pilih No Seri" data-dropdown-css-class="select2-info" style="width: 100%;" name="no_seri[]" id="no_seri">
+                                                                    <select class="select2 custom-select form-control @error('no_seri') is-invalid @enderror no_seri" data-placeholder="Pilih No Seri" data-dropdown-css-class="select2-info" style="width: 100%;" name="no_seri[]" id="no_seri">
                                                                         <option value=""></option>
                                                                         @foreach($s as $i)
-                                                                        <option value="{{$i->id}}">{{$i->no_seri}} @if($i->status == "rej_pemeriksaan_terbuka" || $i->status == "rej_pemeriksaan_tertutup") * @endif
+                                                                        <option value="{{$i->id}}">
+                                                                            {{$i->Perakitan->alias_tim}}{{$i->no_seri}}@if($i->status == "rej_pemeriksaan_terbuka" || $i->status == "rej_pemeriksaan_tertutup") * @endif
                                                                         </option>
                                                                         @endforeach
                                                                     </select>
@@ -289,7 +298,6 @@
                     </div>
                     </form>
                 </div>
-
             </div>
             <!-- /.row -->
         </div><!-- /.container-fluid -->
@@ -300,6 +308,33 @@
 <script>
     $(function() {
         var rdb = "";
+        var selnoseri = [];
+        var str = "";
+        const selectedValue = [];
+        $("#tableitem").on('change', '.no_seri', function(evt) {
+            // get all selected options and filter them to get only options with value attr (to skip the default options). After that push the values to the array.
+            $(this).find(':selected').filter(function(idx, el) {
+                return $(el).attr('value');
+            }).each(function(idx, el) {
+                selectedValue.push($(el).attr('value'));
+            });
+            // loop all the options
+            $(this).find('option').each(function(idx, option) {
+                // if the array contains the current option value otherwise we re-enable it.
+                if (selectedValue.indexOf($(option).attr('value')) > -1) {
+                    // if the current option is the selected option, we skip it otherwise we disable it.
+                    if ($(option).is(':checked')) {
+                        return;
+                    } else {
+                        $(this).attr('disabled', true);
+                    }
+                } else {
+                    $(this).attr('disabled', false);
+                }
+            });
+        });
+
+
         $('input[type="radio"][name="brc"]').on("change", function() {
             if (this.value == 'ya') {
                 $('.barcode').attr('readonly', false);
@@ -319,6 +354,25 @@
             }
         });
 
+        $('#tableitem').on('change', '.hasil', function(e) {
+            var hasil = $(this).closest('tr').find('.hasil');
+            if (this.value == 'ok') {
+                // $('select').select2('val', '');
+                $(this).closest('tr').find('select.tindak_lanjut').val('').trigger('change');
+                $(this).closest('tr').find("select.pemeriksaan").attr('disabled', true);
+                $(this).closest('tr').find("select.tindak_lanjut option[value='pengemasan']").attr('disabled', false);
+                $(this).closest('tr').find("select.tindak_lanjut option[value='perbaikan']").attr('disabled', true);
+                $(this).closest('tr').find("select.tindak_lanjut option[value='produk_spesialis']").attr('disabled', true);
+
+            } else if (this.value == 'nok') {
+                // $('select').select2('val', '');
+                $(this).closest('tr').find('select.tindak_lanjut').val('').trigger('change');
+                $(this).closest('tr').find("select.pemeriksaan").attr('disabled', false);
+                $(this).closest('tr').find("select.tindak_lanjut option[value='pengemasan']").attr('disabled', true);
+                $(this).closest('tr').find("select.tindak_lanjut option[value='perbaikan']").attr('disabled', false);
+                $(this).closest('tr').find("select.tindak_lanjut option[value='produk_spesialis']").attr('disabled', false);
+            }
+        });
 
         function numberRows($t) {
             var c = 0 - 1;
@@ -352,7 +406,7 @@
                             <option value=""></option>
                             @foreach($s as $i)
                             <option value="{{$i->id}}">
-                            {{$i->no_seri}}@if($i->status == "rej_pemeriksaan_terbuka" || $i->status == "rej_pemeriksaan_tertutup") * @endif 
+                            {{$i->Perakitan->alias_tim}}{{$i->no_seri}}@if($i->status == "rej_pemeriksaan_terbuka" || $i->status == "rej_pemeriksaan_tertutup") * @endif 
                             </option>
                             @endforeach
                             </select>

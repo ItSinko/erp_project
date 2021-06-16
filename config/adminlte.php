@@ -630,7 +630,7 @@ return [
         ],
         [
             'header' => 'PRODUKSI',
-            'auth' => [17, 23, 10]
+            'auth' => [17, 23, 10, 16]
         ],
         [
             'text'    => 'Jadwal Kerja Produksi',
@@ -668,6 +668,12 @@ return [
                     'auth' => [23],
                 ],
             ],
+        ],
+        [
+            'text'    => 'Perakitan',
+            'icon'    => 'fas fa-cogs',
+            'url'  => '/perakitan/mtc',
+            'auth' => [16],
         ],
         [
             'text'    => 'Perakitan',
