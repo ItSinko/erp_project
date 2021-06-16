@@ -41,6 +41,11 @@ class ItController extends Controller
         return view('page.common.template_form_delete');
     }
 
+    public function template_form_cancel()
+    {
+        return view('page.common.template_form_cancel');
+    }
+
     public function form_template()
     {
         return view('page.it.template_form');
