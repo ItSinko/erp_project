@@ -99,14 +99,33 @@
           <form action="{{route('perakitan.laporan.store', ['bppb_id' => $b->id])}}" method="post">
             {{ csrf_field() }}
             {{ method_field('PUT') }}
+            <h4>Perakitan</h4>
+            <div class="form-group row">
+              <label for="divisi" class="col-sm-4 col-form-label" style="text-align:right;">Divisi</label>
+              <div class="col-sm-8">
+                <div class="select2-info">
+                  <select class="select2 form-control @error('divisi_id') is-invalid @enderror divisi_id" multiple="multiple" data-placeholder="Pilih Divisi" data-dropdown-css-class="select2-info" style="width: 100%;" name="divisi_id[]" id="divisi_id">
+                    @foreach($div as $i)
+                    <option value="{{$i->id}}">{{$i->nama}}</option>
+                    @endforeach
+                  </select>
+                  @if ($errors->has('karyawan_id'))
+                  <span class="invalid-feedback" role="alert">{{$errors->first('karyawan_id.*')}}</span>
+                  @endif
+                </div>@if ($errors->has('divisi_id'))
+                <span class="invalid-feedback" role="alert">{{$errors->first('divisi_id')}}</span>
+                @endif
+              </div>
+            </div>
+            <h4>Tim Perakitan</h4>
             <div class="form-group row">
               <div class="table-responsive">
                 <table id="tableitem" class="table table-hover">
                   <thead style="text-align: center;">
                     <tr>
                       <th>No</th>
-                      <th>Kode Tim</th>
                       <th>Karyawan</th>
+                      <th>Kode Tim</th>
                       <th>Aksi</th>
                     </tr>
                   </thead>
@@ -114,26 +133,22 @@
                     <tr>
                       <td>1</td>
                       <td>
-                        <div class="input-group">
-                          <input type="text" class="form-control @error('alias') is-invalid @enderror" name="alias[]" id="alias" disabled>
-                          @if ($errors->has('alias'))
-                          <span class="invalid-feedback" role="alert">{{$errors->first('alias.*')}}</span>
-                          @endif
-                          <span id="alias-message[]" role="alert"></span>
-                        </div>
-                      </td>
-                      <td>
                         <div class="select2-info">
-                          <select class="select2 form-control @error('karyawan_id') is-invalid @enderror karyawan_id" multiple="multiple" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;" name="karyawan_id[][]" id="karyawan_id">
-                            @foreach($kry as $i)
-                            <option value="{{$i->id}}" @if($kry2->contains('id', $i->id))
-                              disabled
-                              @endif>{{$i->nama}}</option>
-                            @endforeach
+                          <select class="select2 form-control @error('karyawan_id') is-invalid @enderror karyawan_id" multiple="multiple" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;" name="karyawan_id[0][]" id="karyawan_id0" disabled>
+
                           </select>
                           @if ($errors->has('karyawan_id'))
                           <span class="invalid-feedback" role="alert">{{$errors->first('karyawan_id.*')}}</span>
                           @endif
+                        </div>
+                      </td>
+                      <td>
+                        <div class="input-group">
+                          <input type="text" class="form-control @error('alias') is-invalid @enderror" name="alias[0]" id="alias" disabled>
+                          @if ($errors->has('alias'))
+                          <span class="invalid-feedback" role="alert">{{$errors->first('alias.*')}}</span>
+                          @endif
+                          <span id="alias-message[]" role="alert"></span>
                         </div>
                       </td>
                       <td>
@@ -206,6 +221,17 @@
 <script>
   $(function() {
     $('.select2').select2();
+    var kry2 = [];
+    kry2 = <?= json_encode($kry2); ?>;
+    var datas = "";
+
+    function getCol(matrix, col) {
+      var column = [];
+      for (var i = 0; i < matrix.length; i++) {
+        column.push(matrix[i][col]);
+      }
+      return column; // return column data..
+    }
 
     function numberRows($t) {
       var c = 0 - 1;
@@ -225,22 +251,20 @@
       $('#tableitem tr:last').after(`<tr>
         <td>1</td>
         <td>
-          <div class="input-group">
-            <input type="text" class="form-control @error('karyawan_id') is-invalid @enderror" name="alias[]" id="alias" disabled>
-            @if ($errors->has('alias'))
-            <span class="invalid-feedback" role="alert">{{$errors->first('alias.*')}}</span>
+          <div class="select2-info">
+            <select class="select2 form-control @error('karyawan_id') is-invalid @enderror karyawan_id" multiple="multiple" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;" name="karyawan_id[][]" id="karyawan_id">
+              ` + datas + `
+            </select>
+            @if ($errors->has('karyawan_id'))
+            <span class="invalid-feedback" role="alert">{{$errors->first('karyawan_id.*')}}</span>
             @endif
           </div>
         </td>
         <td>
-          <div class="select2-info">
-            <select class="select2 form-control @error('karyawan_id') is-invalid @enderror karyawan_id" multiple="multiple" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;" name="karyawan_id[][]" id="karyawan_id">
-              @foreach($kry as $i)
-              <option value="{{$i->id}}">{{$i->nama}}</option>
-              @endforeach
-            </select>
-            @if ($errors->has('karyawan_id'))
-            <span class="invalid-feedback" role="alert">{{$errors->first('karyawan_id.*')}}</span>
+          <div class="input-group">
+            <input type="text" class="form-control @error('karyawan_id') is-invalid @enderror" name="alias[]" id="alias" disabled>
+            @if ($errors->has('alias'))
+            <span class="invalid-feedback" role="alert">{{$errors->first('alias.*')}}</span>
             @endif
           </div>
         </td>
@@ -257,7 +281,6 @@
     });
 
     $('#tableitem').on("keyup", "input[id='alias']", function() {
-
       var id = $(this).closest('tr').find('input[id="alias"]').val();
       var alias = $(this).closest('tr').find('input[id="alias"]');
       var message = $(this).closest('tr').find('span[id="alias-message[]"]');
@@ -295,6 +318,44 @@
         message.removeClass("invalid-feedback");
         alias.removeClass("is-invalid");
         message.empty();
+      }
+    });
+    $('.divisi_id').on("change", function() {
+      var arr = [];
+      $.each($(".divisi_id option:selected"), function() {
+        arr.push($(this).val());
+      });
+      if (arr.length > 0) {
+        $.ajax({
+          url: "get_karyawan_divisi/" + arr,
+          type: "GET",
+          dataType: "json",
+          success: function(data) {
+            datas = "";
+            $('.karyawan_id').empty();
+            $('.karyawan_id').removeAttr('disabled');
+            $('.karyawan_id').append('<option value=""></option>');
+            $.each(data, function(key, value) {
+              datas += '<option value="' + value.id + '"';
+              if (jQuery.inArray(value.id, getCol(kry2, 'id')) !== -1) {
+                datas += ' disabled ';
+              }
+              datas += '>' + value.nama + '</option>';
+            });
+            $('.karyawan_id').append(datas);
+          },
+          error: function(xhr, status, error) {
+            var err = eval("(" + xhr.responseText + ")");
+            $('.karyawan_id').empty();
+            alert(err.Message);
+          }
+        });
+      } else {
+        $('.karyawan_id').empty();
+        $('.karyawan_id').attr('disabled', true);
+        $('#alias').attr('disabled', true);
+        $('#tambahitem').attr('disabled', true);
+        $('#tambahdata').attr('disabled', true);
       }
     });
 

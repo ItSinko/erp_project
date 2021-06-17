@@ -469,12 +469,15 @@ class ProduksiController extends Controller
 
         $kry2 = Karyawan::whereHas('Perakitan', function ($q) use ($id) {
             $q->where('perakitans.bppb_id', $id);
-        })->get();
+        })->select('id')->get();
 
         $kry = Karyawan::all();
 
+        $div = Divisi::all();
+
         $p = Perakitan::where('bppb_id', $id)->get();
-        return view('page.produksi.perakitan_laporan_create', ['b' => $b, 'id' => $id, 'kry' => $kry, 'kry2' => $kry2, 'p' => $p]);
+
+        return view('page.produksi.perakitan_laporan_create', ['b' => $b, 'id' => $id, 'kry' => $kry, 'kry2' => $kry2, 'p' => $p, 'div' => $div]);
     }
 
     public function perakitan_laporan_store($id, Request $request)
