@@ -108,7 +108,7 @@
                   </div>
                 </div>
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-default" id="cari">Cari</button>
+                  <button type="submit" class="btn btn-success" id="cari">Cari</button>
                   <button type="submit" class="btn btn-danger float-right" id="reset">Reset</button>
                 </div>
               </div>
@@ -157,6 +157,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
 <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.print.min.js "></script>
+<script src="https://cdn.datatables.net/buttons/1.7.1/css/buttons.bootstrap4.min.css "></script>
+
 
 <script>
   $(document).ready(function() {
@@ -172,7 +174,6 @@
   });
   $('#cari').click(function() {
     var filter = $("input[name='filter']:checked").val();
-
     if (filter == "divisi") {
       var id = $("#divisi_id").val();
     } else if (filter == "karyawan") {

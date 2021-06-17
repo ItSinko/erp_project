@@ -294,6 +294,12 @@ return [
                             'text' => 'Detail',
                             'auth' => [28],
                             'url'  => '/kesehatan_harian/detail',
+                        ],
+                        [
+                            'icon' => 'far fa-circle',
+                            'text' => 'Laporan',
+                            'auth' => [28],
+                            'url'  => '/laporan_harian',
                         ]
                     ],
                 ],
@@ -313,6 +319,11 @@ return [
                             'text' => 'Detail',
                             'auth' => [28],
                             'url'  => '/kesehatan_mingguan/detail',
+                        ],  [
+                            'icon' => 'far fa-circle',
+                            'text' => 'Laporan',
+                            'auth' => [28],
+                            'url'  => '/laporan_mingguan',
                         ]
                     ],
                 ],
@@ -332,6 +343,12 @@ return [
                             'text' => 'Detail',
                             'auth' => [28],
                             'url'  => '/kesehatan_bulanan/detail',
+                        ],
+                        [
+                            'icon' => 'far fa-circle',
+                            'text' => 'Laporan',
+                            'auth' => [28],
+                            'url'  => '/laporan_bulanan/detail',
                         ]
                     ],
                 ],
@@ -351,6 +368,11 @@ return [
                             'text' => 'Detail',
                             'auth' => [28],
                             'url'  => '/kesehatan_tahunan/detail',
+                        ],  [
+                            'icon' => 'far fa-circle',
+                            'text' => 'Laporan',
+                            'auth' => [28],
+                            'url'  => '/laporan_tahunan/detail',
                         ]
                     ],
                 ],
@@ -379,32 +401,7 @@ return [
                     'text' => 'Obat',
                     'auth' => [28],
                     'url'  => '/obat',
-                ],
-                [
-                    'icon' => 'far fa-circle',
-                    'text' => 'Laporan',
-                    'auth' => [28],
-                    'submenu' => [
-                        [
-                            'icon' => 'far fa-circle',
-                            'text' => 'Harian',
-                            'auth' => [28],
-                            'url'  => '/laporan_harian',
-                        ],
-                        [
-                            'icon' => 'far fa-circle',
-                            'text' => 'Mingguan',
-                            'auth' => [28],
-                            'url'  => '/laporan_mingguan',
-                        ],
-                        [
-                            'icon' => 'far fa-circle',
-                            'text' => 'Bulanan',
-                            'auth' => [28],
-                            'url'  => '/laporan_bulanan',
-                        ]
-                    ],
-                ],
+                ]
             ],
         ],
         [

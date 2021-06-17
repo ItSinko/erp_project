@@ -116,7 +116,7 @@
                   </div>
                 </div>
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-default" id="cari">Cari</button>
+                  <button type="submit" class="btn btn-success" id="cari">Cari</button>
                   <button type="submit" class="btn btn-danger float-right" id="reset">Reset</button>
                 </div>
               </div>

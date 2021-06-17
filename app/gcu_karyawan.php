@@ -12,6 +12,6 @@ class gcu_karyawan extends Model
 
     public function Karyawan()
     {
-        return $this->belongsTo('App\Karyawan');
+        return $this->belongsTo('App\Karyawan', 'karyawan_id');
     }
 }
