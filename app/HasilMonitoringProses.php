@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class HasilMonitoringProses extends Model
 {
-    protected $fillable = ['monitoring_proses_id', 'hasil_perakitan_id', 'hasil', 'no_barcode', 'keterangan', 'tindak_lanjut'];
+    protected $fillable = ['monitoring_proses_id', 'hasil_perakitan_id', 'hasil', 'no_barcode', 'keterangan', 'tindak_lanjut', 'status'];
 
     public function MonitoringProses()
     {

@@ -708,6 +708,12 @@ return [
         ],
         [
             'text'    => 'Pengujian',
+            'icon'    => 'fas fa-wrench',
+            'url'  => '/pengujian/mtc',
+            'auth' => [16],
+        ],
+        [
+            'text'    => 'Pengujian',
             'icon'    => 'fab fa-searchengin',
             'url'  => '/pengujian/eng',
             'auth' => [10],

@@ -134,7 +134,7 @@
                       <td>1</td>
                       <td>
                         <div class="select2-info">
-                          <select class="select2 form-control @error('karyawan_id') is-invalid @enderror karyawan_id" multiple="multiple" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;" name="karyawan_id[][]" id="karyawan_id" disabled>
+                          <select class="select2 form-control @error('karyawan_id') is-invalid @enderror karyawan_id" multiple="multiple" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;" name="karyawan_id[0][]" id="karyawan_id0" disabled>
 
                           </select>
                           @if ($errors->has('karyawan_id'))
@@ -144,7 +144,7 @@
                       </td>
                       <td>
                         <div class="input-group">
-                          <input type="text" class="form-control @error('alias') is-invalid @enderror" name="alias[]" id="alias" disabled>
+                          <input type="text" class="form-control @error('alias') is-invalid @enderror" name="alias[0]" id="alias" disabled>
                           @if ($errors->has('alias'))
                           <span class="invalid-feedback" role="alert">{{$errors->first('alias.*')}}</span>
                           @endif

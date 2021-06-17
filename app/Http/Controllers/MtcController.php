@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\AnalisaPsPengujian;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -14,6 +15,7 @@ use Carbon\Carbon;
 use App\HasilPerakitan;
 use App\AnalisaPsPerakitan;
 use App\BillOfMaterial;
+use App\HasilMonitoringProses;
 use App\PerbaikanProduksi;
 
 class MtcController extends Controller
@@ -115,6 +117,57 @@ class MtcController extends Controller
                   ';
                 }
                 return $btn;
+            })
+            ->rawColumns(['operator', 'status', 'aksi', 'produk'])
+            ->make(true);
+    }
+
+    public function pengujian()
+    {
+        return view('page.maintenance.pengujian_show');
+    }
+
+    public function pengujian_show()
+    {
+        $s = HasilMonitoringProses::whereHas('HistoriHasilPerakitan', function ($q) {
+            $q->where([
+                ['tindak_lanjut', '=', 'perbaikan'],
+                ['kegiatan', '=', 'pemeriksaan_pengujian']
+            ]);
+        })->get();
+        $btn = "";
+        return DataTables::of($s)
+            ->addIndexColumn()
+            ->addColumn('no_seri', function ($s) {
+                $btn = "";
+            })
+            ->editColumn('status', function ($s) {
+                $a = AnalisaPsPengujian::all();
+                $p = "";
+                if ($s->status == "req_monitoring_proses") {
+                } else if ($s->status == "rej_monitoring_proses") {
+                    if ($s->tindak_lanjut == "perbaikan") {
+                        $btn = "";
+                        if ($a) {
+                            $btn .= '<a class="analisapsmodal" data-toggle="modal" data-target="#analisapsmodal" data-attr="/perakitan/analisa_ps/show/' . $a->id . '"><button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-search"></i></button>
+                            <div><small> Lihat Analisa</small></div></a>';
+                        }
+                    } else if ($s->tindak_lanjut == "produk_spesialis") {
+                        $btn = '<div><small class="danger-text">Analisa Produk Spesialis</small></div>';
+                    }
+                } else if ($s->status == "analisa_monitoring_proses") {
+                    if ($a->tindak_lanjut == "perbaikan") {
+                        $btn = "";
+                        $btn .= '<a class="analisapsmodal" data-toggle="modal" data-target="#analisapsmodal" data-attr="/perakitan/analisa_ps/show/' . $a->id . '"><button type="button" class="btn btn-info btn-sm"><i class="fas fa-search"></i> Hasil Analisa</button>
+                            <div><small> Lihat Analisa</small></div></a>';
+                    } else if ($a->tindak_lanjut == "karantina") {
+                        $btn = '<div><small class="danger-text">Masuk Gudang Karantina</small></div>';
+                    }
+                } else if ($s->status == "perbaikan_monitoring_proses") {
+                    $btn = "";
+                } else if ($s->status == "pengemasan") {
+                    $btn = "";
+                }
             })
             ->rawColumns(['operator', 'status', 'aksi', 'produk'])
             ->make(true);
