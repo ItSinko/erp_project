@@ -11,6 +11,6 @@ class Event extends Model
 
     public function detail_produk()
     {
-        return $this->belongsTo('App\DetailProduk');
+        return $this->hasOne('App\DetailProduk', 'id', 'detail_produk_id');
     }
 }

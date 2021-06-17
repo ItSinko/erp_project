@@ -24,6 +24,7 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
+        "fullcalendar": "^5.8.0",
         "icheck-bootstrap": "^3.0.1",
         "laravel-echo": "^1.10.0",
         "pusher-js": "^7.0.3"

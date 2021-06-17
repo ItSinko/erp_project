@@ -8,68 +8,68 @@
 
 @section('content')
 <div style="display: none">
-    <div id="data_produk">{{ $produk }}</div>    // get data produk from Controller
-    <div id="data_detail_produk">{{ $detail_produk }}</div>    // get data detail produk from Controller
-    <div id="data_produk_bom">{{ $produk_bom }}</div>    // get data produk bom from controller
+    <div id="data_produk">{{ $produk }}</div> // get data produk from Controller
+    <div id="data_detail_produk">{{ $detail_produk }}</div> // get data detail produk from Controller
+    <div id="data_produk_bom">{{ $produk_bom }}</div> // get data produk bom from controller
 </div>
 
 <div class="container-fluid">
-<div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header bg-info">
-                <h3 class="card-title"><i class="fa fa-search" aria-hidden="true"></i>&nbsp;Cari BOM</h3>
-            </div>
-            <div class="form-horizontal" style="padding: 10px;">
-                <div class="form-group row">
-                <label for="produk" class="col-sm-2 col-form-label">Produk</label>
-                <div class="col-sm-8">
-                    <select class="form-control select2 select2-info" style="width: 30%" data-dropdown-css-class="select2-info" data-placeholder="Pilih Produk" id="produk">
-                        <option value=""></option>
-                        @foreach($produk as $i)
-                        <option value="{{$i->id}}">{{$i->tipe}}</option>
-                        @endforeach
-                    </select>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-info">
+                    <h3 class="card-title"><i class="fa fa-search" aria-hidden="true"></i>&nbsp;Cari BOM</h3>
                 </div>
-                </div>
+                <div class="form-horizontal" style="padding: 10px;">
+                    <div class="form-group row">
+                        <label for="produk" class="col-sm-2 col-form-label">Produk</label>
+                        <div class="col-sm-8">
+                            <select class="form-control select2 select2-info" style="width: 30%" data-dropdown-css-class="select2-info" data-placeholder="Pilih Produk" id="produk">
+                                <option value=""></option>
+                                @foreach($produk as $i)
+                                <option value="{{$i->id}}">{{$i->tipe}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
 
-                <div class="form-group row">
-                <label for="detail_produk" class="col-sm-2 col-form-label">Detail Produk</label>
-                <div class="col-sm-8">
-                    <select class="form-control select2 select2-info" style="width: 50%" data-dropdown-css-class="select2-info" data-placeholder="Pilih Detail Produk" disabled="disabled" id="detail_produk">
-                        <option value=""></option>
-                    </select>
-                </div>
-                </div>
+                    <div class="form-group row">
+                        <label for="detail_produk" class="col-sm-2 col-form-label">Detail Produk</label>
+                        <div class="col-sm-8">
+                            <select class="form-control select2 select2-info" style="width: 50%" data-dropdown-css-class="select2-info" data-placeholder="Pilih Detail Produk" disabled="disabled" id="detail_produk">
+                                <option value=""></option>
+                            </select>
+                        </div>
+                    </div>
 
-                <div class="form-group row">
-                <label for="versi_bom" class="col-sm-2 col-form-label">Versi BOM</label>
-                <div class="col-sm-8">
-                    <select class="form-control select2 select2-info" style="width: 20%" data-dropdown-css-class="select2-info" data-placeholder="Versi BOM" disabled="disabled" id="versi_bom">>
-                        <option value=""></option>
-                    </select>
-                </div>
+                    <div class="form-group row">
+                        <label for="versi_bom" class="col-sm-2 col-form-label">Versi BOM</label>
+                        <div class="col-sm-8">
+                            <select class="form-control select2 select2-info" style="width: 20%" data-dropdown-css-class="select2-info" data-placeholder="Versi BOM" disabled="disabled" id="versi_bom">>
+                                <option value=""></option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="card" id="table-card" style="display: none;">
-            <div class="card-body">
-                <table id="table-bom" class="table table-hover styled-table table-striped">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Nama</th>
-                            <th>Jumlah</th>
-                            <th>Stok</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
+            <div class="card" id="table-card" style="display: none;">
+                <div class="card-body">
+                    <table id="table-bom" class="table table-hover styled-table table-striped">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Nama</th>
+                                <th>Jumlah</th>
+                                <th>Stok</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-</div>
 </div>
 @endsection
 
@@ -81,23 +81,30 @@
         var detail_produk = JSON.parse($('#data_detail_produk').html());
         var produk_bom = JSON.parse($('#data_produk_bom').html());
 
-        $('#produk').change(function(){
+        $('#produk').change(function() {
             $('#versi_bom').prop('disabled', true);
             $('#detail_produk').empty();
             let temp = detail_produk.filter(x => x.produk_id == this.value);
-            $('#detail_produk').append(`<option value=""></option>`);
-            for (var i in temp){
-                $('#detail_produk').append(`<option value="${temp[i].id}">${temp[i].nama}</option>`);
+            if (temp.length == 0) {
+                bootbox.alert({
+                    verticalCenter: true,
+                    message: "BOM belum tersedia",
+                });
+            } else {
+                $('#detail_produk').append(`<option value=""></option>`);
+                for (var i in temp) {
+                    $('#detail_produk').append(`<option value="${temp[i].id}">${temp[i].nama}</option>`);
+                }
+                $('#detail_produk').prop('disabled', false);
             }
-            $('#detail_produk').prop('disabled', false);
             $('#table-card').hide();
         });
 
-        $('#detail_produk').change(function(){
+        $('#detail_produk').change(function() {
             let temp = produk_bom.filter(x => x.detail_produk_id == this.value);
             $('#versi_bom').empty();
             $('#versi_bom').append(`<option value=""></option>`);
-            for (var i in temp){
+            for (var i in temp) {
                 $('#versi_bom').append(`<option value="${temp[i].id}">Versi ${temp[i].versi}</option>`);
             }
             $('#versi_bom').prop('disabled', false);
@@ -106,9 +113,9 @@
 
         let initialize = false;
         let table;
-        $('#versi_bom').change(function(){
+        $('#versi_bom').change(function() {
             let temp = this.value;
-            if (!initialize){
+            if (!initialize) {
                 initialize = true;
                 table = $('#table-bom').DataTable({
                     paging: false,
@@ -124,24 +131,23 @@
                         'copy', 'csv', 'excel', 'pdf', 'print'
                     ],
                     dom: 'Bfrtip',
-                    columns: [
-                        {
-                        data: 'DT_RowIndex',
-                        orderable: false,
-                        searchable: false
+                    columns: [{
+                            data: 'DT_RowIndex',
+                            orderable: false,
+                            searchable: false
                         },
                         {
-                        data: 'nama'
+                            data: 'nama'
                         },
                         {
-                        data: 'jumlah'
+                            data: 'jumlah'
                         },
                         {
-                        data: 'stok'
+                            data: 'stok'
                         }
                     ]
                 });
-            }else{
+            } else {
                 initialize = false;
                 table.destroy();
             }

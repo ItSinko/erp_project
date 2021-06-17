@@ -39,60 +39,35 @@ class PPICController extends Controller
         $this->middleware('auth');
     }
 
-    public function schedule_show2(Request $request)
-    {
-        $date = Event::orderBy('tanggal_mulai', 'asc')->get();
-        if (isset($request->month) && isset($request->year)) {
-            $month = $request->month;
-            $year = $request->year;
-        } else {
-            $month = date('m');
-            $year = date('Y');
-        }
-        $event = [];
-        foreach ($date as $d) {
-            $temp_date = strtotime($d->tanggal_mulai);
-
-            if (date('m', $temp_date) == $month && date('Y', $temp_date) == $year)
-                array_push($event, ['id' => $d->id, 'title' => $d->detail_produk->nama, 'start' => $d->tanggal_mulai, 'end' => $d->tanggal_selesai, 'color' => $d->warna]);
-        }
-        $event = json_encode($event);
-
-        if (isset($request->month) && isset($request->year)) {
-            return $event;
-        }
-
-        $produk = DetailProduk::select('nama', 'id')->get();
-        return view('page.ppic.jadwal_produksi', compact('event', 'produk', 'date'));
-    }
-
     public function schedule_show(Request $request)
     {
-        
+
         $month = date('m');
         $year = date('Y');
-        $event = Event::orderBy('tanggal_mulai', 'asc')->whereYear('tanggal_mulai', $year)->whereMonth('tanggal_mulai', $month)->get();
+        $event = Event::orderBy('tanggal_mulai', 'asc')
+            ->join('detail_produks', 'jadwal_produksi.detail_produk_id', '=', 'detail_produks.id')
+            ->select('jadwal_produksi.id', 'detail_produks.nama', 'jumlah_produksi', 'tanggal_mulai', 'tanggal_selesai', 'jadwal_produksi.status', 'warna', 'versi_bom');
         $status = null;
 
         if ($request->pelaksanaan == true) {
-            $event = Event::orderBy('tanggal_mulai', 'asc')->whereYear('tanggal_mulai', $year)->whereMonth('tanggal_mulai', $month)->get();
+            $event = $event->whereYear('tanggal_mulai', $year)->whereMonth('tanggal_mulai', $month)->get();
             $status = 'pelaksanaan';
         } else if ($request->penyusunan == true) {
             $month += 1;
-            $event = Event::orderBy('tanggal_mulai', 'asc')->where('tanggal_mulai', '>=', "$year-$month-01")->get();
+            $event = $event->where('tanggal_mulai', '>=', "$year-$month-01")->get();
             $status = 'penyusunan';
-        }else if ($request->selesai == true){
-            $event = Event::orderBy('tanggal_mulai', 'asc')->where('tanggal_mulai', '<', "$year-$month-01")->get();
+        } else if ($request->selesai == true) {
+            $event = $event->where('tanggal_mulai', '<', "$year-$month-01")->get();
             $status = 'selesai';
         }
-        
+
         $produk = DetailProduk::select('nama', 'id')->get();
         return view('page.ppic.jadwal_produksi', compact('event', 'produk', 'status'));
     }
 
     public function schedule_create(Request $request)
     {
-        if ($request->versi != NULL){
+        if ($request->versi != NULL) {
             $versi = ProdukBillOfMaterial::find($request->versi);
             $event = Event::find($request->id_event);
 
@@ -102,7 +77,7 @@ class PPICController extends Controller
             return $event;
         }
 
-        if ($request->status_update != NULL && $request->status_update == true){
+        if ($request->status_update != NULL && $request->status_update == true) {
             $event = Event::find((int)$request->id);
             $event->status = $request->status;
             $event->save();
@@ -169,20 +144,27 @@ class PPICController extends Controller
         return view('page.ppic.bom_show', compact('produk', 'detail_produk', 'produk_bom'));
     }
 
-    public function get_bom(Request $request, $id)
+    public function get_bom(Request $request, $id = null)
     {
-        // if ($request->detail_id != null) {
-        //     $event = Event::find($request->detail_id);
-        //     return DetailProduk::where('detail_produks.id', $event->detail_produk_id)->join('produk_bill_of_materials', 'detail_produk_id', 'detail_produks.id')->select('versi', 'produk_bill_of_materials.id')->get();
-        // }
+        if ($id == null) {
+            if ($request->event_id != null) {
+                $event = Event::find($request->detail_id);
+                return DetailProduk::where('detail_produks.id', $event->detail_produk_id)
+                    ->join('produk_bill_of_materials', 'detail_produk_id', 'detail_produks.id')
+                    ->select('versi', 'produk_bill_of_materials.id')
+                    ->get();
+            }
 
-        // if ($request->produk_bill_of_material_id) {
-        //     $bom = BillOfMaterial::where('produk_bill_of_material_id', (int)$request->produk_bill_of_material_id)
-        //         ->join('part_gudang_part_engs', 'bill_of_materials.part_eng_id', '=', 'part_gudang_part_engs.kode_eng')
-        //         ->join('parts', 'part_gudang_part_engs.kode_gudang', '=', 'parts.kode')
-        //         ->join('part_engs', 'part_gudang_part_engs.kode_eng', '=', 'part_engs.kode_part')->select('part_engs.nama', 'bill_of_materials.jumlah', 'parts.jumlah as stok')->get();
-        //     return $bom;
-        // }
+            if ($request->produk_bill_of_material_id) {
+                $bom = BillOfMaterial::where('produk_bill_of_material_id', (int)$request->produk_bill_of_material_id)
+                    ->join('part_gudang_part_engs', 'bill_of_materials.part_eng_id', '=', 'part_gudang_part_engs.kode_eng')
+                    ->join('parts', 'part_gudang_part_engs.kode_gudang', '=', 'parts.kode')
+                    ->join('part_engs', 'part_gudang_part_engs.kode_eng', '=', 'part_engs.kode_part')
+                    ->select('part_engs.nama', 'bill_of_materials.jumlah', 'parts.jumlah as stok')
+                    ->get();
+                return $bom;
+            }
+        }
 
         $bom = DB::table('bill_of_materials')
             ->where('produk_bill_of_material_id', '=', $id)
