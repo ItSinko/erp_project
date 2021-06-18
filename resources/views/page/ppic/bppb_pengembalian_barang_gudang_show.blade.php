@@ -90,6 +90,7 @@
                             </tr>
                         </thead>
                         <tbody style="text-align:center;">
+
                         </tbody>
                     </table>
                 </div>
@@ -150,10 +151,6 @@
                 {
                     data: 'divisi_id',
                     name: 'divisi_id'
-                },
-                {
-                    data: 'jumlah',
-                    name: 'jumlah'
                 },
                 {
                     data: 'status',

@@ -357,26 +357,41 @@ Route::group(['prefix' => '/bppb', 'middleware' => 'auth'], function () {
     Route::get('/', 'PpicController@bppb')->name('bppb');
     Route::get('/create/get_bom/{id}', 'GetController@get_bom')->name('bppb.get_bom');
     Route::get('/create/get_model_bom/{id}', 'GetController@get_model_bom')->name('bppb.get_model_bom');
-    Route::get('/permintaan_bahan_baku/{id}', 'PpicController@bppb_permintaan_bahan_baku')->name('bppb.permintaan_bahan_baku');
-    Route::get('/permintaan_bahan_baku/show/{id}', 'PpicController@bppb_permintaan_bahan_baku_show')->name('bppb.permintaan_bahan_baku.show');
-    Route::get('/permintaan_bahan_baku/status/{id}/{status}', 'PpicController@bppb_permintaan_bahan_baku_status')->name('bppb.permintaan_bahan_baku.status');
-    Route::get('/permintaan_bahan_baku/create/{id}', 'ProduksiController@bppb_permintaan_bahan_baku_create')->name('bppb.permintaan_bahan_baku.create');
-    Route::put('/permintaan_bahan_baku/store/{id}', 'ProduksiController@bppb_permintaan_bahan_baku_store')->name('bppb.permintaan_bahan_baku.store');
-    Route::get('/permintaan_bahan_baku/edit/{id}', 'PpicController@bppb_permintaan_bahan_baku_edit')->name('bppb.permintaan_bahan_baku.edit');
-    Route::put('/permintaan_bahan_baku/update/{id}', 'PpicController@bppb_permintaan_bahan_baku_update')->name('bppb.permintaan_bahan_baku.update');
-    Route::get('/permintaan_bahan_baku/detail/{id}', 'PpicController@bppb_permintaan_bahan_baku_detail')->name('bppb.permintaan_bahan_baku.detail');
-    Route::get('/permintaan_bahan_baku/detail/show/{id}', 'PpicController@bppb_permintaan_bahan_baku_detail_show')->name('bppb.permintaan_bahan_baku.detail.show');
-    Route::get('/pengembalian_barang_gudang/{id}', 'PpicController@bppb_pengembalian_barang_gudang')->name('bppb.pengembalian_barang_gudang');
-    Route::get('/pengembalian_barang_gudang/show/{id}', 'PpicController@bppb_pengembalian_barang_gudang_show')->name('bppb.pengembalian_barang_gudang.show');
-    Route::get('/pengembalian_barang_gudang/create/{id}', 'ProduksiController@bppb_pengembalian_barang_gudang_create')->name('bppb.pengembalian_barang_gudang.create');
-    Route::put('/pengembalian_barang_gudang/store/{id}', 'ProduksiController@bppb_pengembalian_barang_gudang_store')->name('bppb.pengembalian_barang_gudang.store');
-    Route::get('/pengembalian_barang_gudang/edit/{id}', 'ProduksiController@bppb_pengembalian_barang_gudang_edit')->name('bppb.pengembalian_barang_gudang.edit');
-    Route::put('/pengembalian_barang_gudang/update/{id}', 'ProduksiController@bppb_pengembalian_barang_gudang_update')->name('bppb.pengembalian_barang_gudang.update');
-    Route::get('/penyerahan_barang_jadi/{id}', 'PpicController@bppb_penyerahan_barang_jadi')->name('bppb.penyerahan_barang_jadi');
-    Route::get('/penyerahan_barang_jadi/show/{id}', 'PpicController@bppb_penyerahan_barang_jadi_show')->name('bppb.penyerahan_barang_jadi.show');
-    Route::get('/penyerahan_barang_jadi/status/{id}/{status}', 'PpicController@bppb_penyerahan_barang_jadi_status')->name('bppb.penyerahan_barang_jadi.status');
-    Route::get('/penyerahan_barang_jadi/create/{id}', 'ProduksiController@bppb_penyerahan_barang_jadi_create')->name('bppb.penyerahan_barang_jadi.create');
-    Route::put('/penyerahan_barang_jadi/store/{id}', 'ProduksiController@bppb_penyerahan_barang_jadi_store')->name('bppb.penyerahan_barang_jadi.store');
+
+    Route::group(['prefix' => '/permintaan_bahan_baku'], function () {
+        Route::get('/{id}', 'PpicController@bppb_permintaan_bahan_baku')->name('bppb.permintaan_bahan_baku');
+        Route::get('/show/{id}', 'PpicController@bppb_permintaan_bahan_baku_show')->name('bppb.permintaan_bahan_baku.show');
+        Route::get('/status/{id}/{status}', 'PpicController@bppb_permintaan_bahan_baku_status')->name('bppb.permintaan_bahan_baku.status');
+        Route::get('/create/{id}', 'ProduksiController@bppb_permintaan_bahan_baku_create')->name('bppb.permintaan_bahan_baku.create');
+        Route::put('/store/{id}', 'ProduksiController@bppb_permintaan_bahan_baku_store')->name('bppb.permintaan_bahan_baku.store');
+        Route::get('/edit/{id}', 'PpicController@bppb_permintaan_bahan_baku_edit')->name('bppb.permintaan_bahan_baku.edit');
+        Route::put('/update/{id}', 'PpicController@bppb_permintaan_bahan_baku_update')->name('bppb.permintaan_bahan_baku.update');
+        Route::delete('/delete/{id}', 'PpicController@bppb_permintaan_bahan_baku_delete')->name('bppb.permintaan_bahan_baku.delete');
+        Route::get('/detail/{id}', 'PpicController@bppb_permintaan_bahan_baku_detail')->name('bppb.permintaan_bahan_baku.detail');
+        Route::get('/detail/show/{id}', 'PpicController@bppb_permintaan_bahan_baku_detail_show')->name('bppb.permintaan_bahan_baku.detail.show');
+    });
+
+    Route::group(['prefix' => '/pengembalian_barang_gudang'], function () {
+        Route::get('/{id}', 'PpicController@bppb_pengembalian_barang_gudang')->name('bppb.pengembalian_barang_gudang');
+        Route::get('/show/{id}', 'PpicController@bppb_pengembalian_barang_gudang_show')->name('bppb.pengembalian_barang_gudang.show');
+        Route::get('/status/{id}/{status}', 'PpicController@bppb_pengembalian_barang_gudang_status')->name('bppb.pengembalian_barang_gudang.status');
+        Route::get('/create/{id}', 'ProduksiController@bppb_pengembalian_barang_gudang_create')->name('bppb.pengembalian_barang_gudang.create');
+        Route::put('/store/{id}', 'ProduksiController@bppb_pengembalian_barang_gudang_store')->name('bppb.pengembalian_barang_gudang.store');
+        Route::get('/edit/{id}', 'ProduksiController@bppb_pengembalian_barang_gudang_edit')->name('bppb.pengembalian_barang_gudang.edit');
+        Route::put('/update/{id}', 'ProduksiController@bppb_pengembalian_barang_gudang_update')->name('bppb.pengembalian_barang_gudang.update');
+        Route::delete('/delete/{id}', 'PpicController@bppb_pengembalian_barang_gudang_delete')->name('bppb.pengembalian_barang_gudang.delete');
+        Route::get('/detail/{id}', 'PpicController@bppb_pengembalian_barang_gudang_detail')->name('bppb.pengembalian_barang_gudang.detail');
+        Route::get('/detail/show/{id}', 'PpicController@bppb_pengembalian_barang_gudang_detail_show')->name('bppb.pengembalian_barang_gudang.detail.show');
+    });
+
+    Route::group(['prefix' => '/penyerahan_barang_jadi'], function () {
+        Route::get('/{id}', 'PpicController@bppb_penyerahan_barang_jadi')->name('bppb.penyerahan_barang_jadi');
+        Route::get('/show/{id}', 'PpicController@bppb_penyerahan_barang_jadi_show')->name('bppb.penyerahan_barang_jadi.show');
+        Route::get('/status/{id}/{status}', 'PpicController@bppb_penyerahan_barang_jadi_status')->name('bppb.penyerahan_barang_jadi.status');
+        Route::get('/create/{id}', 'ProduksiController@bppb_penyerahan_barang_jadi_create')->name('bppb.penyerahan_barang_jadi.create');
+        Route::put('/store/{id}', 'ProduksiController@bppb_penyerahan_barang_jadi_store')->name('bppb.penyerahan_barang_jadi.store');
+    });
+
     Route::get('/show', 'PpicController@bppb_show')->name('bppb.show');
     Route::get('/create', 'PpicController@bppb_create')->name('bppb.create');  /* Create */
     Route::get('/create/get_detail_produk_by_kelompok_produk/{kelompok_produk_id}', 'GetController@get_detail_produk_by_kelompok_produk');
@@ -486,6 +501,8 @@ Route::group(['prefix' => '/perakitan', 'middleware' => 'auth'], function () {
 Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {
     Route::get('/', 'QCController@pengujian')->name('pengujian');
     Route::get('/eng', 'EngController@pengujian')->name('pengujian.eng');
+    Route::get('/show/mtc', 'MtcController@pengujian_show')->name('pengujian.show.mtc');
+    Route::get('/mtc', 'MtcController@pengujian')->name('pengujian.mtc');
     Route::get('/show/eng', 'EngController@pengujian_show')->name('pengujian.show.eng');
     Route::get('/show', 'QCController@pengujian_show')->name('pengujian.show');
     Route::get('/perbaikan', 'ProduksiController@pengujian_perbaikan')->name('pengujian.perbaikan');
@@ -538,6 +555,10 @@ Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {
         Route::get('/not_ok', 'QCController@pengujian_pemeriksaan_proses_not_ok')->name('pengujian.pemeriksaan_proses.not_ok');
         Route::get('/not_ok/show/{bppb_id}/{ik_pengujian_id}', 'QCController@pengujian_pemeriksaan_proses_not_ok_show')->name('pengujian.pemeriksaan_proses.not_ok.show');
     });
+
+    Route::get('/analisa_ps/show/{id}', 'EngController@pengujian_analisa_ps_show')->name('pengujian.analisa_ps.show');
+    Route::get('/analisa_ps/create/{id}', 'EngController@pengujian_analisa_ps_create')->name('pengujian.analisa_ps.create');
+    Route::put('/analisa_ps/store/{id}', 'EngController@pengujian_analisa_ps_store')->name('pengujian.analisa_ps.store');
 });
 
 

@@ -189,7 +189,7 @@
                                                         <td>
                                                             <div class="form-group">
                                                                 <div class="select2-info">
-                                                                    <select class="select2 custom-select form-control @error('no_seri') is-invalid @enderror no_seri" data-placeholder="Pilih No Seri" data-dropdown-css-class="select2-info" style="width: 100%;" name="no_seri[]" id="no_seri">
+                                                                    <select class="select2 custom-select form-control @error('no_seri') is-invalid @enderror no_seri" data-placeholder="Pilih No Seri" data-dropdown-css-class="select2-info" style="width: 100%;" name="no_seri[0]" id="no_seri0">
                                                                         <option value=""></option>
                                                                         @foreach($s as $i)
                                                                         <option value="{{$i->id}}">
@@ -207,7 +207,7 @@
                                                         <td>
                                                             <div class="form-group">
                                                                 <div class="input-group">
-                                                                    <input type="text" class="form-control @error('no_barcode') is-invalid @enderror barcode" name="no_barcode[]" id="no_barcode">
+                                                                    <input type="text" class="form-control @error('no_barcode') is-invalid @enderror barcode" name="no_barcode[0]" id="no_barcode0">
                                                                 </div>
                                                                 @if ($errors->has('no_barcode'))
                                                                 <span class="invalid-feedback" role="alert">{{$errors->first('no_barcode')}}</span>
@@ -220,8 +220,8 @@
                                                                 <div class="col-sm-12">
                                                                     <div class="form-group clearfix">
                                                                         <div class="icheck-success d-inline checked">
-                                                                            <input type="radio" name="hasil[]" id="ok" class="hasil" value="ok" checked>
-                                                                            <label for="ok">
+                                                                            <input type="radio" name="hasil[0]" id="ok0" class="hasil" value="ok" checked>
+                                                                            <label id="labelok" for="ok0">
                                                                                 <i class="fas fa-check-circle" style="color:green;"></i>
                                                                             </label>
                                                                         </div>
@@ -232,8 +232,8 @@
                                                                 <div class="col-sm-12">
                                                                     <div class="form-group clearfix">
                                                                         <div class="icheck-danger d-inline">
-                                                                            <input type="radio" name="hasil[]" id="nok" value="nok" class="hasil">
-                                                                            <label for="nok">
+                                                                            <input type="radio" name="hasil[0]" id="nok0" value="nok" class="hasil">
+                                                                            <label id="labelnok" for="nok0">
                                                                                 <i class="fas fa-times-circle" style="color:red;"></i>
                                                                             </label>
                                                                         </div>
@@ -244,7 +244,7 @@
                                                         <td>
                                                             <div class="form-group">
                                                                 <div class="select2-info">
-                                                                    <select class="select2 form-control pemeriksaan  @error('pemeriksaan') is-invalid @enderror" multiple="multiple" name="pemeriksaan[]" id="pemeriksaan" data-placeholder="Standar yang tidak sesuai" data-dropdown-css-class="select2-info" disabled>
+                                                                    <select class="select2 form-control pemeriksaan  @error('pemeriksaan') is-invalid @enderror" multiple="multiple" name="pemeriksaan[0]" id="pemeriksaan0" data-placeholder="Standar yang tidak sesuai" data-dropdown-css-class="select2-info" disabled>
                                                                         @foreach($p as $i)
                                                                         <optgroup label="{{$i->hal_yang_diperiksa}}">
                                                                             @foreach($i->HasilIkPemeriksaanPengujian as $j)
@@ -262,12 +262,12 @@
                                                         <td>
                                                             <div class="form-group">
                                                                 <div class="input-group">
-                                                                    <textarea class="form-control @error('keterangan') is-invalid @enderror" name="keterangan[]" id="keterangan"></textarea>
+                                                                    <textarea class="form-control @error('keterangan') is-invalid @enderror" name="keterangan[0]" id="keterangan"></textarea>
                                                                 </div>
                                                             </div>
                                                         </td>
                                                         <td>
-                                                            <select class="select2 custom-select form-control tindak_lanjut  @error('tindak_lanjut') is-invalid @enderror " name="tindak_lanjut[]" id="tindak_lanjut" data-placeholder="Pilih Tindak Lanjut" data-dropdown-css-class="select2-info" style="width: 80%;">
+                                                            <select class="select2 custom-select form-control tindak_lanjut  @error('tindak_lanjut') is-invalid @enderror " name="tindak_lanjut[0]" id="tindak_lanjut0" data-placeholder="Pilih Tindak Lanjut" data-dropdown-css-class="select2-info" style="width: 80%;">
                                                                 <option value="pengemasan">Pengemasan</option>
                                                                 <option value="perbaikan" disabled>Perbaikan</option>
                                                                 <option value="produk_spesialis" disabled>Produk Spesialis</option>
@@ -351,6 +351,10 @@
                 $('#urutan_bb').attr('readonly', true);
                 rdb = 'tidak';
                 $('.barcode').val("");
+                $('#inisial_produk').val("");
+                $('#tipe_produk').val("");
+                $('#waktu_produksi').val("");
+                $('#urutan_bb').val("");
             }
         });
 
@@ -384,6 +388,8 @@
                 $(el).find('.no_seri').attr('id', 'no_seri[' + j + ']');
                 $(el).find('.hasil').attr('id', 'ok' + j);
                 $(el).find('.hasil').attr('id', 'nok' + j);
+                $(el).find('labelok').attr('for', 'ok' + j);
+                $(el).find('labelnok').attr('for', 'nok' + j);
                 $(el).find('.hasil').attr('name', 'hasil[' + j + ']');
                 $(el).find('.tindak_lanjut').attr('name', 'tindak_lanjut[' + j + ']');
                 $(el).find('.tindak_lanjut').attr('id', 'tindak_lanjut' + j);
