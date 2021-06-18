@@ -304,28 +304,12 @@
                             var no = 0;
                             $.each(data, function(key, value) {
                                 no++;
-
-                                $('input[name=tgl_cek]').val('');
-                                $('#tgls').change(function() {
-                                    $('#dates' + value['id'] + '').val($(this).val());
-                                });
-
-                                $('input[type=radio][name=jenis_tes["+ x+"]').on('change', function() {
-                                    if (this.value == 'Rapid') {
-                                        alert('oi');
-
-                                    } else if (this.value == 'Antigen') {
-                                        alert('oa');
-                                    }
-                                });
-
-
                                 $('#tabel_rapid').append(`<tr> <td>` + no + `</td>
                                                      <td>    
                                                      <div class="row">
                                                          <div class="icheck-success d-inline col-sm-12">
                                                          <input type="number" class="form-control d-none" name="karyawan_id[` + x + `]" value="` + value[`id`] + `">  
-                                                        <input type="radio" name="jenis_tes[` + x + `]" value="Antigen" checked>
+                                                        <input type="radio" name="jenis_tes[` + x + `]" value="Antigen" ">
                                                         <label for="no">
                                                             Antigen
                                                         </label>
@@ -396,7 +380,6 @@
                                                         </label>
                                                     </div>
                                                     </div>
-
                                                         </td>
                                                         <td>    
                                                          <textarea type="text" class="form-control" name="keterangan[` + x + `]" ></textarea>
@@ -408,6 +391,14 @@
                                     allowClear: true,
                                     theme: 'bootstrap4',
                                 })
+                                $('input[name=tgl_cek]').val('');
+
+                                $('#tgls').change(function() {
+                                    $('#dates' + value['id'] + '').val($(this).val());
+                                });
+                                $('input[name=jenis_tes]').on('change', function() {
+                                    alert('ok');
+                                });
                             });
                         } else {
                             jQuery('#tabel_rapid > tbody >tr').empty();

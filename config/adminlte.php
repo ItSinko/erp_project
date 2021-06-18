@@ -256,22 +256,22 @@ return [
         ],
         [
             'text' => 'Kesehatan',
-            'icon' => 'fas fa-table',
+            'icon' => 'fas fa-book-medical',
             'auth' => [28],
             'submenu' => [
                 [
-                    'icon' => 'far fa-circle',
+                    'icon' => 'fas fa-user-md',
                     'text' => 'Awal',
                     'auth' => [28],
                     'submenu' => [
                         [
-                            'icon' => 'far fa-circle',
+                            'icon' => 'fas fa-table',
                             'text' => 'Data',
                             'auth' => [28],
                             'url'  => '/kesehatan',
                         ],
                         [
-                            'icon' => 'far fa-circle',
+                            'icon' => 'fas fa-info-circle',
                             'text' => 'Detail',
                             'auth' => [28],
                             'url'  => '/kesehatan/detail',
@@ -279,24 +279,24 @@ return [
                     ],
                 ],
                 [
-                    'icon' => 'far fa-circle',
+                    'icon' => 'fas fa-heartbeat',
                     'text' => 'Harian',
                     'auth' => [28],
                     'submenu' => [
                         [
-                            'icon' => 'far fa-circle',
+                            'icon' => 'fas fa-table',
                             'text' => 'Data',
                             'auth' => [28],
                             'url'  => '/kesehatan_harian',
                         ],
                         [
-                            'icon' => 'far fa-circle',
+                            'icon' => 'fas fa-info-circle',
                             'text' => 'Detail',
                             'auth' => [28],
                             'url'  => '/kesehatan_harian/detail',
                         ],
                         [
-                            'icon' => 'far fa-circle',
+                            'icon' => 'fas fa-file-medical',
                             'text' => 'Laporan',
                             'auth' => [28],
                             'url'  => '/laporan_harian',
@@ -304,23 +304,23 @@ return [
                     ],
                 ],
                 [
-                    'icon' => 'far fa-circle',
+                    'icon' => 'fas fa-vial',
                     'text' => 'Mingguan',
                     'auth' => [28],
                     'submenu' => [
                         [
-                            'icon' => 'far fa-circle',
+                            'icon' => 'fas fa-table',
                             'text' => 'Data',
                             'auth' => [28],
                             'url'  => '/kesehatan_mingguan',
                         ],
                         [
-                            'icon' => 'far fa-circle',
+                            'icon' => 'fas fa-info-circle',
                             'text' => 'Detail',
                             'auth' => [28],
                             'url'  => '/kesehatan_mingguan/detail',
                         ],  [
-                            'icon' => 'far fa-circle',
+                            'icon' => 'fas fa-file-medical',
                             'text' => 'Laporan',
                             'auth' => [28],
                             'url'  => '/laporan_mingguan',
@@ -328,67 +328,67 @@ return [
                     ],
                 ],
                 [
-                    'icon' => 'far fa-circle',
+                    'icon' => 'fas fa-weight',
                     'text' => 'Bulanan',
                     'auth' => [28],
                     'submenu' => [
                         [
-                            'icon' => 'far fa-circle',
+                            'icon' => 'fas fa-table',
                             'text' => 'Data',
                             'auth' => [28],
                             'url'  => '/kesehatan_bulanan',
                         ],
                         [
-                            'icon' => 'far fa-circle',
+                            'icon' => 'fas fa-info-circle',
                             'text' => 'Detail',
                             'auth' => [28],
                             'url'  => '/kesehatan_bulanan/detail',
                         ],
                         [
-                            'icon' => 'far fa-circle',
+                            'icon' => 'fas fa-file-medical',
                             'text' => 'Laporan',
                             'auth' => [28],
-                            'url'  => '/laporan_bulanan/detail',
+                            'url'  => '/laporan_bulanan',
                         ]
                     ],
                 ],
                 [
-                    'icon' => 'far fa-circle',
+                    'icon' => 'fas fa-eye',
                     'text' => 'Tahunan',
                     'auth' => [28],
                     'submenu' => [
                         [
-                            'icon' => 'far fa-circle',
+                            'icon' => 'fas fa-table',
                             'text' => 'Data',
                             'auth' => [28],
                             'url'  => '/kesehatan_tahunan',
                         ],
                         [
-                            'icon' => 'far fa-circle',
+                            'icon' => 'fas fa-info-circle',
                             'text' => 'Detail',
                             'auth' => [28],
                             'url'  => '/kesehatan_tahunan/detail',
                         ],  [
-                            'icon' => 'far fa-circle',
+                            'icon' => 'fas fa-file-medical',
                             'text' => 'Laporan',
                             'auth' => [28],
-                            'url'  => '/laporan_tahunan/detail',
+                            'url'  => '/laporan_tahunan',
                         ]
                     ],
                 ],
                 [
-                    'icon' => 'far fa-circle',
+                    'icon' => 'fas fa-people-arrows',
                     'text' => 'Khusus',
                     'auth' => [28],
                     'submenu' => [
                         [
-                            'icon' => 'far fa-circle',
+                            'icon' => 'fas fa-person-booth',
                             'text' => 'Karyawan Sakit',
                             'auth' => [28],
                             'url'  => '/karyawan_sakit',
                         ],
                         [
-                            'icon' => 'far fa-circle',
+                            'icon' => 'fas fa-walking',
                             'text' => 'Karyawan Masuk',
                             'url'  => '/karyawan_masuk',
                             'auth' => [28],
@@ -397,7 +397,7 @@ return [
                     ],
                 ],
                 [
-                    'icon' => 'far fa-circle',
+                    'icon' => 'fas fa-tablets',
                     'text' => 'Obat',
                     'auth' => [28],
                     'url'  => '/obat',

@@ -108,8 +108,8 @@
                   </div>
                 </div>
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-success" id="cari">Cari</button>
-                  <button type="submit" class="btn btn-danger float-right" id="reset">Reset</button>
+                  <button type="submit" class="btn btn-success" id="cari"><i class="fas fa-search"></i> Cari</button>
+                  <button type="submit" class="btn btn-danger float-right" id="reset"><i class="fas fa-sync"></i> Reset</button>
                 </div>
               </div>
             </div>
@@ -167,6 +167,7 @@
 <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.print.min.js "></script>
 <script src="https://cdn.datatables.net/buttons/1.7.1/css/buttons.bootstrap4.min.css "></script>
+
 
 <script>
   $(document).ready(function() {
@@ -237,10 +238,24 @@
   $(function() {
     var tahunan = $('#tahunan').DataTable({
       processing: true,
+      dom: 'Bfrtip',
       serverSide: true,
       language: {
         processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
       },
+      buttons: [{
+          extend: 'excel',
+          title: 'Laporan Kesehatan Tahunan Mata',
+          text: '<i class="far fa-file-excel"></i> Export',
+          className: "btn btn-primary"
+        },
+        {
+          extend: 'print',
+          title: 'Laporan Kesehatan Tahunan Mata',
+          text: '<i class="fas fa-print"></i> Cetak',
+          className: "btn btn-primary"
+        },
+      ],
       ajax: '/laporan_tahunan/data/' + '' + ' / ' + 0 + ' / ' + 0 + ' / ' + 0,
       columns: [{
           data: 'DT_RowIndex',
@@ -291,7 +306,5 @@
     $('input[name="dates"]').daterangepicker();
   })
 </script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
 @endsection
