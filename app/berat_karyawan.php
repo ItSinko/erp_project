@@ -10,10 +10,6 @@ class berat_karyawan extends Model
     protected $primaryKey = 'id';
     protected $fillable = ['karyawan_id', 'tgl_cek', 'berat', 'lemak', 'kandungan_air', 'otot', 'tulang', 'kalori', 'keterangan'];
 
-    public function Kesehatan_awal()
-    {
-        return $this->belongsTo('App\Kesehatan_awal', 'kesehatan_awal_id');
-    }
 
     public function Karyawan()
     {

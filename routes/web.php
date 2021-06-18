@@ -139,8 +139,11 @@ Route::post('/obat/aksi_tambah', 'KesehatanController@obat_aksi_tambah');
 Route::get('/laporan_harian', 'KesehatanController@laporan_harian');
 Route::get('/laporan_mingguan', 'KesehatanController@laporan_mingguan');
 Route::get('/laporan_bulanan', 'KesehatanController@laporan_bulanan');
+Route::get('/laporan_tahunan', 'KesehatanController@laporan_tahunan');
 Route::get('/laporan_harian/data/{filter}/{id}/{start}/{end}', 'KesehatanController@laporan_harian_data');
 Route::get('/laporan_mingguan/data/{filter_mingguan}/{filter}/{id}/{start}/{end}', 'KesehatanController@laporan_mingguan_data');
+Route::get('/laporan_bulanan/data/{filter_bulanan}/{filter}/{id}/{start}/{end}', 'KesehatanController@laporan_bulanan_data');
+Route::get('/laporan_tahunan/data/{filter}/{id}/{start}/{end}', 'KesehatanController@laporan_tahunan_data');
 
 //Karyawan
 Route::group(['prefix' => '/karyawan', 'middleware' => 'auth'], function () {

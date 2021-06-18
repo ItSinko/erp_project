@@ -1513,4 +1513,238 @@ class KesehatanController extends Controller
         $divisi = Divisi::all();
         return view('page.kesehatan.laporan_bulanan', ['karyawan' => $karyawan, 'divisi' => $divisi]);
     }
+
+    public function laporan_bulanan_data($filter_bulanan, $filter, $id, $start, $end)
+    {
+        if ($filter == 'divisi' && $filter_bulanan == 'gcu') {
+            $data = gcu_karyawan::wherehas('karyawan', function ($divisi) use ($id) {
+                $divisi->where('divisi_id', $id);
+            })
+                ->orderBy('tgl_cek', 'DESC')
+                ->whereBetween('tgl_cek', [$start, $end]);
+
+            return datatables::of($data)
+                ->addIndexColumn()
+                ->addColumn('x', function ($data) {
+                    return $data->karyawan->divisi->nama;
+                })
+                ->addColumn('xx', function ($data) {
+                    return $data->karyawan->nama;
+                })
+                ->addColumn('glu', function ($data) {
+                    if ($data->glukosa != NULL) {
+                        return $data->glukosa;
+                    } else {
+                        return '0 %';
+                    }
+                })
+
+                ->addColumn('kol', function ($data) {
+                    if ($data->kolesterol != NULL) {
+                        return $data->kolesterol;
+                    } else {
+                        return '0 %';
+                    }
+                })
+
+                ->addColumn('asam', function ($data) {
+                    if ($data->asam_urat != NULL) {
+                        return $data->asam_urat;
+                    } else {
+                        return '0 %';
+                    }
+                })
+                ->make(true);
+        } else if ($filter == 'karyawan' && $filter_bulanan == 'gcu') {
+            $data = gcu_karyawan::with('karyawan')
+                ->where('karyawan_id', $id)
+                ->orderBy('tgl_cek', 'DESC')
+                ->whereBetween('tgl_cek', [$start, $end]);
+
+            return datatables::of($data)
+                ->addIndexColumn()
+                ->addColumn('x', function ($data) {
+                    return $data->karyawan->divisi->nama;
+                })
+                ->addColumn('xx', function ($data) {
+                    return $data->karyawan->nama;
+                })
+                ->addColumn('glu', function ($data) {
+                    if ($data->glukosa != NULL) {
+                        return $data->glukosa;
+                    } else {
+                        return '0 %';
+                    }
+                })
+
+                ->addColumn('kol', function ($data) {
+                    if ($data->kolesterol != NULL) {
+                        return $data->kolesterol;
+                    } else {
+                        return '0 %';
+                    }
+                })
+
+                ->addColumn('asam', function ($data) {
+                    if ($data->asam_urat != NULL) {
+                        return $data->asam_urat;
+                    } else {
+                        return '0 %';
+                    }
+                })
+                ->make(true);
+        } else if ($filter == 'karyawan' && $filter_bulanan == 'berat') {
+            $data = berat_karyawan::with('karyawan')
+                ->where('karyawan_id', $id)
+                ->orderBy('tgl_cek', 'DESC')
+                ->whereBetween('tgl_cek', [$start, $end]);
+            return datatables::of($data)
+                ->addIndexColumn()
+                ->addColumn('x', function ($data) {
+                    return $data->karyawan->divisi->nama;
+                })
+                ->addColumn('y', function ($data) {
+                    return $data->karyawan->nama;
+                })
+                ->addColumn('z', function ($data) {
+                    return $data->berat . ' Kg';
+                })
+                ->addColumn('l', function ($data) {
+                    return $data->lemak . ' gram';
+                })
+                ->addColumn('k', function ($data) {
+                    return $data->kandungan_air . ' %';
+                })
+                ->addColumn('o', function ($data) {
+                    return $data->otot . ' Kg';
+                })
+                ->addColumn('t', function ($data) {
+                    return $data->tulang . ' Kg';
+                })
+                ->addColumn('ka', function ($data) {
+                    return $data->kalori . ' kkal';
+                })
+                ->addColumn('ti', function ($data) {
+                    return $data->karyawan->kesehatan_awal->tinggi . ' Cm';
+                })
+                ->addColumn('bmi', function ($data) {
+                    return  $data->berat / (($data->karyawan->kesehatan_awal->tinggi / 100) * ($data->karyawan->kesehatan_awal->tinggi / 100));
+                })
+                ->make(true);
+        } else if ($filter == 'divisi' && $filter_bulanan == 'berat') {
+            $data = berat_karyawan::wherehas('karyawan', function ($divisi) use ($id) {
+                $divisi->where('divisi_id', $id);
+            })
+                ->orderBy('tgl_cek', 'DESC')
+                ->whereBetween('tgl_cek', [$start, $end]);
+            return datatables::of($data)
+                ->addIndexColumn()
+                ->addColumn('x', function ($data) {
+                    return $data->karyawan->divisi->nama;
+                })
+                ->addColumn('y', function ($data) {
+                    return $data->karyawan->nama;
+                })
+                ->addColumn('z', function ($data) {
+                    return $data->berat . ' Kg';
+                })
+                ->addColumn('l', function ($data) {
+                    return $data->lemak . ' gram';
+                })
+                ->addColumn('k', function ($data) {
+                    return $data->kandungan_air . ' %';
+                })
+                ->addColumn('o', function ($data) {
+                    return $data->otot . ' Kg';
+                })
+                ->addColumn('t', function ($data) {
+                    return $data->tulang . ' Kg';
+                })
+                ->addColumn('ka', function ($data) {
+                    return $data->kalori . ' kkal';
+                })
+                ->addColumn('ti', function ($data) {
+                    return $data->karyawan->kesehatan_awal->tinggi . ' Cm';
+                })
+                ->addColumn('bmi', function ($data) {
+                    return  $data->berat / (($data->karyawan->kesehatan_awal->tinggi / 100) * ($data->karyawan->kesehatan_awal->tinggi / 100));
+                })
+                ->make(true);
+        } else if ($filter == 'x' && $filter_bulanan = 'y') {
+            $data = gcu_karyawan::with('karyawan')
+                ->orderBy('tgl_cek', 'DESC')
+                ->where('karyawan_id', 0);
+
+            return datatables::of($data)
+                ->addIndexColumn()
+                ->addColumn('x', function ($data) {
+                    return $data->karyawan->nama;
+                })
+                ->addColumn('glu', function ($data) {
+                    if ($data->glukosa != NULL) {
+                        return $data->glukosa;
+                    } else {
+                        return '0 %';
+                    }
+                })
+
+                ->addColumn('kol', function ($data) {
+                    if ($data->kolesterol != NULL) {
+                        return $data->kolesterol;
+                    } else {
+                        return '0 %';
+                    }
+                })
+
+                ->addColumn('asam', function ($data) {
+                    if ($data->asam_urat != NULL) {
+                        return $data->asam_urat;
+                    } else {
+                        return '0 %';
+                    }
+                })
+                ->make(true);
+        }
+    }
+    public function laporan_tahunan()
+    {
+        $karyawan = karyawan::all();
+        $divisi = Divisi::all();
+        return view('page.kesehatan.laporan_tahunan', ['karyawan' => $karyawan, 'divisi' => $divisi]);
+    }
+
+    public function laporan_tahunan_data($filter, $id, $start, $end)
+    {
+
+        if ($filter == 'divisi') {
+            $data = kesehatan_tahunan::wherehas('karyawan', function ($divisi) use ($id) {
+                $divisi->where('divisi_id', $id);
+            })
+                ->orderBy('tgl_cek', 'DESC')
+                ->whereBetween('tgl_cek', [$start, $end]);
+        } else if ($filter == 'karyawan') {
+            $data = kesehatan_tahunan::with('karyawan')
+                ->orderBy('tgl_cek', 'DESC')
+                ->where('karyawan_id', $id)
+                ->whereBetween('tgl_cek', [$start, $end]);
+        } else {
+            $data = kesehatan_tahunan::with('karyawan')
+                ->orderBy('tgl_cek', 'DESC')
+                ->where('karyawan_id', 0);
+        }
+
+        return datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('x', function ($data) {
+                return $data->karyawan->divisi->nama;
+            })
+            ->addColumn('y', function ($data) {
+                return $data->karyawan->nama;
+            })
+            ->addColumn('z', function ($data) {
+                return $data->pemeriksa->nama;
+            })
+
+            ->make(true);
+    }
 }

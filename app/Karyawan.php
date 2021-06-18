@@ -61,6 +61,10 @@ class Karyawan extends Model
     {
         return $this->hasMany('App\kesehatan_mingguan_tensi');
     }
+    public function gcu_karyawan()
+    {
+        return $this->hasMany('App\gcu_karyawan');
+    }
     public function karyawan_sakit()
     {
         return $this->hasMany('App\karyawan_sakit');

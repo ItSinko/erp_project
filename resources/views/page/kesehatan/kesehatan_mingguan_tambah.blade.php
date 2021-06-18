@@ -178,6 +178,7 @@
                                             <thead style="text-align: center;">
                                                 <tr>
                                                     <th>No</th>
+                                                    <th>Jenis Tes</th>
                                                     <th>Pemeriksa</th>
                                                     <th>Tanggal</th>
                                                     <th>Nama</th>
@@ -308,7 +309,35 @@
                                 $('#tgls').change(function() {
                                     $('#dates' + value['id'] + '').val($(this).val());
                                 });
+
+                                $('input[type=radio][name=jenis_tes["+ x+"]').on('change', function() {
+                                    if (this.value == 'Rapid') {
+                                        alert('oi');
+
+                                    } else if (this.value == 'Antigen') {
+                                        alert('oa');
+                                    }
+                                });
+
+
                                 $('#tabel_rapid').append(`<tr> <td>` + no + `</td>
+                                                     <td>    
+                                                     <div class="row">
+                                                         <div class="icheck-success d-inline col-sm-12">
+                                                         <input type="number" class="form-control d-none" name="karyawan_id[` + x + `]" value="` + value[`id`] + `">  
+                                                        <input type="radio" name="jenis_tes[` + x + `]" value="Antigen" checked>
+                                                        <label for="no">
+                                                            Antigen
+                                                        </label>
+                                                    </div>
+                                                    <div class="icheck-warning d-inline col-sm-12">
+                                                        <input type="radio" name="jenis_tes[` + x + `]" value="Rapid">
+                                                        <label for="sample">
+                                                            Rapid 
+                                                        </label>
+                                                    </div>
+                                                    </div>
+                                                        </td>
                                                          <td>
                                                          <select type="text" class="form-control @error('pemeriksa_id[` + x + `]') is-invalid @enderror" name="pemeriksa_id[` + x + `]" style="width:100%;" id="pemeriksa` + no + `">
                                                          <option value=""></option>
@@ -325,20 +354,21 @@
                                                         <td><input id="dates` + value[`id`] + `" type="date" class="form-control" readonly></td>      
                                                          <td>` + value[`nama`] + `</td>
                                                          <td>    
-                                                         <div class="icheck-success d-inline col-sm-4">
+                                                         <div id = "rapid[` + x + `]" class="row" hidden>
+                                                         <div class="icheck-success d-inline col-sm-3">
                                                          <input type="number" class="form-control d-none" name="karyawan_id[` + x + `]" value="` + value[`id`] + `">  
                                                         <input type="radio" name="hasil[` + x + `]" value="Non reaktif" checked>
                                                         <label for="no">
                                                             Non reaktif
                                                         </label>
                                                     </div>
-                                                    <div class="icheck-warning d-inline col-sm-4">
+                                                    <div class="icheck-warning d-inline col-sm-3">
                                                         <input type="radio" name="hasil[` + x + `]" value="IgG">
                                                         <label for="sample">
                                                             IgG
                                                         </label>
                                                     </div>
-                                                    <div class="icheck-warning d-inline col-sm-4">
+                                                    <div class="icheck-warning d-inline col-sm-3">
                                                         <input type="radio" name="hasil[` + x + `]" value="IgM">
                                                         <label for="sample">
                                                             IgM
@@ -350,15 +380,29 @@
                                                         IgG-IgM
                                                         </label>
                                                     </div>
+                                                    </div>
+                                                    <div id ="antigen[` + x + `]" class="row" hidden>
+                                                         <div class="icheck-success d-inline col-sm-4">
+                                                         <input type="number" class="form-control d-none" name="karyawan_id[` + x + `]" value="` + value[`id`] + `">  
+                                                        <input type="radio" name="hasil[` + x + `]" value="C" checked>
+                                                        <label for="no">
+                                                            C
+                                                        </label>
+                                                    </div>
+                                                    <div class="icheck-warning d-inline col-sm-4">
+                                                        <input type="radio" name="hasil[` + x + `]" value=C\T">
+                                                        <label for="sample">
+                                                            C\T
+                                                        </label>
+                                                    </div>
+                                                    </div>
+
                                                         </td>
                                                         <td>    
                                                          <textarea type="text" class="form-control" name="keterangan[` + x + `]" ></textarea>
                                                         </td>
                                                         </tr>`);
                                 x++;
-
-
-
                                 $('#pemeriksa' + no + '').select2({
                                     placeholder: "Pilih Data",
                                     allowClear: true,
