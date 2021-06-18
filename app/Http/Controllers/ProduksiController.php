@@ -1582,7 +1582,7 @@ class ProduksiController extends Controller
 
             $hp = HasilMonitoringProses::whereHas('MonitoringProses', function ($q) use ($bppbid) {
                 $q->where('bppb_id', $bppbid);
-            })->with('HasilPerakitan')->whereIn('status', ['req_perbaikan', 'req_analisa_perbaikan'])->get();
+            })->with('HasilPerakitan')->whereIn('status', ['rej_monitoring_proses'])->where('tindak_lanjut', 'perbaikan')->get();
         } else if ($proses == "pengemasan") {
             $s = HasilPengemasan::find($id);
             $bppbid = $s->Pengemasan->Bppb->id;
@@ -1682,7 +1682,7 @@ class ProduksiController extends Controller
                             }
                         } else if ($request->ketidaksesuaian_proses == "pengujian") {
                             $u = HasilMonitoringProses::find($request->hasil_perakitan_id[$i]);
-                            $u->status = "acc_perbaikan";
+                            $u->status = "perbaikan_monitoring_proses";
                             $u->save();
 
                             $c = HistoriHasilPerakitan::create([
@@ -1708,7 +1708,11 @@ class ProduksiController extends Controller
                             ]);
 
                             $mp_id = "";
-                            $mp = MonitoringProses::where([['bppb_id', '=', $id], ['tanggal', '=', Carbon::now()->toDateString()]])->first();
+                            $mp = MonitoringProses::where([
+                                ['bppb_id', '=', $id],
+                                ['tanggal', '=', Carbon::now()->toDateString()]
+                            ])->first();
+
                             if (empty($mp)) {
                                 $mp_c = MonitoringProses::create([
                                     'bppb_id' => $id,
@@ -1970,7 +1974,9 @@ class ProduksiController extends Controller
 
     public function perbaikan_produksi_detail($id)
     {
-        $s = PerbaikanProduksi::find($id);
+        $s = PerbaikanProduksi::with('HasilMonitoringProses')
+            ->where('id', $id)
+            ->first();
         return view('page.produksi.perbaikan_produksi_detail_show', ['id' => $id, 's' => $s]);
     }
 
@@ -1982,7 +1988,6 @@ class ProduksiController extends Controller
     public function persiapan_packing_produk_show()
     {
         $s = Bppb::all();
-
         return DataTables::of($s)
             ->addIndexColumn()
             ->addColumn('gambar', function ($s) {

@@ -129,47 +129,81 @@ class MtcController extends Controller
 
     public function pengujian_show()
     {
-        $s = HasilMonitoringProses::whereHas('HistoriHasilPerakitan', function ($q) {
+        $s = HasilMonitoringProses::whereHas('HasilPerakitan.HistoriHasilPerakitan', function ($q) {
             $q->where([
                 ['tindak_lanjut', '=', 'perbaikan'],
                 ['kegiatan', '=', 'pemeriksaan_pengujian']
             ]);
         })->get();
-        $btn = "";
+
         return DataTables::of($s)
             ->addIndexColumn()
             ->addColumn('no_seri', function ($s) {
-                $btn = "";
+                $str = "";
+                if ($s->no_barcode != NULL) {
+                    $str = $s->MonitoringProses->alias_barcode . $s->no_barcode;
+                } else {
+                    $str = $s->HasilPerakitan->Perakitan->alias_tim . $s->HasilPerakitan->no_barcode;
+                }
+                return $str;
+            })
+            ->addColumn('no_bppb', function ($s) {
+                return $s->MonitoringProses->Bppb->no_bppb;
+            })
+            ->addColumn('produk', function ($s) {
+                $str = $s->MonitoringProses->Bppb->DetailProduk->nama;
+                return $str;
+            })
+            ->addColumn('operator', function ($s) {
+                return $s->MonitoringProses->Karyawan->nama;
+            })
+            ->addColumn('tanggal', function ($s) {
+                return $s->MonitoringProses->tanggal;
             })
             ->editColumn('status', function ($s) {
-                $a = AnalisaPsPengujian::all();
-                $p = "";
+                $hmp = $s->id;
+                $a = AnalisaPsPengujian::where('hasil_monitoring_proses_id', '=', $s->id)
+                    ->orderBy('updated_at', 'desc')
+                    ->first();
+                $p = PerbaikanProduksi::where('ketidaksesuaian_proses', '=', 'pengujian')
+                    ->whereHas('HasilMonitoringProses', function ($q) use ($hmp) {
+                        $q->where('hasil_monitoring_proses_id', $hmp);
+                    })
+                    ->orderBy('updated_at', 'desc')->first();
+                $str = "";
+
                 if ($s->status == "req_monitoring_proses") {
+                    return '<div><small class="warning-text">Pengujian QC</small></div>';
                 } else if ($s->status == "rej_monitoring_proses") {
                     if ($s->tindak_lanjut == "perbaikan") {
-                        $btn = "";
                         if ($a) {
-                            $btn .= '<a class="analisapsmodal" data-toggle="modal" data-target="#analisapsmodal" data-attr="/perakitan/analisa_ps/show/' . $a->id . '"><button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-search"></i></button>
+                            $str = '<a class="analisapsmodal" data-toggle="modal" data-target="#analisapsmodal" data-attr="/perakitan/analisa_ps/show/' . $a->id . '"><button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-search"></i></button>
                             <div><small> Lihat Analisa</small></div></a>';
+                        } else {
+                            $str = '<a href="/perbaikan/produksi/create/' . $s->id . '/pengujian"><button type="button" class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-wrench"></i></button>
+                            <div><small> Lakukan Perbaikan</small></div></a>';
                         }
                     } else if ($s->tindak_lanjut == "produk_spesialis") {
-                        $btn = '<div><small class="danger-text">Analisa Produk Spesialis</small></div>';
+                        $str = '<div><small class="danger-text">Analisa Produk Spesialis</small></div>';
                     }
                 } else if ($s->status == "analisa_monitoring_proses") {
                     if ($a->tindak_lanjut == "perbaikan") {
-                        $btn = "";
-                        $btn .= '<a class="analisapsmodal" data-toggle="modal" data-target="#analisapsmodal" data-attr="/perakitan/analisa_ps/show/' . $a->id . '"><button type="button" class="btn btn-info btn-sm"><i class="fas fa-search"></i> Hasil Analisa</button>
-                            <div><small> Lihat Analisa</small></div></a>';
+                        $str = '<a class="analisapsmodal" data-toggle="modal" data-target="#analisapsmodal" data-attr="/perakitan/analisa_ps/show/' . $a->id . '"><button type="button" class="btn btn-info btn-sm"><i class="fas fa-search"></i> Hasil Analisa</button>
+                                <div><small> Lihat Analisa</small></div></a>';
                     } else if ($a->tindak_lanjut == "karantina") {
-                        $btn = '<div><small class="danger-text">Masuk Gudang Karantina</small></div>';
+                        $str = '<div><small class="danger-text">Masuk Gudang Karantina</small></div>';
                     }
                 } else if ($s->status == "perbaikan_monitoring_proses") {
-                    $btn = "";
+                    $str = '<a href="/pengujian/monitoring_proses/hasil/status/' . $s->id . '/req_monitoring_proses"><button type="button" class="btn btn-success btn-sm m-1" style="border-radius:50%;"><i class="fas fa-paper-plane"></i></button>
+                    <div><small> Lapor Pengujian</small></div></a>';
+                    $str .= '<div><a class="perbaikanproduksimodal" data-toggle="modal" data-target="#perbaikanproduksimodal" data-attr="/perbaikan/produksi/detail/' . $p->id . '"><button type="button" class="btn btn-outline-info btn-sm"><i class="fas fa-search"></i> Hasil Perbaikan</button></a></div>';
                 } else if ($s->status == "pengemasan") {
-                    $btn = "";
+                    $str = '<div><i class="fas fa-check-circle" style="color:green;"></i></div>
+                            <div><small>Pengemasan</small></div>';
                 }
+                return $str;
             })
-            ->rawColumns(['operator', 'status', 'aksi', 'produk'])
+            ->rawColumns(['operator', 'status', 'aksi', 'produk', 'no_seri'])
             ->make(true);
     }
 }

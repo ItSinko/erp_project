@@ -520,6 +520,7 @@ Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {
         Route::group(['prefix' => '/hasil'], function () {
             Route::get('/{id}', 'QCController@pengujian_monitoring_proses_hasil')->name('pengujian.monitoring_proses.hasil');
             Route::get('/show/{id}', 'QCController@pengujian_monitoring_proses_hasil_show')->name('pengujian.monitoring_proses.hasil.show');
+            Route::get('/status/{id}/{status}', 'QCController@pengujian_monitoring_proses_hasil_status')->name('pengujian.monitoring_proses.hasil.status');
             Route::get('/create/{id}', 'QCController@pengujian_monitoring_proses_hasil_create')->name('pengujian.monitoring_proses.hasil.create');
             Route::put('/store/{id}', 'QCController@pengujian_monitoring_proses_hasil_store')->name('pengujian.monitoring_proses.hasil.store');
             Route::get('/edit/{id}', 'QCController@pengujian_monitoring_proses_hasil_edit')->name('pengujian.monitoring_proses.hasil.edit');

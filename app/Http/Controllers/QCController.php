@@ -840,10 +840,9 @@ class QCController extends Controller
                 $btn = "";
                 $hasil_perakitan_id = $s->hasil_perakitan_id;
                 $id = $s->id;
-                $p = PerbaikanProduksi::whereHas('HasilPerakitan', function ($q) use ($hasil_perakitan_id) {
+                $p = PerbaikanProduksi::whereHas('HasilMonitoringProses', function ($q) use ($id) {
                     $q->where([
-                        ['hasil_perakitan_id', '=', $hasil_perakitan_id],
-                        ['ketidaksesuaian_proses', '=', 'pengujian']
+                        ['id', '=', $id]
                     ]);
                 })->orderBy('updated_at', 'desc')->first();
 
@@ -868,7 +867,7 @@ class QCController extends Controller
                     $btn = '<a class="deletemodal" data-toggle="modal" data-target="#deletemodal" data-attr="/pengujian/monitoring_proses/hasil/delete/' . $s->id . '"><button class="btn btn-danger btn-sm m-1" style="border-radius:50%;"><i class="fas fa-trash"></i></button></a>';
                 } else if ($s->status == "perbaikan_monitoring_proses") {
                     if ($p) {
-                        $btn .= '<a class="perbaikanproduksimodal" data-toggle="modal" data-target="#perbaikanproduksimodal" data-attr="/perbaikan/produksi/detail/' . $p->id . '" data-id="' . $p->id . '"><button type="button" class="btn btn-outline-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-info"></i></button>
+                        $btn .= '<a class="perbaikanproduksimodal" data-toggle="modal" data-target="#perbaikanproduksimodal" data-attr="/perbaikan/produksi/detail/' . $p->id . '" data-id="' . $p->id . '"><button type="button" class="btn btn-outline-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-search"></i></button>
                             <div><small> Lihat Hasil Perbaikan</small></div></a>
                             <div><small class="info-text">Perbaikan Produksi</small></div>';
                     }
@@ -1169,6 +1168,19 @@ class QCController extends Controller
         return view('page.qc.pengujian_monitoring_proses_hasil_create', ['id' => $id, 's' => $s, 'b' => $b, 'p' => $p]);
     }
 
+    public function pengujian_monitoring_proses_hasil_status($id, $status)
+    {
+        $s = HasilMonitoringProses::find($id);
+        $s->status = $status;
+        $u = $s->save();
+
+        if ($u) {
+            return redirect()->back()->with('success', "Berhasil mengubah status Pengujian");
+        } else {
+            return redirect()->back()->with('error', "Gagal mengubah status Pengujian");
+        }
+    }
+
     public function pengujian_monitoring_proses_hasil_store(Request $request, $id)
     {
         $v = [];
@@ -1260,35 +1272,17 @@ class QCController extends Controller
 
     public function pengujian_monitoring_proses_hasil_update($id, Request $request)
     {
-        $v = [];
-        if ($request->brc == "tidak") {
-            $v = Validator::make(
-                $request->all(),
-                [
-                    'tindak_lanjut' => 'required',
-                    'hasil' => 'required',
-
-                ],
-                [
-                    'hasil.required' => "Hasil harus dipilih",
-                    'tindak_lanjut.required' => "Tindak Lanjut harus dipilih",
-                ]
-            );
-        } else if ($request->brc == "ya") {
-            $v = Validator::make(
-                $request->all(),
-                [
-                    'tindak_lanjut' => 'required',
-                    'hasil' => 'required',
-                    'no_barcode' => 'required',
-                ],
-                [
-                    'hasil.required' => "Hasil harus dipilih",
-                    'tindak_lanjut.required' => "Tindak Lanjut harus dipilih",
-                    'no_barcode.required' => "No Barcode harus diisi",
-                ]
-            );
-        }
+        $v = Validator::make(
+            $request->all(),
+            [
+                'tindak_lanjut' => 'required',
+                'hasil' => 'required',
+            ],
+            [
+                'hasil.required' => "Hasil harus dipilih",
+                'tindak_lanjut.required' => "Tindak Lanjut harus dipilih",
+            ]
+        );
 
         if ($v->fails()) {
             return redirect()->back()->withErrors($v);
@@ -1299,10 +1293,10 @@ class QCController extends Controller
             $u->hasil = $request->hasil;
             $u->keterangan = $request->keterangan;
             $u->no_barcode = $request->no_barcode;
-            if ($request->tindak_lanjut == "produk_spesialis") {
-                $u->status = 'req_perbaikan';
-            } else if ($request->tindak_lanjut == "perbaikan") {
-                $u->status = 'req_analisa_perbaikan';
+            if ($request->tindak_lanjut == "produk_spesialis" || $request->tindak_lanjut == "perbaikan") {
+                $u->status = 'rej_monitoring_proses';
+            } else if ($request->tindak_lanjut == "pengemasan") {
+                $u->status = 'pengemasan';
             }
             $u->save();
 

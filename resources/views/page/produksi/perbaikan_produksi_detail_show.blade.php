@@ -20,7 +20,15 @@
                             </tr>
                             <tr>
                                 <td>No Seri</td>
-                                <th>{{$s->HasilPerakitan->implode('no_seri',', ')}}</th>
+                                <th>
+                                    @if($s->ketidaksesuaian_proses == "perakitan")
+                                    {{$s->HasilPerakitan->implode('no_seri',', ')}}
+                                    @elseif($s->ketidaksesuaian_proses == "pengujian")
+                                    {{str_replace('/', '', $s->HasilMonitoringProses[0]['MonitoringProses']->alias_barcode)}}{{$s->HasilMonitoringProses[0]['no_barcode']}}
+                                    @elseif($s->ketidaksesuaian_proses == "pengemasan")
+                                    {{str_replace('/', '', $s->HasilMonitoringProses[0]['MonitoringProses']->alias_barcode)}}{{$s->HasilMonitoringProses[0]['no_barcode']}}
+                                    @endif
+                                </th>
                             </tr>
                             <tr>
                                 <td>Operator</td>
