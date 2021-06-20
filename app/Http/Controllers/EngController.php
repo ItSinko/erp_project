@@ -325,9 +325,15 @@ class EngController extends Controller
     public function pengujian_show()
     {
         $id = Auth::user()->id;
-        $s = HasilMonitoringProses::whereHas('MonitoringProses.Bppb.DetailProduk.Produk', function ($q) use ($id) {
+
+        $s = HasilMonitoringProses::whereHas('HasilPerakitan.HistoriHasilPerakitan', function ($q) {
+            $q->where([
+                ['tindak_lanjut', '=', 'produk_spesialis'],
+                ['kegiatan', '=', 'pemeriksaan_pengujian']
+            ]);
+        })->whereHas('MonitoringProses.Bppb.DetailProduk.Produk', function ($q) use ($id) {
             $q->where('ppic_id', $id);
-        })->where('tindak_lanjut', '=', 'produk_spesialis')->orWhereIn('status', ['req_analisa_perbaikan'])->get();
+        })->get();
 
         return DataTables::of($s)
             ->addIndexColumn()
@@ -345,7 +351,11 @@ class EngController extends Controller
                 return $s->MonitoringProses->Karyawan->nama;
             })
             ->addColumn('no_seri', function ($s) {
-                return $s->HasilPerakitan->no_seri;
+                if ($s->no_barcode == "") {
+                    return $s->HasilPerakitan->Perakitan->alias_tim . $s->HasilPerakitan->no_seri;
+                } else if ($s->no_barcode != "") {
+                    return str_replace('/', '', $s->MonitoringProses->alias_barcode) . $s->no_barcode;
+                }
             })
             ->editColumn('status', function ($s) {
                 $btn = "";
@@ -354,6 +364,12 @@ class EngController extends Controller
                 $p = PerbaikanProduksi::whereHas('HasilMonitoringProses', function ($q) use ($ids) {
                     $q->where('id', $ids);
                 })->orderBy('updated_at', 'desc')->first();
+
+                $a = AnalisaPsPengujian::where('hasil_monitoring_proses_id', $ids)
+                    ->orderBy('updated_at', 'desc')
+                    ->first();
+
+
 
                 if ($s->status == 'req_analisa_perbaikan') {
                     if ($s->tindak_lanjut == "produk_spesialis") {

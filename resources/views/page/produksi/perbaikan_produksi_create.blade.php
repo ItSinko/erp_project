@@ -108,7 +108,15 @@
                                             @if($proses == 'perakitan')
                                             {{$i->Perakitan->alias_tim}}{{$i->no_seri}}
                                             @elseif($proses == 'pengujian' || $proses == "pengemasan")
-                                            {{$i->HasilPerakitan->no_seri}}
+                                            @if($i->no_barcode == NULL)
+                                            {{$i->HasilPerakitan->Perakitan->alias_tim}}{{$i->HasilPerakitan->no_seri}}
+                                            @elseif($i->no_barcode != NULL)
+                                            @if($proses == 'pengujian')
+                                            {{str_replace("/", "", $i->MonitoringProses->alias_barcode)}}{{$i->no_barcode}}
+                                            @elseif($proses == 'pengemasan')
+                                            {{$i->Pengemasan->alias_barcode}}{{$i->no_barcode}}
+                                            @endif
+                                            @endif
                                             @endif
                                         </option>
                                         @endforeach
