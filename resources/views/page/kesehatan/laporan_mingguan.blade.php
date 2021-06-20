@@ -116,8 +116,8 @@
                   </div>
                 </div>
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-success" id="cari">Cari</button>
-                  <button type="submit" class="btn btn-danger float-right" id="reset">Reset</button>
+                  <button type="submit" class="btn btn-success" id="cari"><i class="fas fa-search"></i> Cari</button>
+                  <button type="submit" class="btn btn-danger float-right" id="reset"><i class="fas fa-sync"></i> Reset</button>
                 </div>
               </div>
             </div>
@@ -189,6 +189,15 @@
 </div>
 @stop
 @section('adminlte_js')
+<script src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.print.min.js "></script>
+<script src="https://cdn.datatables.net/buttons/1.7.1/css/buttons.bootstrap4.min.css "></script>
+
+
 <script>
   $(document).ready(function() {
     $('input[type=radio][name=filter]').on('change', function() {
@@ -278,10 +287,24 @@
   $(function() {
     var tensi_tabel = $('#tensi_tabel').DataTable({
       processing: true,
+      dom: 'Bfrtip',
       serverSide: true,
       language: {
         processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
       },
+      buttons: [{
+          extend: 'excel',
+          title: 'Laporan Kesehatan Mingguan - Tensi',
+          text: '<i class="far fa-file-excel"></i> Export',
+          className: "btn btn-primary"
+        },
+        {
+          extend: 'print',
+          title: 'Laporan Kesehatan Mingguan - Tensi',
+          text: '<i class="fas fa-print"></i> Cetak',
+          className: "btn btn-primary"
+        },
+      ],
       ajax: '/laporan_mingguan/data/' + 'y' + '/' + 'x' + '/' + 0 + '/' + 0 + '/' + 0,
       columns: [{
           data: 'DT_RowIndex',
@@ -316,10 +339,24 @@
   $(function() {
     var rapid_tabel = $('#rapid').DataTable({
       processing: true,
+      dom: 'Bfrtip',
       serverSide: true,
       language: {
         processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
       },
+      buttons: [{
+          extend: 'excel',
+          title: 'Laporan Kesehatan Mingguan - Tensi',
+          text: '<i class="far fa-file-excel"></i> Export',
+          className: "btn btn-primary"
+        },
+        {
+          extend: 'print',
+          title: 'Laporan Kesehatan Mingguan - Tensi',
+          text: '<i class="fas fa-print"></i> Cetak',
+          className: "btn btn-primary"
+        },
+      ],
       ajax: '/laporan_mingguan/data/' + 'y' + '/' + 'x' + '/' + 0 + '/' + 0 + '/' + 0,
       columns: [{
           data: 'DT_RowIndex',
@@ -348,10 +385,5 @@
     });
   });
 </script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-<script src="https://cdn.datatables.net/buttons/1.0.3/js/dataTables.buttons.min.js"></script>
-<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.0.3/css/buttons.dataTables.min.css">
-<script src="/vendor/datatables/buttons.server-side.js"></script>
+
 @endsection

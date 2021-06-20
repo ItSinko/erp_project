@@ -108,8 +108,8 @@
                   </div>
                 </div>
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-success" id="cari">Cari</button>
-                  <button type="submit" class="btn btn-danger float-right" id="reset">Reset</button>
+                  <button type="submit" class="btn btn-success" id="cari"><i class="fas fa-search"></i> Cari</button>
+                  <button type="submit" class="btn btn-danger float-right" id="reset"><i class="fas fa-sync"></i> Reset</button>
                 </div>
               </div>
             </div>
@@ -236,11 +236,14 @@
       buttons: [{
           extend: 'excel',
           title: 'Laporan Kesehatan Harian',
-          text: '<i class="fas fa-calendar-alt"></i'
+          text: '<i class="far fa-file-excel"></i> Export',
+          className: "btn btn-primary"
         },
         {
           extend: 'print',
-          title: 'Laporan Kesehatan Harian'
+          title: 'Laporan Kesehatan Harian',
+          text: '<i class="fas fa-print"></i> Cetak',
+          className: "btn btn-primary"
         },
       ],
       ajax: '/laporan_harian/data/' + '' + ' / ' + 0 + ' / ' + 0 + ' / ' + 0,
