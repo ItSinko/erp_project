@@ -1166,6 +1166,7 @@ class ProduksiController extends Controller
         $s = HasilMonitoringProses::whereHas('MonitoringProses', function ($q) use ($id) {
             $q->where('bppb_id', $id);
         })->whereIn('status', ['pengemasan'])->doesntHave('HasilPerakitan.HasilPengemasan')->get();
+
         return view('page.produksi.pengemasan_laporan_create', ['id' => $id, 'b' => $b, 'cp' => $cp, 'kry' => $kry, 's' => $s]);
     }
 
@@ -1582,7 +1583,15 @@ class ProduksiController extends Controller
 
             $hp = HasilMonitoringProses::whereHas('MonitoringProses', function ($q) use ($bppbid) {
                 $q->where('bppb_id', $bppbid);
-            })->with('HasilPerakitan')->whereIn('status', ['rej_monitoring_proses'])->where('tindak_lanjut', 'perbaikan')->get();
+            })->with('HasilPerakitan')
+                ->where([
+                    ['status', '=', 'rej_monitoring_proses'],
+                    ['tindak_lanjut', '=', 'perbaikan']
+                ])
+                ->orWhere([
+                    ['tindak_lanjut', '=', 'produk_spesialis'],
+                    ['status', '=', 'analisa_monitoring_proses']
+                ])->get();
         } else if ($proses == "pengemasan") {
             $s = HasilPengemasan::find($id);
             $bppbid = $s->Pengemasan->Bppb->id;
@@ -2043,6 +2052,7 @@ class ProduksiController extends Controller
                 'ketersediaan.*.required' => "Ketersediaan harus diisi",
             ]
         );
+
         if ($v->fails()) {
             return redirect()->back()->withErrors($v);
         } else {
@@ -2080,9 +2090,9 @@ class ProduksiController extends Controller
     public function persiapan_packing_produk_detail($id)
     {
         $s = Bppb::find($id);
-
         return view('page.produksi.persiapan_packing_produk_detail_show', ['id' => $id, 's' => $s]);
     }
+
     public function persiapan_packing_produk_detail_show($id)
     {
         $s = DetailPersiapanPackingProduk::whereHas('PersiapanPackingProduk', function ($q) use ($id) {

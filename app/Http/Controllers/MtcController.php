@@ -188,8 +188,9 @@ class MtcController extends Controller
                     }
                 } else if ($s->status == "analisa_monitoring_proses") {
                     if ($a->tindak_lanjut == "perbaikan") {
-                        $str = '<a class="analisapsmodal" data-toggle="modal" data-target="#analisapsmodal" data-attr="/perakitan/analisa_ps/show/' . $a->id . '"><button type="button" class="btn btn-info btn-sm"><i class="fas fa-search"></i> Hasil Analisa</button>
-                                <div><small> Lihat Analisa</small></div></a>';
+                        $str = '<a href="/perbaikan/produksi/create/' . $s->id . '/pengujian"><button type="button" class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-wrench"></i></button>
+                                <div><small>Lakukan Perbaikan</small></div></a>';
+                        $str .= '<div><a class="analisapsmodal" data-toggle="modal" data-target="#analisapsmodal" data-attr="/pengujian/analisa_ps/show/' . $a->id . '"><button type="button" class="btn btn-outline-info btn-sm"><i class="fas fa-search"></i> Hasil Analisa</button></div>';
                     } else if ($a->tindak_lanjut == "karantina") {
                         $str = '<div><small class="danger-text">Masuk Gudang Karantina</small></div>';
                     }

@@ -58,6 +58,20 @@
 
             <!-- /.card -->
         </div>
+
+        <div class="modal fade" id="analisapsmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color:	#006400;">
+                        <h4 class="modal-title" id="myModalLabel" style="color:white;">Laporan Analisa</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body" id="analisaps">
+
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- /.col -->
     </div>
     <!-- /.row -->
@@ -103,6 +117,33 @@
                 },
             ]
         });
+
+        $(document).on('click', '.analisapsmodal', function(event) {
+            event.preventDefault();
+            var href = $(this).attr('data-attr');
+            var dataid = $(this).attr('data-id');
+            $.ajax({
+                url: href,
+                beforeSend: function() {
+                    $('#loader').show();
+                },
+                success: function(result) {
+                    $('#analisapsmodal').modal("show");
+                    $('#analisaps').html(result).show();
+                    console.log(result);
+                },
+                complete: function() {
+                    $('#loader').hide();
+                },
+                error: function(jqXHR, testStatus, error) {
+                    console.log(error);
+                    alert("Page " + href + " cannot open. Error:" + error);
+                    $('#loader').hide();
+                },
+                timeout: 8000
+            })
+        });
+
     });
 </script>
 @stop
