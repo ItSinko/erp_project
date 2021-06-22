@@ -41,6 +41,7 @@
 
     #product_list_body tr:hover {
         background-color: yellow;
+        cursor: pointer;
     }
 
     #product_list_body tr {
@@ -59,20 +60,22 @@
 </div>
 
 <div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-info alert-dismissible" id="status_penyusunan" style="display: none;">
+            <h5><i class="icon fas fa-info"></i> Status </h5>
+            Penyusunan
+        </div>
+        <div class="alert alert-warning alert-dismissible" id="status_pelaksanaan" style="display: none;">
+            <h5><i class="icon fas fa-hard-hat"></i> Status</h5>
+            Pelaksanaan
+        </div>
+        <div class="alert alert-success alert-dismissible" id="status_selesai" style="display: none;">
+            <h5><i class="icon fas fa-check"></i> Status</h5>
+            Selesai
+        </div>
+    </div>
     <div class="col-md-3 calendar-view" style="display: none">
         <div class="sticky-top">
-            <div class="alert alert-info alert-dismissible" id="status_penyusunan" style="display: none;">
-                <h5><i class="icon fas fa-info"></i> Status </h5>
-                Penyusunan
-            </div>
-            <div class="alert alert-warning alert-dismissible" id="status_pelaksanaan" style="display: none;">
-                <h5><i class="icon fas fa-hard-hat"></i> Status</h5>
-                Pelaksanaan
-            </div>
-            <div class="alert alert-success alert-dismissible" id="status_selesai" style="display: none;">
-                <h5><i class="icon fas fa-check"></i> Status</h5>
-                Selesai
-            </div>
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title">Daftar Produksi</h4>
@@ -87,8 +90,8 @@
                         </thead>
                         <tbody id="product_list_body">
                             @foreach($event as $e)
-                            <tr id="row1_{{ $e->id }}">
-                                <td><a href="#" style="text-decoration: none; color: black;" data-id="{{ $e->id }}">{{$e->nama}}</a></td>
+                            <tr id="row1_{{ $e->id }}" data-id="{{ $e->id }}">
+                                <td>{{$e->nama}}</td>
                                 <td>
                                     @if ($e->versi_bom == NULL)
                                     <i class="fas fa-times-circle"></i>
@@ -243,7 +246,7 @@
                     <div class="form-group row">
                         <label for="quantity" class="col-sm-2 col-form-label">Jumlah Produksi</label>
                         <div class="col-sm-10">
-                            <input type="number" class="form-control" id="number-product" placeholder="Jumlah produksi" min="1" autocomplete="off" required>
+                            <input type="number" class="form-control" id="number-product" placeholder="Jumlah produksi" min="1" autocomplete="off" required disabled>
                         </div>
                     </div>
                     <div class="form-group row">
@@ -285,29 +288,25 @@
                     <div class="input-group-prepend">
                         <label class="input-group-text" for="input">Search</label>
                     </div>
-                    <select class="custom-select" id="bom-input">
+                    <select class="form-control" id="bom-input">
+                        <option value=""></option>
                     </select>
                 </div>
-                <table class="table table-bordered" id="table-bom">
+                <table id="table-bom" class="table table-hover styled-table table-striped">
                     <thead>
-                        <tr style="text-align: center;">
-                            <th>#</th>
-                            <th style="width: 50%">Nama</th>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama</th>
                             <th>Jumlah</th>
                             <th>Stok</th>
-                            <th>Pemotongan</th>
-                            <th>Sisa</th>
                         </tr>
                     </thead>
                     <tbody>
                     </tbody>
-                    <tfoot>
-                    </tfoot>
                 </table>
             </div>
             <div class="modal-footer justify-content-center">
                 <button type="submit" class="btn btn-primary" id="choose-bom">Pilih</button>
-                <button class="btn btn-danger" id="delete-event">Hapus</button>
             </div>
         </div>
     </div>
@@ -427,7 +426,7 @@
     // action base on status sended
     function choose_status(status) {
         if (status == 'penyusunan') {
-            $('#status_penyusunan, #penyusunan_button').show();
+            $('#status_penyusunan').show();
             $('#status_pelaksanaan, #status_selesai').hide();
             choose_view('Kalender');
         } else if (status == 'pelaksanaan') {
@@ -445,9 +444,9 @@
 
         var event_info;
 
-        choose_status(status);
+        choose_status(status); // choose status info
         $('.view').click(function() {
-            choose_view($(this).text());
+            choose_view($(this).text()); // choose display mode
         });
 
         $.ajaxSetup({
@@ -480,16 +479,7 @@
                 $('#date_end').val(info.endStr);
                 $('#days').val(days);
 
-                if (date1.getMonth() == date2.getMonth()) {
-                    $('#modal-input-date').modal();
-                } else if ((date1.getMonth() + 1 == date2.getMonth()) && (date2.getDate() == 1)) {
-                    $('#modal-input-date').modal();
-                } else {
-                    bootbox.alert({
-                        message: "Harap pilih tanggal produksi pada bulan yang sama",
-                        centerVertical: true,
-                    });
-                }
+                $('#modal-input-date').modal();
             },
 
             eventClick: function(info) {
@@ -515,9 +505,9 @@
                                 },
                                 method: "POST",
                                 success: function() {
-                                    event_info.event.remove();
-                                    $('#row1_' + event_info.event._def.publicId).remove();
-                                    $('#row2_' + event_info.event._def.publicId).remove();
+                                    info.event.remove();
+                                    $('#row1_' + info.event._def.publicId).remove();
+                                    $('#row2_' + info.event._def.publicId).remove();
                                 }
                             });
                         }
@@ -549,6 +539,29 @@
             $('#bppb-button').show();
         }
 
+        var modal_select_bom = function() {
+            $('#modal-bom-show').modal('show');
+            event_info = {
+                id: this.dataset.id
+            };
+            $.ajax({
+                url: "/ppic/get_version",
+                method: "GET",
+                data: event_info,
+                success: function(result) {
+                    console.log(result);
+                    $('#bom-input').empty();
+                    $('#bom-input').append(`<option value="">Pilih versi...</option>`);
+                    result.forEach(element => {
+                        $('#bom-input').append(`<option value="` + element.id + `">` + element.versi + `</option>`);
+                    });
+                },
+                error: function(xhr, status, err) {
+                    console.log("get bom: " + error);
+                }
+            });
+        }
+
         $('#choose_color > button').click(function(e) {
             var currColor = $(this).css('background-color');
             $('#save-event').css({
@@ -556,6 +569,9 @@
                 'border-color': currColor
             })
         });
+        $('#product').change(function() {
+            $.ajax()
+        })
         $('#save-event').click(function() {
             let color = $(this).css('background-color');
             let data_saved = {
@@ -582,10 +598,11 @@
                         borderColor: color,
                     });
                     $('#modal-input-date').modal('hide');
-                    $('#product_list_body').append(`<tr id="row1_` + result.id + `" >
-                        <td>` + result.nama + `</td>
+                    $('#product_list_body').append(`<tr id="row1_${result.id}" data-id="${result.id}">
+                        <td>${result.nama}</td>
                         <td><i class="fas fa-times-circle"></i></td>
                     </tr>`);
+                    $('#product_list_body tr').click(modal_select_bom);
                 },
                 error: function(xhr, status, err) {
                     console.log(err);
@@ -593,28 +610,7 @@
             });
         });
 
-        $('#product_list_body tr a').click(function() {
-            $('#modal-bom-show').modal('show');
-            // event_info = info;
-            // console.log(this.dataset.id);
-            $.ajax({
-                url: "/ppic/get_bom",
-                method: "GET",
-                data: {
-                    event_id: this.dataset.id
-                },
-                success: function(result) {
-                    // $('#bom-input').empty();
-                    // $('#bom-input').append(`<option value="">Pilih versi...</option>`);
-                    // result.forEach(element => {
-                    //     $('#bom-input').append(`<option value="` + element.id + `">` + element.versi + `</option>`);
-                    // });
-                },
-                error: function(xhr, status, err) {
-                    console.log("get bom: " + error);
-                }
-            });
-        })
+        $('#product_list_body tr').click(modal_select_bom);
 
         $('#acc-button').on('click', function() {
             bootbox.confirm({
@@ -658,102 +654,69 @@
             });
         });
 
+        let initialize = false;
+        let table;
         $("#bom-input").change(function() {
-            var value = $("#bom-input").val();
-            $('#table-bom').hide();
-            $('#table-bom tbody').html('');
-            $('#table-bom tfoot').html('');
-            $('#table-bom').show(1000);
-
-            if (value != "Choose...") {
-                $.ajax({
-                    url: "/ppic/get_bom",
-                    method: "GET",
-                    data: {
-                        produk_bill_of_material_id: value
+            let temp = this.value;
+            if (!initialize) {
+                initialize = true;
+                table = $('#table-bom').DataTable({
+                    paging: false,
+                    info: false,
+                    pageLength: -1,
+                    processing: true,
+                    serverSide: true,
+                    ajax: '/ppic/get_bom/' + temp,
+                    language: {
+                        processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
                     },
-                    success: function(result) {
-                        var data = $('#table-bom tbody');
-
-                        var min = Infinity;
-                        for (var j = 0; j < result.length - 1; j++) {
-                            var temp = parseInt(result[j].stok / result[j].jumlah);
-                            if (temp < min) {
-                                min = temp;
-                            }
+                    buttons: [
+                        'copy', 'csv', 'excel', 'pdf', 'print'
+                    ],
+                    dom: 'Bfrtip',
+                    columns: [{
+                            data: 'DT_RowIndex',
+                            orderable: false,
+                            searchable: false
+                        },
+                        {
+                            data: 'nama'
+                        },
+                        {
+                            data: 'jumlah'
+                        },
+                        {
+                            data: 'stok'
                         }
-
-                        for (var j = 0; j < result.length - 1; j++) {
-                            var pemotongan = parseInt(result[j].jumlah) * min;
-                            var sisa = parseInt(result[j].stok) - pemotongan;
-                            var child;
-                            if (sisa == 0) {
-                                child = `
-                                <tr style="background: yellow;">
-                                    <td>` + String(j + 1) + `</td>
-                                    <td>` + result[j].nama + `</td>
-                                    <td>` + result[j].jumlah + `</td>
-                                    <td>` + result[j].stok + `</td>
-                                    <td>` + pemotongan + `</td>
-                                    <td>` + sisa + `</td>
-                                </tr>
-                            `;
-                            } else {
-                                child = `
-                                <tr>
-                                    <td>` + String(j + 1) + `</td>
-                                    <td>` + result[j].nama + `</td>
-                                    <td>` + result[j].jumlah + `</td>
-                                    <td>` + result[j].stok + `</td>
-                                    <td>` + pemotongan + `</td>
-                                    <td>` + sisa + `</td>
-                                </tr>
-                            `;
-                            }
-                            data.append(child);
-                        }
-                        var last_child = `
-                                <tr>
-                                    <th colspan="5">Jumlah Maksimum Produksi</th>
-                                    <th>` + min + `</th>
-                                </tr>
-                        `;
-
-                        $('#table-bom tfoot').html(last_child);
-                    },
-                    error: function(xhr, status, error) {
-                        bootbox.alert({
-                            centerVertical: true,
-                            message: "BOM tidak ditemukan",
-                        });
-
-                        console.log(error);
-                    }
+                    ]
                 });
+            } else {
+                initialize = false;
+                table.destroy();
             }
+            $('#table-card').show();
         });
 
         $("#choose-bom").click(function() {
-            console.log(event_info.event._def.publicId);
             $.ajax({
                 url: "/ppic/schedule/create",
                 method: "POST",
                 data: {
                     versi: $("#bom-input").val(),
-                    id_event: event_info.event._def.publicId,
+                    id_event: event_info.id,
                 },
                 success: function(result) {
-                    $('.row_' + event_info.event._def.publicId + " td:nth-child(2)").html(result.versi_bom);
+                    $(`#row1_${event_info.id} td:nth-child(2)`).html(result.versi_bom);
                     $('#modal-bom-show').modal('hide');
 
-                    $('#table-bppb tbody').append(`<tr id="row2_` + result.id + `" >
-                            <td>` + result.nama + `</td>
-                            <td>` + result.jumlah + `</td>
-                            <td><button class="btn btn-info send" value="` + result.id + `">Kirim</button></td>
+                    $('#table-bppb tbody').append(`<tr id="row2_${result.id}" >
+                            <td>${result.nama}</td>
+                            <td>${result.jumlah}</td>
+                            <td><button class="btn btn-info send" value="${result.id}">Kirim</button></td>
                         </tr>`);
                 },
-                error: function(error) {
-                    console.log(error);
+                error: function(xhr, status, err) {
+                    console.log(err);
                 }
             });
         });

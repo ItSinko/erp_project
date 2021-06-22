@@ -67,15 +67,23 @@ class PPICController extends Controller
 
     public function schedule_create(Request $request)
     {
-        if ($request->versi != NULL) {
-            $versi = ProdukBillOfMaterial::find($request->versi);
+        if ($request->id_event != NULL) {
             $event = Event::find($request->id_event);
-
-            $event->versi_bom = $versi->versi;
+            $event->versi_bom = $request->versi;
             $event->save();
 
             return $event;
+            // return $request->id_event
         }
+        // if ($request->versi != NULL) {
+        //     $versi = ProdukBillOfMaterial::find($request->versi);
+        //     $event = Event::find($request->id_event);
+
+        //     $event->versi_bom = $versi->versi;
+        //     $event->save();
+
+        //     return $event;
+        // }
 
         if ($request->status_update != NULL && $request->status_update == true) {
             $event = Event::find((int)$request->id);
@@ -112,13 +120,6 @@ class PPICController extends Controller
         if ($request->id != "") Event::destroy($request->id);
     }
 
-    public function get_part()
-    {
-        $part = Part::all();
-
-        return view('test', ['part' => []]);
-    }
-
     public function schedule_notif(Request $request)
     {
         event(new RealTimeMessage(Auth::user(), $request->message, $request->status));
@@ -144,27 +145,27 @@ class PPICController extends Controller
         return view('page.ppic.bom_show', compact('produk', 'detail_produk', 'produk_bom'));
     }
 
-    public function get_bom(Request $request, $id = null)
+    public function get_bom(Request $request, $id)
     {
-        if ($id == null) {
-            if ($request->event_id != null) {
-                $event = Event::find($request->detail_id);
-                return DetailProduk::where('detail_produks.id', $event->detail_produk_id)
-                    ->join('produk_bill_of_materials', 'detail_produk_id', 'detail_produks.id')
-                    ->select('versi', 'produk_bill_of_materials.id')
-                    ->get();
-            }
+        // if ($id == null) {
+        //     if ($request->id != null) {
+        //         $event = Event::find($request->detail_id);
+        //         return DetailProduk::where('detail_produks.id', $event->detail_produk_id)
+        //             ->join('produk_bill_of_materials', 'detail_produk_id', 'detail_produks.id')
+        //             ->select('versi', 'produk_bill_of_materials.id')
+        //             ->get();
+        //     }
 
-            if ($request->produk_bill_of_material_id) {
-                $bom = BillOfMaterial::where('produk_bill_of_material_id', (int)$request->produk_bill_of_material_id)
-                    ->join('part_gudang_part_engs', 'bill_of_materials.part_eng_id', '=', 'part_gudang_part_engs.kode_eng')
-                    ->join('parts', 'part_gudang_part_engs.kode_gudang', '=', 'parts.kode')
-                    ->join('part_engs', 'part_gudang_part_engs.kode_eng', '=', 'part_engs.kode_part')
-                    ->select('part_engs.nama', 'bill_of_materials.jumlah', 'parts.jumlah as stok')
-                    ->get();
-                return $bom;
-            }
-        }
+        //     if ($request->produk_bill_of_material_id) {
+        //         $bom = BillOfMaterial::where('produk_bill_of_material_id', (int)$request->produk_bill_of_material_id)
+        //             ->join('part_gudang_part_engs', 'bill_of_materials.part_eng_id', '=', 'part_gudang_part_engs.kode_eng')
+        //             ->join('parts', 'part_gudang_part_engs.kode_gudang', '=', 'parts.kode')
+        //             ->join('part_engs', 'part_gudang_part_engs.kode_eng', '=', 'part_engs.kode_part')
+        //             ->select('part_engs.nama', 'bill_of_materials.jumlah', 'parts.jumlah as stok')
+        //             ->get();
+        //         return $bom;
+        //     }
+        // }
 
         $bom = DB::table('bill_of_materials')
             ->where('produk_bill_of_material_id', '=', $id)
@@ -173,9 +174,20 @@ class PPICController extends Controller
             ->join('parts', 'part_gudang_part_engs.kode_gudang', '=', 'parts.kode')
             ->select('bill_of_materials.id', 'part_engs.nama', 'bill_of_materials.jumlah', 'parts.jumlah as stok')
             ->get();
+
+
         return DataTables::of($bom)
             ->addindexColumn()
             ->make(true);
+    }
+
+    public function get_version(Request $request)
+    {
+        $event = Event::find($request->id);
+        return DetailProduk::where('detail_produks.id', $event->detail_produk_id)
+            ->join('produk_bill_of_materials', 'detail_produk_id', 'detail_produks.id')
+            ->select('versi', 'produk_bill_of_materials.id')
+            ->get();
     }
 
     public function bppb()
