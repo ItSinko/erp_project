@@ -21,6 +21,7 @@ use App\DetailPenyerahanBarangJadi;
 use App\KelompokProduk;
 use App\Event;
 use App\PartEng;
+use App\HasilPerakitan;
 
 use App\Events\RealTimeMessage;
 use App\PenyerahanBarangJadi;
@@ -31,6 +32,7 @@ use App\DetailPermintaanBahanBaku;
 use App\Bom_Version;
 use App\PengembalianBarangGudang;
 use App\ProdukBillOfMaterial;
+use PhpParser\Node\Expr\AssignOp\Div;
 
 class PPICController extends Controller
 {
@@ -214,6 +216,28 @@ class PPICController extends Controller
                 $btn .= '<a class="dropdown-item" href="/bppb/penyerahan_barang_jadi/' . $s->id . '"><span style="color: black;"><i class="fas fa-pallet" aria-hidden="true"></i>&nbsp;Penyerahan Barang Jadi</span></a>';
                 return $btn;
             })
+            ->addColumn('status', function ($s) {
+                $bppb_id = $s->id;
+                $perakitan = HasilPerakitan::whereHas('Perakitan', function ($q) use ($bppb_id) {
+                    $q->where('bppb_id', $bppb_id);
+                })->count();
+
+                $penyerahan_barang_jadi = DetailPenyerahanBarangJadi::whereHas('PenyerahanBarangJadi', function ($q) use ($bppb_id) {
+                    $q->where('bppb_id', $bppb_id);
+                })->count();
+
+                $str = "";
+                if ($perakitan <= $s->jumlah && $penyerahan_barang_jadi <= 0) {
+                    $str = '<div><small class="warning-text">Sedang Proses</small></div>';
+                } else if ($perakitan == 0 || $penyerahan_barang_jadi == 0) {
+                    $str = '<div><small class="danger-text">Belum Proses</div>';
+                } else if ($perakitan >= $s->jumlah && $penyerahan_barang_jadi >= $s->jumlah) {
+                    $str = '<div><small class="success-text">Sudah Close</div>';
+                } else {
+                    $str = '<div><small class="warning-text">Sedang Proses</small></div>';
+                }
+                return $str;
+            })
             ->addColumn('aksi', function ($s) {
                 $btn = '<a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="Klik untuk melihat detail BPPB">';
                 $btn .= '<i class="fa fa-ellipsis-v" aria-hidden="true"></i> </a>';
@@ -227,7 +251,7 @@ class PPICController extends Controller
                 $btn = $s->Divisi->nama;
                 return $btn;
             })
-            ->rawColumns(['gambar', 'produk', 'aksi', 'laporan'])
+            ->rawColumns(['gambar', 'produk', 'aksi', 'laporan', 'status'])
             ->make(true);
     }
 
