@@ -646,7 +646,7 @@ Route::group(['prefix' => 'ppic', 'middleware' => 'auth'], function () {
     Route::post('/schedule/delete', 'PpicController@schedule_delete');
     Route::get('/bom', 'PpicController@bom');
     Route::get('/get_bom/{id}', 'PpicController@get_bom');
-    Route::get('/get_part', 'PpicController@get_part');
+    Route::get('/get_version', 'PpicController@get_version');
 });
 
 
