@@ -175,6 +175,15 @@ class PPICController extends Controller
             ->select('bill_of_materials.id', 'part_engs.nama', 'bill_of_materials.jumlah', 'parts.jumlah as stok')
             ->get();
 
+        if ($request->count != NULL) {
+            $max_val = INF;
+            foreach ($bom as $data) {
+                $result = (int)($data->stok / $data->jumlah);
+                if ($result < $max_val) $max_val = $result;
+            }
+
+            return $result;
+        }
 
         return DataTables::of($bom)
             ->addindexColumn()
@@ -183,8 +192,10 @@ class PPICController extends Controller
 
     public function get_version(Request $request)
     {
-        $event = Event::find($request->id);
-        return DetailProduk::where('detail_produks.id', $event->detail_produk_id)
+        if ($request->id != NULL) $detail_produk_id = Event::find($request->id)->detail_produk_id;
+        else if ($request->detail_produk_id != NULL) $detail_produk_id = $request->detail_produk_id;
+
+        return DetailProduk::where('detail_produks.id', $detail_produk_id)
             ->join('produk_bill_of_materials', 'detail_produk_id', 'detail_produks.id')
             ->select('versi', 'produk_bill_of_materials.id')
             ->get();

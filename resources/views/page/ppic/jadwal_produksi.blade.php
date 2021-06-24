@@ -22,7 +22,7 @@
     </div>
     <div class="col-6">
         <div class="btn-toolbar justify-content-between float-right" role="toolbar">
-            <div class="btn-group" role="group" id="penyusunan_button" style="display: none">
+            <div class="btn-group" role="group" id="view-button">
                 <button type="button" class="btn btn-primary view">Kalender</button>
                 <button type="button" class="btn btn-info view">Tabel</button>
                 <button type="button" class="btn btn-warning view">Daftar</button>
@@ -39,12 +39,12 @@
         padding: 20px;
     }
 
-    #product_list_body tr:hover {
+    #table-product tr:hover {
         background-color: yellow;
         cursor: pointer;
     }
 
-    #product_list_body tr {
+    #table-product tr {
         background-color: white;
     }
 </style>
@@ -74,31 +74,25 @@
             Selesai
         </div>
     </div>
-    <div class="col-md-3 calendar-view" style="display: none">
+    <div class="col-md-3 view-calendar" style="display: none">
         <div class="sticky-top">
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title">Daftar Produksi</h4>
                 </div>
                 <div class="card-body">
-                    <table style="text-align: center; width: 100%;" id="product_list">
+                    <table style="text-align: center; width: 100%;">
                         <thead>
                             <tr>
                                 <th>Nama Produk</th>
-                                <th>Versi BOM</th>
+                                <th>Jumlah Produksi</th>
                             </tr>
                         </thead>
-                        <tbody id="product_list_body">
+                        <tbody id="table-product">
                             @foreach($event as $e)
-                            <tr id="row1_{{ $e->id }}" data-id="{{ $e->id }}">
-                                <td>{{$e->nama}}</td>
-                                <td>
-                                    @if ($e->versi_bom == NULL)
-                                    <i class="fas fa-times-circle"></i>
-                                    @else
-                                    {{$e->versi_bom}}
-                                    @endif
-                                </td>
+                            <tr data-id="{{ $e->id }}">
+                                <td>{{ $e->nama }}</td>
+                                <td>{{ $e->jumlah_produksi }}</td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -115,7 +109,7 @@
             @endif
         </div>
     </div>
-    <div class="col-md-9 calendar-view" style="display: none">
+    <div class="col-md-9 view-calendar" style="display: none">
         <div class="card">
             <div class="card-body">
                 <div id="calendar"></div>
@@ -137,26 +131,13 @@
                 <table class="table table-bordered center">
                     <thead>
                         <tr>
-                            <th style="width: 10%">Produk</th>
+                            <th style="width: 20%">Produk</th>
+                            <th style="width: 10%">Jumlah Produksi</th>
                             @for ($i = 1; $i <= date('t'); $i++) <th>{{$i}}</th>
                                 @endfor
                         </tr>
                     </thead>
-                    <tbody>
-                        @foreach($event as $e)
-                        <tr>
-                            <td>{{$e->nama}}</td>
-                            @for ($i = 1; $i <= date('t'); $i++) @php $start=date('d', strtotime($e->tanggal_mulai));
-                                $end = date('d', strtotime($e->tanggal_selesai));
-                                @endphp
-                                @if ($i >= $start && $i <= $end) <td style="background: yellow;">
-                                    </td>
-                                    @else
-                                    <td></td>
-                                    @endif
-                                    @endfor
-                        </tr>
-                        @endforeach
+                    <tbody id="table-date" data-num_date="{{ date('t') }}">
                     </tbody>
                 </table>
             </div>
@@ -244,7 +225,15 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="quantity" class="col-sm-2 col-form-label">Jumlah Produksi</label>
+                        <label for="bom-input-product" class="col-sm-2 col-form-label">Versi BOM</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="bom-input-product" disabled>
+                                <option value=""></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="number-product" class="col-sm-2 col-form-label">Jumlah Produksi</label>
                         <div class="col-sm-10">
                             <input type="number" class="form-control" id="number-product" placeholder="Jumlah produksi" min="1" autocomplete="off" required disabled>
                         </div>
@@ -412,14 +401,14 @@
     // choose view template
     function choose_view(view) {
         if (view == 'Kalender') {
-            $('.calendar-view').show(500);
+            $('.view-calendar').show(500);
             $('.table-view, .list-view').hide();
         } else if (view == 'Tabel') {
             $('.table-view').show(500);
-            $('.calendar-view, .list-view').hide();
+            $('.view-calendar, .list-view').hide();
         } else if (view == 'Daftar') {
             $('.list-view').show(500);
-            $('.calendar-view, .table-view').hide();
+            $('.view-calendar, .table-view').hide();
         }
     }
 
@@ -436,6 +425,35 @@
             $('#status_selesai').show();
             $('#status_penyusunan, #status_pelaksanaan').hide();
         }
+    }
+
+    // table-view function
+    function date_mark(event) {
+        let num = $('#table-date').data('num_date');
+        let table = $('#table-date').append(`<tr data-id="${event.id}"></tr>`)
+        let table_row = $(`#table-date tr[data-id="${event.id}"]`);
+
+        let start_date = new Date(event.tanggal_mulai);
+        let end_date = new Date(event.tanggal_selesai);
+
+        let month = start_date.getMonth();
+        let year = start_date.getFullYear();
+        // console.log(current_date);
+        table_row.append(`<td>${event.nama}</td>`);
+        table_row.append(`<td>${event.jumlah_produksi}</td>`);
+
+        for (let i = 1; i <= num; i++) {
+            let date = new Date(year, month, i);
+            if (date.getDay() == 0 || date.getDay() == 6)
+                table_row.append(`<td style="background-color: black;"></td>`)
+            else if (i >= start_date.getDate() && i < end_date.getDate())
+                table_row.append(`<td style="background-color: yellow;"></td>`)
+            else
+                table_row.append(`<td></td>`);
+        }
+    }
+    for (i in event) {
+        date_mark(event[i]);
     }
 
     $(document).ready(function() {
@@ -549,7 +567,6 @@
                 method: "GET",
                 data: event_info,
                 success: function(result) {
-                    console.log(result);
                     $('#bom-input').empty();
                     $('#bom-input').append(`<option value="">Pilih versi...</option>`);
                     result.forEach(element => {
@@ -561,6 +578,27 @@
                 }
             });
         }
+        var bom_change = function() {
+            console.log('change bom');
+            $('#number-product').next("span").remove();
+            $.ajax({
+                url: `/ppic/get_bom/${this.value}`,
+                method: "GET",
+                data: {
+                    count: true
+                },
+                success: function(result) {
+                    console.log(result);
+
+                    $('#number-product').after(`<span style='color: grey;'>max: ${result}</span>`);
+                    $('#number-product').prop('disabled', false);
+                },
+                error: function(xhr, status, err) {
+                    console.log(err);
+                }
+            })
+        }
+
 
         $('#choose_color > button').click(function(e) {
             var currColor = $(this).css('background-color');
@@ -570,8 +608,35 @@
             })
         });
         $('#product').change(function() {
-            $.ajax()
-        })
+            $.ajax({
+                url: "/ppic/get_version",
+                method: "GET",
+                data: {
+                    detail_produk_id: this.value,
+                },
+                success: function(result) {
+                    $('#bom-input-product').next("span").remove();
+                    if (result.length != 0) {
+                        console.log("found");
+                        $('#bom-input-product').empty();
+                        $('#bom-input-product').append(`<option value="">Pilih versi...</option>`);
+                        result.forEach(element => {
+                            $('#bom-input-product').append(`<option value="` + element.id + `">` + element.versi + `</option>`);
+                        });
+                        $('#bom-input-product').prop('disabled', false);
+                        $('#bom-input-product').change(bom_change);
+                    } else {
+                        console.log("not found");
+                        console.log($('#bom-input-product'));
+                        $('#bom-input-product').after("<span style='color: red'>Bom belum tersedia</span>");
+                        $('#bom-input-product').prop('disabled', true);
+                    }
+                },
+                error: function(xhr, status, err) {
+                    console.log("get bom: " + err);
+                }
+            });
+        });
         $('#save-event').click(function() {
             let color = $(this).css('background-color');
             let data_saved = {
@@ -598,11 +663,11 @@
                         borderColor: color,
                     });
                     $('#modal-input-date').modal('hide');
-                    $('#product_list_body').append(`<tr id="row1_${result.id}" data-id="${result.id}">
+                    $('#table-product').append(`<tr id="row1_${result.id}" data-id="${result.id}">
                         <td>${result.nama}</td>
                         <td><i class="fas fa-times-circle"></i></td>
                     </tr>`);
-                    $('#product_list_body tr').click(modal_select_bom);
+                    $('#table-product tr').click(modal_select_bom);
                 },
                 error: function(xhr, status, err) {
                     console.log(err);
@@ -610,7 +675,7 @@
             });
         });
 
-        $('#product_list_body tr').click(modal_select_bom);
+        $('#table-product tr').click(modal_select_bom);
 
         $('#acc-button').on('click', function() {
             bootbox.confirm({
