@@ -302,25 +302,18 @@
                             jQuery('#tabel_rapid > tbody >tr').empty();
                             var x = 0;
                             var no = 0;
+                            var b = -1;
+
                             $.each(data, function(key, value) {
                                 no++;
+                                b++;
                                 $('#tabel_rapid').append(`<tr> <td>` + no + `</td>
                                                      <td>    
-                                                     <div class="row">
-                                                         <div class="icheck-success d-inline col-sm-12">
-                                                         <input type="number" class="form-control d-none" name="karyawan_id[` + x + `]" value="` + value[`id`] + `">  
-                                                        <input type="radio" name="jenis_tes[` + x + `]" value="Antigen" ">
-                                                        <label for="no">
-                                                            Antigen
-                                                        </label>
-                                                    </div>
-                                                    <div class="icheck-warning d-inline col-sm-12">
-                                                        <input type="radio" name="jenis_tes[` + x + `]" value="Rapid">
-                                                        <label for="sample">
-                                                            Rapid 
-                                                        </label>
-                                                    </div>
-                                                    </div>
+                                                     <select type="text" class="form-control @error('jenis_tes[` + x + `]') is-invalid @enderror" name="jenis_tes[` + x + `]" style="width:100%;" id="jenis_tes` + no + `">
+                                                         <option value="">Pilih Produk</option>
+                                                         <option value="Rapid">Rapid</option>
+                                                         <option value="Antigen">Antigen</option>
+                                                         </select>
                                                         </td>
                                                          <td>
                                                          <select type="text" class="form-control @error('pemeriksa_id[` + x + `]') is-invalid @enderror" name="pemeriksa_id[` + x + `]" style="width:100%;" id="pemeriksa` + no + `">
@@ -329,75 +322,59 @@
                                                         <option value="{{$p->id}}">{{$p->nama}}</option>
                                                         @endforeach
                                                          </select>
-                                                         @if($errors->has('pemeriksa_id[` + x + `]'))
-                                                         <div class="text-danger">
-                                                        {{ $errors->first('pemeriksa_id[` + x + `]')}}
-                                                        </div>
-                                                         @endif
                                                          </td>
                                                         <td><input id="dates` + value[`id`] + `" type="date" class="form-control" readonly></td>      
                                                          <td>` + value[`nama`] + `</td>
-                                                         <td>    
-                                                         <div id = "rapid[` + x + `]" class="row" hidden>
-                                                         <div class="icheck-success d-inline col-sm-3">
-                                                         <input type="number" class="form-control d-none" name="karyawan_id[` + x + `]" value="` + value[`id`] + `">  
-                                                        <input type="radio" name="hasil[` + x + `]" value="Non reaktif" checked>
-                                                        <label for="no">
-                                                            Non reaktif
-                                                        </label>
-                                                    </div>
-                                                    <div class="icheck-warning d-inline col-sm-3">
-                                                        <input type="radio" name="hasil[` + x + `]" value="IgG">
-                                                        <label for="sample">
-                                                            IgG
-                                                        </label>
-                                                    </div>
-                                                    <div class="icheck-warning d-inline col-sm-3">
-                                                        <input type="radio" name="hasil[` + x + `]" value="IgM">
-                                                        <label for="sample">
-                                                            IgM
-                                                        </label>
-                                                    </div>
-                                                    <div class="icheck-warning d-inline col-sm-4">
-                                                        <input type="radio" name="hasil[` + x + `]" value="IgG-IgM">
-                                                        <label for="sample">
-                                                        IgG-IgM
-                                                        </label>
-                                                    </div>
-                                                    </div>
-                                                    <div id ="antigen[` + x + `]" class="row" hidden>
-                                                         <div class="icheck-success d-inline col-sm-4">
-                                                         <input type="number" class="form-control d-none" name="karyawan_id[` + x + `]" value="` + value[`id`] + `">  
-                                                        <input type="radio" name="hasil[` + x + `]" value="C" checked>
+                                                         <td>         
+                                                        <div id ="rapid` + no + `" class="row" hidden>
+                        
+                                                        </div>
+                                                        <div id ="antigen` + no + `" class="row" hidden>
+                                                        <div class="icheck-success d-inline col-sm-4">
+                                                         <input type="number" class="form-control d-none" name="karyawan_id" value="">  
+                                                        <input type="radio" name="hasil" value="C">
                                                         <label for="no">
                                                             C
                                                         </label>
-                                                    </div>
-                                                    <div class="icheck-warning d-inline col-sm-4">
+
+                                                        <div class="icheck-warning d-inline col-sm-4">
                                                         <input type="radio" name="hasil[` + x + `]" value=C\T">
                                                         <label for="sample">
                                                             C\T
                                                         </label>
-                                                    </div>
-                                                    </div>
+                                                        </div>
+                                                        </div>
                                                         </td>
                                                         <td>    
                                                          <textarea type="text" class="form-control" name="keterangan[` + x + `]" ></textarea>
                                                         </td>
                                                         </tr>`);
+
                                 x++;
+                                var n = no;
+                                console.log(n);
+                                $('#jenis_tes' + no + '').on('change', function() {
+                                    var tes = jQuery(this).val();
+                                    if (tes == "Antigen") {
+                                        $('#rapid' + n + '').removeAttr('hidden');
+                                    } else if (tes == "Rapid") {
+                                        $('#tensi' + n + '').removeAttr('hidden');
+                                    } else {}
+                                    console.log(tes)
+                                });
                                 $('#pemeriksa' + no + '').select2({
                                     placeholder: "Pilih Data",
                                     allowClear: true,
                                     theme: 'bootstrap4',
                                 })
+                                $('#jenis_tes' + no + '').select2({
+                                    placeholder: "Pilih Data",
+                                    allowClear: true,
+                                    theme: 'bootstrap4',
+                                })
                                 $('input[name=tgl_cek]').val('');
-
                                 $('#tgls').change(function() {
                                     $('#dates' + value['id'] + '').val($(this).val());
-                                });
-                                $('input[name=jenis_tes]').on('change', function() {
-                                    alert('ok');
                                 });
                             });
                         } else {

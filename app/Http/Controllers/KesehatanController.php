@@ -581,10 +581,22 @@ class KesehatanController extends Controller
             [
                 'divisi' => 'required',
                 'tgl_cek' => 'required',
+                'berat.*' => 'required',
+                'lemak.*' => 'required',
+                'kandungan_air.*' => 'required',
+                'otot..*' => 'required',
+                'tulang.*' => 'required',
+                'kalori.*' => 'required',
             ],
             [
                 'divisi.required' => 'Divisi harus di pilih',
                 'tgl_cek.required' => 'Tanggal pengecekan harus dipilih',
+                'berat.required' => 'Berat harus di isi',
+                'lemak.required' => 'Lemak harus di isi',
+                'kandungan_air.required' => 'Kandungan air harus di isi',
+                'otot.required' => 'Otot harus di isi',
+                'tulang.required' => 'Tulang harus di isi',
+                'kalori.required' => 'Kalori harus di isi',
             ]
         );
 
@@ -765,8 +777,8 @@ class KesehatanController extends Controller
     public function kesehatan_bulanan_gcu_detail()
     {
         $karyawan = Karyawan::orderBy('nama', 'ASC')
-        ->has('Kesehatan_awal')
-        ->get()
+            ->has('Kesehatan_awal')
+            ->get();
         return view('page.kesehatan.kesehatan_bulanan_detail', ['karyawan' => $karyawan]);
     }
 
