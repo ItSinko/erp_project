@@ -39,35 +39,24 @@
                         <div class="row">
                             <label for="no_seri" class="col-sm-6 col-form-label">No BPPB</label>
                             <div class="col-sm-6 col-form-label" style="text-align:right;">
-                                {{$s->Bppb->no_bppb}}
+                                {{$s->no_bppb}}
                             </div>
                         </div>
 
                         <div class="row">
                             <label for="no_seri" class="col-sm-4 col-form-label">Produk</label>
                             <div class="col-sm-8 col-form-label" style="text-align:right;">
-                                {{$s->Bppb->DetailProduk->nama}}
+                                {{$s->DetailProduk->nama}}
                             </div>
                         </div>
 
                         <div class="row">
-                            <label for="tanggal" class="col-sm-6 col-form-label">Tanggal Laporan</label>
+                            <label for="tanggal" class="col-sm-6 col-form-label">Tanggal</label>
                             <div class="col-sm-6 col-form-label" style="text-align:right;">
                                 {{date("d-m-Y", strtotime($s->tanggal))}}
                             </div>
                         </div>
 
-                        <div class="row form-group">
-                            <label for="tanggal" class="col-sm-6 col-form-label">Operator QC</label>
-                            <div class="col-sm-6 col-form-label" style="text-align:right;">
-
-                                @if (empty($s->Karyawan))
-                                <span class="text-muted">tidak tersedia</span>
-                                @elseif(!empty($s->Karyawan))
-                                {{$s->Karyawan->nama}}
-                                @endif
-                            </div>
-                        </div>
                         <div class="row">
                             <label for="tanggal" class="col-sm-6 col-form-label text-muted">Ubah Pemeriksaan</label>
                             <div class="col-sm-6 col-form-label" style="text-align:right;">
@@ -96,21 +85,34 @@
                         <strong>{{ $success }}</strong>
                     </div>
                     @endif
+                    <div class="table-responsive">
+                        <table id="example" class="table table-hover styled-table">
+                            <thead>
+                                <tr style="text-align: right;">
+                                    <th colspan="12"><button class="btn btn-sm btn-success" id="tambahlaporan" disabled><i class="fas fa-plus"></i>&nbsp; Tambah Pengujian</button></th>
+                                </tr>
+                                <tr style="text-align: center;">
+                                    <th>#</th>
+                                    <th>Kode Perakitan / Barcode</th>
+                                    <th>Operator Produksi</th>
+                                    <th>Operator QC</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody style="text-align:center;">
 
-                    <table id="example" class="table table-hover styled-table">
-                        <thead style="text-align: center;">
-                            <tr>
-                                <th>No</th>
-                                <th>Kode Perakitan / Barcode</th>
-                                <th>Operator Produksi</th>
-                                <th>Operator QC</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody style="text-align:center;">
-
-                        </tbody>
-                    </table>
+                            </tbody>
+                            <tfoot>
+                                <tr style="text-align: center;">
+                                    <th>#</th>
+                                    <th>Kode Perakitan / Barcode</th>
+                                    <th>Operator Produksi</th>
+                                    <th>Operator QC</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
 
                     <div class="modal fade" id="deletemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                         <div class="modal-dialog modal-md" role="document">
@@ -166,6 +168,25 @@
 @section('adminlte_js')
 <script>
     $(function() {
+        $("#example").on('change', '.hasil_perakitan_id', function() {
+            var cbox = $('.hasil_perakitan_id:checkbox:checked');
+            if (cbox.length <= 0) {
+                $("#tambahlaporan").attr('disabled', true)
+            } else if (cbox.length > 0) {
+                $("#tambahlaporan").removeAttr('disabled');
+            }
+        });
+
+        $("#tambahlaporan").on('click', function() {
+            var arr = [];
+            $(".hasil_perakitan_id:checkbox:checked").each(function() {
+                arr.push($(this).val());
+            });
+            if (arr.length > 0) {
+                window.location.href = "/pengujian/monitoring_proses/create/{{$id}}/" + arr;
+            }
+        });
+
         $(document).on('click', '.perbaikanproduksimodal', function(event) {
             event.preventDefault();
             var href = $(this).attr('data-attr');
@@ -191,6 +212,8 @@
                 timeout: 8000
             })
         });
+
+
 
         $(document).on('click', '.analisapsmodal', function(event) {
             event.preventDefault();
@@ -249,8 +272,8 @@
             serverSide: true,
             ajax: "{{ route('pengujian.bppb.show', ['id' => $id]) }}",
             columns: [{
-                    data: 'DT_RowIndex',
-                    name: 'DT_RowIndex',
+                    data: 'checkbox',
+                    name: 'checkbox',
                     orderable: false,
                     searchable: false
                 },

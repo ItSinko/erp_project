@@ -519,7 +519,7 @@ Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {
     Route::group(['prefix' => '/monitoring_proses'], function () {
         Route::get('/', 'QCController@pengujian_monitoring_proses')->name('pengujian.monitoring_proses');
         Route::get('/show/{bppb_id}', 'QCController@pengujian_monitoring_proses_show')->name('pengujian.monitoring_proses.show');
-        Route::get('/create/{bppb_id}', 'QCController@pengujian_monitoring_proses_create')->name('pengujian.monitoring_proses.create');
+        Route::get('/create/{bppb_id}/{arr}', 'QCController@pengujian_monitoring_proses_create')->name('pengujian.monitoring_proses.create');
         Route::put('/store/{bppb_id}', 'QCController@pengujian_monitoring_proses_store')->name('pengujian.monitoring_proses.store');
 
         Route::group(['prefix' => '/hasil'], function () {

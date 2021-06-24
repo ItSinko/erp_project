@@ -35,6 +35,7 @@
                                 <th>Tipe dan Nama</th>
                                 <th>Jumlah</th>
                                 <th>Laporan</th>
+                                <th>Data</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -49,6 +50,7 @@
                                 <th>Tipe dan Nama</th>
                                 <th>Jumlah</th>
                                 <th>Laporan</th>
+                                <th>Data</th>
                                 <th>Aksi</th>
                             </tr>
                         </tfoot>
@@ -253,6 +255,10 @@
                 {
                     data: 'laporan',
                     name: 'laporan'
+                },
+                {
+                    data: 'data',
+                    name: 'data'
                 },
                 {
                     data: 'aksi',
