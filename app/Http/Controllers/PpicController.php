@@ -61,8 +61,8 @@ class PPICController extends Controller
             $status = 'selesai';
         }
 
-        $produk = DetailProduk::select('nama', 'id')->get();
-        return view('page.ppic.jadwal_produksi', compact('event', 'produk', 'status'));
+        $detail_produk = DetailProduk::select('nama', 'id')->get();
+        return view('page.ppic.jadwal_produksi', compact('event', 'detail_produk', 'status'));
     }
 
     public function schedule_create(Request $request)
@@ -102,12 +102,13 @@ class PPICController extends Controller
             'status' => $request->status,
             'jumlah_produksi' => $request->jumlah,
             'warna' => $request->color,
+            'versi_bom' => $request->bom,
         ];
 
-        if ($request->bom != null) {
-            $data = Event::where('id_produk', $request->id_produk)->update(['bom' => $request->bom]);
-            return $request->id_produk;
-        }
+        // if ($request->bom != null) {
+        //     $data = Event::where('id_produk', $request->id_produk)->update(['bom' => $request->bom]);
+        //     return $request->id_produk;
+        // }
 
         Event::create($data);
         $data['nama'] = Event::latest()->first()->detail_produk->nama;
@@ -199,6 +200,10 @@ class PPICController extends Controller
             ->join('produk_bill_of_materials', 'detail_produk_id', 'detail_produks.id')
             ->select('versi', 'produk_bill_of_materials.id')
             ->get();
+    }
+
+    public function get_part_coversion()
+    {
     }
 
     public function bppb()
