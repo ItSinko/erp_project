@@ -129,7 +129,7 @@
                                         <div class="form-group row">
                                             <label for="kode_barcode" class="col-sm-5 col-form-label" style="text-align:right;">Kode Barcode</label>
                                             <div class="col-sm-1">
-                                                <input type="text" class="form-control  @error('inisial_produk') is-invalid @enderror " name="inisial_produk" id="inisial_produk" value="{{old('inisial_produk')}}" placeholder="Inisial Produk">
+                                                <input type="text" class="form-control  @error('inisial_produk') is-invalid @enderror " name="inisial_produk" id="inisial_produk" @if() value="{{old('inisial_produk')}}" @elseif @endif placeholder="Inisial Produk">
                                                 @if ($errors->has('inisial_produk'))
                                                 <span class="invalid-feedback" role="alert">{{$errors->first('inisial_produk')}}</span>
                                                 @endif

@@ -3,7 +3,7 @@
 @section('title', 'Beta Version')
 
 @section('content_top_nav_right')
-<li class="nav-item dropdown">
+<!-- <li class="nav-item dropdown">
     <a class="nav-link" data-toggle="dropdown" href="#">
         <i class="far fa-bell"></i>
         <span class="badge badge-danger navbar-badge" style="display: none;">0</span>
@@ -12,7 +12,7 @@
         <div class="dropdown-divider"></div>
         <span class="dropdown-item dropdown-header" id="notif-header">0 Notifications</span>
     </div>
-</li>
+</li> -->
 @stop
 
 @section('content_header')
@@ -22,10 +22,10 @@
     </div>
     <div class="col-6">
         <div class="btn-toolbar justify-content-between float-right" role="toolbar">
-            <div class="btn-group" role="group" id="penyusunan_button" style="display: none">
-                <button type="button" class="btn btn-primary view">Kalender</button>
-                <button type="button" class="btn btn-info view">Tabel</button>
-                <button type="button" class="btn btn-warning view">Daftar</button>
+            <div class="btn-group" role="group" id="view-button">
+                <button type="button" class="btn view btn-primary">Kalender</button>
+                <button type="button" class="btn view btn-info">Tabel</button>
+                <button type="button" class="btn view btn-warning">Daftar</button>
             </div>
         </div>
     </div>
@@ -39,11 +39,12 @@
         padding: 20px;
     }
 
-    #product_list_body tr:hover {
+    #table-product tr:hover {
         background-color: yellow;
+        cursor: pointer;
     }
 
-    #product_list_body tr {
+    #table-product tr {
         background-color: white;
     }
 </style>
@@ -52,50 +53,46 @@
 @section('content')
 <div hidden>
     <!-- container data from controller to javascript code below -->
-    <div id="data_produk">{{ $produk }}</div>
+    <div id="data_produk">{{ $detail_produk }}</div>
     <div id="data_event">{{ $event }}</div>
     <div id="data_status">{{ $status }}</div>
     <div id="data_user">{{ Auth::user() }}</div>
 </div>
 
 <div class="row">
-    <div class="col-md-3 calendar-view" style="display: none">
+    <div class="col-md-12">
+        <div class="alert alert-info alert-dismissible" id="status_penyusunan" style="display: none;">
+            <h5><i class="icon fas fa-info"></i> Status </h5>
+            Penyusunan
+        </div>
+        <div class="alert alert-warning alert-dismissible" id="status_pelaksanaan" style="display: none;">
+            <h5><i class="icon fas fa-hard-hat"></i> Status</h5>
+            Pelaksanaan
+        </div>
+        <div class="alert alert-success alert-dismissible" id="status_selesai" style="display: none;">
+            <h5><i class="icon fas fa-check"></i> Status</h5>
+            Selesai
+        </div>
+    </div>
+    <div class="col-md-3 view-calendar" style="display: none">
         <div class="sticky-top">
-            <div class="alert alert-info alert-dismissible" id="status_penyusunan" style="display: none;">
-                <h5><i class="icon fas fa-info"></i> Status </h5>
-                Penyusunan
-            </div>
-            <div class="alert alert-warning alert-dismissible" id="status_pelaksanaan" style="display: none;">
-                <h5><i class="icon fas fa-hard-hat"></i> Status</h5>
-                Pelaksanaan
-            </div>
-            <div class="alert alert-success alert-dismissible" id="status_selesai" style="display: none;">
-                <h5><i class="icon fas fa-check"></i> Status</h5>
-                Selesai
-            </div>
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title">Daftar Produksi</h4>
                 </div>
                 <div class="card-body">
-                    <table style="text-align: center; width: 100%;" id="product_list">
+                    <table style="text-align: center; width: 100%;">
                         <thead>
                             <tr>
                                 <th>Nama Produk</th>
-                                <th>Versi BOM</th>
+                                <th>Jumlah Produksi</th>
                             </tr>
                         </thead>
-                        <tbody id="product_list_body">
+                        <tbody id="table-product">
                             @foreach($event as $e)
-                            <tr id="row1_{{ $e->id }}">
-                                <td><a href="#" style="text-decoration: none; color: black;" data-id="{{ $e->id }}">{{$e->nama}}</a></td>
-                                <td>
-                                    @if ($e->versi_bom == NULL)
-                                    <i class="fas fa-times-circle"></i>
-                                    @else
-                                    {{$e->versi_bom}}
-                                    @endif
-                                </td>
+                            <tr data-id="{{ $e->id }}">
+                                <td>{{ $e->nama }}</td>
+                                <td>{{ $e->jumlah_produksi }}</td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -112,7 +109,7 @@
             @endif
         </div>
     </div>
-    <div class="col-md-9 calendar-view" style="display: none">
+    <div class="col-md-9 view-calendar" style="display: none">
         <div class="card">
             <div class="card-body">
                 <div id="calendar"></div>
@@ -134,28 +131,20 @@
                 <table class="table table-bordered center">
                     <thead>
                         <tr>
-                            <th style="width: 10%">Produk</th>
+                            <th style="width: 20%">Produk</th>
+                            <th style="width: 10%">Jumlah Produksi</th>
                             @for ($i = 1; $i <= date('t'); $i++) <th>{{$i}}</th>
                                 @endfor
                         </tr>
                     </thead>
-                    <tbody>
-                        @foreach($event as $e)
-                        <tr>
-                            <td>{{$e->nama}}</td>
-                            @for ($i = 1; $i <= date('t'); $i++) @php $start=date('d', strtotime($e->tanggal_mulai));
-                                $end = date('d', strtotime($e->tanggal_selesai));
-                                @endphp
-                                @if ($i >= $start && $i <= $end) <td style="background: yellow;">
-                                    </td>
-                                    @else
-                                    <td></td>
-                                    @endif
-                                    @endfor
-                        </tr>
-                        @endforeach
+                    <tbody id="table-date" data-num_date="{{ date('t') }}">
                     </tbody>
                 </table>
+            </div>
+            <div class="card-footer">
+                <span style="background-color: black; display: inline-block; height:15px; width:15px; margin-right:10px;"></span><span>Hari libur</span><br>
+                <span style="background-color: yellow; display: inline-block; height:15px; width:15px; margin-right:10px;"></span><span>Hari produksi</span><br>
+                <span style="background-color: white; display: inline-block; height:15px; width:15px; margin-right:10px;"></span><span>Hari kosong</span><br>
             </div>
         </div>
     </div>
@@ -207,10 +196,10 @@
     </div>
 </div>
 
-<div class="modal fade" id="modal-input-date">
+<div class="modal fade" id="modal-input-product">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
-            <form onsubmit="return false">
+            <form onsubmit="return false" id="product-form">
                 <div class="modal-header text-center">
                     <h4 class="modal-title w-100 font-weight-bold">Produksi</h4>
                     <button type="button" class="close" data-dismiss="modal">
@@ -230,48 +219,58 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="product" class="col-sm-2 col-form-label">Produksi</label>
+                        <label for="product-name" class="col-sm-2 col-form-label">Produksi</label>
                         <div class="col-sm-10">
-                            <select name="" id="product" class="form-control select2" data-placeholder="Pilih Produk..." required>
+                            <select id="product-name" class="form-control select2" data-placeholder="Pilih Produk..." required>
                                 <option value=""></option>
-                                @foreach($produk as $e)
+                                @foreach($detail_produk as $e)
                                 <option value="{{ $e->id }}">{{ $e->nama }}</option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="quantity" class="col-sm-2 col-form-label">Jumlah Produksi</label>
+                        <label for="product-bom" class="col-sm-2 col-form-label">Versi BOM</label>
                         <div class="col-sm-10">
-                            <input type="number" class="form-control" id="number-product" placeholder="Jumlah produksi" min="1" autocomplete="off" required>
+                            <select class="form-control" id="product-bom" required disabled>
+                                <option value=""></option>
+                            </select>
+                            <span style='color: red;'></span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="days" class="col-sm-2 col-form-label">Jumlah Hari</label>
+                        <label for="product-quantity" class="col-sm-2 col-form-label">Jumlah Produksi</label>
                         <div class="col-sm-10">
-                            <input type="number" class="form-control" id="days" placeholder="number of days" min="1" autocomplete="off" readonly>
+                            <input type="number" class="form-control" id="product-quantity" required disabled>
+                            <span style='color: grey;'></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="product-days" class="col-sm-2 col-form-label">Jumlah Hari</label>
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" id="product-days" readonly>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="date_start">Tanggal Mulai</label>
-                            <input type="date" class="form-control" id="date_start" autocomplete="off" readonly>
+                            <input type="date" class="form-control" id="date_start" readonly>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="date_end">Tanggal Berhenti</label>
-                            <input type="date" class="form-control" id="date_end" autocomplete="off" readonly>
+                            <input type="date" class="form-control" id="date_end" readonly>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer justify-content-center">
-                    <button type="submit" class="btn btn-primary" id="save-event">Simpan</button>
+                    <button type="submit" class="btn btn-primary" id="product-submit">Simpan</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="modal-bom-show">
+<div class="modal fade" id="modal-show-bom">
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header text-center">
@@ -285,29 +284,22 @@
                     <div class="input-group-prepend">
                         <label class="input-group-text" for="input">Search</label>
                     </div>
-                    <select class="custom-select" id="bom-input">
+                    <select class="form-control" id="bom-input">
+                        <option value=""></option>
                     </select>
                 </div>
-                <table class="table table-bordered" id="table-bom">
+                <table id="table-bom" class="table table-hover styled-table table-striped">
                     <thead>
-                        <tr style="text-align: center;">
-                            <th>#</th>
-                            <th style="width: 50%">Nama</th>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama</th>
                             <th>Jumlah</th>
                             <th>Stok</th>
-                            <th>Pemotongan</th>
-                            <th>Sisa</th>
                         </tr>
                     </thead>
                     <tbody>
                     </tbody>
-                    <tfoot>
-                    </tfoot>
                 </table>
-            </div>
-            <div class="modal-footer justify-content-center">
-                <button type="submit" class="btn btn-primary" id="choose-bom">Pilih</button>
-                <button class="btn btn-danger" id="delete-event">Hapus</button>
             </div>
         </div>
     </div>
@@ -370,6 +362,15 @@
     var user = JSON.parse($('#data_user').html()); // GET data user
     var status = $('#data_status').html(); // GET data status from controller
 
+    console.log(user);
+
+    // ajax setup
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
     // get object array to initialize fullcalendar
     let initial_event = [];
     for (let i = 0; i < event.length; i++) {
@@ -413,21 +414,21 @@
     // choose view template
     function choose_view(view) {
         if (view == 'Kalender') {
-            $('.calendar-view').show(500);
+            $('.view-calendar').show(500);
             $('.table-view, .list-view').hide();
         } else if (view == 'Tabel') {
             $('.table-view').show(500);
-            $('.calendar-view, .list-view').hide();
+            $('.view-calendar, .list-view').hide();
         } else if (view == 'Daftar') {
             $('.list-view').show(500);
-            $('.calendar-view, .table-view').hide();
+            $('.view-calendar, .table-view').hide();
         }
     }
 
     // action base on status sended
     function choose_status(status) {
         if (status == 'penyusunan') {
-            $('#status_penyusunan, #penyusunan_button').show();
+            $('#status_penyusunan').show();
             $('#status_pelaksanaan, #status_selesai').hide();
             choose_view('Kalender');
         } else if (status == 'pelaksanaan') {
@@ -439,23 +440,36 @@
         }
     }
 
-    $(document).ready(function() {
-        var Calendar = FullCalendar.Calendar;
-        var calendarEl = document.getElementById('calendar');
+    // table-view function
+    function date_mark(event) {
+        let num = $('#table-date').data('num_date');
+        let table = $('#table-date').append(`<tr data-id="${event.id}"></tr>`)
+        let table_row = $(`#table-date tr[data-id="${event.id}"]`);
 
-        var event_info;
+        let start_date = new Date(event.tanggal_mulai);
+        let end_date = new Date(event.tanggal_selesai);
 
-        choose_status(status);
-        $('.view').click(function() {
-            choose_view($(this).text());
-        });
+        let month = start_date.getMonth();
+        let year = start_date.getFullYear();
+        // console.log(current_date);
+        table_row.append(`<td>${event.nama}</td>`);
+        table_row.append(`<td>${event.jumlah_produksi}</td>`);
 
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-        var calendar_setting = {
+        for (let i = 1; i <= num; i++) {
+            let date = new Date(year, month, i);
+            if (date.getDay() == 0 || date.getDay() == 6)
+                table_row.append(`<td style="background-color: black;"></td>`)
+            else if (i >= start_date.getDate() && i < end_date.getDate())
+                table_row.append(`<td style="background-color: yellow;"></td>`)
+            else
+                table_row.append(`<td></td>`);
+        }
+    }
+
+    // calendar-view setting
+    var calendar_setting;
+    if (user.divisi_id == 24)
+        calendar_setting = {
             locale: 'id',
             headerToolbar: {
                 end: ""
@@ -478,18 +492,9 @@
 
                 $('#date_start').val(info.startStr);
                 $('#date_end').val(info.endStr);
-                $('#days').val(days);
+                $('#product-days').val(days);
 
-                if (date1.getMonth() == date2.getMonth()) {
-                    $('#modal-input-date').modal();
-                } else if ((date1.getMonth() + 1 == date2.getMonth()) && (date2.getDate() == 1)) {
-                    $('#modal-input-date').modal();
-                } else {
-                    bootbox.alert({
-                        message: "Harap pilih tanggal produksi pada bulan yang sama",
-                        centerVertical: true,
-                    });
-                }
+                $('#modal-input-product').modal('show');
             },
 
             eventClick: function(info) {
@@ -515,9 +520,9 @@
                                 },
                                 method: "POST",
                                 success: function() {
-                                    event_info.event.remove();
-                                    $('#row1_' + event_info.event._def.publicId).remove();
-                                    $('#row2_' + event_info.event._def.publicId).remove();
+                                    info.event.remove();
+                                    $('#row1_' + info.event._def.publicId).remove();
+                                    $('#row2_' + info.event._def.publicId).remove();
                                 }
                             });
                         }
@@ -525,6 +530,86 @@
                 });
             },
         }
+    else
+        calendar_setting = {
+            locale: 'id',
+            headerToolbar: {
+                end: ""
+            },
+
+            weekends: false,
+            weekNumbers: true,
+            showNonCurrentDates: false,
+
+            selectable: false,
+            editable: false,
+
+            events: initial_event,
+        }
+
+    // ajax function
+    var bom_input_change = function() {
+        $('#modal-show-bom').modal('show');
+        event_info = {
+            id: this.dataset.id
+        };
+        $.ajax({
+            url: "/ppic/get_version",
+            method: "GET",
+            data: event_info,
+            success: function(result) {
+                $('#bom-input').empty();
+                $('#bom-input').append(`<option value=""></option>`);
+                result.forEach(element => {
+                    $('#bom-input').append(`<option value="` + element.id + `">` + element.versi + `</option>`);
+                });
+            },
+            error: function(xhr, status, err) {
+                console.log("get bom: " + error);
+            }
+        });
+    }
+    var product_bom_change = function() {
+        $('#product-quantity').next("span").html("");
+        $.ajax({
+            url: `/ppic/get_bom/${this.value}`,
+            method: "GET",
+            data: {
+                count: true
+            },
+            success: function(result) {
+                $('#product-quantity').next('span').html(`max: ${result}`);
+                $('#product-quantity').prop('disabled', false);
+            },
+            error: function(xhr, status, err) {
+                console.log(err);
+            }
+        })
+    }
+
+    // reset form
+    function reset_form() {
+        $('#product-form')[0].reset();
+        $('.select2').val(null);
+        $('#product-bom').prop('disabled', true);
+        $('#product-quantity').prop('disabled', true);
+    }
+
+    $(document).ready(function() {
+        var Calendar = FullCalendar.Calendar;
+        var calendarEl = document.getElementById('calendar');
+
+        var event_info;
+
+        for (i in event) {
+            date_mark(event[i]);
+        }
+
+        reset_form(); // reset form
+        choose_status(status); // choose status info
+        $('.view').click(function() {
+            choose_view($(this).text()); // choose display mode
+        });
 
         var calendar = new Calendar(calendarEl, calendar_setting);
         calendar.render();
@@ -534,7 +619,6 @@
 
         var create_bppb = false;
         for (var i = 0; i < event.length; i++) {
-            console.log(event[i].status);
             if (event[i].status == 'disetujui' || event[i].status == 'permintaan') {
                 create_bppb = true;
                 break;
@@ -551,28 +635,57 @@
 
         $('#choose_color > button').click(function(e) {
             var currColor = $(this).css('background-color');
-            $('#save-event').css({
+            $('#product-submit').css({
                 'background-color': currColor,
                 'border-color': currColor
             })
         });
-        $('#save-event').click(function() {
+        $('#product-name').change(function() {
+            $('#product-bom').next("span").html("");
+            $('#product-quantity').next("span").html("");
+            $.ajax({
+                url: "/ppic/get_version",
+                method: "GET",
+                data: {
+                    detail_produk_id: this.value,
+                },
+                success: function(result) {
+                    if (result.length != 0) {
+                        $('#product-bom').empty();
+                        $('#product-bom').append(`<option value=""></option>`);
+                        result.forEach(element => {
+                            $('#product-bom').append(`<option value="${element.id}">${element.versi}</option>`);
+                        });
+                        $('#product-bom').prop('disabled', false);
+                        $('#product-bom').change(product_bom_change);
+                    } else {
+                        $('#product-bom').next('span').html("Bom belum tersedia");
+                        $('#product-bom').empty().prop('disabled', true);
+                    }
+                    $('#product-quantity').prop('disabled', true);
+                },
+                error: function(xhr, status, err) {
+                    console.log("product-bom: " + err);
+                }
+            })
+        });
+        $('#product-submit').click(function() {
             let color = $(this).css('background-color');
             let data_saved = {
-                id_produk: $('#product').val(),
+                id_produk: $('#product-name').val(),
                 start: $('#date_start').val(),
                 end: $('#date_end').val(),
                 status: "penyusunan",
-                jumlah: $('#number-product').val(),
-                color: $(this).css('background-color'),
+                jumlah: $('#product-quantity').val(),
+                bom: $('#product-bom').val(),
+                color: color,
             }
-
+            console.log(data_saved);
             $.ajax({
                 url: "/ppic/schedule/create",
                 method: "POST",
                 data: data_saved,
                 success: function(result) {
-                    console.log(result);
                     calendar.addEvent({
                         id: result.id,
                         title: result.nama,
@@ -581,40 +694,55 @@
                         backgroundColor: color,
                         borderColor: color,
                     });
-                    $('#modal-input-date').modal('hide');
-                    $('#product_list_body').append(`<tr id="row1_` + result.id + `" >
-                        <td>` + result.nama + `</td>
-                        <td><i class="fas fa-times-circle"></i></td>
+                    $('#modal-input-product').modal('hide');
+                    $('#table-product').append(`<tr data-id="${result.id}">
+                        <td>${result.nama}</td>
+                        <td>${result.jumlah_produksi}</td>
                     </tr>`);
+                    date_mark(result);
+                    $('#table-product tr').click(bom_input_change);
                 },
                 error: function(xhr, status, err) {
-                    console.log(err);
+                    console.log("product-submit: " + err);
                 }
             });
+            reset_form();
+        });
+        $('#table-product tr').click(bom_input_change);
+        let initialize = true;
+        let table;
+        $("#bom-input").change(function() {
+            let temp = this.value;
+            if (initialize) {
+                initialize = false;
+            } else {
+                table.destroy();
+            }
+            table = $('#table-bom').DataTable({
+                paging: false,
+                info: false,
+                pageLength: -1,
+                ajax: '/ppic/get_bom/' + temp,
+                columns: [{
+                        data: 'DT_RowIndex',
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: 'nama'
+                    },
+                    {
+                        data: 'jumlah'
+                    },
+                    {
+                        data: 'stok'
+                    }
+                ]
+            });
+            $('#table-card').show();
         });
 
-        $('#product_list_body tr a').click(function() {
-            $('#modal-bom-show').modal('show');
-            // event_info = info;
-            // console.log(this.dataset.id);
-            $.ajax({
-                url: "/ppic/get_bom",
-                method: "GET",
-                data: {
-                    event_id: this.dataset.id
-                },
-                success: function(result) {
-                    // $('#bom-input').empty();
-                    // $('#bom-input').append(`<option value="">Pilih versi...</option>`);
-                    // result.forEach(element => {
-                    //     $('#bom-input').append(`<option value="` + element.id + `">` + element.versi + `</option>`);
-                    // });
-                },
-                error: function(xhr, status, err) {
-                    console.log("get bom: " + error);
-                }
-            });
-        })
+
 
         $('#acc-button').on('click', function() {
             bootbox.confirm({
@@ -654,106 +782,6 @@
                             }
                         })
                     }
-                }
-            });
-        });
-
-        $("#bom-input").change(function() {
-            var value = $("#bom-input").val();
-            $('#table-bom').hide();
-            $('#table-bom tbody').html('');
-            $('#table-bom tfoot').html('');
-            $('#table-bom').show(1000);
-
-            if (value != "Choose...") {
-                $.ajax({
-                    url: "/ppic/get_bom",
-                    method: "GET",
-                    data: {
-                        produk_bill_of_material_id: value
-                    },
-                    success: function(result) {
-                        var data = $('#table-bom tbody');
-
-                        var min = Infinity;
-                        for (var j = 0; j < result.length - 1; j++) {
-                            var temp = parseInt(result[j].stok / result[j].jumlah);
-                            if (temp < min) {
-                                min = temp;
-                            }
-                        }
-
-                        for (var j = 0; j < result.length - 1; j++) {
-                            var pemotongan = parseInt(result[j].jumlah) * min;
-                            var sisa = parseInt(result[j].stok) - pemotongan;
-                            var child;
-                            if (sisa == 0) {
-                                child = `
-                                <tr style="background: yellow;">
-                                    <td>` + String(j + 1) + `</td>
-                                    <td>` + result[j].nama + `</td>
-                                    <td>` + result[j].jumlah + `</td>
-                                    <td>` + result[j].stok + `</td>
-                                    <td>` + pemotongan + `</td>
-                                    <td>` + sisa + `</td>
-                                </tr>
-                            `;
-                            } else {
-                                child = `
-                                <tr>
-                                    <td>` + String(j + 1) + `</td>
-                                    <td>` + result[j].nama + `</td>
-                                    <td>` + result[j].jumlah + `</td>
-                                    <td>` + result[j].stok + `</td>
-                                    <td>` + pemotongan + `</td>
-                                    <td>` + sisa + `</td>
-                                </tr>
-                            `;
-                            }
-                            data.append(child);
-                        }
-                        var last_child = `
-                                <tr>
-                                    <th colspan="5">Jumlah Maksimum Produksi</th>
-                                    <th>` + min + `</th>
-                                </tr>
-                        `;
-
-                        $('#table-bom tfoot').html(last_child);
-                    },
-                    error: function(xhr, status, error) {
-                        bootbox.alert({
-                            centerVertical: true,
-                            message: "BOM tidak ditemukan",
-                        });
-
-                        console.log(error);
-                    }
-                });
-            }
-        });
-
-        $("#choose-bom").click(function() {
-            console.log(event_info.event._def.publicId);
-            $.ajax({
-                url: "/ppic/schedule/create",
-                method: "POST",
-                data: {
-                    versi: $("#bom-input").val(),
-                    id_event: event_info.event._def.publicId,
-                },
-                success: function(result) {
-                    $('.row_' + event_info.event._def.publicId + " td:nth-child(2)").html(result.versi_bom);
-                    $('#modal-bom-show').modal('hide');
-
-                    $('#table-bppb tbody').append(`<tr id="row2_` + result.id + `" >
-                            <td>` + result.nama + `</td>
-                            <td>` + result.jumlah + `</td>
-                            <td><button class="btn btn-info send" value="` + result.id + `">Kirim</button></td>
-                        </tr>`);
-                },
-                error: function(error) {
-                    console.log(error);
                 }
             });
         });

@@ -49,6 +49,7 @@
                 <th>Produk</th>
                 <th>Jumlah</th>
                 <th>Divisi</th>
+                <th>Status</th>
                 <th>Laporan</th>
                 <th>Aksi</th>
               </tr>
@@ -167,6 +168,10 @@
         {
           data: 'divisi_id',
           name: 'divisi_id'
+        },
+        {
+          data: 'status',
+          name: 'status'
         },
         {
           data: 'laporan',

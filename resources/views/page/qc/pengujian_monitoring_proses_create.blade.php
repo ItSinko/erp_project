@@ -107,6 +107,7 @@
                                             <div class="col-sm-5">
                                                 <div class="select2-info">
                                                     <select class="select2 custom-select form-control @error('karyawan_id') is-invalid @enderror karyawan_id" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;" name="karyawan_id" id="karyawan_id">
+                                                        <option value=""></option>
                                                         @foreach($kry as $i)
                                                         <option value="{{$i->id}}">{{$i->nama}}</option>
                                                         @endforeach
@@ -180,34 +181,19 @@
                                                         <th>Permasalahan</th>
                                                         <th>Keterangan</th>
                                                         <th>Tindak Lanjut</th>
-                                                        <th>Aksi</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody style="text-align:center;">
+                                                    @foreach($s as $i)
                                                     <tr>
-                                                        <td>1</td>
+                                                        <td>{{$loop->iteration}}</td>
                                                         <td>
-                                                            <div class="form-group">
-                                                                <div class="select2-info">
-                                                                    <select class="select2 custom-select form-control @error('no_seri') is-invalid @enderror no_seri" data-placeholder="Pilih No Seri" data-dropdown-css-class="select2-info" style="width: 100%;" name="no_seri[0]" id="no_seri0">
-                                                                        <option value=""></option>
-                                                                        @foreach($s as $i)
-                                                                        <option value="{{$i->id}}">
-                                                                            {{$i->Perakitan->alias_tim}}{{$i->no_seri}}@if($i->status == "rej_pemeriksaan_terbuka" || $i->status == "rej_pemeriksaan_tertutup") * @endif
-                                                                        </option>
-                                                                        @endforeach
-                                                                    </select>
-                                                                    @if ($errors->has('no_seri'))
-                                                                    <span class="invalid-feedback" role="alert">{{$errors->first('no_seri.*')}}</span>
-                                                                    @endif
-                                                                    <span id="no_seri-message[]" role="alert"></span>
-                                                                </div>
-                                                            </div>
+                                                            <input type="text" value="{{$i->id}}" id="no_seri" name="no_seri[{{$loop->iteration - 1}}]" hidden>{{$i->Perakitan->alias_tim}}{{$i->no_seri}}
                                                         </td>
                                                         <td>
                                                             <div class="form-group">
                                                                 <div class="input-group">
-                                                                    <input type="text" class="form-control @error('no_barcode') is-invalid @enderror barcode" name="no_barcode[0]" id="no_barcode0">
+                                                                    <input type="text" class="form-control @error('no_barcode') is-invalid @enderror barcode" name="no_barcode[{{$loop->iteration - 1}}]" id="no_barcode{{$loop->iteration - 1}}">
                                                                 </div>
                                                                 @if ($errors->has('no_barcode'))
                                                                 <span class="invalid-feedback" role="alert">{{$errors->first('no_barcode')}}</span>
@@ -220,8 +206,8 @@
                                                                 <div class="col-sm-12">
                                                                     <div class="form-group clearfix">
                                                                         <div class="icheck-success d-inline checked">
-                                                                            <input type="radio" name="hasil[0]" id="ok0" class="hasil" value="ok" checked>
-                                                                            <label id="labelok" for="ok0">
+                                                                            <input type="radio" name="hasil[{{$loop->iteration - 1}}]" id="ok{{$loop->iteration - 1}}" class="hasil" value="ok" checked>
+                                                                            <label id="labelok" for="ok{{$loop->iteration - 1}}">
                                                                                 <i class="fas fa-check-circle" style="color:green;"></i>
                                                                             </label>
                                                                         </div>
@@ -232,8 +218,8 @@
                                                                 <div class="col-sm-12">
                                                                     <div class="form-group clearfix">
                                                                         <div class="icheck-danger d-inline">
-                                                                            <input type="radio" name="hasil[0]" id="nok0" value="nok" class="hasil">
-                                                                            <label id="labelnok" for="nok0">
+                                                                            <input type="radio" name="hasil[{{$loop->iteration - 1}}]" id="nok{{$loop->iteration - 1}}" value="nok" class="hasil">
+                                                                            <label id="labelnok" for="nok{{$loop->iteration - 1}}">
                                                                                 <i class="fas fa-times-circle" style="color:red;"></i>
                                                                             </label>
                                                                         </div>
@@ -244,7 +230,7 @@
                                                         <td>
                                                             <div class="form-group">
                                                                 <div class="select2-info">
-                                                                    <select class="select2 form-control pemeriksaan  @error('pemeriksaan') is-invalid @enderror" multiple="multiple" name="pemeriksaan[0]" id="pemeriksaan0" data-placeholder="Standar yang tidak sesuai" data-dropdown-css-class="select2-info" disabled>
+                                                                    <select class="select2 form-control pemeriksaan  @error('pemeriksaan') is-invalid @enderror" multiple="multiple" name="pemeriksaan[{{$loop->iteration - 1}}]" id="pemeriksaan{{$loop->iteration - 1}}" data-placeholder="Standar yang tidak sesuai" data-dropdown-css-class="select2-info" disabled>
                                                                         @foreach($p as $i)
                                                                         <optgroup label="{{$i->hal_yang_diperiksa}}">
                                                                             @foreach($i->HasilIkPemeriksaanPengujian as $j)
@@ -262,12 +248,12 @@
                                                         <td>
                                                             <div class="form-group">
                                                                 <div class="input-group">
-                                                                    <textarea class="form-control @error('keterangan') is-invalid @enderror" name="keterangan[0]" id="keterangan"></textarea>
+                                                                    <textarea class="form-control @error('keterangan') is-invalid @enderror" name="keterangan[{{$loop->iteration - 1}}]" id="keterangan"></textarea>
                                                                 </div>
                                                             </div>
                                                         </td>
                                                         <td>
-                                                            <select class="select2 custom-select form-control tindak_lanjut  @error('tindak_lanjut') is-invalid @enderror " name="tindak_lanjut[0]" id="tindak_lanjut0" data-placeholder="Pilih Tindak Lanjut" data-dropdown-css-class="select2-info" style="width: 80%;">
+                                                            <select class="select2 custom-select form-control tindak_lanjut  @error('tindak_lanjut') is-invalid @enderror " name="tindak_lanjut[{{$loop->iteration - 1}}]" id="tindak_lanjut{{$loop->iteration - 1}}" data-placeholder="Pilih Tindak Lanjut" data-dropdown-css-class="select2-info" style="width: 80%;">
                                                                 <option value="pengemasan">Pengemasan</option>
                                                                 <option value="perbaikan" disabled>Perbaikan</option>
                                                                 <option value="produk_spesialis" disabled>Produk Spesialis</option>
@@ -276,10 +262,8 @@
                                                             <span class="invalid-feedback" role="alert">{{$errors->first('tindak_lanjut')}}</span>
                                                             @endif
                                                         </td>
-                                                        <td>
-                                                            <button type="button" class="btn btn-success karyawan-img-small" style="border-radius:50%;" id="tambahitem"><i class="fas fa-plus-circle"></i></button>
-                                                        </td>
                                                     </tr>
+                                                    @endforeach
                                                 </tbody>
 
                                             </table>
@@ -293,7 +277,7 @@
                             <button type="button" class="btn btn-block btn-danger rounded-pill" style="width:200px;float:left;"><i class="fas fa-times"></i>&nbsp;Batal</button>
                         </span>
                         <span>
-                            <button type="submit" class="btn btn-block btn-success rounded-pill" style="width:200px;float:right;"><i class="fas fa-plus"></i>&nbsp;Tambah Data</button>
+                            <button type="submit" class="btn btn-block btn-success rounded-pill" style="width:200px;float:right;" disabled><i class="fas fa-plus"></i>&nbsp;Tambah Data</button>
                         </span>
                     </div>
                     </form>

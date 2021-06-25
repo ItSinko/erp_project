@@ -153,7 +153,7 @@ class EngController extends Controller
                     if ($s->tindak_lanjut_terbuka == "produk_spesialis") {
                         $btn .= '<a href="/perakitan/analisa_ps/create/' . $s->id . '"><button type="button" class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-wrench"></i></button>
                         <div><small> Permohonan Analisa Pemeriksaan Terbuka</small></div></a>
-                        <div><small class="danger-text">Pemeriksaan Terbuka Ditolak</small></div>';
+                        <div><small class="danger-text">Pemeriksaan Terbuka Not OK</small></div>';
                         if ($app) {
                             $btn .= '<a class="perbaikanproduksimodal" data-toggle="modal" data-target="#perbaikanproduksimodal" data-attr="/perbaikan/produksi/detail/' . $app->id . '" data-id="' . $app->id . '">
                                     <button class="btn btn-sm btn-info"><small><i class="fas fa-cog"></i>&nbsp;Hasil Perbaikan</small></button></a>';
@@ -369,19 +369,28 @@ class EngController extends Controller
                     ->orderBy('updated_at', 'desc')
                     ->first();
 
-
-
-                if ($s->status == 'req_analisa_perbaikan') {
+                if ($s->status == 'req_monitoring_proses') {
+                    $btn .= '<div><small class="warning-text"><i class="fas fa-hourglass-half"></i>&nbsp;Permintaan Pengujian</small></div>';
+                } else if ($s->status == 'rej_monitoring_proses') {
                     if ($s->tindak_lanjut == "produk_spesialis") {
-                        $btn = '<a href="/perbaikan/produksi/create/' . $s->id . '/pengujian"><button type="button" class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-wrench"></i></button>
+                        $btn .= '<a href="/pengujian/analisa_ps/create/' . $s->id . '"><button type="button" class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-wrench"></i></button>
                         <div><small> Permohonan Analisa</small></div></a>
-                        <div><small class="danger-text">Pengujian Ditolak</small></div>';
-
+                        <div><small class="danger-text">Pengujian Not Ok</small></div>';
                         if ($p) {
                             $btn .= '<a class="perbaikanproduksimodal" data-toggle="modal" data-target="#perbaikanproduksimodal" data-attr="/perbaikan/produksi/detail/' . $p->id . '" data-id="' . $p->id . '">
                                     <button class="btn btn-sm btn-info"><small><i class="fas fa-cog"></i>&nbsp;Hasil Perbaikan</small></button></a>';
                         }
+                    } else if ($s->tindak_lanjut == "perbaikan") {
+                        $btn .= '<div><small class="danger-text">Dalam Perbaikan</small></div>';
                     }
+                } else if ($s->status == "perbaikan_monitoring_proses") {
+                    $btn .= '<div><small class="danger-text">Dalam Perbaikan</small></div>';
+                } else if ($s->status == "analisa_monitoring_proses") {
+                    $btn .= '<a class="analisapsmodal" data-toggle="modal" data-target="#analisapsmodal" data-attr="/pengujian/analisa_ps/show/' . $a->id . '" data-id="' . $a->id . '">
+                            <button type="button" class="btn btn-outline-info btn-sm m-1" style="border-radius:50%;">
+                                <i class="fas fa-search"></i>
+                            </button>
+                            <div><small>Lihat Hasil Analisa</small></div></a>';
                 }
                 return $btn;
             })
@@ -396,6 +405,97 @@ class EngController extends Controller
             })
             ->rawColumns(['operator', 'produk', 'status', 'aksi'])
             ->make(true);
+    }
+
+    public function pengujian_analisa_ps_show($id)
+    {
+        $s = AnalisaPsPengujian::find($id);
+        return view('page.engineering.analisa_ps_pengujian_show', ['id' => $id, 's' => $s]);
+    }
+
+    public function pengujian_analisa_ps_create($id)
+    {
+        $s = HasilMonitoringProses::find($id);
+        $bppbid = $s->MonitoringProses->Bppb->id;
+        $bom = DetailPermintaanBahanBaku::join('permintaan_bahan_bakus', 'detail_permintaan_bahan_bakus.permintaan_bahan_baku_id', '=', 'permintaan_bahan_bakus.id')
+            ->where([
+                ['permintaan_bahan_bakus.bppb_id', '=', $bppbid],
+                ['permintaan_bahan_bakus.status', '=', 'acc_permintaan']
+            ])
+            ->groupby('detail_permintaan_bahan_bakus.bill_of_material_id')
+            ->selectRaw("distinct(detail_permintaan_bahan_bakus.bill_of_material_id) as bill_of_material_id, sum(detail_permintaan_bahan_bakus.jumlah_diterima) as jumlah_diterima")
+            ->get();
+
+        return view('page.engineering.analisa_ps_pengujian_create', ['id' => $id, 's' => $s, 'bom' => $bom]);
+    }
+
+    public function pengujian_analisa_ps_store($id, Request $request)
+    {
+        $v = Validator::make(
+            $request->all(),
+            [
+                'analisa' => 'required',
+                'realisasi_pengerjaan' => 'required',
+                'tindak_lanjut' => 'required',
+            ],
+            [
+                'realisasi_pengerjaan.required' => "Realisasi Pengejaan harus diisi",
+                'analisa.required' => "Analisa harus diisi",
+                'tindak_lanjut.required' => "Tindak Lanjut harus diisi",
+            ]
+        );
+        if ($v->fails()) {
+            return redirect()->back()->withErrors($v);
+        } else {
+            $bool = true;
+            $s = AnalisaPsPengujian::create([
+                'hasil_monitoring_proses_id' => $id,
+                'analisa' => $request->analisa,
+                'realisasi_pengerjaan' => $request->realisasi_pengerjaan,
+                'tindak_lanjut' => $request->tindak_lanjut
+            ]);
+            if ($s) {
+                if (!empty($request->part)) {
+                    $app = AnalisaPsPengujian::find($s->id);
+                    $app->BillOfMaterial()->sync($request->part, false);
+                    $u = $app->save();
+                    if ($u) {
+                        $bool = true;
+                    } else {
+                        $bool = false;
+                    }
+                } else {
+                    $bool = true;
+                }
+
+                if ($bool == true) {
+                    $h = HasilMonitoringProses::find($id);
+                    if ($h->status == "rej_monitoring_proses") {
+                        if ($h->tindak_lanjut == "produk_spesialis") {
+                            $h->status = "analisa_monitoring_proses";
+                            $h->save();
+
+                            $c = HistoriHasilPerakitan::create([
+                                "hasil_perakitan_id" => $h->HasilPerakitan->id,
+                                "kegiatan" => 'analisa_pengujian_ps',
+                                "tanggal" => Carbon::now()->toDateString(),
+                                "hasil" => "nok",
+                                "keterangan" => "",
+                                "tindak_lanjut" => $request->tindak_lanjut
+                            ]);
+
+                            if ($c) {
+                                return redirect()->back()->with('success', "Berhasil menambah Analisa");
+                            } else if (!$c) {
+                                return redirect()->back()->with('error', "Gagal menambah Analisa");
+                            }
+                        }
+                    }
+                }
+            } else {
+                return redirect()->back()->with('error', "Gagal menambah Analisa");
+            }
+        }
     }
 
     public function pengemasan()

@@ -637,7 +637,6 @@ class QCController extends Controller
                         <button class="btn btn-sm btn-info"><small><i class="fas fa-cog"></i>&nbsp;Hasil Perbaikan</small></button></a>';
                     }
                 }
-
                 return $btn;
             })
             // ->editColumn('status', function ($s) {
@@ -713,6 +712,9 @@ class QCController extends Controller
                 $btn .= '<a class="dropdown-item luplkpmodal" data-toggle="modal" data-target="#luplkpmodal" data-attr="/produk/detail/show/' . $s->id . '" data-id="' . $s->id . '"><span style="color: black;"><i class="fas fa-eye" aria-hidden="true"></i>&nbsp;LUP dan LKP</span></a>';
                 return $btn;
             })
+            ->addColumn('data', function ($s) {
+                return '<a href="/pengujian/bppb/' . $s->id . '"><button type="button" class="rounded-pill btn btn-sm btn-primary"><i class="fas fa-eye" aria-hidden="true"></i>&nbsp;Lihat Semua Data</button>';
+            })
             ->addColumn('aksi', function ($s) {
                 $btn = '<a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Klik untuk melihat laporan"><i class="fas fa-plus-circle" aria-hidden="true"></i></a>';
                 $btn .= '<div class="dropdown-menu" aria-labelledby="dropdownMenuLink2">';
@@ -720,7 +722,214 @@ class QCController extends Controller
                 $btn .= '<a class="dropdown-item luplkpmodal" data-toggle="modal" data-target="#luplkpmodal" data-attr="/produk/detail/show/' . $s->id . '" data-id="' . $s->id . '"><span style="color: black;"><i class="fas fa-plus" aria-hidden="true"></i>&nbsp;LUP dan LKP</span></a>';
                 return $btn;
             })
-            ->rawColumns(['gambar', 'produk', 'jumlah', 'laporan', 'aksi'])
+            ->rawColumns(['gambar', 'produk', 'jumlah', 'laporan', 'aksi', 'data'])
+            ->make(true);
+    }
+
+    public function pengujian_bppb($id)
+    {
+        $s = Bppb::find($id);
+        return view('page.qc.pengujian_bppb_show', ['id' => $id, 's' => $s]);
+    }
+
+    public function pengujian_bppb_show($id)
+    {
+        $s = HasilPerakitan::whereHas('Perakitan', function ($q) use ($id) {
+            $q->where('bppb_id', $id);
+        })->where('tindak_lanjut_tertutup', 'aging')
+            ->orderBy('updated_at', 'desc')
+            ->get();
+
+        return DataTables::of($s)
+            ->addIndexColumn()
+            ->addColumn('checkbox', function ($s) {
+                $str = "";
+                $h = HasilMonitoringProses::where('hasil_perakitan_id', $s->id)
+                    ->orderBy('created_at', 'desc')
+                    ->first();
+
+                $str = '<input type="checkbox" class="hasil_perakitan_id" id="hasil_perakitan_id" name="hasil_perakitan_id[]" value="' . $s->id . '" ';
+                if ($h) {
+                    $str .= 'disabled';
+                }
+                $str .= '>';
+                return $str;
+            })
+            ->addColumn('no_seri', function ($s) {
+                $str = $s->Perakitan->alias_tim . $s->no_seri;
+                $h = HasilMonitoringProses::where('hasil_perakitan_id', $s->id)
+                    ->orderBy('created_at', 'desc')
+                    ->first();
+                if ($h) {
+                    if ($h->no_barcode != NULL) {
+                        $str .= ' / ' . str_replace('/', '', $h->MonitoringProses->alias_barcode) . $h->no_barcode;
+                    }
+                }
+                return $str;
+            })
+            ->addColumn('operator_prd', function ($s) {
+                $arr = [];
+                foreach ($s->Perakitan->Karyawan as $i) {
+                    array_push($arr, "<small>" . $i->nama . "</small>");
+                }
+                return implode("<br>", $arr);
+            })
+            ->addColumn('operator_qc', function ($s) {
+                $str = "";
+                $h = HasilMonitoringProses::where('hasil_perakitan_id', $s->id)
+                    ->orderBy('created_at', 'desc')
+                    ->first();
+                if ($h) {
+                    if ($h->MonitoringProses->karyawan_id != NULL) {
+                        $str = $h->MonitoringProses->Karyawan->nama;
+                    } else {
+                        $str = '<div class="text-muted">Belum Ada</div>';
+                    }
+                } else {
+                    $str = '<div class="text-muted">Belum Ada</div>';
+                }
+                return $str;
+            })
+            ->editColumn('hasil', function ($s) {
+                $b = "";
+                $h = HasilMonitoringProses::where('hasil_perakitan_id', $s->id)
+                    ->orderBy('created_at', 'desc')
+                    ->first();
+                if ($h) {
+                    if ($h->hasil == "ok") {
+                        $b = '<i class="fas fa-check-circle" style="color:green;"></i>';
+                    } else if ($h->hasil == "nok") {
+                        $b = '<i class="fas fa-times-circle" style="color:red;"></i>';
+                    }
+                } else {
+                    $b = '<div class="text-muted">Belum Ada</div>';
+                }
+                return $b;
+            })
+            ->editColumn('tindak_lanjut', function ($s) {
+                $b = "";
+                $h = HasilMonitoringProses::where('hasil_perakitan_id', $s->id)
+                    ->orderBy('created_at', 'desc')
+                    ->first();
+                if ($h) {
+                    if ($h->tindak_lanjut == 'pengemasan') {
+                        $b .= '<i class="fas fa-check-circle" style="color:green;"></i><br>';
+                    } else {
+                        $b .= '<i class="fas fa-times-circle" style="color:red;"></i><br>';
+                    }
+                    $b .= "<small>" . ucfirst(str_replace("_", " ", $s->tindak_lanjut)) . "</small>";
+                } else {
+                    $b .= '<small class="text-muted">Belum ada</small>';
+                }
+
+                return $b;
+            })
+            ->addColumn('pemeriksaan', function ($s) {
+                $btn = "";
+                $h = HasilMonitoringProses::where('hasil_perakitan_id', $s->id)
+                    ->orderBy('created_at', 'desc')
+                    ->first();
+                if ($h) {
+                    if (count($h->HasilIkPemeriksaanPengujian) <=  0) {
+                        if ($h->tindak_lanjut == "pengemasan") {
+                            $btn .= '<i class="fas fa-check-circle" style="color:green;"></i>&nbsp;<small>Lolos</small>';
+                        } else {
+                            $btn .= '<i class="fas fa-times-circle" style="color:red;"></i>&nbsp;<small>Tidak Lolos</small>';
+                        }
+                    } else if (count($h->HasilIkPemeriksaanPengujian) > 0) {
+                        $btn = "<small><ol>";
+                        foreach ($h->HasilIkPemeriksaanPengujian as $i) {
+                            $btn .= "<li>" . $i->standar_keberterimaan . "</li>";
+                        }
+                        $btn .= "</ol></small>";
+                    }
+                } else {
+                    $btn .= '<div><small class="text-muted">Belum ada</small></div>';
+                }
+                return $btn;
+            })
+            ->editColumn('keterangan', function ($s) {
+                $h = HasilMonitoringProses::where('hasil_perakitan_id', $s->id)
+                    ->orderBy('created_at', 'desc')
+                    ->first();
+                if ($h) {
+                    if (empty($h->keterangan)) {
+                        return '<small class="text-muted">Tidak Ada</small>';
+                    } else {
+                        return $h->keterangan;
+                    }
+                } else {
+                    return '<small class="text-muted">Belum Ada</small>';
+                }
+            })
+            ->addColumn('aksi', function ($s) {
+
+                $h = HasilMonitoringProses::where('hasil_perakitan_id', $s->id)
+                    ->orderBy('created_at', 'desc')
+                    ->first();
+                $p = "";
+                $a = "";
+
+                if ($h) {
+                    $id = $h->id;
+                    $p = PerbaikanProduksi::whereHas('HasilMonitoringProses', function ($q) use ($id) {
+                        $q->where([
+                            ['id', '=', $id]
+                        ]);
+                    })->orderBy('updated_at', 'desc')->first();
+
+                    $a = AnalisaPsPengujian::whereHas('HasilMonitoringProses', function ($q) use ($id) {
+                        $q->where('id', $id);
+                    })->orderBy('updated_at', 'desc')->first();
+                }
+
+                $str = "";
+
+                if ($h) {
+                    if ($h->status == "req_monitoring_proses") {
+                        $str = '<div><a href = "/pengujian/monitoring_proses/hasil/edit/' . $h->id . '"><button class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-pencil-alt"></i></button></a>
+                        <a class="deletemodal" data-toggle="modal" data-target="#deletemodal" data-attr="/pengujian/monitoring_proses/hasil/delete/' . $h->id . '"><button class="btn btn-danger btn-sm m-1" style="border-radius:50%;"><i class="fas fa-trash"></i></button></a></div>';
+                        if ($p) {
+                            $str .= '<div><a class="perbaikanproduksimodal" data-toggle="modal" data-target="#perbaikanproduksimodal" data-attr="/perbaikan/produksi/detail/' . $p->id . '" data-id="' . $p->id . '">
+                            <button class="btn btn-sm btn-outline-info"><i class="fas fa-search"></i>&nbsp;Hasil Perbaikan</button></a></div>';
+                        }
+                    } else if ($h->status == "rej_monitoring_proses") {
+                        if ($s->tindak_lanjut == 'perbaikan') {
+                            $str = '<div><small class="danger-text">Perbaikan Produksi</small></div>';
+                        } else if ($s->tindak_lanjut == 'produk_spesialis') {
+                            $str = '<div><small class="danger-text">Analisa Produk Spesialis</small></div>';
+                        }
+                    } else if ($h->status == "req_perbaikan") {
+                        $str = '<a class="deletemodal" data-toggle="modal" data-target="#deletemodal" data-attr="/pengujian/monitoring_proses/hasil/delete/' . $h->id . '"><button class="btn btn-danger btn-sm m-1" style="border-radius:50%;"><i class="fas fa-trash"></i></button></a>';
+                    } else if ($h->status == "perbaikan_monitoring_proses") {
+                        if ($p) {
+                            $str .= '<a class="perbaikanproduksimodal" data-toggle="modal" data-target="#perbaikanproduksimodal" data-attr="/perbaikan/produksi/detail/' . $p->id . '" data-id="' . $p->id . '"><button type="button" class="btn btn-outline-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-search"></i></button>
+                                <div><small> Lihat Hasil Perbaikan</small></div></a>
+                                <div><small class="info-text">Perbaikan Produksi</small></div>';
+                        }
+                    } else if ($h->status == "analisa_monitoring_proses") {
+                        if ($a) {
+                            if ($a->tindak_lanjut == "perbaikan") {
+                                $str = '<a class="analisapsmodal" data-toggle="modal" data-target="#analisapsmodal" data-attr="/pengujian/analisa_ps/show/' . $a->id . '" data-id="' . $a->id . '">
+                                    <button class="btn btn-sm btn-outline-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-search"></i></button>
+                                    <div><small>Lihat Hasil Analisa</small></div></a>
+                                    <div><small class="warning-text">Sedang dalam Perbaikan</small></div>';
+                            } else if ($a->tindak_lanjut == "karantina") {
+                                $str = '<a class="analisapsmodal" data-toggle="modal" data-target="#analisapsmodal" data-attr="/pengujian/analisa_ps/show/' . $a->id . '" data-id="' . $a->id . '">
+                                    <button class="btn btn-sm btn-outline-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-search"></i></button>
+                                    <div><small> Lihat Hasil Analisa</small></div></a>
+                                    <div><small class="danger-text">Masuk Gudang Karantina</small></div>';
+                            }
+                        }
+                    } else if ($h->status == "pengemasan") {
+                        $str = '<i class="fas fa-check-circle" style="color:green;"></i>';
+                    }
+                } else if (!$h) {
+                    $str = '<a href="/pengujian/monitoring_proses/hasil/create/' . $s->id . '"><button class="btn btn-success btn-sm m-1" style="border-radius:50%;"><i class="fas fa-plus"></i></button></a>';
+                }
+                return $str;
+            })
+            ->rawColumns(['checkbox', 'no_seri', 'operator_qc', 'operator_prd', 'aksi'])
             ->make(true);
     }
 
@@ -809,7 +1018,7 @@ class QCController extends Controller
                 } else {
                     $b .= '<i class="fas fa-times-circle" style="color:red;"></i><br>';
                 }
-                $b .= "<small>" . ucfirst($s->tindak_lanjut) . "</small>";
+                $b .= "<small>" . ucfirst(str_replace("_", " ", $s->tindak_lanjut)) . "</small>";
                 return $b;
             })
             ->addColumn('pemeriksaan', function ($s) {
@@ -851,11 +1060,11 @@ class QCController extends Controller
                 })->orderBy('updated_at', 'desc')->first();
 
                 if ($s->status == "req_monitoring_proses") {
-                    $btn = '<a href = "/pengujian/monitoring_proses/hasil/edit/' . $s->id . '"><button class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-pencil-alt"></i></button></a>
-                    <a class="deletemodal" data-toggle="modal" data-target="#deletemodal" data-attr="/pengujian/monitoring_proses/hasil/delete/' . $s->id . '"><button class="btn btn-danger btn-sm m-1" style="border-radius:50%;"><i class="fas fa-trash"></i></button></a>';
+                    $btn = '<div><a href = "/pengujian/monitoring_proses/hasil/edit/' . $s->id . '"><button class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-pencil-alt"></i></button></a>
+                    <a class="deletemodal" data-toggle="modal" data-target="#deletemodal" data-attr="/pengujian/monitoring_proses/hasil/delete/' . $s->id . '"><button class="btn btn-danger btn-sm m-1" style="border-radius:50%;"><i class="fas fa-trash"></i></button></a></div>';
                     if ($p) {
-                        $btn .= '<a class="perbaikanproduksimodal" data-toggle="modal" data-target="#perbaikanproduksimodal" data-attr="/perbaikan/produksi/detail/' . $p->id . '" data-id="' . $p->id . '">
-                        <button class="btn btn-sm btn-info"><small><i class="fas fa-cog"></i>&nbsp;Hasil Perbaikan</small></button></a>';
+                        $btn .= '<div><a class="perbaikanproduksimodal" data-toggle="modal" data-target="#perbaikanproduksimodal" data-attr="/perbaikan/produksi/detail/' . $p->id . '" data-id="' . $p->id . '">
+                        <button class="btn btn-sm btn-outline-info"><i class="fas fa-search"></i>&nbsp;Hasil Perbaikan</button></a></div>';
                     }
                 } else if ($s->status == "rej_monitoring_proses") {
                     if ($s->tindak_lanjut == 'perbaikan') {
@@ -874,12 +1083,12 @@ class QCController extends Controller
                 } else if ($s->status == "analisa_monitoring_proses") {
                     if ($a) {
                         if ($a->tindak_lanjut == "perbaikan") {
-                            $btn = '<a class="analisapsmodal" data-toggle="modal" data-target="#analisapsmodal" data-attr="/pengujian/analisa_ps/show/' . $p->id . '" data-id="' . $p->id . '">
+                            $btn = '<a class="analisapsmodal" data-toggle="modal" data-target="#analisapsmodal" data-attr="/pengujian/analisa_ps/show/' . $a->id . '" data-id="' . $a->id . '">
                                 <button class="btn btn-sm btn-outline-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-search"></i></button>
-                                <div><small> Lihat Hasil Analisa</small></div></a>
+                                <div><small>Lihat Hasil Analisa</small></div></a>
                                 <div><small class="warning-text">Sedang dalam Perbaikan</small></div>';
                         } else if ($a->tindak_lanjut == "karantina") {
-                            $btn = '<a class="analisapsmodal" data-toggle="modal" data-target="#analisapsmodal" data-attr="/pengujian/analisa_ps/show/' . $p->id . '" data-id="' . $p->id . '">
+                            $btn = '<a class="analisapsmodal" data-toggle="modal" data-target="#analisapsmodal" data-attr="/pengujian/analisa_ps/show/' . $a->id . '" data-id="' . $a->id . '">
                                 <button class="btn btn-sm btn-outline-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-search"></i></button>
                                 <div><small> Lihat Hasil Analisa</small></div></a>
                                 <div><small class="danger-text">Masuk Gudang Karantina</small></div>';
@@ -895,17 +1104,14 @@ class QCController extends Controller
             ->make(true);
     }
 
-    public function pengujian_monitoring_proses_create($bppb_id)
+    public function pengujian_monitoring_proses_create($bppb_id, $arr)
     {
         $b = Bppb::find($bppb_id);
-        // $s = HasilPerakitan::whereHas('Perakitan', function ($q) use ($bppb_id) {
-        //     $q->where('bppb_id', $bppb_id);
-        // })->whereDoesntHave('HasilMonitoringProses', function ($q) {
-        //     $q->where('hasil', 'ok');
-        // })->whereIn('status', ['acc_pemeriksaan_tertutup'])->get();
+        $larr = explode(",", $arr);
+
         $s = HasilPerakitan::whereHas('Perakitan', function ($q) use ($bppb_id) {
             $q->where('bppb_id', $bppb_id);
-        })->doesntHave('HasilMonitoringProses')->whereIn('status', ['acc_pemeriksaan_tertutup'])->get();
+        })->whereIn('id', $larr)->get();
 
         $k = Karyawan::whereNotIn('jabatan', ['direktur', 'manager'])->get();
         $p = IkPemeriksaanPengujian::where('detail_produk_id', '=', $b->detail_produk_id)->get();
@@ -988,10 +1194,16 @@ class QCController extends Controller
                         } else if ($request->tindak_lanjut[$i] === "pengemasan") {
                             $status = 'pengemasan';
                         }
+
+                        $no_barcode = "";
+                        if (!empty($request->no_barcode[$i])) {
+                            $no_barcode = $request->no_barcode[$i];
+                        }
+
                         $cs = HasilMonitoringProses::create([
                             'monitoring_proses_id' => $c->id,
                             'hasil_perakitan_id' => $request->no_seri[$i],
-                            'no_barcode' => $request->no_barcode[$i],
+                            'no_barcode' => $no_barcode,
                             'hasil' => $request->hasil[$i],
                             'keterangan' => $request->keterangan[$i],
                             'tindak_lanjut' => $request->tindak_lanjut[$i],
