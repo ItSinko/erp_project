@@ -93,7 +93,8 @@
                 <th>Tgl Pengecekan</th>
                 <th>Divisi</th>
                 <th>Nama</th>
-                <th>Hasil Rapid</th>
+                <th>Jenis</th>
+                <th>Hasil</th>
                 <th>Catatan</th>
                 <th></th>
               </tr>
@@ -193,7 +194,8 @@
               <thead>
                 <tr>
                   <th>Tgl Pengecekan</th>
-                  <th>Hasil Rapid</th>
+                  <th>Jenis</th>
+                  <th>Hasil</th>
                   <th>Catatan</th>
                 </tr>
               </thead>
@@ -205,22 +207,44 @@
                   <td>
                     <div class="form-check form-check-inline">
                       <input type="text" class="form-control d-none" name="id" id="id">
-                      <input class="form-check-input" type="radio" name="hasil" id="hasil" value="Non reaktif">
-                      <label class="form-check-label">Non reaktif</label>
+                      <input class="form-check-input" type="radio" name="jenis" id="jenis" value="Rapid">
+                      <label class="form-check-label">Rapid</label>
                     </div>
                     <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="hasil" id="hasil" value="IgG">
-                      <label class="form-check-label">IgG</label>
+                      <input class="form-check-input" type="radio" name="jenis" id="jenis" value="Antigen">
+                      <label class="form-check-label">Antigen</label>
                     </div>
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="hasil" id="hasil" value="IgM">
-                      <label class="form-check-label">IgM</label>
+                  </td>
+                  <td>
+                    <div id="rapid" hidden>
+                      <div class="form-check form-check-inline">
+                        <input type="text" class="form-control d-none" name="id" id="id">
+                        <input class="form-check-input" type="radio" name="hasil" id="hasil" value="Non reaktif">
+                        <label class="form-check-label">Non reaktif</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="hasil" id="hasil" value="IgG">
+                        <label class="form-check-label">IgG</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="hasil" id="hasil" value="IgM">
+                        <label class="form-check-label">IgM</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="hasil" id="hasil" value="IgG-IgM">
+                        <label class="form-check-label">IgG-IgM</label>
+                      </div>
                     </div>
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="hasil" id="hasil" value="IgG-IgM">
-                      <label class="form-check-label">IgG-IgM</label>
+                    <div id="antigen" hidden>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="hasil" id="hasil" value="C">
+                        <label class="form-check-label">C</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="hasil" id="hasil" value="C/T">
+                        <label class="form-check-label">C/T</label>
+                      </div>
                     </div>
-
                   </td>
                   <td>
                     <textarea type="text" class="form-control" name="catatan" id="catatan"></textarea>
@@ -334,6 +358,9 @@
               data: 'karyawan.nama'
             },
             {
+              data: 'jenis'
+            },
+            {
               data: 'hasil'
             },
             {
@@ -348,16 +375,24 @@
         $('#rapid_tabel tbody').on('click', '#edit_rapid', function() {
           var rows = rapid_tabel.rows($(this).parents('tr')).data();
           console.log(rows);
+          if (rows[0]['jenis'] == 'Rapid') {
+            $('#rapid').removeAttr('hidden');
+            $('#antigen').attr('hidden', 'hidden');
+          } else {
+            $('#antigen').removeAttr('hidden');
+            $('#rapid').attr('hidden', 'hidden');
+          }
           $('input[id="id"]').val(rows[0]['id']);
           $('textarea[id="catatan"]').val(rows[0]['keterangan']);
           $('.data_detail_head_rapid').html(rows[0].karyawan['nama']);
           $('input[id="tgl"]').val(rows[0]['tgl_cek']);
           $('input[name="hasil"]').removeAttr('checked');
+          $('input[name="jenis"]').removeAttr('checked');
           $('input[name="hasil"][value="' + rows[0]['hasil'] + '"]').attr('checked', 'checked');
+          $('input[name="jenis"][value="' + rows[0]['jenis'] + '"]').attr('checked', 'checked');
           $('#detail_mod_rapid').modal('show');
         });
       });
-
     } else {
       $("#tensi_tabel").hide();
       $("#rapid_tabel").hide();
@@ -367,6 +402,19 @@
       rapid.destroy();
       $("#detail_gagal").show();
     }
+
+    $('input[type=radio][name=jenis]').on('change', function() {
+      if (this.value == 'Rapid') {
+        $('#rapid').removeAttr('hidden');
+        $('#antigen').attr('hidden', 'hidden');
+        $('input[name="hasil"]').prop('checked', false);
+      } else {
+        $('#antigen').removeAttr('hidden');
+        $('#rapid').attr('hidden', 'hidden');
+        $('input[name="hasil"]').prop('checked', false);
+      }
+    });
+    $('#hasil').prop("required", true);
   });
 </script>
 @endsection

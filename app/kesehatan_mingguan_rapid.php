@@ -8,7 +8,7 @@ class kesehatan_mingguan_rapid extends Model
 {
     protected $table = 'kesehatan_mingguan_rapids';
     protected $primaryKey = 'id';
-    protected $fillable = ['karyawan_id', 'pemeriksa_id', 'tgl_cek', 'hasil', 'keterangan'];
+    protected $fillable = ['karyawan_id', 'pemeriksa_id', 'tgl_cek', 'hasil', 'jenis', 'keterangan'];
 
     public function Karyawan()
     {

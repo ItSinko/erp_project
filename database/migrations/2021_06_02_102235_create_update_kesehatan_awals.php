@@ -26,7 +26,6 @@ class CreateUpdateKesehatanAwals extends Migration
      */
     public function down()
     {
-
         Schema::table('kesehatan_awals', function (Blueprint $table) {
             $table->id();
             $table->dropColumn('suhu');

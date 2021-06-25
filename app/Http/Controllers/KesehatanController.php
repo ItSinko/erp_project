@@ -384,15 +384,12 @@ class KesehatanController extends Controller
                 'keterangan' => $request->keterangan[$i]
             ]);
         }
-
-
         if ($kesehatan_mingguan_tensi) {
             return redirect()->back()->with('success', 'Berhasil menambahkan data');
         } else {
             return redirect()->back()->with('error', 'Gagal menambahkan data');
         }
     }
-
     public function kesehatan_mingguan_rapid_aksi_tambah(Request $request)
     {
         $this->validate(
@@ -407,12 +404,14 @@ class KesehatanController extends Controller
                 'tgl_cek.required' => 'Tanggal pengecekan harus dipilih',
             ]
         );
+
         for ($i = 0; $i < count($request->karyawan_id); $i++) {
             $kesehatan_mingguan_rapid = kesehatan_mingguan_rapid::create([
                 'karyawan_id' => $request->karyawan_id[$i],
                 'pemeriksa_id' => $request->pemeriksa_id[$i],
                 'tgl_cek' => $request->tgl_cek,
-                'hasil' => $request->hasil[$i],
+                'hasil' => $request->hasil_covid[$i],
+                'jenis' => $request->jenis_tes[$i],
                 'keterangan' => $request->keterangan[$i]
             ]);
         }
@@ -423,7 +422,6 @@ class KesehatanController extends Controller
             return redirect()->back()->with('error', 'Gagal menambahkan data');
         }
     }
-
     public function kesehatan_mingguan_tensi_data()
     {
         $data = kesehatan_mingguan_tensi::with('karyawan')
@@ -563,6 +561,7 @@ class KesehatanController extends Controller
         $id = $request->id;
         $kesehatan_mingguan_rapid = kesehatan_mingguan_rapid::find($id);
         $kesehatan_mingguan_rapid->hasil = $request->hasil;
+        $kesehatan_mingguan_rapid->jenis = $request->jenis;
         $kesehatan_mingguan_rapid->keterangan = $request->catatan;
         $kesehatan_mingguan_rapid->save();
 
