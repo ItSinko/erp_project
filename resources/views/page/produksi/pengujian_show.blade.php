@@ -226,7 +226,7 @@
         $('#example').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('pengujian.perbaikan.show') }}",
+            ajax: "{{ route('pengujian.show.prd') }}",
             columns: [{
                     data: 'DT_RowIndex',
                     name: 'DT_RowIndex',

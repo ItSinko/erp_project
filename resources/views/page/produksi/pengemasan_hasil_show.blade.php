@@ -72,83 +72,85 @@
             <div class="card">
                 <div class="card-body">
                     <h4>Monitoring Proses</h4><br>
-                    <table id="example1" class="table table-hover table-bordered styled-table">
-                        <thead style="text-align: center;">
-                            <tr>
-                                <th rowspan="2">No</th>
-                                <th rowspan="2">No Seri</th>
-                                <th rowspan="2">Barcode</th>
-                                <th rowspan="2">Kondisi Unit</th>
-                                @foreach($c as $cs)
-                                <th colspan="{{count($cs->DetailCekPengemasan)}}">{{$cs->perlengkapan}}</th>
+                    <div class="table-responsive">
+                        <table id="example1" class="table table-hover table-bordered styled-table" style="width:100%;">
+                            <thead style="text-align: center;">
+                                <tr>
+                                    <th rowspan="2">No</th>
+                                    <th rowspan="2">No Seri</th>
+                                    <th rowspan="2">Barcode</th>
+                                    <th rowspan="2">Kondisi Unit</th>
+                                    @foreach($c as $cs)
+                                    <th colspan="{{count($cs->DetailCekPengemasan)}}">{{$cs->perlengkapan}}</th>
+                                    @endforeach
+                                    <th rowspan="2">Hasil</th>
+                                    <th rowspan="2">Keterangan</th>
+                                    <th rowspan="2">Tindak Lanjut</th>
+                                    <th rowspan="2">Aksi</th>
+                                </tr>
+                                <tr>
+                                    @foreach($c as $cs)
+                                    @foreach($cs->DetailCekPengemasan as $i)
+                                    <th>{{$i->nama_barang}}</th>
+                                    @endforeach
+                                    @endforeach
+                                </tr>
+                            </thead>
+                            <tbody style="text-align:center;">
+                                @foreach($hp as $i)
+                                <tr>
+                                    <td>{{$loop->iteration}}</td>
+                                    <td>{{$i->HasilPerakitan->no_seri}}</td>
+                                    <td>{{$i->no_barcode}}</td>
+                                    <td>
+                                        @if($i->kondisi_unit == "baik")
+                                        <i class="fas fa-check-circle" style="color:green;"></i>
+                                        @elseif($i->kondisi_unit == "tidak")
+                                        <i class="fas fa-times-circle" style="color:red;"></i>
+                                        @endif
+                                    </td>
+                                    @foreach($c as $cs)
+                                    @foreach($cs->DetailCekPengemasan as $h)
+                                    <td>@if($i->DetailCekPengemasan->contains('id', $h->id))
+                                        <i class="fas fa-check-circle" style="color:green;"></i>
+                                        @else
+                                        <i class="fas fa-times-circle" style="color:red;"></i>
+                                        @endif
+                                    </td>
+                                    @endforeach
+                                    @endforeach
+                                    <td>
+                                        @if($i->hasil == "ok")
+                                        <i class="fas fa-check-circle" style="color:green;"></i>
+                                        @elseif($i->hasil == "nok")
+                                        <i class="fas fa-times-circle" style="color:red;"></i>
+                                        @endif
+                                    </td>
+                                    <td>{{$i->keterangan}}</td>
+                                    <td>{{ucfirst($i->tindak_lanjut)}}</td>
+                                    <td>@if($i->status == 'req_perbaikan')
+                                        <a href="/perbaikan/produksi/create/{{$i->id}}/pengemasan">
+                                            <button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-paper-plane"></i></button>
+                                            <div><small>Perbaikan</small></div>
+                                        </a>
+                                        @elseif($i->status == 'acc_perbaikan')
+                                        <small class="danger-text">Perbaikan</small>
+                                        @elseif($i->status == 'rej_pemeriksaan')
+                                        @if($i->tindak_lanjut == 'perbaikan')
+                                        <a href="/perbaikan/produksi/create/{{$i->id}}/pengemasan">
+                                            <button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-paper-plane"></i></button>
+                                            <div><small>Perbaikan</small></div>
+                                        </a>
+                                        @elseif($i->tindak_lanjut == 'produk_spesialis')
+                                        <small class="danger-text">Produk Spesialis</small>
+                                        @endif
+                                        @endif
+                                    </td>
+                                </tr>
                                 @endforeach
-                                <th rowspan="2">Hasil</th>
-                                <th rowspan="2">Keterangan</th>
-                                <th rowspan="2">Tindak Lanjut</th>
-                                <th rowspan="2">Aksi</th>
-                            </tr>
-                            <tr>
-                                @foreach($c as $cs)
-                                @foreach($cs->DetailCekPengemasan as $i)
-                                <th>{{$i->nama_barang}}</th>
-                                @endforeach
-                                @endforeach
-                            </tr>
-                        </thead>
-                        <tbody style="text-align:center;">
-                            @foreach($hp as $i)
-                            <tr>
-                                <td>{{$loop->iteration}}</td>
-                                <td>{{$i->HasilPerakitan->no_seri}}</td>
-                                <td>{{$i->no_barcode}}</td>
-                                <td>
-                                    @if($i->kondisi_unit == "baik")
-                                    <i class="fas fa-check-circle" style="color:green;"></i>
-                                    @elseif($i->kondisi_unit == "tidak")
-                                    <i class="fas fa-times-circle" style="color:red;"></i>
-                                    @endif
-                                </td>
-                                @foreach($c as $cs)
-                                @foreach($cs->DetailCekPengemasan as $h)
-                                <td>@if($i->DetailCekPengemasan->contains('id', $h->id))
-                                    <i class="fas fa-check-circle" style="color:green;"></i>
-                                    @else
-                                    <i class="fas fa-times-circle" style="color:red;"></i>
-                                    @endif
-                                </td>
-                                @endforeach
-                                @endforeach
-                                <td>
-                                    @if($i->hasil == "ok")
-                                    <i class="fas fa-check-circle" style="color:green;"></i>
-                                    @elseif($i->hasil == "nok")
-                                    <i class="fas fa-times-circle" style="color:red;"></i>
-                                    @endif
-                                </td>
-                                <td>{{$i->keterangan}}</td>
-                                <td>{{ucfirst($i->tindak_lanjut)}}</td>
-                                <td>@if($i->status == 'req_perbaikan')
-                                    <a href="/perbaikan/produksi/create/{{$i->id}}/pengemasan">
-                                        <button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-paper-plane"></i></button>
-                                        <div><small>Perbaikan</small></div>
-                                    </a>
-                                    @elseif($i->status == 'acc_perbaikan')
-                                    <small class="danger-text">Perbaikan</small>
-                                    @elseif($i->status == 'rej_pemeriksaan')
-                                    @if($i->tindak_lanjut == 'perbaikan')
-                                    <a href="/perbaikan/produksi/create/{{$i->id}}/pengemasan">
-                                        <button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-paper-plane"></i></button>
-                                        <div><small>Perbaikan</small></div>
-                                    </a>
-                                    @elseif($i->tindak_lanjut == 'produk_spesialis')
-                                    <small class="danger-text">Produk Spesialis</small>
-                                    @endif
-                                    @endif
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 

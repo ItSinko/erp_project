@@ -925,7 +925,7 @@ class QCController extends Controller
                         $str = '<i class="fas fa-check-circle" style="color:green;"></i>';
                     }
                 } else if (!$h) {
-                    $str = '<a href="/pengujian/monitoring_proses/hasil/create/' . $s->id . '"><button class="btn btn-success btn-sm m-1" style="border-radius:50%;"><i class="fas fa-plus"></i></button></a>';
+                    $str = '<div><small class="secondary-text">Belum Pengujian</small></div>';
                 }
                 return $str;
             })

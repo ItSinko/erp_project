@@ -698,7 +698,7 @@ return [
                 [
                     'icon' => 'far fa-circle',
                     'text' => 'Laporan',
-                    'url'  => '/pengujian/perbaikan',
+                    'url'  => '/pengujian/prd',
                     'auth' => [17],
                 ],
             ],
