@@ -504,6 +504,8 @@ Route::group(['prefix' => '/perakitan', 'middleware' => 'auth'], function () {
 Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {
     Route::get('/', 'QCController@pengujian')->name('pengujian');
     Route::get('/eng', 'EngController@pengujian')->name('pengujian.eng');
+    Route::get('/bppb/{id}', 'QCController@pengujian_bppb')->name('pengujian.bppb');
+    Route::get('/bppb/show/{id}', 'QCController@pengujian_bppb_show')->name('pengujian.bppb.show');
     Route::get('/show/mtc', 'MtcController@pengujian_show')->name('pengujian.show.mtc');
     Route::get('/mtc', 'MtcController@pengujian')->name('pengujian.mtc');
     Route::get('/show/eng', 'EngController@pengujian_show')->name('pengujian.show.eng');
@@ -517,7 +519,7 @@ Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {
     Route::group(['prefix' => '/monitoring_proses'], function () {
         Route::get('/', 'QCController@pengujian_monitoring_proses')->name('pengujian.monitoring_proses');
         Route::get('/show/{bppb_id}', 'QCController@pengujian_monitoring_proses_show')->name('pengujian.monitoring_proses.show');
-        Route::get('/create/{bppb_id}', 'QCController@pengujian_monitoring_proses_create')->name('pengujian.monitoring_proses.create');
+        Route::get('/create/{bppb_id}/{arr}', 'QCController@pengujian_monitoring_proses_create')->name('pengujian.monitoring_proses.create');
         Route::put('/store/{bppb_id}', 'QCController@pengujian_monitoring_proses_store')->name('pengujian.monitoring_proses.store');
 
         Route::group(['prefix' => '/hasil'], function () {
