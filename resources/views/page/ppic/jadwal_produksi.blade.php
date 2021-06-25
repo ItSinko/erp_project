@@ -467,67 +467,85 @@
     }
 
     // calendar-view setting
-    var calendar_setting = {
-        locale: 'id',
-        headerToolbar: {
-            end: ""
-        },
+    var calendar_setting;
+    if (user.divisi_id == 24)
+        calendar_setting = {
+            locale: 'id',
+            headerToolbar: {
+                end: ""
+            },
 
-        weekends: false,
-        weekNumbers: true,
-        showNonCurrentDates: false,
+            weekends: false,
+            weekNumbers: true,
+            showNonCurrentDates: false,
 
-        selectable: true,
-        editable: false,
+            selectable: true,
+            editable: false,
 
-        events: initial_event,
+            events: initial_event,
 
-        select: function(info) {
-            var date1 = new Date(info.startStr);
-            var date2 = new Date(info.endStr);
+            select: function(info) {
+                var date1 = new Date(info.startStr);
+                var date2 = new Date(info.endStr);
 
-            var days = get_work_day(date1, date2);
+                var days = get_work_day(date1, date2);
 
-            $('#date_start').val(info.startStr);
-            $('#date_end').val(info.endStr);
-            $('#product-days').val(days);
+                $('#date_start').val(info.startStr);
+                $('#date_end').val(info.endStr);
+                $('#product-days').val(days);
 
-            $('#modal-input-product').modal('show');
-        },
+                $('#modal-input-product').modal('show');
+            },
 
-        eventClick: function(info) {
-            bootbox.confirm({
-                centerVertical: true,
-                message: "Apakah Anda ingin menghapus produksi ini?",
-                buttons: {
-                    confirm: {
-                        label: 'Ya',
-                        className: 'btn-success'
+            eventClick: function(info) {
+                bootbox.confirm({
+                    centerVertical: true,
+                    message: "Apakah Anda ingin menghapus produksi ini?",
+                    buttons: {
+                        confirm: {
+                            label: 'Ya',
+                            className: 'btn-success'
+                        },
+                        cancel: {
+                            label: 'Tidak',
+                            className: 'btn-danger'
+                        }
                     },
-                    cancel: {
-                        label: 'Tidak',
-                        className: 'btn-danger'
+                    callback: function(result) {
+                        if (result) {
+                            $.ajax({
+                                url: "/ppic/schedule/delete",
+                                data: {
+                                    id: info.event._def.publicId
+                                },
+                                method: "POST",
+                                success: function() {
+                                    info.event.remove();
+                                    $('#row1_' + info.event._def.publicId).remove();
+                                    $('#row2_' + info.event._def.publicId).remove();
+                                }
+                            });
+                        }
                     }
-                },
-                callback: function(result) {
-                    if (result) {
-                        $.ajax({
-                            url: "/ppic/schedule/delete",
-                            data: {
-                                id: info.event._def.publicId
-                            },
-                            method: "POST",
-                            success: function() {
-                                info.event.remove();
-                                $('#row1_' + info.event._def.publicId).remove();
-                                $('#row2_' + info.event._def.publicId).remove();
-                            }
-                        });
-                    }
-                }
-            });
-        },
-    }
+                });
+            },
+        }
+    else
+        calendar_setting = {
+            locale: 'id',
+            headerToolbar: {
+                end: ""
+            },
+
+            weekends: false,
+            weekNumbers: true,
+            showNonCurrentDates: false,
+
+            selectable: false,
+            editable: false,
+
+            events: initial_event,
+        }
 
     // ajax function
     var bom_input_change = function() {
