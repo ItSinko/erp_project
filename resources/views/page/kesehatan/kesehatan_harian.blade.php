@@ -192,17 +192,15 @@
             } else {
               return '';
             }
-
           }
         },
         {
           data: 'siang',
           render: function(data) {
-            $l = '<br><span class="badge bg-danger">Hiportemia</span>';
+            $l = '<br><span class="badge bg-danger">Hipotermia</span>';
             $n = '<br><span class="badge bg-success">Normal</span>';
             $w = '<br><span class="badge bg-warning">Hiperpireksia</span>';
-            $i = '<br><span class="badge bg-info">Hiperpireksia</span>';
-
+            $i = '<br><span class="badge bg-info">Hipertermia</span>';
             if (data > 40) {
               return data + ' °C' + $w;
             } else if (data < 35) {
@@ -256,7 +254,6 @@
         },
       ]
     });
-
     $('#tabel > tbody').on('click', '#edit', function() {
       var rows = tabel.rows($(this).parents('tr')).data();
       $('.data_detail_head').html(rows[0]['karyawan']['nama']);

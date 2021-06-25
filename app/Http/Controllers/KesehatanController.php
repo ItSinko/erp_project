@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Collection;
+use Illuminate\Validation\Rule;
 use Yajra\DataTables\Facades\DataTables;
 
 
@@ -121,8 +122,6 @@ class KesehatanController extends Controller
             ]
         );
 
-
-        //Upload
         if ($request->hasFile('file_mcu')) {
             $karyawan = Karyawan::find($request->karyawan_id);
             $file = $request->file('file_mcu')->getClientOriginalName();
@@ -132,7 +131,6 @@ class KesehatanController extends Controller
             $file_mcu = NULL;
         }
 
-        //Upload
         if ($request->hasFile('file_covid')) {
             $karyawan = Karyawan::find($request->karyawan_id);
             $file = $request->file('file_covid')->getClientOriginalName();
@@ -282,7 +280,7 @@ class KesehatanController extends Controller
         // $chart->dataset('Siang', 'line', $kesehatan_harian_siang->values())->color('blue')->backgroundColor('transparent');
         $karyawan = Karyawan::orderBy('nama', 'ASC')
             ->has('Kesehatan_harian')
-            ->get();;
+            ->get();
         return view('page.kesehatan.kesehatan_harian_detail', ['karyawan' => $karyawan]);
     }
 
@@ -294,20 +292,33 @@ class KesehatanController extends Controller
 
         return datatables::of($data)
             ->addIndexColumn()
-            ->addColumn('x', function ($data) {
-                return $data->karyawan->divisi->nama;
-            })
             ->addColumn('pagi', function ($data) {
-                return $data->suhu_pagi . ' °C';
+                if ($data->suhu_pagi != NULL) {
+                    return $data->suhu_pagi;
+                } else {
+                    return '0 %';
+                }
             })
             ->addColumn('siang', function ($data) {
-                return $data->suhu_siang . ' °C';
+                if ($data->suhu_siang != NULL) {
+                    return $data->suhu_siang;
+                } else {
+                    return '0 %';
+                }
             })
             ->addColumn('sp', function ($data) {
-                return $data->spo2 . ' %';
+                if ($data->spo2 != NULL) {
+                    return $data->spo2;
+                } else {
+                    return '0 %';
+                }
             })
-            ->addColumn('pr', function ($data) {
-                return $data->pr . ' bpm';
+            ->addColumn('prx', function ($data) {
+                if ($data->pr != NULL) {
+                    return $data->pr;
+                } else {
+                    return '0 %';
+                }
             })
             ->make(true);
     }
@@ -352,18 +363,18 @@ class KesehatanController extends Controller
     }
     public function kesehatan_mingguan_tensi_aksi_tambah(Request $request)
     {
-        $this->validate(
+        $x = $this->validate(
             $request,
             [
-                'divisi' => 'required',
-                'tgl_cek' => 'required',
+                'tgl_cek' => 'required ',
+                'divisi' => ['required', Rule::unique('divisis')
+                    ->where('id', $request->divisi)],
             ],
             [
                 'divisi.required' => 'Divisi harus di pilih',
                 'tgl_cek.required' => 'Tanggal pengecekan harus dipilih',
             ]
         );
-
         for ($i = 0; $i < count($request->karyawan_id); $i++) {
             $kesehatan_mingguan_tensi = kesehatan_mingguan_tensi::create([
                 'karyawan_id' => $request->karyawan_id[$i],
@@ -374,12 +385,14 @@ class KesehatanController extends Controller
             ]);
         }
 
+
         if ($kesehatan_mingguan_tensi) {
             return redirect()->back()->with('success', 'Berhasil menambahkan data');
         } else {
             return redirect()->back()->with('error', 'Gagal menambahkan data');
         }
     }
+
     public function kesehatan_mingguan_rapid_aksi_tambah(Request $request)
     {
         $this->validate(
@@ -411,7 +424,6 @@ class KesehatanController extends Controller
         }
     }
 
-
     public function kesehatan_mingguan_tensi_data()
     {
         $data = kesehatan_mingguan_tensi::with('karyawan')
@@ -422,15 +434,24 @@ class KesehatanController extends Controller
             ->addColumn('x', function ($data) {
                 return $data->karyawan->divisi->nama;
             })
+            ->addColumn('y', function ($data) {
+                if ((($data->sistolik) - ($data->diastolik)) < 30) {
+                    return $data->karyawan->nama . '<br><span class="badge bg-danger"><i class="fas fa-exclamation"></i> perlu tindakan lanjut</span>';
+                } else {
+                    return $data->karyawan->nama;
+                }
+            })
             ->addColumn('hasil', function ($data) {
-                if ($data->sistolik < 130 && $data->diastolik < 85) {
-                    return 'Normal';
-                } else if ($data->sistolik >= 130 && $data->sistolik <= 139 || $data->diastolik >= 85  && $data->diastolik >= 87) {
-                    return 'Pra-Hipertensi';
-                } else if ($data->sistolik >= 140 && $data->sistolik <= 159 || $data->diastolik >= 90  && $data->diastolik >= 99) {
-                    return 'Stadium 1 Hipertensi';
-                } else if ($data->sistolik >= 160  || $data->diastolik >= 100) {
-                    return 'Stadium 2 Hipertensi';
+                if ($data->sistolik < 130) {
+                    return '<span class="badge bg-success">Normal</span>';
+                } else if ($data->sistolik >= 130 && $data->sistolik <= 139) {
+                    return '<span class="badge bg-warning">Pra-Hipertensi</span>';
+                } else if ($data->sistolik >= 140 && $data->sistolik <= 159) {
+                    return '<span class="badge bg-info">Stadium 1 Hipertensi</span>';
+                } else if ($data->sistolik >= 160) {
+                    return '<span class="badge bg-danger">Stadium 2 Hipertensi</span>';
+                } else {
+                    return 'Error';
                 }
             })
             ->addColumn('sis', function ($data) {
@@ -440,12 +461,11 @@ class KesehatanController extends Controller
                 return $data->diastolik . ' mmHg';
             })
             ->addColumn('button', function ($data) {
-
                 $btn = '<div class="inline-flex"><button type="button" id="edit_tensi" class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-edit"></i></button></div>';
                 $btn = $btn . ' <div class="inline-flex"><button type="button" class="btn btn-block btn-danger karyawan-img-small" style="border-radius:50%;" data-toggle="modal" data-target="#delete" ><i class="fas fa-trash"></i></button></div>';
                 return $btn;
             })
-            ->rawColumns(['button'])
+            ->rawColumns(['button', 'hasil', 'y'])
             ->make(true);
     }
     public function kesehatan_mingguan_rapid_data()
@@ -469,14 +489,11 @@ class KesehatanController extends Controller
             ->rawColumns(['button'])
             ->make(true);
     }
-
     public function kesehatan_mingguan_detail()
     {
         $karyawan = Karyawan::orderBy('nama', 'ASC')->get();
         return view('page.kesehatan.kesehatan_mingguan_detail', ['karyawan' => $karyawan]);
     }
-
-
     public function kesehatan_mingguan_tensi_detail_data($karyawan_id)
     {
         $data = kesehatan_mingguan_tensi::where('karyawan_id', $karyawan_id);
@@ -564,10 +581,22 @@ class KesehatanController extends Controller
             [
                 'divisi' => 'required',
                 'tgl_cek' => 'required',
+                'berat.*' => 'required',
+                'lemak.*' => 'required',
+                'kandungan_air.*' => 'required',
+                'otot..*' => 'required',
+                'tulang.*' => 'required',
+                'kalori.*' => 'required',
             ],
             [
                 'divisi.required' => 'Divisi harus di pilih',
                 'tgl_cek.required' => 'Tanggal pengecekan harus dipilih',
+                'berat.required' => 'Berat harus di isi',
+                'lemak.required' => 'Lemak harus di isi',
+                'kandungan_air.required' => 'Kandungan air harus di isi',
+                'otot.required' => 'Otot harus di isi',
+                'tulang.required' => 'Tulang harus di isi',
+                'kalori.required' => 'Kalori harus di isi',
             ]
         );
 
@@ -747,7 +776,9 @@ class KesehatanController extends Controller
     }
     public function kesehatan_bulanan_gcu_detail()
     {
-        $karyawan = Karyawan::orderBy('nama', 'ASC')->get();
+        $karyawan = Karyawan::orderBy('nama', 'ASC')
+            ->has('Kesehatan_awal')
+            ->get();
         return view('page.kesehatan.kesehatan_bulanan_detail', ['karyawan' => $karyawan]);
     }
 
@@ -839,7 +870,7 @@ class KesehatanController extends Controller
         $karyawan = Karyawan::orderBy('nama', 'ASC')
             ->has('kesehatan_awal')
             ->get();
-        $obat = Obat::all();
+        $obat = Obat::where('stok', '!=', 0)->get();
         $pengecek = Karyawan::where('divisi_id', '28')
             ->get();
         return view('page.kesehatan.karyawan_sakit_tambah', ['karyawan' => $karyawan, 'pengecek' => $pengecek, 'obat' => $obat]);
@@ -972,8 +1003,7 @@ class KesehatanController extends Controller
     }
     public function karyawan_masuk_tambah()
     {
-        $obat = Obat::orderBy('nama', 'ASC')
-            ->get();
+        $obat = Obat::where('stok', '!=', 0)->get();
         $karyawan = Karyawan::orderBy('nama', 'ASC')
             ->has('kesehatan_awal')
             ->get();
@@ -1295,7 +1325,9 @@ class KesehatanController extends Controller
 
     public function laporan_harian()
     {
-        $karyawan = karyawan::all();
+        $karyawan = Karyawan::orderBy('nama', 'ASC')
+            ->has('Kesehatan_awal')
+            ->get();
         $divisi = Divisi::all();
         return view('page.kesehatan.laporan_harian', ['karyawan' => $karyawan, 'divisi' => $divisi]);
     }
@@ -1372,7 +1404,9 @@ class KesehatanController extends Controller
 
     public function laporan_mingguan()
     {
-        $karyawan = karyawan::all();
+        $karyawan = Karyawan::orderBy('nama', 'ASC')
+            ->has('Kesehatan_awal')
+            ->get();
         $divisi = Divisi::all();
         return view('page.kesehatan.laporan_mingguan', ['karyawan' => $karyawan, 'divisi' => $divisi]);
     }
@@ -1391,17 +1425,23 @@ class KesehatanController extends Controller
                     return $data->karyawan->divisi->nama;
                 })
                 ->addColumn('y', function ($data) {
-                    return $data->karyawan->nama;
+                    if ((($data->sistolik) - ($data->diastolik)) < 30) {
+                        return $data->karyawan->nama . '<br><span class="badge bg-danger"><i class="fas fa-exclamation"></i> perlu tindakan lanjut</span>';
+                    } else {
+                        return $data->karyawan->nama;
+                    }
                 })
                 ->addColumn('hasil', function ($data) {
-                    if ($data->sistolik < 130 && $data->diastolik < 85) {
-                        return 'Normal';
-                    } else if ($data->sistolik >= 130 && $data->sistolik <= 139 || $data->diastolik >= 85  && $data->diastolik >= 87) {
-                        return 'Pra-Hipertensi';
-                    } else if ($data->sistolik >= 140 && $data->sistolik <= 159 || $data->diastolik >= 90  && $data->diastolik >= 99) {
-                        return 'Stadium 1 Hipertensi';
-                    } else if ($data->sistolik >= 160  || $data->diastolik >= 100) {
-                        return 'Stadium 2 Hipertensi';
+                    if ($data->sistolik < 130) {
+                        return '<span class="badge bg-success">Normal</span>';
+                    } else if ($data->sistolik >= 130 && $data->sistolik <= 139) {
+                        return '<span class="badge bg-warning">Pra-Hipertensi</span>';
+                    } else if ($data->sistolik >= 140 && $data->sistolik <= 159) {
+                        return '<span class="badge bg-info">Stadium 1 Hipertensi</span>';
+                    } else if ($data->sistolik >= 160) {
+                        return '<span class="badge bg-danger">Stadium 2 Hipertensi</span>';
+                    } else {
+                        return 'Error';
                     }
                 })
                 ->addColumn('sis', function ($data) {
@@ -1410,6 +1450,7 @@ class KesehatanController extends Controller
                 ->addColumn('dias', function ($data) {
                     return $data->diastolik . ' mmHg';
                 })
+                ->rawColumns(['hasil', 'y'])
                 ->make(true);
         } else if ($filter == 'karyawan' && $filter_mingguan == 'tensi') {
             $data = kesehatan_mingguan_tensi::with('karyawan')
@@ -1422,17 +1463,23 @@ class KesehatanController extends Controller
                     return $data->karyawan->divisi->nama;
                 })
                 ->addColumn('y', function ($data) {
-                    return $data->karyawan->nama;
+                    if ((($data->sistolik) - ($data->diastolik)) < 30) {
+                        return $data->karyawan->nama . '<br><span class="badge bg-danger"><i class="fas fa-exclamation"></i> perlu tindakan lanjut</span>';
+                    } else {
+                        return $data->karyawan->nama;
+                    }
                 })
                 ->addColumn('hasil', function ($data) {
-                    if ($data->sistolik < 130 && $data->diastolik < 85) {
-                        return 'Normal';
-                    } else if ($data->sistolik >= 130 && $data->sistolik <= 139 || $data->diastolik >= 85  && $data->diastolik >= 87) {
-                        return 'Pra-Hipertensi';
-                    } else if ($data->sistolik >= 140 && $data->sistolik <= 159 || $data->diastolik >= 90  && $data->diastolik >= 99) {
-                        return 'Stadium 1 Hipertensi';
-                    } else if ($data->sistolik >= 160  || $data->diastolik >= 100) {
-                        return 'Stadium 2 Hipertensi';
+                    if ($data->sistolik < 130) {
+                        return '<span class="badge bg-success">Normal</span>';
+                    } else if ($data->sistolik >= 130 && $data->sistolik <= 139) {
+                        return '<span class="badge bg-warning">Pra-Hipertensi</span>';
+                    } else if ($data->sistolik >= 140 && $data->sistolik <= 159) {
+                        return '<span class="badge bg-info">Stadium 1 Hipertensi</span>';
+                    } else if ($data->sistolik >= 160) {
+                        return '<span class="badge bg-danger">Stadium 2 Hipertensi</span>';
+                    } else {
+                        return 'Error';
                     }
                 })
                 ->addColumn('sis', function ($data) {
@@ -1441,6 +1488,7 @@ class KesehatanController extends Controller
                 ->addColumn('dias', function ($data) {
                     return $data->diastolik . ' mmHg';
                 })
+                ->rawColumns(['hasil', 'y'])
                 ->make(true);
         } else if ($filter == 'karyawan' && $filter_mingguan == 'rapid') {
             $data = kesehatan_mingguan_rapid::with('karyawan')
@@ -1489,12 +1537,14 @@ class KesehatanController extends Controller
                 ->addColumn('hasil', function ($data) {
                     if ($data->sistolik < 130 && $data->diastolik < 85) {
                         return 'Normal';
-                    } else if ($data->sistolik >= 130 && $data->sistolik <= 139 || $data->diastolik >= 85  && $data->diastolik >= 87) {
+                    } else if ($data->sistolik >= 130 && $data->sistolik <= 139 && $data->diastolik >= 85  && $data->diastolik <= 89) {
                         return 'Pra-Hipertensi';
-                    } else if ($data->sistolik >= 140 && $data->sistolik <= 159 || $data->diastolik >= 90  && $data->diastolik >= 99) {
+                    } else if ($data->sistolik >= 140 && $data->sistolik <= 159 && $data->diastolik >= 90  && $data->diastolik <= 99) {
                         return 'Stadium 1 Hipertensi';
-                    } else if ($data->sistolik >= 160  || $data->diastolik >= 100) {
+                    } else if ($data->sistolik >= 160  && $data->diastolik >= 100) {
                         return 'Stadium 2 Hipertensi';
+                    } else {
+                        return '';
                     }
                 })
                 ->addColumn('sis', function ($data) {
@@ -1509,7 +1559,9 @@ class KesehatanController extends Controller
 
     public function laporan_bulanan()
     {
-        $karyawan = karyawan::all();
+        $karyawan = Karyawan::orderBy('nama', 'ASC')
+            ->has('Kesehatan_awal')
+            ->get();
         $divisi = Divisi::all();
         return view('page.kesehatan.laporan_bulanan', ['karyawan' => $karyawan, 'divisi' => $divisi]);
     }
@@ -1708,7 +1760,9 @@ class KesehatanController extends Controller
     }
     public function laporan_tahunan()
     {
-        $karyawan = karyawan::all();
+        $karyawan = Karyawan::orderBy('nama', 'ASC')
+            ->has('Kesehatan_awal')
+            ->get();
         $divisi = Divisi::all();
         return view('page.kesehatan.laporan_tahunan', ['karyawan' => $karyawan, 'divisi' => $divisi]);
     }

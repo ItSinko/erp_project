@@ -60,6 +60,7 @@
                 <th></th>
                 <th></th>
                 <th></th>
+                <th></th>
                 <th colspan="2">Pengukuran Tensi</th>
                 <th></th>
                 <th></th>
@@ -272,7 +273,7 @@
               data: 'x'
             },
             {
-              data: 'karyawan.nama'
+              data: 'y'
             },
             {
               data: 'sis'
