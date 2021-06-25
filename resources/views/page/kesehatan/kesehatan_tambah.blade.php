@@ -114,6 +114,19 @@
                                                 </div>
                                             </div>
                                             <div class="form-group row">
+                                                <label for="keterangan" class="col-sm-4 col-form-label" style="text-align:right;">Nilai Tes Warna</label>
+                                                <div class="col-sm-1">
+                                                    <input type="number" class="form-control" name="buta_warna" id="buta_warna" value="{{ old('buta_warna') }}" placeholder="Jumlah yang dibaca">
+                                                    <input type="text" class="form-control d-none" name="status_mata" id="status_mata">
+                                                    @if($errors->has('buta_warna'))
+                                                    <div class="text-danger">
+                                                        {{ $errors->first('buta_warna')}}
+                                                    </div>
+                                                    @endif
+                                                    <small id="status_butawarna" class="form-text text-muted"></small>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
                                                 <label class="col-sm-4 col-form-label" style="text-align:right;">Body Mass Index</label>
                                                 <div class="col-sm-8">
                                                     <input type="text" class="form-control @error('data') is-invalid @enderror " id="bmi" style="width:15%;" disabled>
@@ -269,36 +282,6 @@
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-                                                <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;">Buta Warna</label>
-                                                <div class="col-sm-8" style="margin-top:7px;">
-                                                    <div class="icheck-success d-inline col-sm-4">
-                                                        <input type="radio" name="status_mata" value="Defisensi">
-                                                        <label for="no">
-                                                            Defisiensi
-                                                        </label>
-                                                    </div>
-                                                    <div class="icheck-warning d-inline col-sm-4">
-                                                        <input type="radio" name="status_mata" value="Abnormal">
-                                                        <label for="sample">
-                                                            Abnormal
-                                                        </label>
-                                                    </div>
-                                                    <div class="icheck-warning d-inline col-sm-4">
-                                                        <input type="radio" name="status_mata" value="Normal">
-                                                        <label for="sample">
-                                                            Normal
-                                                        </label>
-                                                    </div>
-                                                    <span class="invalid-feedback" role="alert" id="kondisi-msg"></span>
-                                                    <small id="status_butawarna" class="form-text text-muted"></small>
-                                                    @if($errors->has('status_mata'))
-                                                    <div class="text-danger">
-                                                        {{ $errors->first('status_mata')}}
-                                                    </div>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                            <div class="form-group row">
                                                 <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;">Hasil Medical Check Up</label>
                                                 <div class="col-sm-4">
                                                     <input type="file" class="form-control @error('file_mcu') is-invalid @enderror" name="file_mcu" style="width:45%;">
@@ -337,7 +320,6 @@
                                                         </label>
                                                     </div>
                                                     <span class="invalid-feedback" role="alert" id="kondisi-msg"></span>
-
                                                 </div>
                                             </div>
                                             <div id="tipe_1">
@@ -452,17 +434,21 @@
         $('#tipe_1').show();
         $('#tipe_2').hide();
         $('#tipe_3').hide();
-        $('input[name=status_mata]').prop("required", true);
 
-
-        $('input[type=radio][name=status_mata]').on('change', function() {
-            if (this.value == 'Defisensi') {
-                $('#status_butawarna').text('Dapat membaca 1 - 7 angka');
-            } else if (this.value == 'Abnormal') {
-                $('#status_butawarna').text('Dapat membaca 8 - 9 angka ');
-            } else {
-                $('#status_butawarna').text('Dapat membaca 10 - 14 angka');
-            }
+        $(function() {
+            $('#buta_warna').keyup(function() {
+                var value1 = parseFloat($('#buta_warna').val());
+                if (value1 >= 1 && value1 <= 7) {
+                    $('#status_butawarna').text('Defisensi');
+                    $('input[name=status_mata]').val('Defisensi');
+                } else if (value1 >= 8 && value1 <= 9) {
+                    $('#status_butawarna').text('Abnormal');
+                    $('input[name=status_mata]').val('Abnormal');
+                } else if (value1 >= 10 && value1 <= 14) {
+                    $('#status_butawarna').text('Normal');
+                    $('input[name=status_mata]').val('Normal');
+                }
+            });
         });
 
         $('input[type=radio][name=tes_covid]').on('change', function() {

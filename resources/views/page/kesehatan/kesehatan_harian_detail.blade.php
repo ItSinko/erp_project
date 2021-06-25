@@ -145,16 +145,80 @@
                     data: 'tgl_cek'
                 },
                 {
-                    data: 'pagi'
+                    data: 'pagi',
+                    render: function(data) {
+                        $l = '<br><span class="badge bg-danger">Hiportemia</span>';
+                        $n = '<br><span class="badge bg-success">Normal</span>';
+                        $w = '<br><span class="badge bg-warning">Hiperpireksia</span>';
+                        $i = '<br><span class="badge bg-info">Hiperpireksia</span>';
+
+                        if (data > 40) {
+                            return data + ' °C' + $w;
+                        } else if (data < 35) {
+                            return data + ' °C' + $l;
+                        } else if (data >= 35 && data <= 37.5) {
+                            return data + ' °C' + $n;
+                        } else if (data >= 37.6 && data <= 40) {
+                            return data + ' °C' + $i;
+                        } else {
+                            return '';
+                        }
+                    }
                 },
                 {
-                    data: 'siang'
+                    data: 'siang',
+                    render: function(data) {
+                        $l = '<br><span class="badge bg-danger">Hipotermia</span>';
+                        $n = '<br><span class="badge bg-success">Normal</span>';
+                        $w = '<br><span class="badge bg-warning">Hiperpireksia</span>';
+                        $i = '<br><span class="badge bg-info">Hipertermia</span>';
+                        if (data > 40) {
+                            return data + ' °C' + $w;
+                        } else if (data < 35) {
+                            return data + ' °C' + $l;
+                        } else if (data >= 35 && data <= 37.5) {
+                            return data + ' °C' + $n;
+                        } else if (data >= 37.6 && data <= 40) {
+                            return data + ' °C' + $i;
+                        } else {
+                            return '';
+                        }
+                    }
                 },
                 {
-                    data: 'sp'
+                    data: 'sp',
+                    render: function(data) {
+                        $l = '<br><span class="badge bg-danger">Rendah</span>';
+                        $n = '<br><span class="badge bg-success">Normal</span>';
+                        $w = '<br><span class="badge bg-warning">Tinggi</span>';
+                        if (data > 100) {
+                            return data + ' %' + $w;
+                        } else if (data < 59) {
+                            return data + ' %' + $l;
+                        } else if (data >= 60 || data <= 100) {
+                            return data + ' %' + $n;
+                        } else {
+                            return '';
+                        }
+                    }
                 },
                 {
-                    data: 'pr'
+                    data: 'prx',
+                    render: function(data) {
+                        $l = '<br><span class="badge bg-danger">Rendah</span>';
+                        $n = '<br><span class="badge bg-success">Normal</span>';
+                        $w = '<br><span class="badge bg-warning">Tinggi</span>';
+                        if (data > 100) {
+                            return data + ' bpm' + $w;
+                        } else if (data < 59) {
+                            return data + ' bpm' + $l;
+                        } else if (data >= 60 || data <= 100) {
+                            return data + ' bpm' + $n;
+                        } else {
+                            return '';
+                        }
+
+                    }
                 },
             ]
         });

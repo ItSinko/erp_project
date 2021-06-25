@@ -20,7 +20,6 @@
                         <div class='table-responsive'>
                             <div class="col-lg-12">
                                 <div class="form-group row">
-
                                     <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Nama Karyawan</label>
                                     <div class="col-sm-8">
                                         <select type="text" class="form-control @error('divisi') is-invalid @enderror select2" name="divisi" style="width:45%;" id="karyawan_id">

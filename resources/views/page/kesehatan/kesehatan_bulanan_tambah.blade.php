@@ -143,7 +143,7 @@
                     {{ csrf_field() }}
                     <div class="card">
                         <div class="card-header bg-success">
-                            <div class="card-title"><i class="fas fa-plus-circle"></i>&nbsp;Pemeriksaan GsCU (Glucose, Cholesterol, Uric ACID) </div>
+                            <div class="card-title"><i class="fas fa-plus-circle"></i>&nbsp;Pemeriksaan GCU (Glucose, Cholesterol, Uric ACID) </div>
                         </div>
                         <div class="card-body">
                             <div class="col-lg-12">
@@ -425,27 +425,6 @@
             } else {
                 alert('Harap memuat ulang');
             }
-        });
-    });
-</script>
-<script>
-    $(document).ready(function() {
-        $(function() {
-            $('#berat, #tinggi').keyup(function() {
-                var value1 = parseFloat($('#berat').val()) || 0;
-                var value2 = parseFloat($('#tinggi').val()) || 0;
-                var sum = value1 / ((value2 / 100) * (value2 / 100))
-                $('#bmi').val(sum.toFixed(2));
-                if (sum >= 30) {
-                    $('#status_bmi').text('Kegemukan (Obesitas)');
-                } else if (sum >= 25 || sum >= 29.9) {
-                    $('#status_bmi').text('Kelebihan Berat Badan');
-                } else if (sum >= 18.5 || sum >= 24.9) {
-                    $('#status_bmi').text('Normal (Ideal)');
-                } else {
-                    $('#status_bmi').text('Kekurangan Berat Badan');
-                }
-            });
         });
     });
 </script>

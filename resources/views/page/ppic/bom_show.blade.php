@@ -124,13 +124,6 @@
                     processing: true,
                     serverSide: true,
                     ajax: '/ppic/get_bom/' + temp,
-                    language: {
-                        processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
-                    },
-                    buttons: [
-                        'copy', 'csv', 'excel', 'pdf', 'print'
-                    ],
-                    dom: 'Bfrtip',
                     columns: [{
                             data: 'DT_RowIndex',
                             orderable: false,
