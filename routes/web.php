@@ -527,11 +527,11 @@ Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {
     Route::get('/perbaikan/bppb/show/{id}', 'ProduksiController@pengujian_perbaikan_bppb_show')->name('pengujian.perbaikan.bppb.show');
     Route::get('/perbaikan/status/{id}/{status}', 'ProduksiController@pengujian_perbaikan_status')->name('pengujian.perbaikan.status');
 
-
     Route::group(['prefix' => '/monitoring_proses'], function () {
         Route::get('/', 'QCController@pengujian_monitoring_proses')->name('pengujian.monitoring_proses');
         Route::get('/show/{bppb_id}', 'QCController@pengujian_monitoring_proses_show')->name('pengujian.monitoring_proses.show');
         Route::get('/create/{bppb_id}/{arr}', 'QCController@pengujian_monitoring_proses_create')->name('pengujian.monitoring_proses.create');
+        Route::get('/create/get_count_barcode/{bppb_id}', 'GetController@get_count_barcode');
         Route::put('/store/{bppb_id}', 'QCController@pengujian_monitoring_proses_store')->name('pengujian.monitoring_proses.store');
 
         Route::group(['prefix' => '/hasil'], function () {
@@ -603,7 +603,8 @@ Route::group(['prefix' => '/pengemasan', 'middleware' => 'auth'], function () {
     Route::get('/laporan', 'ProduksiController@pengemasan_laporan')->name('pengemasan.laporan');
     Route::get('/laporan/show/{id}', 'ProduksiController@pengemasan_laporan_show')->name('pengemasan.laporan.show');
     Route::get('/laporan/status/{id}/{status}', 'ProduksiController@pengemasan_laporan_status')->name('pengemasan.laporan.status');
-    Route::get('/laporan/create/{bppb_id}', 'ProduksiController@pengemasan_laporan_create')->name('pengemasan.laporan.create');
+    Route::get('/laporan/create/{bppb_id}/{arr}', 'ProduksiController@pengemasan_laporan_create')->name('pengemasan.laporan.create');
+    Route::get('/laporan/create/get_count_barcode/{bppb_id}', 'GetController@get_count_barcode');
     Route::put('/laporan/store/{bppb_id}', 'ProduksiController@pengemasan_laporan_store')->name('pengemasan.laporan.store');
     Route::get('/hasil/{id}', 'ProduksiController@pengemasan_hasil')->name('pengemasan.hasil');
     Route::get('/hasil/show/{id}', 'ProduksiController@pengemasan_hasil_show')->name('pengemasan.hasil.show');

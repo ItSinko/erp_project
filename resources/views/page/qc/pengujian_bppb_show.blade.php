@@ -63,6 +63,7 @@
                                 <a href="{{ route('pengujian.monitoring_proses.laporan.edit', ['id' => $id]) }}"><button class="btn btn-warning rounded-pill"><i class="fas fa-edit"></i>&nbsp;Edit</button></a>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>

@@ -15,6 +15,8 @@ use App\HasilPerakitan;
 use App\KategoriProduk;
 use App\ProdukBillOfMaterial;
 use App\Karyawan;
+use App\HasilMonitoringProses;
+use App\HasilPengemasan;
 use Carbon\Carbon;
 
 class GetController extends Controller
@@ -246,5 +248,19 @@ class GetController extends Controller
     {
         $s = HasilPerakitan::where('perakitan_id', $id)->count();
         return $s;
+    }
+
+    public function get_count_barcode($id)
+    {
+        $hmp = HasilMonitoringProses::whereHas('MonitoringProses', function ($q) use ($id) {
+            $q->where('bppb_id', $id);
+        })->whereNotNull('no_barcode')->count();
+
+        $hp =  HasilPengemasan::whereHas('Pengemasan', function ($q) use ($id) {
+            $q->where('bppb_id', $id);
+        })->whereNotNull('no_barcode')->count();
+
+        $c = $hmp + $hp;
+        return $c;
     }
 }

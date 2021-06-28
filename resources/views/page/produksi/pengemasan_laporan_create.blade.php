@@ -135,12 +135,12 @@
                                                     <tr>
                                                         <th rowspan="2">No</th>
                                                         <th rowspan="2">No Seri</th>
+                                                        <th rowspan="2" hidden>Has Barcode</th>
                                                         <th rowspan="2">Barcode</th>
                                                         <th rowspan="2">Kondisi Unit</th>
                                                         @foreach($cp as $cps)
                                                         <th colspan="{{count($cps->DetailCekPengemasan)}}">{{$cps->perlengkapan}}</th>
                                                         @endforeach
-                                                        <th rowspan="2">Aksi</th>
                                                     </tr>
                                                     <tr>
                                                         @foreach($cp as $cps)
@@ -151,34 +151,37 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody style="text-align:center;">
+                                                    @php ($m = 0); @endphp
+                                                    @foreach($s as $i)
                                                     <tr>
-                                                        <td>1</td>
+                                                        <td>{{$loop->iteration}}</td>
                                                         <td>
                                                             <div class="form-group">
-                                                                <div class="select2-info">
-                                                                    <select class="select2 form-control @error('no_seri') is-invalid @enderror no_seri" data-placeholder="Pilih No Seri" data-dropdown-css-class="select2-info" style="width: 100%;" name="no_seri[0]" id="no_seri">
-                                                                        <option value=""></option>
-                                                                        @foreach($s as $i)
-                                                                        <option value="{{$i->HasilPerakitan->id}}">{{$i->HasilPerakitan->Perakitan->alias_tim}}{{$i->HasilPerakitan->no_seri}}
-                                                                        </option>
-                                                                        @endforeach
-                                                                    </select>
-                                                                    @if ($errors->has('no_seri'))
-                                                                    <span class="invalid-feedback" role="alert">{{$errors->first('no_seri.*')}}</span>
-                                                                    @endif
-                                                                    <span id="no_seri-message[]" role="alert"></span>
-                                                                </div>
+                                                                <input type="text" value="{{$i->HasilPerakitan->id}}" id="no_seri{{$loop->iteration - 1}}" name="no_seri[{{$loop->iteration - 1}}]" hidden>
+                                                                {{$i->HasilPerakitan->Perakitan->alias_tim}}{{$i->HasilPerakitan->no_seri}}
                                                             </div>
+                                                        </td>
+                                                        <td hidden>
+                                                            <input type="text" name="has_barcode[{{$loop->iteration - 1}}]" @if($i->no_barcode != "")
+                                                            value = "yes"
+                                                            @elseif($i->no_barcode == "")
+                                                            value = "no"
+                                                            @php ($m = $m + 1); @endphp
+                                                            @endif>
                                                         </td>
                                                         <td>
                                                             <div class="form-group">
+                                                                @if($i->no_barcode != "")
+                                                                {{str_replace("/", "", $i->MonitoringProses->alias_barcode)}}{{$i->no_barcode}}
+                                                                @elseif($i->no_barcode == "")
                                                                 <div class="input-group">
-                                                                    <input type="text" class="form-control @error('no_barcode') is-invalid @enderror barcode" name="no_barcode[0]" id="no_barcode">
+                                                                    <input type="text" class="form-control @error('no_barcode') is-invalid @enderror barcode" name="no_barcode[{{$loop->iteration - 1}}]" id="no_barcode{{$loop->iteration - 1}}" value="{{$cbrc + $m}}">
                                                                 </div>
                                                                 @if ($errors->has('no_barcode'))
                                                                 <span class="invalid-feedback" role="alert">{{$errors->first('no_barcode')}}</span>
                                                                 @endif
                                                                 <span id="no_barcode-message[]" role="alert"></span>
+                                                                @endif
                                                             </div>
                                                         </td>
                                                         <td>
@@ -186,8 +189,8 @@
                                                                 <div class="col-sm-12">
                                                                     <div class="form-group clearfix">
                                                                         <div class="icheck-success d-inline checked">
-                                                                            <input type="radio" name="kondisi_unit[0]" id="ok" class="kondisi_unit" value="ok" checked>
-                                                                            <label for="ok">
+                                                                            <input type="radio" name="kondisi_unit[{{$loop->iteration - 1}}]" id="ok{{$loop->iteration - 1}}" class="kondisi_unit" value="ok" checked>
+                                                                            <label for="ok{{$loop->iteration - 1}}">
                                                                                 <i class="fas fa-check-circle" style="color:green;"></i>
                                                                             </label>
                                                                         </div>
@@ -198,8 +201,8 @@
                                                                 <div class="col-sm-12">
                                                                     <div class="form-group clearfix">
                                                                         <div class="icheck-danger d-inline">
-                                                                            <input type="radio" name="kondisi_unit[0]" id="nok" value="nok" class="kondisi_unit">
-                                                                            <label for="nok">
+                                                                            <input type="radio" name="kondisi_unit[{{$loop->iteration - 1}}]" id="nok{{$loop->iteration - 1}}" value="nok" class="kondisi_unit">
+                                                                            <label for="nok{{$loop->iteration - 1}}">
                                                                                 <i class="fas fa-times-circle" style="color:red;"></i>
                                                                             </label>
                                                                         </div>
@@ -207,7 +210,7 @@
                                                                 </div>
                                                             </div>
                                                         </td>
-                                                        @php ($k = 0); @endphp
+                                                        @php ($k = 0); ($l = $loop->iteration - 1); @endphp
                                                         @foreach($cp as $cps)
                                                         @foreach($cps->DetailCekPengemasan as $i)
                                                         <td>
@@ -215,8 +218,8 @@
                                                                 <div class="col-sm-12">
                                                                     <div class="form-group clearfix">
                                                                         <div class="icheck-success d-inline checked">
-                                                                            <input type="radio" name="detail_cek_pengemasan[0][{{$k}}]" id="detail_cek_pengemasan0{{$k}}" class="detail_cek_pengemasan" value="{{$i->id}}" checked>
-                                                                            <label for="detail_cek_pengemasan0{{$k}}">
+                                                                            <input type="radio" name="detail_cek_pengemasan[{{$l}}][{{$k}}]" id="detail_cek_pengemasan{{$l}}{{$k}}" class="detail_cek_pengemasan" value="{{$i->id}}" checked>
+                                                                            <label for="detail_cek_pengemasan{{$l}}{{$k}}">
                                                                                 <i class="fas fa-check-circle" style="color:green;"></i>
                                                                             </label>
                                                                         </div>
@@ -227,8 +230,8 @@
                                                                 <div class="col-sm-12">
                                                                     <div class="form-group clearfix">
                                                                         <div class="icheck-danger d-inline">
-                                                                            <input type="radio" name="detail_cek_pengemasan[0][{{$k}}]" id="nok0{{$k}}" value="nok" class="detail_cek_pengemasan">
-                                                                            <label for="nok0{{$k}}">
+                                                                            <input type="radio" name="detail_cek_pengemasan[{{$l}}][{{$k}}]" id="nok{{$l}}{{$k}}" value="nok" class="detail_cek_pengemasan">
+                                                                            <label for="nok{{$l}}{{$k}}">
                                                                                 <i class="fas fa-times-circle" style="color:red;"></i>
                                                                             </label>
                                                                         </div>
@@ -239,10 +242,8 @@
                                                         @php ($k++); @endphp
                                                         @endforeach
                                                         @endforeach
-                                                        <td>
-                                                            <button type="button" class="btn btn-success karyawan-img-small" style="border-radius:50%;" id="tambahitem"><i class="fas fa-plus-circle"></i></button>
-                                                        </td>
                                                     </tr>
+                                                    @endforeach
                                                 </tbody>
 
                                             </table>
@@ -271,6 +272,22 @@
 @section('adminlte_js')
 <script>
     $(function() {
+        function formatted_string(pad, user_str, pad_pos) {
+            if (typeof user_str === 'undefined')
+                return pad;
+            if (pad_pos == 'l') {
+                return (pad + user_str).slice(-pad.length);
+            } else {
+                return (user_str + pad).substring(0, pad.length);
+            }
+        }
+
+        $('#tableitem').ready(function() {
+            $(this).find("tr").each(function() {
+                $(this).find('.barcode').val(formatted_string('00000', $(this).find('.barcode').val(), 'l'));
+            });
+        });
+
         var rdb = "";
         var add = 0;
         $('input[type="radio"][name="brc"]').on("change", function() {

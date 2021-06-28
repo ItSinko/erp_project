@@ -60,6 +60,9 @@
                     <div class="table-responsive">
                         <table id="example1" class="table table-hover table-striped styled-table" style="width:100%;">
                             <thead style="text-align: center;">
+                                <tr style="text-align: right;">
+                                    <th colspan="12"><button class="btn btn-sm btn-success" id="tambahlaporan" disabled><i class="fas fa-plus"></i>&nbsp; Tambah Pengemasan</button></th>
+                                </tr>
                                 <tr>
                                     <th>#</th>
                                     <th>No Seri</th>
@@ -167,6 +170,25 @@
                     searchable: false
                 },
             ]
+        });
+
+        $("#example1").on('change', '.hasil_perakitan_id', function() {
+            var cbox = $('.hasil_perakitan_id:checkbox:checked');
+            if (cbox.length <= 0) {
+                $("#tambahlaporan").attr('disabled', true)
+            } else if (cbox.length > 0) {
+                $("#tambahlaporan").removeAttr('disabled');
+            }
+        });
+
+        $("#tambahlaporan").on('click', function() {
+            var arr = [];
+            $(".hasil_perakitan_id:checkbox:checked").each(function() {
+                arr.push($(this).val());
+            });
+            if (arr.length > 0) {
+                window.location.href = "/pengemasan/laporan/create/{{$bppb_id}}/" + arr;
+            }
         });
     });
 </script>

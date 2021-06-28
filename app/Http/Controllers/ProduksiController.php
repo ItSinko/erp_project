@@ -1287,9 +1287,7 @@ class ProduksiController extends Controller
             ->addIndexColumn()
             ->addColumn('checkbox', function ($s) {
                 $str = "";
-                $h = HasilMonitoringProses::where('hasil_perakitan_id', $s->id)
-                    ->orderBy('created_at', 'desc')
-                    ->first();
+                $h = HasilPengemasan::where('hasil_perakitan_id', $s->HasilPerakitan->id)->orderBy('created_at', 'desc')->first();
                 $str = '<input type="checkbox" class="hasil_perakitan_id" id="hasil_perakitan_id" name="hasil_perakitan_id[]" value="' . $s->id . '" ';
                 if ($h) {
                     $str .= 'disabled';
@@ -1313,9 +1311,9 @@ class ProduksiController extends Controller
                 $str = "";
 
                 if ($h) {
-                    if ($h->kondisi_unit == "ok") {
+                    if ($h->kondisi_unit == "baik") {
                         $str = '<i class="fas fa-check-circle" style="color:green;"></i>';
-                    } else if ($h->kondisi_unit == "nok") {
+                    } else if ($h->kondisi_unit == "tidak") {
                         $str = '<i class="fas fa-times-circle" style="color:red;"></i>';
                     }
                 } else {
@@ -1411,16 +1409,28 @@ class ProduksiController extends Controller
             ->make(true);
     }
 
-    public function pengemasan_laporan_create($id)
+    public function pengemasan_laporan_create($id, $arr)
     {
         $b = Bppb::find($id);
+        $larr = explode(",", $arr);
+
         $cp = CekPengemasan::where('detail_produk_id', $b->detail_produk_id)->with('DetailCekPengemasan')->get();
         $kry = Karyawan::whereNotIn('jabatan', ['direktur', 'manager', 'supervisor'])->get();
         $s = HasilMonitoringProses::whereHas('MonitoringProses', function ($q) use ($id) {
             $q->where('bppb_id', $id);
-        })->whereIn('status', ['pengemasan'])->doesntHave('HasilPerakitan.HasilPengemasan')->get();
+        })->whereIn('id', $larr)->get();
 
-        return view('page.produksi.pengemasan_laporan_create', ['id' => $id, 'b' => $b, 'cp' => $cp, 'kry' => $kry, 's' => $s]);
+        $hmp = HasilMonitoringProses::whereHas('MonitoringProses', function ($q) use ($id) {
+            $q->where('bppb_id', $id);
+        })->whereNotNull('no_barcode')->count();
+
+        $hp =  HasilPengemasan::whereHas('Pengemasan', function ($q) use ($id) {
+            $q->where('bppb_id', $id);
+        })->whereNotNull('no_barcode')->count();
+
+        $cbrc = $hmp + $hp;
+
+        return view('page.produksi.pengemasan_laporan_create', ['id' => $id, 'b' => $b, 'cp' => $cp, 'kry' => $kry, 's' => $s, 'cbrc' => $cbrc]);
     }
 
     public function pengemasan_laporan_status($id, $status)
@@ -1502,35 +1512,58 @@ class ProduksiController extends Controller
 
     public function pengemasan_laporan_store(Request $request, $id)
     {
-        $v = Validator::make(
-            $request->all(),
-            [
-                'karyawan_id' => 'required',
-                'tanggal_laporan' => 'required',
-                'no_seri' => 'required',
-                'no_barcode' => 'required',
-                'inisial_produk' => 'required',
-                'tipe_produk' => 'required',
-                'waktu_produksi' => 'required',
-                'urutan_bb' => 'required'
+        $v = [];
+        if (in_array("no", $request->has_barcode)) {
+            $v = Validator::make(
+                $request->all(),
+                [
+                    'karyawan_id' => 'required',
+                    'tanggal_laporan' => 'required',
+                    'no_seri' => 'required',
+                    'no_barcode' => 'required',
+                    'inisial_produk' => 'required',
+                    'tipe_produk' => 'required',
+                    'waktu_produksi' => 'required',
+                    'urutan_bb' => 'required'
 
-            ],
-            [
-                'karyawan_id.required' => 'Operator harus dipilih',
-                'tanggal_laporan.required' => 'Tanggal Laporan harus diisi',
-                'no_seri.required' => 'No Seri harus diisi',
-                'no_barcode.required' => 'No Barcode harus diisi',
-                'inisial_produk.required' => 'Barcode harus diisi',
-                'tipe_produk.required' => 'Barcode harus diisi',
-                'waktu_produksi.required' => 'Barcode harus diisi',
-                'urutan_bb.required' => 'Barcode harus diisi'
-            ]
-        );
+                ],
+                [
+                    'karyawan_id.required' => 'Operator harus dipilih',
+                    'tanggal_laporan.required' => 'Tanggal Laporan harus diisi',
+                    'no_seri.required' => 'No Seri harus diisi',
+                    'no_barcode.required' => 'No Barcode harus diisi',
+                    'inisial_produk.required' => 'Barcode harus diisi',
+                    'tipe_produk.required' => 'Barcode harus diisi',
+                    'waktu_produksi.required' => 'Barcode harus diisi',
+                    'urutan_bb.required' => 'Barcode harus diisi'
+                ]
+            );
+        } else {
+            $v = Validator::make(
+                $request->all(),
+                [
+                    'karyawan_id' => 'required',
+                    'tanggal_laporan' => 'required',
+                    'no_seri' => 'required'
+
+                ],
+                [
+                    'karyawan_id.required' => 'Operator harus dipilih',
+                    'tanggal_laporan.required' => 'Tanggal Laporan harus diisi',
+                    'no_seri.required' => 'No Seri harus diisi'
+                ]
+            );
+        }
 
         if ($v->fails()) {
             return redirect()->back()->withErrors($v);
         } else {
-            $alias_barcode = $request->inisial_produk . "/" . $request->tipe_produk . "/" . $request->waktu_produksi . "/" . $request->urutan_bb;
+            $alias_barcode = "";
+            if (in_array("no", $request->has_barcode)) {
+                $alias_barcode = $request->inisial_produk . "/" . $request->tipe_produk . "/" . $request->waktu_produksi . "/" . $request->urutan_bb;
+            } else {
+                $alias_barcode = NULL;
+            }
             $c = Pengemasan::create([
                 'bppb_id' => $id,
                 'pic_id' => Auth::user()->id,
@@ -1542,10 +1575,16 @@ class ProduksiController extends Controller
             if (!empty($request->no_seri)) {
                 $bool = true;
                 for ($i = 0; $i < count($request->no_seri); $i++) {
+                    $no_barcode = "";
+                    if ($request->has_barcode[$i] == "yes") {
+                        $no_barcode = NULL;
+                    } else if ($request->has_barcode[$i] == "no") {
+                        $no_barcode = $request->no_barcode[$i];
+                    }
                     $cs = HasilPengemasan::create([
                         'pengemasan_id' => $c->id,
                         'hasil_perakitan_id' => $request->no_seri[$i],
-                        'no_barcode' => $request->no_barcode[$i],
+                        'no_barcode' => $no_barcode,
                         'hasil' => NULL,
                         'keterangan' => NULL,
                         'tindak_lanjut' => NULL,
