@@ -110,6 +110,7 @@
                                             </div>
                                         </div><!-- /.info-box -->
                                     </div>
+
                                     <div class="col-sm-1 col-xs-12">
                                     </div>
                                     <div class="col-sm-2 col-xs-12">
@@ -150,15 +151,14 @@
                                                 <span class="info-box-text">Bone</span>
                                                 <span class="info-box-number" id="tulang"></span>
                                             </div><!-- /.info-box-content -->
-                                        </div><!-- /.info-box -->
-                                    </div><!-- /.col -->
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
 </section>
 @endsection
 @section('adminlte_js')
@@ -198,6 +198,7 @@
                         $("#ket_vaksin").text(data[0].ket_vaksin);
                         $("#jenis_rapid").text(data[0].tes_covid);
                         $("#hasil_rapid").text(data[0].hasil_covid);
+                        $("#lemak").text(data[0].lemak + " g");
                         $("#kandungan_air").text(data[0].kandungan_air + " %");
                         $("#otot").text(data[0].otot + " Kg");
                         $("#kalori").text(data[0].kalori + " kkal");
@@ -215,5 +216,4 @@
         detail_karyawan();
     });
 </script>
-
 @endsection
