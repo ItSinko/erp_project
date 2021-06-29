@@ -196,7 +196,7 @@
                             </div>
                         </div>
                         <div class="card-footer">
-                            <span class="float-left"><a class="btn btn-danger rounded-pill" href="/kesehatan_harian"><i class="fas fa-times"></i>&nbsp;Batal</a></span>
+                            <span class="float-left"><a class="btn btn-danger rounded-pill" href="/kesehatan_mingguan"><i class="fas fa-times"></i>&nbsp;Batal</a></span>
                             <span class="float-right"><button class="btn btn-success rounded-pill" id="button_tambah"><i class="fas fa-plus"></i>&nbsp;Tambah Data</button></span>
                         </div>
                     </div>
@@ -308,7 +308,8 @@
                                 no++;
                                 b++;
                                 $('#tabel_rapid').append(`<tr> <td>` + no + `</td>
-                                                     <td>    
+                                                     <td>   
+                                                     <input type="number" class="form-control d-none" name="karyawan_id[` + x + `]" value="` + value[`id`] + `"> 
                                                      <select type="text" class="form-control @error('jenis_tes[` + x + `]') is-invalid @enderror" name="jenis_tes[` + x + `]" style="width:100%;" id="jenis_tes` + no + `">
                                                          <option value="">Pilih Produk</option>
                                                          <option value="Rapid">Rapid</option>
@@ -316,7 +317,7 @@
                                                          </select>
                                                         </td>
                                                          <td>
-                                                         <select type="text" class="form-control @error('pemeriksa_id[` + x + `]') is-invalid @enderror" name="pemeriksa_id[` + x + `]" style="width:100%;" id="pemeriksa` + no + `">
+                                                             <select type="text" class="form-control @error('pemeriksa_id[` + x + `]') is-invalid @enderror" name="pemeriksa_id[` + x + `]" style="width:100%;" id="pemeriksa` + no + `">
                                                          <option value=""></option>
                                                          @foreach ($pengecek as $p)
                                                         <option value="{{$p->id}}">{{$p->nama}}</option>
@@ -326,40 +327,66 @@
                                                         <td><input id="dates` + value[`id`] + `" type="date" class="form-control" readonly></td>      
                                                          <td>` + value[`nama`] + `</td>
                                                          <td>         
-                                                        <div id ="rapid` + no + `" class="row" hidden>
-                        
+                                                        <div id ="rapids` + no + `" class="row" hidden>
+                                                        <div class="icheck-success d-inline col-sm-6">
+                                                            <input type="radio" name="hasil_covid[` + x + `]" value="Non reaktif" id="hasil_cov` + no + `">
+                                                            <label for="no">
+                                                                Non reaktif
+                                                            </label>
                                                         </div>
-                                                        <div id ="antigen` + no + `" class="row" hidden>
-                                                        <div class="icheck-success d-inline col-sm-4">
-                                                         <input type="number" class="form-control d-none" name="karyawan_id" value="">  
-                                                        <input type="radio" name="hasil" value="C">
-                                                        <label for="no">
-                                                            C
-                                                        </label>
-
-                                                        <div class="icheck-warning d-inline col-sm-4">
-                                                        <input type="radio" name="hasil[` + x + `]" value=C\T">
-                                                        <label for="sample">
-                                                            C\T
-                                                        </label>
+                                                        <div class="icheck-success d-inline col-sm-6">
+                                                            <input type="radio" name="hasil_covid[` + x + `]" value="IgG" id="hasil_cov` + no + `">
+                                                            <label for="no">
+                                                                IgG
+                                                            </label>
                                                         </div>
+                                                        <div class="icheck-warning d-inline col-sm-6">
+                                                            <input type="radio" name="hasil_covid[` + x + `]" value="IgM" id="hasil_cov` + no + `" >
+                                                            <label for="sample">
+                                                                IgM
+                                                            </label>
                                                         </div>
+                                                        <div class="icheck-warning d-inline col-sm-6">
+                                                            <input type="radio" name="hasil_covid[` + x + `]" value="IgG-IgM"  id="hasil_cov` + no + `" >
+                                                            <label for="sample">
+                                                            IgG-IgM
+                                                            </label>
+                                                        </div>
+                                                           </div>
+                                                        <div id ="antigens` + no + `" class="row" hidden>
+                                                        <div class="icheck-success d-inline col-sm-12">
+                                                            <input type="radio" name="hasil_covid[` + x + `]" value="C"  id="hasil_cov` + no + `">
+                                                            <label for="no">
+                                                                C
+                                                            </label>
+                                                        </div>
+                                                        <div class="icheck-warning d-inline col-sm-12">
+                                                            <input type="radio" name="hasil_covid[` + x + `]" value="C/T"  id="hasil_cov` + no + `">
+                                                            <label for="sample">
+                                                                C/T
+                                                            </label>
+                                                        </div>
+                                                       </div>
                                                         </td>
                                                         <td>    
-                                                         <textarea type="text" class="form-control" name="keterangan[` + x + `]" ></textarea>
+                                                         <textarea type="text" class="form-control" name="keterangan[` + x + `]"  ></textarea>
                                                         </td>
                                                         </tr>`);
-
                                 x++;
                                 var n = no;
                                 console.log(n);
                                 $('#jenis_tes' + no + '').on('change', function() {
                                     var tes = jQuery(this).val();
                                     if (tes == "Antigen") {
-                                        $('#rapid' + n + '').removeAttr('hidden');
+                                        $('#antigens' + n + '').removeAttr('hidden');
+                                        $('#rapids' + n + '').attr('hidden', 'hidden');
+                                        $('#hasil_cov' + n + '').prop("required", true);
                                     } else if (tes == "Rapid") {
-                                        $('#tensi' + n + '').removeAttr('hidden');
-                                    } else {}
+                                        $('#rapids' + n + '').removeAttr('hidden');
+                                        $('#antigens' + n + '').attr('hidden', 'hidden');
+                                        $('#hasil_cov' + n + '').prop("required", true);
+
+                                    }
                                     console.log(tes)
                                 });
                                 $('#pemeriksa' + no + '').select2({

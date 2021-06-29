@@ -47,7 +47,8 @@ class KesehatanController extends Controller
         $karyawan = Karyawan::orderBy('nama', 'ASC')
             ->has('Kesehatan_awal')
             ->get();
-        return view('page.kesehatan.kesehatan_detail', ['karyawan' => $karyawan]);
+        $kesehatan_awal = Kesehatan_awal::all();
+        return view('page.kesehatan.kesehatan_detail', ['karyawan' => $karyawan, 'kesehatan_awal' => $kesehatan_awal]);
     }
     public function kesehatan_data()
     {
@@ -77,7 +78,6 @@ class KesehatanController extends Controller
             })
             ->addColumn('button', function ($data) {
                 $btn = '<div class="inline-flex"><a href="/kesehatan/ubah/' . $data->id . '"><button type="button" class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-edit"></i></button></a>';
-                $btn = $btn . ' <button type="button" class="btn btn-block btn-danger karyawan-img-small" style="border-radius:50%;" data-toggle="modal" data-target="#delete" ><i class="fas fa-trash"></i></button></div>';
                 return $btn;
             })
             ->rawColumns(['button', 'berat_kg'])
@@ -263,7 +263,6 @@ class KesehatanController extends Controller
             ->addColumn('button', function ($data) {
 
                 $btn = '<div class="inline-flex"><button type="button" id="edit" class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-edit"></i></button></div>';
-                $btn = $btn . ' <div class="inline-flex"><button type="button" class="btn btn-block btn-danger karyawan-img-small" style="border-radius:50%;" data-toggle="modal" data-target="#delete" ><i class="fas fa-trash"></i></button></div>';
                 return $btn;
             })
             ->rawColumns(['button'])
@@ -384,15 +383,12 @@ class KesehatanController extends Controller
                 'keterangan' => $request->keterangan[$i]
             ]);
         }
-
-
         if ($kesehatan_mingguan_tensi) {
             return redirect()->back()->with('success', 'Berhasil menambahkan data');
         } else {
             return redirect()->back()->with('error', 'Gagal menambahkan data');
         }
     }
-
     public function kesehatan_mingguan_rapid_aksi_tambah(Request $request)
     {
         $this->validate(
@@ -407,12 +403,14 @@ class KesehatanController extends Controller
                 'tgl_cek.required' => 'Tanggal pengecekan harus dipilih',
             ]
         );
+
         for ($i = 0; $i < count($request->karyawan_id); $i++) {
             $kesehatan_mingguan_rapid = kesehatan_mingguan_rapid::create([
                 'karyawan_id' => $request->karyawan_id[$i],
                 'pemeriksa_id' => $request->pemeriksa_id[$i],
                 'tgl_cek' => $request->tgl_cek,
-                'hasil' => $request->hasil[$i],
+                'hasil' => $request->hasil_covid[$i],
+                'jenis' => $request->jenis_tes[$i],
                 'keterangan' => $request->keterangan[$i]
             ]);
         }
@@ -423,7 +421,6 @@ class KesehatanController extends Controller
             return redirect()->back()->with('error', 'Gagal menambahkan data');
         }
     }
-
     public function kesehatan_mingguan_tensi_data()
     {
         $data = kesehatan_mingguan_tensi::with('karyawan')
@@ -462,7 +459,6 @@ class KesehatanController extends Controller
             })
             ->addColumn('button', function ($data) {
                 $btn = '<div class="inline-flex"><button type="button" id="edit_tensi" class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-edit"></i></button></div>';
-                $btn = $btn . ' <div class="inline-flex"><button type="button" class="btn btn-block btn-danger karyawan-img-small" style="border-radius:50%;" data-toggle="modal" data-target="#delete" ><i class="fas fa-trash"></i></button></div>';
                 return $btn;
             })
             ->rawColumns(['button', 'hasil', 'y'])
@@ -483,7 +479,6 @@ class KesehatanController extends Controller
             })
             ->addColumn('button', function ($data) {
                 $btn = '<div class="inline-flex"><button type="button" id="edit_rapid"  class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-edit"></i></button></div>';
-                $btn = $btn . ' <div class="inline-flex"><button type="button" class="btn btn-block btn-danger karyawan-img-small" style="border-radius:50%;" data-toggle="modal" data-target="#delete" ><i class="fas fa-trash"></i></button></div>';
                 return $btn;
             })
             ->rawColumns(['button'])
@@ -563,6 +558,7 @@ class KesehatanController extends Controller
         $id = $request->id;
         $kesehatan_mingguan_rapid = kesehatan_mingguan_rapid::find($id);
         $kesehatan_mingguan_rapid->hasil = $request->hasil;
+        $kesehatan_mingguan_rapid->jenis = $request->jenis;
         $kesehatan_mingguan_rapid->keterangan = $request->catatan;
         $kesehatan_mingguan_rapid->save();
 
@@ -709,19 +705,39 @@ class KesehatanController extends Controller
                 return $data->berat . ' Kg';
             })
             ->addColumn('l', function ($data) {
-                return $data->lemak . ' gram';
+                if ($data->lemak != NULL) {
+                    return $data->lemak . ' gram';
+                } else {
+                    return '0 gram';
+                }
             })
             ->addColumn('k', function ($data) {
-                return $data->kandungan_air . ' %';
+                if ($data->kandungan_air != NULL) {
+                    return $data->kandungan_air . ' %';
+                } else {
+                    return '0 %';
+                }
             })
             ->addColumn('o', function ($data) {
-                return $data->otot . ' Kg';
+                if ($data->otot != NULL) {
+                    return $data->otot . ' Kg';
+                } else {
+                    return '0 Kg';
+                }
             })
             ->addColumn('t', function ($data) {
-                return $data->tulang . ' Kg';
+                if ($data->tulang != NULL) {
+                    return $data->tulang . ' Kg';
+                } else {
+                    return '0 Kg';
+                }
             })
             ->addColumn('ka', function ($data) {
-                return $data->kalori . ' kkal';
+                if ($data->kalori != NULL) {
+                    return $data->kalori . ' kkal';
+                } else {
+                    return '0 kkal';
+                }
             })
             ->addColumn('ti', function ($data) {
                 return $data->karyawan->kesehatan_awal->tinggi . ' Cm';
@@ -991,16 +1007,17 @@ class KesehatanController extends Controller
             })
             ->addColumn('button', function ($data) {
                 $btn = '<div class="inline-flex"><button type="button" id="edit_gcu"  class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fa fa-eye" aria-hidden="true"></i></button></div>';
-                $btn = $btn . ' <div class="inline-flex"><button type="button" class="btn btn-block btn-danger karyawan-img-small" style="border-radius:50%;" data-toggle="modal" data-target="#delete" ><i class="fas fa-trash"></i></button></div>';
                 return $btn;
             })
             ->rawColumns(['button', 'detail_button'])
             ->make(true);
     }
+
     public function karyawan_masuk()
     {
         return view('page.kesehatan.karyawan_masuk');
     }
+
     public function karyawan_masuk_tambah()
     {
         $obat = Obat::where('stok', '!=', 0)->get();
@@ -1267,7 +1284,6 @@ class KesehatanController extends Controller
             })
             ->addColumn('button', function ($data) {
                 $btn = '<div class="inline-flex"><button type="button" id="edit_rabun"  class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fa fa-edit" aria-hidden="true"></i></button></div>';
-                $btn = $btn . ' <div class="inline-flex"><button type="button" class="btn btn-block btn-danger karyawan-img-small" style="border-radius:50%;" data-toggle="modal" data-target="#delete" ><i class="fas fa-trash"></i></button></div>';
                 return $btn;
             })
             ->rawColumns(['button'])
@@ -1662,19 +1678,39 @@ class KesehatanController extends Controller
                     return $data->berat . ' Kg';
                 })
                 ->addColumn('l', function ($data) {
-                    return $data->lemak . ' gram';
+                    if ($data->lemak != NULL) {
+                        return $data->lemak . ' gram';
+                    } else {
+                        return '0 gram';
+                    }
                 })
                 ->addColumn('k', function ($data) {
-                    return $data->kandungan_air . ' %';
+                    if ($data->kandungan_air != NULL) {
+                        return $data->kandungan_air . ' %';
+                    } else {
+                        return '0 %';
+                    }
                 })
                 ->addColumn('o', function ($data) {
-                    return $data->otot . ' Kg';
+                    if ($data->otot != NULL) {
+                        return $data->otot . ' Kg';
+                    } else {
+                        return '0 Kg';
+                    }
                 })
                 ->addColumn('t', function ($data) {
-                    return $data->tulang . ' Kg';
+                    if ($data->tulang != NULL) {
+                        return $data->tulang . ' Kg';
+                    } else {
+                        return '0 Kg';
+                    }
                 })
                 ->addColumn('ka', function ($data) {
-                    return $data->kalori . ' kkal';
+                    if ($data->kalori != NULL) {
+                        return $data->kalori . ' kkal';
+                    } else {
+                        return '0 kkal';
+                    }
                 })
                 ->addColumn('ti', function ($data) {
                     return $data->karyawan->kesehatan_awal->tinggi . ' Cm';
@@ -1701,19 +1737,39 @@ class KesehatanController extends Controller
                     return $data->berat . ' Kg';
                 })
                 ->addColumn('l', function ($data) {
-                    return $data->lemak . ' gram';
+                    if ($data->lemak != NULL) {
+                        return $data->lemak . ' gram';
+                    } else {
+                        return '0 gram';
+                    }
                 })
                 ->addColumn('k', function ($data) {
-                    return $data->kandungan_air . ' %';
+                    if ($data->kandungan_air != NULL) {
+                        return $data->kandungan_air . ' %';
+                    } else {
+                        return '0 %';
+                    }
                 })
                 ->addColumn('o', function ($data) {
-                    return $data->otot . ' Kg';
+                    if ($data->otot != NULL) {
+                        return $data->otot . ' Kg';
+                    } else {
+                        return '0 Kg';
+                    }
                 })
                 ->addColumn('t', function ($data) {
-                    return $data->tulang . ' Kg';
+                    if ($data->tulang != NULL) {
+                        return $data->tulang . ' Kg';
+                    } else {
+                        return '0 Kg';
+                    }
                 })
                 ->addColumn('ka', function ($data) {
-                    return $data->kalori . ' kkal';
+                    if ($data->kalori != NULL) {
+                        return $data->kalori . ' kkal';
+                    } else {
+                        return '0 kkal';
+                    }
                 })
                 ->addColumn('ti', function ($data) {
                     return $data->karyawan->kesehatan_awal->tinggi . ' Cm';
@@ -1739,7 +1795,6 @@ class KesehatanController extends Controller
                         return '0 %';
                     }
                 })
-
                 ->addColumn('kol', function ($data) {
                     if ($data->kolesterol != NULL) {
                         return $data->kolesterol;
@@ -1747,7 +1802,6 @@ class KesehatanController extends Controller
                         return '0 %';
                     }
                 })
-
                 ->addColumn('asam', function ($data) {
                     if ($data->asam_urat != NULL) {
                         return $data->asam_urat;
@@ -1766,10 +1820,8 @@ class KesehatanController extends Controller
         $divisi = Divisi::all();
         return view('page.kesehatan.laporan_tahunan', ['karyawan' => $karyawan, 'divisi' => $divisi]);
     }
-
     public function laporan_tahunan_data($filter, $id, $start, $end)
     {
-
         if ($filter == 'divisi') {
             $data = kesehatan_tahunan::wherehas('karyawan', function ($divisi) use ($id) {
                 $divisi->where('divisi_id', $id);
@@ -1786,7 +1838,6 @@ class KesehatanController extends Controller
                 ->orderBy('tgl_cek', 'DESC')
                 ->where('karyawan_id', 0);
         }
-
         return datatables::of($data)
             ->addIndexColumn()
             ->addColumn('x', function ($data) {
@@ -1798,7 +1849,6 @@ class KesehatanController extends Controller
             ->addColumn('z', function ($data) {
                 return $data->pemeriksa->nama;
             })
-
             ->make(true);
     }
 }
