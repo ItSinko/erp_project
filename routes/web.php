@@ -590,6 +590,8 @@ Route::group(['prefix' => '/pengemasan', 'middleware' => 'auth'], function () {
     Route::get('/qc', 'QCController@pengemasan')->name('pengemasan.qc');
     Route::get('/show/qc', 'QCController@pengemasan_show')->name('pengemasan.show.qc');
     Route::get('/bppb/show/qc/{bppbid}', 'QCController@pengemasan_bppb_show')->name('pengemasan.bppb.show.qc');
+    Route::get('/bppb/create/qc/{bppbid}/{arr}', 'QCController@pengemasan_bppb_create')->name('pengemasan.bppb.create.qc');
+    Route::post('/bppb/store/qc/{bppbid}', 'QCController@pengemasan_bppb_store')->name('pengemasan.bppb.store.qc');
     Route::get('/bppb/edit/qc/{bppbid}', 'QCController@pengemasan_bppb_edit')->name('pengemasan.bppb.edit.qc');
     Route::put('/bppb/update/qc/{bppbid}', 'QCController@pengemasan_bppb_update')->name('pengemasan.bppb.update.qc');
     Route::get('/hasil/edit/qc/{id}', 'QCController@pengemasan_hasil_edit')->name('pengemasan.hasil.edit.qc');

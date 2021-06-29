@@ -1299,9 +1299,11 @@ class ProduksiController extends Controller
                 return $s->HasilPerakitan->Perakitan->alias_tim . $s->HasilPerakitan->no_seri;
             })
             ->addColumn('no_barcode', function ($s) {
-                $str = "";
-                if ($s->no_barcode) {
+                $h = HasilPengemasan::where('hasil_perakitan_id', $s->HasilPerakitan->id)->orderBy('created_at', 'desc')->first();
+                if ($s->no_barcode != "") {
                     $str = str_replace("/", "", $s->MonitoringProses->alias_barcode) . $s->no_barcode;
+                } else {
+                    $str = str_replace("/", "", $h->Pengemasan->alias_barcode) . $h->no_barcode;
                 }
                 return $str;
             })
