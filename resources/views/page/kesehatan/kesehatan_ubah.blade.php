@@ -140,7 +140,7 @@
                                                     <span class="invalid-feedback" role="alert" id="kondisi-msg"></span>
                                                 </div>
                                             </div>
-                                            <div class="card" id="detail_komposisi" style="  {{ ($kesehatan_awal->ket_vaksin ? '1' : 'display:none') }}">
+                                            <div class="card" id="detail_komposisi" style="{{($kesehatan_awal->ket_vaksin ? '1':'display:none')}}">
                                                 <div class="card-header bg-success">
                                                     <div class="card-title">&nbsp;Komposisi Tubuh</div>
                                                 </div>
