@@ -84,6 +84,7 @@
                                     <h3>Data Pengemasan</h3>
                                     <div class="form-horizontal">
                                         <div class="form-group row">
+                                        <div class="table-responsive">
                                             <table id="tableitem" class="table table-hover table-bordered">
                                                 <thead style="text-align: center;">
                                                     <tr>
@@ -114,7 +115,11 @@
                                                             <input type="text" name="hasil_pengemasan_id[{{$loop->iteration - 1}}]" id="hasil_pengemasan_id" value="{{$i->id}}" hidden>{{$i->HasilPerakitan->no_seri}}
                                                         </td>
                                                         <td>
-                                                            {{str_replace('/', '', $i->Pengemasan->alias_barcode)}}{{$i->no_barcode}}
+                                                        @if($i->no_barcode != "")
+                                                        {{str_replace("/", "", $i->Pengemasan->alias_barcode)}}{{$i->no_barcode}}
+                                                        @else
+                                                        {{str_replace("/", "", $i->HasilPerakitan->HasilMonitoringProses->first()->MonitoringProses->alias_barcode)}}{{$i->HasilPerakitan->HasilMonitoringProses->first()->no_barcode}}
+                                                        @endif
                                                         </td>
                                                         <td>
                                                             @if($i->kondisi_unit == "tidak")
@@ -181,6 +186,7 @@
                                                 </tbody>
 
                                             </table>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

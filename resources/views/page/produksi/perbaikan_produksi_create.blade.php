@@ -114,7 +114,11 @@
                                             @if($proses == 'pengujian')
                                             {{str_replace("/", "", $i->MonitoringProses->alias_barcode)}}{{$i->no_barcode}}
                                             @elseif($proses == 'pengemasan')
-                                            {{$i->Pengemasan->alias_barcode}}{{$i->no_barcode}}
+                                            @if($i->no_barcode != "")
+                                            {{str_replace("/", "", $i->Pengemasan->alias_barcode)}}{{$i->no_barcode}}
+                                            @else
+                                            {{str_replace("/", "", $i->HasilPerakitan->HasilMonitoringProses->first()->MonitoringProses->alias_barcode)}}{{$i->HasilPerakitan->HasilMonitoringProses->first()->no_barcode}}
+                                            @endif
                                             @endif
                                             @endif
                                             @endif

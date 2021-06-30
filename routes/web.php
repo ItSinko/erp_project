@@ -585,6 +585,8 @@ Route::group(['prefix' => '/pengemasan', 'middleware' => 'auth'], function () {
     Route::get('/', 'ProduksiController@pengemasan')->name('pengemasan');
     Route::get('/bppb/{id}', 'ProduksiController@pengemasan_bppb')->name('pengemasan.bppb');
     Route::get('/bppb/show/{id}', 'ProduksiController@pengemasan_bppb_show')->name('pengemasan.bppb.show');
+    Route::get('/mtc', 'MtcController@pengemasan')->name('pengemasan.mtc');
+    Route::get('/show/mtc', 'MtcController@pengemasan_show')->name('pengemasan.show.mtc');
     Route::get('/eng', 'EngController@pengemasan')->name('pengemasan.eng');
     Route::get('/show/eng', 'EngController@pengemasan_show')->name('pengemasan.show.eng');
     Route::get('/qc', 'QCController@pengemasan')->name('pengemasan.qc');

@@ -717,6 +717,12 @@ return [
         ],
         [
             'text'    => 'Pengemasan',
+            'icon'    => 'fas fa-wrench',
+            'url'  => '/pengemasan/mtc',
+            'auth' => [16],
+        ],
+        [
+            'text'    => 'Pengemasan',
             'icon'    => 'fas fa-box-open',
             'auth' => [17, 23],
             'submenu' => [

@@ -44,6 +44,7 @@ use App\DetailPengembalianBarangGudang;
 use App\PenyerahanBarangJadi;
 use App\AnalisaPsPerakitan;
 use App\AnalisaPsPengujian;
+use App\AnalisaPsPengemasan;
 
 class ProduksiController extends Controller
 {
@@ -1345,15 +1346,40 @@ class ProduksiController extends Controller
                 $h = HasilPengemasan::where('hasil_perakitan_id', $id)->orderBy('created_at', 'desc')->first();
                 $str = "";
                 if ($h) {
-                    if ($h->status == "req_pengujian") {
-                        $str = '<div><small class="success-text"></small></div>';
-                    } else if ($h->status == "rej_pengujian") {
-                        $str = '<div><small class=""></small></div>';
-                    } else if ($h->status == "perbaikan_pengemasan") {
-                        $str = '<div><small class="danger-text">Perbaikan Produksi</small></div>';
-                    } else if ($h->status == "analisa_pengemasan_ps") {
-                        $str = '<div><small class="danger-text">Analisa Produk Spesialis</small></div>';
-                    }
+                    $hid = $h->id;
+                    $p = PerbaikanProduksi::whereHas('HasilPengemasan', function ($q) use ($hid) {
+                        $q->where('id', $hid);
+                    })->orderBy('updated_at', 'desc')->first();
+
+                    $a = AnalisaPsPengemasan::whereHas('HasilPengemasan', function ($q) use ($hid) {
+                        $q->where('id', $hid);
+                    })->orderBy('updated_at', 'desc')->first();
+
+                    // if ($h->status == "req_pengemasan") {
+                    //     $str = '<div><small class="warning-text">Menunggu QC</small></div>';
+                    // } else if ($h->status == "rej_pengemasan") {
+                    //     if($h->tindak_lanjut == "perbaikan"){
+                    //         $str = '<div><small class="danger-text">Perbaikan Produksi</small></div>';
+                    //     } else if($h->tindak_lanjut == "analisa_pengemasan_ps"){
+                    //         $str = '<div><small class="danger-text">Analisa Produk Spesialis</small></div>';
+                    //     }
+                    // } else if ($h->status == "perbaikan_pengemasan") {
+                    //     $str = '<a class="perbaikanproduksimodal" data-toggle="modal" data-target="#perbaikanproduksimodal" data-attr="/perbaikan/produksi/detail/' . $p->id . '" data-id="' . $p->id . '"><button type="button" class="btn btn-outline-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-search"></i></button>
+                    //             <div><small> Lihat Hasil Perbaikan</small></div></a>
+                    //             <div><small class="info-text">Perbaikan Produksi</small></div>';
+                    // } else if ($h->status == "analisa_pengemasan_ps") {
+                    //     if ($a->tindak_lanjut == "perbaikan") {
+                    //         $str = '<a class="analisapsmodal" data-toggle="modal" data-target="#analisapsmodal" data-attr="/pengemasan/analisa_ps/show/' . $a->id . '" data-id="' . $a->id . '">
+                    //             <button class="btn btn-sm btn-outline-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-search"></i></button>
+                    //             <div><small>Lihat Hasil Analisa</small></div></a>
+                    //             <div><small class="warning-text">Sedang dalam Perbaikan</small></div>';
+                    //     } else if ($a->tindak_lanjut == "karantina") {
+                    //         $str = '<a class="analisapsmodal" data-toggle="modal" data-target="#analisapsmodal" data-attr="/pengemasan/analisa_ps/show/' . $a->id . '" data-id="' . $a->id . '">
+                    //             <button class="btn btn-sm btn-outline-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-search"></i></button>
+                    //             <div><small> Lihat Hasil Analisa</small></div></a>
+                    //             <div><small class="danger-text">Masuk Gudang Karantina</small></div>';
+                    //     }
+                    // }
                 }
                 return $str;
             })
@@ -1395,11 +1421,11 @@ class ProduksiController extends Controller
             ->addColumn('status', function ($s) {
                 $btn = "";
                 if ($s->status == "dibuat") {
-                    if ($s->countHasilPengemasanStatus('req_perbaikan', 'req_pengujian', 'req_analisa_produk_spesialis', 'req_pemeriksaan') <= 0) {
+                    if ($s->countHasilPengemasanStatus('req_pengemasan', 'rej_pengemasan') <= 0) {
                         $btn = '<a href="/pengemasan/laporan/status/' . $s->id . '/penyerahan">
                             <button class="btn btn-info btn-sm m-1" style="border-radius:50%;">
                             <i class="fas fa-paper-plane"></i></button></a><div><small>Penyerahan</small></div>';
-                    } else if ($s->countHasilPengemasanStatus('req_perbaikan', 'req_pengujian', 'req_analisa_produk_spesialis', 'req_pemeriksaan') > 0) {
+                    } else if ($s->countHasilPengemasanStatus('req_pengemasan', 'rej_pengemasan') > 0) {
                         $btn = '<div class="warning-text">Belum dapat diserahkan</div>';
                     }
                 } else if ($s->status == "penyerahan") {
@@ -1590,7 +1616,7 @@ class ProduksiController extends Controller
                         'hasil' => NULL,
                         'keterangan' => NULL,
                         'tindak_lanjut' => NULL,
-                        'status' => 'req_pemeriksaan'
+                        'status' => 'req_pengemasan'
                     ]);
 
                     $arrdcp = [];
@@ -1665,7 +1691,7 @@ class ProduksiController extends Controller
                         'hasil' => NULL,
                         'keterangan' => NULL,
                         'tindak_lanjut' => NULL,
-                        'status' => 'req_pemeriksaan'
+                        'status' => 'req_pengemasan'
                     ]);
 
                     $arrdcp = [];
@@ -1998,7 +2024,7 @@ class ProduksiController extends Controller
                             ]);
                         } else if ($request->ketidaksesuaian_proses == "pengemasan") {
                             $u = HasilPengemasan::find($request->hasil_perakitan_id[$i]);
-                            $u->status = "acc_perbaikan";
+                            $u->status = "perbaikan_pengemasan";
                             $u->save();
 
                             $c = HistoriHasilPerakitan::create([
@@ -2221,7 +2247,7 @@ class ProduksiController extends Controller
                         }
                     } else if ($request->ketidaksesuaian_proses == "pengemasan") {
                         $u = HasilPengemasan::find($request->hasil_perakitan_id[$i]);
-                        if ($u->status == "rej_pemeriksaan") {
+                        if ($u->status == "rej_pengemasan") {
                             if ($u->tindak_lanjut == 'perbaikan') {
                                 $c = HistoriHasilPerakitan::create([
                                     "hasil_perakitan_id" => $u->hasil_perakitan_id,
@@ -2253,18 +2279,7 @@ class ProduksiController extends Controller
                                     'hasil_perakitan_id' => $u->hasil_perakitan_id,
                                     'keterangan' => 'pengujian pengemasan'
                                 ]);
-                            } else if ($u->tindak_lanjut == 'produk_spesialis') {
-                                $c = HistoriHasilPerakitan::create([
-                                    "hasil_perakitan_id" => $u->hasil_perakitan_id,
-                                    "kegiatan" => "perbaikan_pengemasan",
-                                    "tanggal" => Carbon::now()->toDateString(),
-                                    "hasil" => "ok",
-                                    "keterangan" => "",
-                                    "tindak_lanjut" => "perbaikan"
-                                ]);
-                                $u->status = "analisa_produk_spesialis";
-                                $u->save();
-                            }
+                            } 
                         }
                     }
                 }

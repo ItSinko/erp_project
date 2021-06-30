@@ -106,7 +106,12 @@
                                         disabled
                                         @endif></td>
                                     <td>{{$i->HasilPerakitan->Perakitan->alias_tim}}{{$i->HasilPerakitan->no_seri}}</td>
-                                    <td>{{str_replace("/", "", $i->Pengemasan->alias_barcode)}}{{$i->no_barcode}}</td>
+                                    <td>
+                                    @if($i->no_barcode != "")
+                                    {{str_replace("/", "", $i->Pengemasan->alias_barcode)}}{{$i->no_barcode}}
+                                    @else
+                                    {{str_replace("/", "", $i->HasilPerakitan->HasilMonitoringProses->first()->MonitoringProses->alias_barcode)}}{{$i->HasilPerakitan->HasilMonitoringProses->first()->no_barcode}}
+                                    @endif</td>
                                     <td>
                                         @if($i->kondisi_unit == "baik")
                                         <i class="fas fa-check-circle" style="color:green;"></i>

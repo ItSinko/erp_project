@@ -1887,7 +1887,7 @@ class QCController extends Controller
         $s = Bppb::find($bppbid);
         $hp = HasilPengemasan::whereHas('Pengemasan', function ($q) use ($bppbid) {
             $q->where('bppb_id', $bppbid);
-        })->get();
+        })->has('HasilPerakitan.HasilMonitoringProses')->get();
         $c = CekPengemasan::where('detail_produk_id', $s->DetailProduk->id)->get();
         return view('page.qc.pengemasan_bppb_show', ['bppbid' => $bppbid, 's' => $s, 'c' => $c, 'hp' => $hp]);
     }
@@ -1925,10 +1925,11 @@ class QCController extends Controller
                     if ($request->tindak_lanjut[$i] == "ok") {
                         $status = 'ok';
                     } else if ($request->tindak_lanjut[$i] == "perbaikan") {
-                        $status = 'rej_pemeriksaan';
+                        $status = 'rej_pengemasan';
                     } else if ($request->tindak_lanjut[$i] == "produk_spesialis") {
-                        $status = 'rej_pemeriksaan';
+                        $status = 'rej_pengemasan';
                     }
+
                     $h = HasilPengemasan::find($request->hasil_pengemasan_id[$i]);
                     $h->hasil = $request->hasil[$i];
                     $h->keterangan = $request->keterangan[$i];
@@ -1941,7 +1942,7 @@ class QCController extends Controller
                     } else if ($u) {
                         $bool = true;
                         $c = HistoriHasilPerakitan::create([
-                            "hasil_perakitan_id" => $u->hasil_pengemasan_id[$i],
+                            "hasil_perakitan_id" => $h->hasil_perakitan_id,
                             "kegiatan" => "pemeriksaan_pengemasan",
                             "tanggal" => Carbon::now()->toDateString(),
                             "hasil" => $request->hasil[$i],
@@ -1994,9 +1995,9 @@ class QCController extends Controller
                     if ($request->tindak_lanjut[$i] == "ok") {
                         $status = 'ok';
                     } else if ($request->tindak_lanjut[$i] == "perbaikan") {
-                        $status = 'rej_pemeriksaan';
+                        $status = 'rej_pengemasan';
                     } else if ($request->tindak_lanjut[$i] == "produk_spesialis") {
-                        $status = 'rej_pemeriksaan';
+                        $status = 'rej_pengemasan';
                     }
                     $h = HasilPengemasan::find($request->hasil_pengemasan_id[$i]);
                     $h->hasil = $request->hasil[$i];
@@ -2011,7 +2012,7 @@ class QCController extends Controller
                     } else if ($u) {
                         $bool = true;
                         $c = HistoriHasilPerakitan::create([
-                            "hasil_perakitan_id" => $u->hasil_pengemasan_id[$i],
+                            "hasil_perakitan_id" => $h->hasil_perakitan_id,
                             "kegiatan" => "pemeriksaan_pengemasan",
                             "tanggal" => Carbon::now()->toDateString(),
                             "hasil" => $request->hasil[$i],
@@ -2057,9 +2058,9 @@ class QCController extends Controller
             if ($request->tindak_lanjut == "ok") {
                 $status = 'ok';
             } else if ($request->tindak_lanjut == "perbaikan") {
-                $status = 'rej_pemeriksaan';
+                $status = 'rej_pengemasan';
             } else if ($request->tindak_lanjut == "produk_spesialis") {
-                $status = 'rej_pemeriksaan';
+                $status = 'rej_pengemasan';
             }
             $h = HasilPengemasan::find($id);
             $h->hasil = $request->hasil;

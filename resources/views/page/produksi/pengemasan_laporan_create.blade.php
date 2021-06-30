@@ -97,7 +97,8 @@
                                             <label for="karyawan_id" class="col-sm-4 col-form-label" style="text-align:right;">Karyawan</label>
                                             <div class="col-sm-5">
                                                 <div class="select2-info">
-                                                    <select class="select2 custom-select form-control @error('karyawan_id') is-invalid @enderror karyawan_id" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;" name="karyawan_id" id="karyawan_id">
+                                                    <select class="select2 custom-select form-control @error('karyawan_id') is-invalid @enderror karyawan_id" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;" name="karyawan_id" id="karyawan_id" disabled>
+                                                        <option value=""></option>
                                                         @foreach($kry as $i)
                                                         <option value="{{$i->id}}">{{$i->nama}}</option>
                                                         @endforeach
@@ -112,24 +113,25 @@
                                         <div class="form-group row">
                                             <label for="kode_barcode" class="col-sm-4 col-form-label" style="text-align:right;">Kode Barcode</label>
                                             <div class="col-sm-1">
-                                                <input type="text" class="form-control  @error('inisial_produk') is-invalid @enderror " name="inisial_produk" id="inisial_produk" value="{{old('inisial_produk')}}">
+                                                <input type="text" class="form-control  @error('inisial_produk') is-invalid @enderror " name="inisial_produk" id="inisial_produk" value="{{old('inisial_produk')}}" readonly>
                                                 @if ($errors->has('inisial_produk') || $errors->has('tipe_produk') || $errors->has('waktu_produksi') || $errors->first('urutan_bb'))
                                                 <span class="invalid-feedback" role="alert">Barcode Harus Diisi</span>
                                                 @endif
                                             </div>
                                             <div class="col-sm-1">
-                                                <input type="text" class="form-control  @error('tipe_produk') is-invalid @enderror " name="tipe_produk" id="tipe_produk" value="{{old('tipe_produk')}}">
+                                                <input type="text" class="form-control  @error('tipe_produk') is-invalid @enderror " name="tipe_produk" id="tipe_produk" value="{{old('tipe_produk')}}" readonly>
                                             </div>
                                             <div class="col-sm-1">
-                                                <input type="text" class="form-control  @error('waktu_produksi') is-invalid @enderror " name="waktu_produksi" id="waktu_produksi" value="{{old('waktu_produksi')}}">
+                                                <input type="text" class="form-control  @error('waktu_produksi') is-invalid @enderror " name="waktu_produksi" id="waktu_produksi" value="{{old('waktu_produksi')}}" readonly>
                                             </div>
                                             <div class="col-sm-1">
-                                                <input type="text" class="form-control  @error('urutan_bb') is-invalid @enderror " name="urutan_bb" id="urutan_bb" value="{{old('urutan_bb')}}">
+                                                <input type="text" class="form-control  @error('urutan_bb') is-invalid @enderror " name="urutan_bb" id="urutan_bb" value="{{old('urutan_bb')}}" readonly>
                                             </div>
 
                                         </div>
 
                                         <div class="form-group row">
+                                        <div class="table-responsive">
                                             <table id="tableitem" class="table table-hover table-bordered">
                                                 <thead style="text-align: center;">
                                                     <tr>
@@ -247,6 +249,7 @@
                                                 </tbody>
 
                                             </table>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -257,7 +260,7 @@
                             <button type="button" class="btn btn-block btn-danger rounded-pill" style="width:200px;float:left;"><i class="fas fa-times"></i>&nbsp;Batal</button>
                         </span>
                         <span>
-                            <button type="submit" class="btn btn-block btn-success rounded-pill" style="width:200px;float:right;"><i class="fas fa-plus"></i>&nbsp;Tambah Data</button>
+                            <button type="submit" class="btn btn-block btn-success rounded-pill" style="width:200px;float:right;" id="tambahdata" disabled><i class="fas fa-plus"></i>&nbsp;Tambah Data</button>
                         </span>
                     </div>
                     </form>
@@ -272,6 +275,25 @@
 @section('adminlte_js')
 <script>
     $(function() {
+        var s = @json($s);
+        console.log(s);
+
+        function arrayLookup(searchValue,array,searchIndex,returnIndex) // Posted on Tathyika.com (also refer for more codes there)
+        {
+            var returnVal = null;
+            var i;
+            for(i=0; i<array.length; i++)
+            {
+                if(array[i][searchIndex]==searchValue)
+                {
+                returnVal = array[i][returnIndex];
+                break;
+                }
+            }
+            return returnVal;
+        }
+
+
         function formatted_string(pad, user_str, pad_pos) {
             if (typeof user_str === 'undefined')
                 return pad;
@@ -290,6 +312,40 @@
 
         var rdb = "";
         var add = 0;
+        $('#tanggal_laporan').on('change', function(){
+            $('#karyawan_id').removeAttr('disabled');
+        });
+
+        $('#karyawan_id').on('change', function(){
+            var kry = $(this).val();
+            console.log(kry);
+            if(kry != null){
+                $('#tambahdata').removeAttr('disabled');
+                if(arrayLookup(null,s,'no_barcode',"yes") == "yes"){
+                    $('.barcode').attr('readonly', false);
+                    $('#inisial_produk').attr('readonly', false);
+                    $('#tipe_produk').attr('readonly', false);
+                    $('#waktu_produksi').attr('readonly', false);
+                    $('#urutan_bb').attr('readonly', false);
+                }else
+                {
+                    $('.barcode').attr('readonly', true);
+                    $('#inisial_produk').attr('readonly', true);
+                    $('#tipe_produk').attr('readonly', true);
+                    $('#waktu_produksi').attr('readonly', true);
+                    $('#urutan_bb').attr('readonly', true);
+                }
+            }
+            else if(kry == null){
+                $('.barcode').attr('readonly', true);
+                $('#inisial_produk').attr('readonly', true);
+                $('#tipe_produk').attr('readonly', true);
+                $('#waktu_produksi').attr('readonly', true);
+                $('#urutan_bb').attr('readonly', true);
+                $('#tambahdata').attr('disabled', true);
+            }
+        });
+
         $('input[type="radio"][name="brc"]').on("change", function() {
             if (this.value == 'ya') {
                 $('.barcode').attr('readonly', false);
