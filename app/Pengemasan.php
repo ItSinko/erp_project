@@ -30,7 +30,7 @@ class Pengemasan extends Model
     public function countHasilPengemasanStatus($status)
     {
         $id = $this->id;
-        $h = HasilPengemasan::where('pengemasan_id', $id)->whereIn('status', [$status])->count();
+        $h = HasilPengemasan::where('pengemasan_id', $id)->whereIn('status', $status)->count();
         return $h;
     }
 }

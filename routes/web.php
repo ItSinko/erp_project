@@ -613,6 +613,8 @@ Route::group(['prefix' => '/pengemasan', 'middleware' => 'auth'], function () {
     Route::get('/hasil/{id}', 'ProduksiController@pengemasan_hasil')->name('pengemasan.hasil');
     Route::get('/hasil/show/{id}', 'ProduksiController@pengemasan_hasil_show')->name('pengemasan.hasil.show');
     Route::get('/hasil/create/{id}', 'ProduksiController@pengemasan_hasil_create')->name('pengemasan.hasil.create');
+    Route::get('/hasil/create/getbarcode/{id}', 'GetController@getbarcode');
+    Route::get('/hasil/create/count_status_histori_perakitan/{id}/{status}', 'GetController@count_status_histori_perakitan');
     Route::put('/hasil/store/{id}', 'ProduksiController@pengemasan_hasil_store')->name('pengemasan.hasil.store');
 });
 

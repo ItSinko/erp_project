@@ -138,30 +138,21 @@
                                     </td>
                                     <td>{{$i->keterangan}}</td>
                                     <td>{{ucfirst($i->tindak_lanjut)}}</td>
-                                    <td>@if($i->status == 'req_perbaikan')
-                                        <a href="/perbaikan/produksi/create/{{$i->id}}/pengemasan">
-                                            <button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-paper-plane"></i></button>
-                                            <div><small>Perbaikan </small></div>
-                                        </a>
-                                        @elseif($i->status == 'acc_perbaikan')
-                                        <small class="danger-text">Perbaikan</small>
-                                        @elseif($i->status == 'req_pemeriksaan')
+                                    <td>@if($i->status == 'req_pengemasan')
                                         <a href="/pengemasan/hasil/edit/qc/{{$i->id}}">
                                             <button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-cog"></i></button>
                                             <div><small>Periksa </small></div>
                                         </a>
                                         @elseif($i->status == 'rej_pemeriksaan')
-                                        @if($i->tindak_lanjut == "perbaikan")
-                                        <a href="/perbaikan/produksi/create/{{$i->id}}/pengemasan">
-                                            <button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-paper-plane"></i></button>
-                                            <div><small>Perbaikan </small></div>
-                                        </a>
+                                            @if($i->tindak_lanjut == "perbaikan")
+                                            <div><small class="danger-text">Perbaikan</small></div>
+                                            @elseif($i->tindak_lanjut == "produk_spesialis")
+                                            <div><small class="danger-text">Analisa Produk Spesialis</small></div>
+                                            @endif
+                                        @elseif($i->status == "perbaikan_pengemasan")
                                         <div><small class="danger-text">Perbaikan</small></div>
-                                        @elseif($i->tindak_lanjut == "produk_spesialis")
-                                        <div><small class="danger-text">Analisa Produk Spesialis</small></div>
-                                        @endif
-                                        @elseif($i->status == "req_pengujian")
-                                        <a href="/">Lihat Laporan</a>
+                                        @elseif($i->status == "analisa_pengemasan_ps")
+                                        <div><small class="danger-text">Analisa Produk Spesialis</small></div>    
                                         @endif
                                     </td>
                                 </tr>

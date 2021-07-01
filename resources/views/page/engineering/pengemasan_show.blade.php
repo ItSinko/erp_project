@@ -103,6 +103,32 @@
                 },
             ]
         });
+
+        $(document).on('click', '.analisapsmodal', function(event) {
+            event.preventDefault();
+            var href = $(this).attr('data-attr');
+            var dataid = $(this).attr('data-id');
+            $.ajax({
+                url: href,
+                beforeSend: function() {
+                    $('#loader').show();
+                },
+                success: function(result) {
+                    $('#analisapsmodal').modal("show");
+                    $('#analisaps').html(result).show();
+                    console.log(result);
+                },
+                complete: function() {
+                    $('#loader').hide();
+                },
+                error: function(jqXHR, testStatus, error) {
+                    console.log(error);
+                    alert("Page " + href + " cannot open. Error:" + error);
+                    $('#loader').hide();
+                },
+                timeout: 8000
+            })
+        });
     });
 </script>
 @stop

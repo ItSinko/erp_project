@@ -105,49 +105,27 @@
                                     <h3>Data Pengemasan</h3>
                                     <div class="form-horizontal">
                                         <div class="form-group row">
-                                            <label for="brc" class="col-sm-5 col-form-label" style="text-align:right;">Barcode</label>
-                                            <div class="col-sm-1 col-form-label">
-                                                <div class="icheck-primary d-inline">
-                                                    <input type="radio" id="brc_ya" name="brc" value="ya" checked>
-                                                    <label for="brc_ya">
-                                                        Buat
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-2 col-form-label">
-                                                <div class="icheck-primary d-inline">
-                                                    <input type="radio" id="brc_tidak" name="brc" value="tidak">
-                                                    <label for="brc_tidak">
-                                                        Tidak
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            @if ($errors->has('brc'))
-                                            <span class="invalid-feedback" role="alert">{{$errors->first('brc')}}</span>
-                                            @endif
-                                        </div>
-                                        <div class="form-group row">
                                             <label for="kode_barcode" class="col-sm-5 col-form-label" style="text-align:right;">Kode Barcode</label>
                                             <div class="col-sm-1">
-                                                <input type="text" class="form-control  @error('inisial_produk') is-invalid @enderror " name="inisial_produk" id="inisial_produk" @if() value="{{old('inisial_produk')}}" @elseif @endif placeholder="Inisial Produk">
+                                                <input type="text" class="form-control  @error('inisial_produk') is-invalid @enderror " name="inisial_produk" id="inisial_produk" @if($barcode != "") value="{{old('inisial_produk', $barcode[0])}}" readonly @endif placeholder="Inisial Produk">
                                                 @if ($errors->has('inisial_produk'))
                                                 <span class="invalid-feedback" role="alert">{{$errors->first('inisial_produk')}}</span>
                                                 @endif
                                             </div>
                                             <div class="col-sm-1">
-                                                <input type="text" class="form-control  @error('tipe_produk') is-invalid @enderror " name="tipe_produk" id="tipe_produk" value="{{old('tipe_produk')}}" placeholder="Tipe Produk">
+                                                <input type="text" class="form-control  @error('tipe_produk') is-invalid @enderror " name="tipe_produk" id="tipe_produk" @if($barcode != "") value="{{old('tipe_produk', $barcode[1])}}" readonly @endif placeholder="Tipe Produk">
                                                 @if ($errors->has('tipe_produk'))
                                                 <span class="invalid-feedback" role="alert">{{$errors->first('tipe_produk')}}</span>
                                                 @endif
                                             </div>
                                             <div class="col-sm-1">
-                                                <input type="text" class="form-control  @error('waktu_produksi') is-invalid @enderror " name="waktu_produksi" id="waktu_produksi" value="{{old('waktu_produksi')}}" placeholder="Waktu Produksi">
+                                                <input type="text" class="form-control  @error('waktu_produksi') is-invalid @enderror " name="waktu_produksi" id="waktu_produksi" @if($barcode != "") value="{{old('waktu_produksi', $barcode[2])}}" readonly @endif placeholder="Waktu Produksi">
                                                 @if ($errors->has('waktu_produksi'))
                                                 <span class="invalid-feedback" role="alert">{{$errors->first('waktu_produksi')}}</span>
                                                 @endif
                                             </div>
                                             <div class="col-sm-1">
-                                                <input type="text" class="form-control  @error('urutan_bb') is-invalid @enderror " name="urutan_bb" id="urutan_bb" value="{{old('urutan_bb')}}" placeholder="Kedatangan Part">
+                                                <input type="text" class="form-control  @error('urutan_bb') is-invalid @enderror " name="urutan_bb" id="urutan_bb" @if($barcode != "") value="{{old('urutan_bb', $barcode[3])}}" readonly @endif placeholder="Kedatangan Part">
                                                 @if ($errors->has('urutan_bb'))
                                                 <span class="invalid-feedback" role="alert">{{$errors->first('urutan_bb')}}</span>
                                                 @endif
@@ -160,6 +138,7 @@
                                                     <tr>
                                                         <th rowspan="2">No</th>
                                                         <th rowspan="2">No Seri</th>
+                                                        <th rowspan="2" hidden>Has Barcode</th>
                                                         <th rowspan="2">Barcode</th>
                                                         <th rowspan="2">Kondisi Unit</th>
                                                         @foreach($cp as $cps)
@@ -181,7 +160,7 @@
                                                         <td>
                                                             <div class="form-group">
                                                                 <div class="select2-info">
-                                                                    <select class="select2 form-control @error('no_seri') is-invalid @enderror no_seri" data-placeholder="Pilih No Seri" data-dropdown-css-class="select2-info" style="width: 100%;" name="no_seri[0]" id="no_seri">
+                                                                    <select class="select2 form-control @error('no_seri') is-invalid @enderror no_seri" data-placeholder="Pilih No Seri" data-dropdown-css-class="select2-info" style="width: 100%;" name="no_seri[0]" id="no_seri0">
                                                                         <option value=""></option>
                                                                         @foreach($s as $i)
                                                                         <option value="{{$i->HasilPerakitan->id}}">{{$i->HasilPerakitan->no_seri}}
@@ -195,10 +174,20 @@
                                                                 </div>
                                                             </div>
                                                         </td>
+                                                        <td hidden>
+                                                            <div class="form-group">
+                                                                <input type="text" class="has_barcode" name="has_barcode[0]" id="has_barcode0">
+                                                            </div>
+                                                        </td>
+                                                        <td hidden>
+                                                            <div class="form-group">
+                                                                <input type="text" class="pemeriksaanke" name="pemeriksaanke[0]" id="pemeriksaanke0">
+                                                            </div>
+                                                        </td>
                                                         <td>
                                                             <div class="form-group">
                                                                 <div class="input-group">
-                                                                    <input type="text" class="form-control @error('no_barcode') is-invalid @enderror barcode" name="no_barcode[0]" id="no_barcode">
+                                                                    <input type="text" class="form-control @error('no_barcode') is-invalid @enderror barcode" name="no_barcode[0]" id="no_barcode0" readonly>
                                                                 </div>
                                                                 @if ($errors->has('no_barcode'))
                                                                 <span class="invalid-feedback" role="alert">{{$errors->first('no_barcode')}}</span>
@@ -211,8 +200,8 @@
                                                                 <div class="col-sm-12">
                                                                     <div class="form-group clearfix">
                                                                         <div class="icheck-success d-inline checked">
-                                                                            <input type="radio" name="kondisi_unit[0]" id="ok" class="kondisi_unit" value="ok" checked>
-                                                                            <label for="ok">
+                                                                            <input type="radio" name="kondisi_unit[0]" id="ok0" class="kondisi_unit" value="ok" checked>
+                                                                            <label for="ok0">
                                                                                 <i class="fas fa-check-circle" style="color:green;"></i>
                                                                             </label>
                                                                         </div>
@@ -223,8 +212,8 @@
                                                                 <div class="col-sm-12">
                                                                     <div class="form-group clearfix">
                                                                         <div class="icheck-danger d-inline">
-                                                                            <input type="radio" name="kondisi_unit[0]" id="nok" value="nok" class="kondisi_unit">
-                                                                            <label for="nok">
+                                                                            <input type="radio" name="kondisi_unit[0]" id="nok0" value="nok" class="kondisi_unit">
+                                                                            <label for="nok0">
                                                                                 <i class="fas fa-times-circle" style="color:red;"></i>
                                                                             </label>
                                                                         </div>
@@ -265,7 +254,7 @@
                                                         @endforeach
                                                         @endforeach
                                                         <td>
-                                                            <button type="button" class="btn btn-success karyawan-img-small" style="border-radius:50%;" id="tambahitem"><i class="fas fa-plus-circle"></i></button>
+                                                            <button type="button" class="btn btn-success karyawan-img-small" style="border-radius:50%;" id="tambahitem" disabled><i class="fas fa-plus-circle"></i></button>
                                                         </td>
                                                     </tr>
                                                 </tbody>
@@ -281,7 +270,7 @@
                             <button type="button" class="btn btn-block btn-danger rounded-pill" style="width:200px;float:left;"><i class="fas fa-times"></i>&nbsp;Batal</button>
                         </span>
                         <span>
-                            <button type="submit" class="btn btn-block btn-success rounded-pill" style="width:200px;float:right;"><i class="fas fa-plus"></i>&nbsp;Tambah Data</button>
+                            <button type="submit" class="btn btn-block btn-success rounded-pill" style="width:200px;float:right;" id="tambahlaporan" disabled><i class="fas fa-plus"></i>&nbsp;Tambah Data</button>
                         </span>
                     </div>
                     </form>
@@ -298,6 +287,71 @@
     $(function() {
         var rdb = "";
         var add = 0;
+
+        $('#tableitem').on('change', '.no_seri', function(){
+            var no_seri = $(this).closest('tr').find('.no_seri');
+            var has_barcode = $(this).closest('tr').find('.has_barcode');
+            var no_barcode = $(this).closest('tr').find('.barcode');
+            var pemeriksaanke = $(this).closest('tr').find('.pemeriksaanke');
+            if(no_seri)
+            {
+                $.ajax({
+                    url: 'hasil/create/getbarcode/' + no_seri,
+                    type: "GET",
+                    dataType: "json",
+                    success: function(data) {
+                        if(data != "")
+                        {
+                            has_barcode.val("yes");
+                            
+                            if(data[0]['monitoring_proses']['alias_barcode'] != "")
+                            {
+                                no_barcode.val(data[0]['monitoring_proses']['alias_barcode'].replace("/", "") + data[0]['no_barcode']);
+                            }
+                            else if(data[0]['pengemasan']['alias_barcode'] != "")
+                            {
+                                no_barcode.val(data[0]['pengamasan']['alias_barcode'].replace("/", "") + data[0]['no_barcode']);
+                            }
+                            no_barcode.attr("readonly", true);
+                            $('#tambahitem').removeAttr('disabled');
+                            $('#tambahlaporan').removeAttr('disabled');
+                        }
+                        else
+                        {
+                            has_barcode.val("no");
+                            no_barcode.val("");
+                            no_barcode.removeAttr("readonly", true);
+                            $('#tambahitem').attr('disabled', true);
+                            $('#tambahlaporan').attr('disabled', true);
+                        }
+                    }
+                });
+
+                $.ajax({
+                    url: 'hasil/create/count_status_histori_perakitan/' + no_seri + '/pemeriksaan_pengemasan',
+                    type: "GET",
+                    dataType: "json",
+                    success: function(data) {
+                        pemeriksaanke.val(data);
+                    }
+                });
+            }
+        })
+
+        $('#tableitem').on('change', '.no_seri', function(){
+            var no_barcode = $(this).closest('tr').find('.barcode');
+            if(no_barcode != "")
+            {
+                $('#tambahitem').removeAttr('disabled');
+                $('#tambahlaporan').removeAttr('disabled');
+            }
+            else
+            {
+                $('#tambahitem').attr('disabled', true);
+                $('#tambahlaporan').attr('disabled', true);
+            }
+        })
+
         $('input[type="radio"][name="brc"]').on("change", function() {
             if (this.value == 'ya') {
                 $('.barcode').attr('readonly', false);
@@ -336,7 +390,8 @@
         }
 
         $('#tambahitem').click(function(e) {
-            add++;
+            $('#tambahitem').attr('disabled', true);
+            $('#tambahlaporan').attr('disabled', true);
             var data = `
             <tr>
             <td></td>
@@ -357,14 +412,20 @@
                     </div>
                 </div>
             </td>
+            <td hidden>
+                <div class="form-group">
+                    <input type="text" class="has_barcode" name="has_barcode[` + add + `]" id="has_barcode` + add + `">
+                </div>
+            </td>
+            <td hidden>
+                <div class="form-group">
+                    <input type="text" class="pemeriksaanke" name="pemeriksaanke[` + add + `]" id="pemeriksaanke` + add + `">
+                </div>
+            </td>
             <td>
                 <div class="form-group">
                     <div class="input-group">
-                        <input type="text" class="form-control @error('no_barcode') is-invalid @enderror barcode" name="no_barcode[` + add + `]" id="no_barcode" `;
-            if (rdb == 'tidak') {
-                data += `readonly`;
-            }
-            data += `>
+                        <input type="text" class="form-control @error('no_barcode') is-invalid @enderror barcode" name="no_barcode[` + add + `]" id="no_barcode" readonly>
                     </div>
                     @if ($errors->has('no_barcode'))
                     <span class="invalid-feedback" role="alert">{{$errors->first('no_barcode')}}</span>
@@ -377,8 +438,8 @@
                     <div class="col-sm-12">
                         <div class="form-group clearfix">
                             <div class="icheck-success d-inline checked">
-                                <input type="radio" name="kondisi_unit[` + add + `]" id="ok" class="kondisi_unit" value="baik" checked>
-                                <label for="ok">
+                                <input type="radio" name="kondisi_unit[` + add + `]" id="ok` + add + `" class="kondisi_unit" value="baik" checked>
+                                <label for="ok` + add + `">
                                     <i class="fas fa-check-circle" style="color:green;"></i>
                                 </label>
                             </div>
@@ -389,8 +450,8 @@
                     <div class="col-sm-12">
                         <div class="form-group clearfix">
                             <div class="icheck-danger d-inline">
-                                <input type="radio" name="kondisi_unit[` + add + `]" id="nok" value="tidak" class="kondisi_unit">
-                                <label for="nok">
+                                <input type="radio" name="kondisi_unit[` + add + `]" id="nok` + add + `" value="tidak" class="kondisi_unit">
+                                <label for="nok` + add + `">
                                     <i class="fas fa-times-circle" style="color:red;"></i>
                                 </label>
                             </div>

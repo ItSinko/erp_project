@@ -231,10 +231,10 @@ class MtcController extends Controller
             ->addIndexColumn()
             ->addColumn('no_seri', function ($s) {
                 $str = "";
-                if ($s->no_barcode != NULL) {
+                if ($s->no_barcode != "") {
                     $str = str_replace("/", "", $s->Pengemasan->alias_barcode) . $s->no_barcode;
                 } else {
-                    $str = str_replace("/", "", $s->HasilPerakitan->HasilMonitoringProses->first()->MonitoringProses->alias_bacode) . $s->HasilPerakitan->HasilMonitoringProses->first()->MonitoringProses->no_barcode;
+                    $str = str_replace("/", "", $s->HasilPerakitan->HasilMonitoringProses->first()->MonitoringProses->alias_barcode) . $s->HasilPerakitan->HasilMonitoringProses->first()->no_barcode;
                 }
                 return $str;
             })
