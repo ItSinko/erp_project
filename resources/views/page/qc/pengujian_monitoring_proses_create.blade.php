@@ -106,7 +106,7 @@
                                             <label for="karyawan_id" class="col-sm-4 col-form-label" style="text-align:right;">Karyawan</label>
                                             <div class="col-sm-5">
                                                 <div class="select2-info">
-                                                    <select class="select2 custom-select form-control @error('karyawan_id') is-invalid @enderror karyawan_id" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;" name="karyawan_id" id="karyawan_id">
+                                                    <select class="select2 custom-select form-control @error('karyawan_id') is-invalid @enderror karyawan_id" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;" name="karyawan_id" id="karyawan_id" disabled>
                                                         <option value=""></option>
                                                         @foreach($kry as $i)
                                                         <option value="{{$i->id}}">{{$i->nama}}</option>
@@ -123,7 +123,7 @@
                                             <label for="brc" class="col-sm-4 col-form-label" style="text-align:right;">Barcode</label>
                                             <div class="col-sm-1 col-form-label">
                                                 <div class="icheck-primary d-inline">
-                                                    <input type="radio" id="brc_ya" name="brc" value="ya" checked>
+                                                    <input type="radio" id="brc_ya" name="brc" value="ya" disabled>
                                                     <label for="brc_ya">
                                                         Buat
                                                     </label>
@@ -131,7 +131,7 @@
                                             </div>
                                             <div class="col-sm-2 col-form-label">
                                                 <div class="icheck-primary d-inline">
-                                                    <input type="radio" id="brc_tidak" name="brc" value="tidak">
+                                                    <input type="radio" id="brc_tidak" name="brc" value="tidak" disabled>
                                                     <label for="brc_tidak">
                                                         Tidak
                                                     </label>
@@ -145,25 +145,25 @@
                                         <div class="form-group row">
                                             <label for="kode_barcode" class="col-sm-4 col-form-label" style="text-align:right;">Kode Barcode</label>
                                             <div class="col-sm-1">
-                                                <input type="text" class="form-control  @error('inisial_produk') is-invalid @enderror " name="inisial_produk" id="inisial_produk" value="{{old('inisial_produk')}}">
+                                                <input type="text" class="form-control  @error('inisial_produk') is-invalid @enderror " name="inisial_produk" id="inisial_produk" value="{{old('inisial_produk')}}" readonly>
                                                 @if ($errors->has('inisial_produk'))
                                                 <span class="invalid-feedback" role="alert">{{$errors->first('inisial_produk')}}</span>
                                                 @endif
                                             </div>
                                             <div class="col-sm-1">
-                                                <input type="text" class="form-control  @error('tipe_produk') is-invalid @enderror " name="tipe_produk" id="tipe_produk" value="{{old('tipe_produk')}}">
+                                                <input type="text" class="form-control  @error('tipe_produk') is-invalid @enderror " name="tipe_produk" id="tipe_produk" value="{{old('tipe_produk')}}" readonly>
                                                 @if ($errors->has('tipe_produk'))
                                                 <span class="invalid-feedback" role="alert">{{$errors->first('tipe_produk')}}</span>
                                                 @endif
                                             </div>
                                             <div class="col-sm-1">
-                                                <input type="text" class="form-control  @error('waktu_produksi') is-invalid @enderror " name="waktu_produksi" id="waktu_produksi" value="{{old('waktu_produksi')}}">
+                                                <input type="text" class="form-control  @error('waktu_produksi') is-invalid @enderror " name="waktu_produksi" id="waktu_produksi" value="{{old('waktu_produksi')}}" readonly>
                                                 @if ($errors->has('waktu_produksi'))
                                                 <span class="invalid-feedback" role="alert">{{$errors->first('waktu_produksi')}}</span>
                                                 @endif
                                             </div>
                                             <div class="col-sm-1">
-                                                <input type="text" class="form-control  @error('urutan_bb') is-invalid @enderror " name="urutan_bb" id="urutan_bb" value="{{old('urutan_bb')}}">
+                                                <input type="text" class="form-control  @error('urutan_bb') is-invalid @enderror " name="urutan_bb" id="urutan_bb" value="{{old('urutan_bb')}}" readonly>
                                                 @if ($errors->has('urutan_bb'))
                                                 <span class="invalid-feedback" role="alert">{{$errors->first('urutan_bb')}}</span>
                                                 @endif
@@ -193,7 +193,7 @@
                                                         <td>
                                                             <div class="form-group">
                                                                 <div class="input-group">
-                                                                    <input type="text" class="form-control @error('no_barcode') is-invalid @enderror barcode" name="no_barcode[{{$loop->iteration - 1}}]" id="no_barcode{{$loop->iteration - 1}}">
+                                                                    <input type="text" class="form-control @error('no_barcode') is-invalid @enderror barcode" name="no_barcode[{{$loop->iteration - 1}}]" id="no_barcode{{$loop->iteration - 1}}" readonly>
                                                                 </div>
                                                                 @if ($errors->has('no_barcode'))
                                                                 <span class="invalid-feedback" role="alert">{{$errors->first('no_barcode')}}</span>
@@ -277,7 +277,7 @@
                             <button type="button" class="btn btn-block btn-danger rounded-pill" style="width:200px;float:left;"><i class="fas fa-times"></i>&nbsp;Batal</button>
                         </span>
                         <span>
-                            <button type="submit" class="btn btn-block btn-success rounded-pill" style="width:200px;float:right;" disabled><i class="fas fa-plus"></i>&nbsp;Tambah Data</button>
+                            <button type="submit" id="tambahdata" class="btn btn-block btn-success rounded-pill" style="width:200px;float:right;" disabled><i class="fas fa-plus"></i>&nbsp;Tambah Data</button>
                         </span>
                     </div>
                     </form>
@@ -319,8 +319,31 @@
             });
         });
 
+        function formatted_string(pad, user_str, pad_pos) {
+            if (typeof user_str === 'undefined')
+                return pad;
+            if (pad_pos == 'l') {
+                return (pad + user_str).slice(-pad.length);
+            } else {
+                return (user_str + pad).substring(0, pad.length);
+            }
+        }
+
+        $("#tanggal_laporan").on('change', function() {
+            $('#karyawan_id').removeAttr('disabled');
+        });
+
+        $("#karyawan_id").on('change', function() {
+            var sel = $(this).val();
+            if (sel != "") {
+                $('input[name="brc"]').removeAttr('disabled');
+            } else if (sel == "") {
+                $('input[name="brc"]').attr('disabled', true);
+            }
+        });
 
         $('input[type="radio"][name="brc"]').on("change", function() {
+            $("#tambahdata").removeAttr('disabled');
             if (this.value == 'ya') {
                 $('.barcode').attr('readonly', false);
                 $('#inisial_produk').attr('readonly', false);
@@ -328,6 +351,13 @@
                 $('#waktu_produksi').attr('readonly', false);
                 $('#urutan_bb').attr('readonly', false);
                 rdb = 'ya';
+                $('#tableitem').ready(function() {
+                    var c = 0;
+                    $(this).find("tr").each(function() {
+                        c = c + 1;
+                        $(this).find('.barcode').val(formatted_string('00000', (parseInt("{{$c}}") + c), 'l'));
+                    });
+                });
             } else if (this.value == 'tidak') {
                 $('.barcode').attr('readonly', true);
                 $('#inisial_produk').attr('readonly', true);

@@ -263,4 +263,33 @@ class GetController extends Controller
         $c = $hmp + $hp;
         return $c;
     }
+
+    public function getbarcode($id)
+    {
+        $mp = HasilMonitoringProses::with('MonitoringProses')
+        ->where('hasil_perakitan_id', $id)
+        ->first();
+
+        $p = HasilPengemasan::with('Pengemasan')
+        ->where('hasil_perakitan_id', $id)
+        ->first();
+
+        if($mp != "")
+        {
+            return $mp;
+        }
+        else if($p != "")
+        {
+            return $p;
+        }
+    }
+
+    public function count_status_histori_perakitan($id, $status)
+    {
+        $h = HistoriHasilPerakitan::where([
+            ['hasil_perakitan_id', '=', $id],
+            ['kegiatan', '=', $status]
+        ])->count();
+        return $h;
+    }
 }

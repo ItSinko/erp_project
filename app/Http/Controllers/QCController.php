@@ -1115,7 +1115,17 @@ class QCController extends Controller
 
         $k = Karyawan::whereNotIn('jabatan', ['direktur', 'manager'])->get();
         $p = IkPemeriksaanPengujian::where('detail_produk_id', '=', $b->detail_produk_id)->get();
-        return view('page.qc.pengujian_monitoring_proses_create', ['bppb_id' => $bppb_id, 'kry' => $k, 's' => $s, 'b' => $b, 'p' => $p]);
+
+        $hmp = HasilMonitoringProses::whereHas('MonitoringProses', function ($q) use ($bppb_id) {
+            $q->where('bppb_id', $bppb_id);
+        })->whereNotNull('no_barcode')->count();
+
+        $hp =  HasilPengemasan::whereHas('Pengemasan', function ($q) use ($bppb_id) {
+            $q->where('bppb_id', $bppb_id);
+        })->whereNotNull('no_barcode')->count();
+
+        $c = $hmp + $hp;
+        return view('page.qc.pengujian_monitoring_proses_create', ['bppb_id' => $bppb_id, 'kry' => $k, 's' => $s, 'b' => $b, 'p' => $p, 'c' => $c]);
     }
 
     public function pengujian_monitoring_proses_store(Request $request, $bppb_id)
@@ -1877,9 +1887,78 @@ class QCController extends Controller
         $s = Bppb::find($bppbid);
         $hp = HasilPengemasan::whereHas('Pengemasan', function ($q) use ($bppbid) {
             $q->where('bppb_id', $bppbid);
-        })->get();
+        })->has('HasilPerakitan.HasilMonitoringProses')->get();
         $c = CekPengemasan::where('detail_produk_id', $s->DetailProduk->id)->get();
         return view('page.qc.pengemasan_bppb_show', ['bppbid' => $bppbid, 's' => $s, 'c' => $c, 'hp' => $hp]);
+    }
+
+    public function pengemasan_bppb_create($bppbid, $arr)
+    {
+        $s = Bppb::find($bppbid);
+        $larr = explode(",", $arr);
+        $hp = HasilPengemasan::whereIn('id', $larr)->get();
+        $c = CekPengemasan::where('detail_produk_id', $s->DetailProduk->id)->get();
+        return view('page.qc.pengemasan_bppb_create', ['bppbid' => $bppbid, 's' => $s, 'c' => $c, 'hp' => $hp]);
+    }
+
+    public function pengemasan_bppb_store(Request $request)
+    {
+        $v = Validator::make(
+            $request->all(),
+            [
+                'hasil' => 'required',
+                'tindak_lanjut' => 'required',
+            ],
+            [
+                'hasil.required' => 'Hasil Pemeriksaan harus diisi',
+                'tindak_lanjut.required' => 'Tindak Lanjut harus diisi',
+            ]
+        );
+
+        if ($v->fails()) {
+            return redirect()->back()->withErrors($v);
+        } else {
+            if (!empty($request->hasil_pengemasan_id)) {
+                $bool = true;
+                for ($i = 0; $i < count($request->hasil_pengemasan_id); $i++) {
+                    $status = "";
+                    if ($request->tindak_lanjut[$i] == "ok") {
+                        $status = 'ok';
+                    } else if ($request->tindak_lanjut[$i] == "perbaikan") {
+                        $status = 'rej_pengemasan';
+                    } else if ($request->tindak_lanjut[$i] == "produk_spesialis") {
+                        $status = 'rej_pengemasan';
+                    }
+
+                    $h = HasilPengemasan::find($request->hasil_pengemasan_id[$i]);
+                    $h->hasil = $request->hasil[$i];
+                    $h->keterangan = $request->keterangan[$i];
+                    $h->tindak_lanjut = $request->tindak_lanjut[$i];
+                    $h->status = $status;
+                    $u = $h->save();
+
+                    if (!$u) {
+                        $bool = false;
+                    } else if ($u) {
+                        $bool = true;
+                        $c = HistoriHasilPerakitan::create([
+                            "hasil_perakitan_id" => $h->hasil_perakitan_id,
+                            "kegiatan" => "pemeriksaan_pengemasan",
+                            "tanggal" => Carbon::now()->toDateString(),
+                            "hasil" => $request->hasil[$i],
+                            "keterangan" => $request->keterangan[$i],
+                            "tindak_lanjut" => $request->tindak_lanjut[$i]
+                        ]);
+                    }
+                }
+            }
+
+            if ($bool == true) {
+                return redirect()->back()->with('success', "Berhasil menambahkan Pengemasan");
+            } else if ($bool == false) {
+                return redirect()->back()->with('error', "Gagal menambahkan Pengemasan");
+            }
+        }
     }
 
     public function pengemasan_bppb_edit($bppbid)
@@ -1916,9 +1995,9 @@ class QCController extends Controller
                     if ($request->tindak_lanjut[$i] == "ok") {
                         $status = 'ok';
                     } else if ($request->tindak_lanjut[$i] == "perbaikan") {
-                        $status = 'rej_pemeriksaan';
+                        $status = 'rej_pengemasan';
                     } else if ($request->tindak_lanjut[$i] == "produk_spesialis") {
-                        $status = 'rej_pemeriksaan';
+                        $status = 'rej_pengemasan';
                     }
                     $h = HasilPengemasan::find($request->hasil_pengemasan_id[$i]);
                     $h->hasil = $request->hasil[$i];
@@ -1933,7 +2012,7 @@ class QCController extends Controller
                     } else if ($u) {
                         $bool = true;
                         $c = HistoriHasilPerakitan::create([
-                            "hasil_perakitan_id" => $u->hasil_pengemasan_id[$i],
+                            "hasil_perakitan_id" => $h->hasil_perakitan_id,
                             "kegiatan" => "pemeriksaan_pengemasan",
                             "tanggal" => Carbon::now()->toDateString(),
                             "hasil" => $request->hasil[$i],
@@ -1979,9 +2058,9 @@ class QCController extends Controller
             if ($request->tindak_lanjut == "ok") {
                 $status = 'ok';
             } else if ($request->tindak_lanjut == "perbaikan") {
-                $status = 'rej_pemeriksaan';
+                $status = 'rej_pengemasan';
             } else if ($request->tindak_lanjut == "produk_spesialis") {
-                $status = 'rej_pemeriksaan';
+                $status = 'rej_pengemasan';
             }
             $h = HasilPengemasan::find($id);
             $h->hasil = $request->hasil;

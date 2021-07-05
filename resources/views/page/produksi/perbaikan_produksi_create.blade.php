@@ -47,7 +47,7 @@
             </div>
             @endif
             <div class="card">
-                <div class="card-header bg-success">
+                <div class="card-header bg-danger">
                     <div class="card-title"><i class="fas fa-plus-circle"></i>&nbsp;Perbaikan</div>
                 </div>
                 <!-- /.card-header -->
@@ -105,19 +105,21 @@
                                     <select class="select2 form-control @error('hasil_perakitan_id') is-invalid @enderror hasil_perakitan_id" multiple="multiple" data-placeholder="Pilih No Seri" data-dropdown-css-class="select2-info" style="width: 100%;" name="hasil_perakitan_id[]" id="hasil_perakitan_id">
                                         @foreach($hp as $i)
                                         <option value="{{$i->id}}" @if($id==$i->id)) selected @endif>
-                                            @if($proses == 'perakitan')
-                                            {{$i->Perakitan->alias_tim}}{{$i->no_seri}}
-                                            @elseif($proses == 'pengujian' || $proses == "pengemasan")
-                                            @if($i->no_barcode == NULL)
-                                            {{$i->HasilPerakitan->Perakitan->alias_tim}}{{$i->HasilPerakitan->no_seri}}
-                                            @elseif($i->no_barcode != NULL)
-                                            @if($proses == 'pengujian')
-                                            {{str_replace("/", "", $i->MonitoringProses->alias_barcode)}}{{$i->no_barcode}}
-                                            @elseif($proses == 'pengemasan')
-                                            {{$i->Pengemasan->alias_barcode}}{{$i->no_barcode}}
-                                            @endif
-                                            @endif
-                                            @endif
+                                                @if($proses == 'perakitan')
+                                                {{$i->Perakitan->alias_tim}}{{$i->no_seri}}
+                                                @elseif($proses == 'pengujian')
+                                                    @if($i->no_barcode != "")
+                                                    {{str_replace("/", "", $i->MonitoringProses->alias_barcode)}}{{$i->no_barcode}}
+                                                    @else
+                                                    {{$i->HasilPerakitan->Perakitan->alias_tim}}{{$i->HasilPerakitan->no_seri}}
+                                                    @endif
+                                                @elseif($proses == 'pengemasan')
+                                                    @if($i->no_barcode != "")
+                                                    {{str_replace("/", "", $i->Pengemasan->alias_barcode)}}{{$i->no_barcode}}
+                                                    @else
+                                                    {{str_replace("/", "", $s->HasilPerakitan->HasilMonitoringProses->first()->MonitoringProses->alias_barcode)}}{{$i->HasilPerakitan->HasilMonitoringProses->first()->no_barcode}}
+                                                    @endif
+                                                @endif
                                         </option>
                                         @endforeach
                                     </select>

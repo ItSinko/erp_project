@@ -84,12 +84,14 @@
                                     <h3>Data Pengemasan</h3>
                                     <div class="form-horizontal">
                                         <div class="form-group row">
+                                        <div class="table-responsive">
                                             <table id="tableitem" class="table table-hover table-bordered">
                                                 <thead style="text-align: center;">
                                                     <tr>
                                                         <th rowspan="2">No</th>
                                                         <th rowspan="2">Kode Perakitan</th>
                                                         <th rowspan="2">Barcode</th>
+                                                        <th rowspan="2" hidden>Pemeriksaan</th>
                                                         <th rowspan="2">Kondisi Unit</th>
                                                         @foreach($c as $cps)
                                                         <th colspan="{{count($cps->DetailCekPengemasan)}}">{{$cps->perlengkapan}}</th>
@@ -114,12 +116,13 @@
                                                             <input type="text" name="hasil_pengemasan_id[{{$loop->iteration - 1}}]" id="hasil_pengemasan_id" value="{{$i->id}}" hidden>{{$i->HasilPerakitan->no_seri}}
                                                         </td>
                                                         <td>
-                                                            @if($i->no_barcode != "")
-                                                            {{str_replace('/', '', $i->Pengemasan->alias_barcode)}}{{$i->no_barcode}}
-                                                            @else
-                                                            {{str_replace('/', '', $i->HasilPerakitan->HasilMonitoringProses->MonitoringProses->alias_barcode)}}{{$i->HasilPerakitan->HasilMonitoringProses->no_barcode}}
-                                                            @endif
+                                                        @if($i->no_barcode != "")
+                                                        {{str_replace("/", "", $i->Pengemasan->alias_barcode)}}{{$i->no_barcode}}
+                                                        @else
+                                                        {{str_replace("/", "", $i->HasilPerakitan->HasilMonitoringProses->first()->MonitoringProses->alias_barcode)}}{{$i->HasilPerakitan->HasilMonitoringProses->first()->no_barcode}}
+                                                        @endif
                                                         </td>
+                                                        <td hidden><input type="text" class="pemeriksaan_ke" name="pemeriksaan_ke[{{$loop->iteration - 1}}]" id="pemeriksaan_ke" value="{{$i->countStatus('pemeriksaan_pengemasan')}}" hidden></td>
                                                         <td>
                                                             @if($i->kondisi_unit == "tidak")
                                                             <i class="fas fa-times-circle" style="color:red;"></i>
@@ -185,6 +188,7 @@
                                                 </tbody>
 
                                             </table>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -244,6 +248,7 @@
 
         $('#tableitem').on('change', '.hasil', function(e) {
             var hasil = $(this).closest('tr').find('.hasil');
+            var pemeriksaan_ke = $(this).closest('tr').find('.pemeriksaan_ke');
             if (this.value == 'ok') {
                 // $('select').select2('val', '');
                 $(this).closest('tr').find('select.tindak_lanjut').val('').trigger('change');
@@ -255,8 +260,12 @@
                 // $('select').select2('val', '');
                 $(this).closest('tr').find('select.tindak_lanjut').val('').trigger('change');
                 $(this).closest('tr').find("select.tindak_lanjut option[value='ok']").attr('disabled', true);
-                $(this).closest('tr').find("select.tindak_lanjut option[value='perbaikan']").attr('disabled', false);
-                $(this).closest('tr').find("select.tindak_lanjut option[value='produk_spesialis']").attr('disabled', false);
+                if(pemeriksaan_ke < 1){
+                    $(this).closest('tr').find("select.tindak_lanjut option[value='perbaikan']").attr('disabled', false);
+                }
+                else if(pemeriksaan_ke >= 1){
+                    $(this).closest('tr').find("select.tindak_lanjut option[value='produk_spesialis']").attr('disabled', false);
+                }
             }
         });
     });
