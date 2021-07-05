@@ -568,7 +568,7 @@ class EngController extends Controller
                 }
                 else if($s->status == 'analisa_pengemasan_ps')
                 {
-                    $btn = '<a class="analisapsmodal" data-toggle="modal" data-target="#analisapsmodal" data-attr="/pengemasan/analisa_ps/show/' . $a->id . '" data-id="' . $p->id . '"><button type="button" class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-wrench"></i></button>
+                    $btn = '<a class="analisapsmodal" data-toggle="modal" data-target="#analisapsmodal" data-attr="/pengemasan/analisa_ps/show/' . $a->id . '" data-id="' . $a->id . '"><button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-search"></i></button>
                     <div><small>Lihat Hasil Analisa</small></div></a>';
                 }
                 return $btn;

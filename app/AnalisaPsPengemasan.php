@@ -15,6 +15,6 @@ class AnalisaPsPengemasan extends Model
 
     public function BillOfMaterial()
     {
-        return $this->belongsToMany(BillOfMaterial::class, 'analisa_ps_pengujian_parts');
+        return $this->belongsToMany(BillOfMaterial::class, 'analisa_ps_pengemasan_parts');
     }
 }

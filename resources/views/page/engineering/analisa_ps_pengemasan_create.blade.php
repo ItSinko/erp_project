@@ -47,7 +47,7 @@
             </div>
             @endif
             <div class="card">
-                <div class="card-header bg-success">
+                <div class="card-header bg-warning">
                     <div class="card-title"><i class="fas fa-plus-circle"></i>&nbsp;Analisa Pengemasan</div>
                 </div>
                 <!-- /.card-header -->
@@ -132,12 +132,34 @@
                         </div>
 
                         <h3>Part</h3>
+                        <div class="form-group row">
+                            <label for="kebutuhan_part" class="col-sm-4 col-form-label" style="text-align:right;">Kebutuhan Part</label>
+                            <div class="col-sm-2 col-form-label">
+                                <div class="icheck-primary d-inline">
+                                    <input type="radio" id="kebutuhan_part_ya" name="kebutuhan_part" value="ya" disabled>
+                                    <label for="kebutuhan_part_ya">
+                                        <span style="color:green;">Dengan Part</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-2 col-form-label">
+                                <div class="icheck-primary d-inline">
+                                    <input type="radio" id="kebutuhan_part_tidak" name="kebutuhan_part" value="tidak" disabled>
+                                    <label for="kebutuhan_part_tidak">
+                                        <span style="color:red;">Tanpa Part</span>
+                                    </label>
+                                </div>
+                            </div>
+                            @if ($errors->has('kebutuhan_part'))
+                            <span class="invalid-feedback" role="alert">{{$errors->first('kebutuhan_part')}}</span>
+                            @endif
+                        </div>
                         <div class="form-group row" id="daftar-part" hidden>
                             <label for="part" class="col-sm-4 col-form-label" style="text-align:right;">Keperluan Part</label>
                             <div class="col-sm-8">
                                 @foreach($bom as $i)
                                 <div class="form-check col-form-label">
-                                    <input class="form-check-input" type="checkbox" value="{{$i->bill_of_material_id}}" name="part[]" id="part">
+                                    <input class="form-check-input part" type="checkbox" value="{{$i->bill_of_material_id}}" name="part[]" id="part">
                                     <label class="form-check-label" for="part">
                                         {{$i->BillOfMaterial->part_eng_id}} - {{$i->BillOfMaterial->PartEng->nama}}
                                     </label>
@@ -151,7 +173,7 @@
                         <button type="button" class="btn btn-block btn-danger btn-rounded" style="width:200px;float:left;"><i class="fas fa-times"></i>&nbsp;Batal</button>
                     </span>
                     <span>
-                        <button type="submit" class="btn btn-block btn-warning btn-rounded" style="width:200px;float:right;"><i class="fas fa-plus-circle"></i>&nbsp;Tambah Data</button>
+                        <button type="submit" class="btn btn-block btn-warning btn-rounded" style="width:200px;float:right;" id="tambahlaporan" disabled><i class="fas fa-plus-circle"></i>&nbsp;Tambah Data</button>
                     </span>
                 </div>
                 </form>
