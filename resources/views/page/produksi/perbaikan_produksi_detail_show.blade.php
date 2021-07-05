@@ -27,9 +27,9 @@
                                     {{str_replace('/', '', $s->HasilMonitoringProses[0]['MonitoringProses']->alias_barcode)}}{{$s->HasilMonitoringProses[0]['no_barcode']}}
                                     @elseif($s->ketidaksesuaian_proses == "pengemasan")
                                         @if($s->HasilPengemasan[0]['no_barcode'] != "")
-                                        {{str_replace('/', '', $s->HasilPengemasan[0]['Pengemasan']->alias_barcode)}}{{$s->HasilPengemasan[0]['no_barcode']}}
+                                        {{str_replace('/', '', $s->HasilPengemasan[0]['Pengemasan']->alias_barcode)}}{{$s->HasilPengemasan[0]->no_barcode}}
                                         @else
-                                        {{str_replace('/', '', $s->HasilPengemasan->HasilPerakitan->HasilMonitoringProses[0]['MonitoringProses']->alias_barcode)}}{{$s->HasilPengemasan->HasilPerakitan->HasilMonitoringProses[0]['no_barcode']}}
+                                        {{str_replace('/', '', $s->HasilPengemasan[0]['HasilPerakitan']['HasilMonitoringProses'][0]['MonitoringProses']->alias_barcode)}}{{$s->HasilPengemasan[0]['HasilPerakitan']['HasilMonitoringProses']->no_barcode}}
                                         @endif
                                     @endif
                                 </th>

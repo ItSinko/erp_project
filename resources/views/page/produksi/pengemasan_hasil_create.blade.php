@@ -179,11 +179,6 @@
                                                                 <input type="text" class="has_barcode" name="has_barcode[0]" id="has_barcode0">
                                                             </div>
                                                         </td>
-                                                        <td hidden>
-                                                            <div class="form-group">
-                                                                <input type="text" class="pemeriksaanke" name="pemeriksaanke[0]" id="pemeriksaanke0">
-                                                            </div>
-                                                        </td>
                                                         <td>
                                                             <div class="form-group">
                                                                 <div class="input-group">
@@ -292,7 +287,6 @@
             var no_seri = $(this).closest('tr').find('.no_seri');
             var has_barcode = $(this).closest('tr').find('.has_barcode');
             var no_barcode = $(this).closest('tr').find('.barcode');
-            var pemeriksaanke = $(this).closest('tr').find('.pemeriksaanke');
             if(no_seri)
             {
                 $.ajax({
@@ -327,14 +321,7 @@
                     }
                 });
 
-                $.ajax({
-                    url: 'hasil/create/count_status_histori_perakitan/' + no_seri + '/pemeriksaan_pengemasan',
-                    type: "GET",
-                    dataType: "json",
-                    success: function(data) {
-                        pemeriksaanke.val(data);
-                    }
-                });
+                
             }
         })
 
@@ -415,11 +402,6 @@
             <td hidden>
                 <div class="form-group">
                     <input type="text" class="has_barcode" name="has_barcode[` + add + `]" id="has_barcode` + add + `">
-                </div>
-            </td>
-            <td hidden>
-                <div class="form-group">
-                    <input type="text" class="pemeriksaanke" name="pemeriksaanke[` + add + `]" id="pemeriksaanke` + add + `">
                 </div>
             </td>
             <td>

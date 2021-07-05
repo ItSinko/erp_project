@@ -279,9 +279,16 @@ class MtcController extends Controller
                         $str = '<div><small class="danger-text">Masuk Gudang Karantina</small></div>';
                     }
                 } else if ($s->status == "perbaikan_pengemasan") {
-                    if($p){
-                        $str = '<a href="/pengemasan/hasil/status/' . $s->id . '/req_pengemasan"><button type="button" class="btn btn-success btn-sm m-1" style="border-radius:50%;"><i class="fas fa-paper-plane"></i></button><div><small> Lapor Pengujian</small></div></a>';
-                        $str .= '<div><a class="perbaikanproduksimodal" data-toggle="modal" data-target="#perbaikanproduksimodal" data-attr="/perbaikan/produksi/detail/' . $p->id . '"><button type="button" class="btn btn-outline-info btn-sm"><i class="fas fa-search"></i> Hasil Perbaikan</button></a></div>';
+                    $hmp = HasilMonitoringProses::where('hasil_perakitan_id', $s->hasil_perakitan_id)->first();
+                    if($hmp->status == "pengemasan"){
+                        if($p){
+                            $str = '<a href="/pengemasan/hasil/status/' . $s->id . '/req_pengemasan"><button type="button" class="btn btn-success btn-sm m-1" style="border-radius:50%;"><i class="fas fa-paper-plane"></i></button><div><small> Lapor Pengujian</small></div></a>';
+                            $str .= '<div><a class="perbaikanproduksimodal" data-toggle="modal" data-target="#perbaikanproduksimodal" data-attr="/perbaikan/produksi/detail/' . $p->id . '"><button type="button" class="btn btn-outline-info btn-sm"><i class="fas fa-search"></i> Hasil Perbaikan</button></a></div>';
+                        }
+                    }
+                    else if($hmp->status != "pengemasan")
+                    {
+                        $str .= "<div><small class='warning-text'>Masuk ke Pengujian</small></div>";
                     }
                 } else if ($s->status == "ok") {
                     $str = '<div><i class="fas fa-check-circle" style="color:green;"></i></div><div><small>Penyerahan</small></div>';

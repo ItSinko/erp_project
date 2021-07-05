@@ -1763,6 +1763,20 @@ class ProduksiController extends Controller
         }
     }
 
+    public function pengemasan_hasil_status($id, $status)
+    {
+        $h = HasilPengemasan::find($id);
+        $h->status = $status;
+        $u = $h->save();
+        if($u)
+        {
+            return redirect()->back()->with('success', "Berhasil Mengubah Status Pengemasan");
+        }
+        else
+        {
+            return redirect()->back()->with('error', "Gagal Mengubah Status Pengemasan");
+        }
+    }
     public function pengemasan_form()
     {
         return view('page.produksi.pengemasan_form_show');
@@ -2049,7 +2063,7 @@ class ProduksiController extends Controller
                                         "hasil_perakitan_id" => $request->hasil_perakitan_id[$i],
                                         "kegiatan" => 'perbaikan_pemeriksaan_tertutup',
                                         "tanggal" => Carbon::now()->toDateString(),
-                                        "hasil" => "ok",
+                                        "hasil" => "nok",
                                         "keterangan" => "",
                                         "tindak_lanjut" => "ok"
                                     ]);
@@ -2068,7 +2082,7 @@ class ProduksiController extends Controller
                                 "hasil_perakitan_id" => $u->hasil_perakitan_id,
                                 "kegiatan" => "perbaikan_pengujian",
                                 "tanggal" => Carbon::now()->toDateString(),
-                                "hasil" => "ok",
+                                "hasil" => "nok",
                                 "keterangan" => "",
                                 "tindak_lanjut" => "ok"
                             ]);
@@ -2081,34 +2095,23 @@ class ProduksiController extends Controller
                                 "hasil_perakitan_id" => $u->hasil_perakitan_id,
                                 "kegiatan" => "perbaikan_pengemasan",
                                 "tanggal" => Carbon::now()->toDateString(),
-                                "hasil" => "ok",
+                                "hasil" => "nok",
                                 "keterangan" => "",
                                 "tindak_lanjut" => "pengujian"
                             ]);
 
-                            $mp_id = "";
-                            $mp = MonitoringProses::where([
-                                ['bppb_id', '=', $id],
-                                ['tanggal', '=', Carbon::now()->toDateString()]
-                            ])->first();
-
-                            if (empty($mp)) {
-                                $mp_c = MonitoringProses::create([
-                                    'bppb_id' => $id,
-                                    'tanggal' => Carbon::now()->toDateString(),
-                                    'user_id' => Auth::user()->id
-                                ]);
-
-                                $mp_id = $mp_c->id;
-                            } else if (!empty($mp)) {
-                                $mp_id = $mp->id;
+                            $mp = "";
+                            $mps = HasilMonitoringProses::where('hasil_perakitan_id', $u->hasil_perakitan_id)->first();
+                            if($mps){
+                                $mp = HasilMonitoringProses::find($mps->id);
+                                $mp->status = "req_monitoring_proses";
+                                $mp->keterangan = $mp->keterangan . ("(Pengujian untuk Hasil Perbaikan Pengemasan)");
+                                $ump = $mp->save();
+                                if(!$ump)
+                                {
+                                    $bool = false;
+                                }
                             }
-
-                            $cs = HasilMonitoringProses::create([
-                                'monitoring_proses_id' => $mp_id,
-                                'hasil_perakitan_id' => $u->hasil_perakitan_id,
-                                'keterangan' => 'pengujian pengemasan'
-                            ]);
                         }
                     }
                     if ($bool == true) {

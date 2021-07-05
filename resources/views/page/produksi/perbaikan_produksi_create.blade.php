@@ -102,7 +102,7 @@
                             <label for="hasil_perakitan_id" class="col-sm-4 col-form-label" style="text-align:right;">No Seri</label>
                             <div class="col-sm-5">
                                 <div class="select2-info">
-                                    <select class="select2 form-control @error('hasil_perakitan_id') is-invalid @enderror hasil_perakitan_id" multiple="multiple" data-placeholder="Pilih No Seri" data-dropdown-css-class="select2-info" style="width: 100%;" name="hasil_perakitan_id[]" id="hasil_perakitan_id">
+                                    <select class="select2 form-control @error('hasil_perakitan_id') is-invalid @enderror hasil_perakitan_id" multiple="multiple" data-placeholder="Pilih No Seri" data-dropdown-css-class="select2-info" style="width: 100%;" name="hasil_perakitan_id[]" id="hasil_perakitan_id" >
                                         @foreach($hp as $i)
                                         <option value="{{$i->id}}" @if($id==$i->id)) selected @endif>
                                                 @if($proses == 'perakitan')
@@ -133,7 +133,7 @@
                         <div class="form-group row">
                             <label for="kondisi_produk" class="col-sm-4 col-form-label" style="text-align:right;">Kondisi Produk</label>
                             <div class="col-sm-8">
-                                <textarea class="form-control" name="kondisi_produk" id="kondisi_produk"></textarea>
+                                <textarea class="form-control" name="kondisi_produk" id="kondisi_produk" readonly></textarea>
                                 @if ($errors->has('kondisi_produk'))
                                 <span class="invalid-feedback" role="alert">{{$errors->first('kondisi_produk')}}</span>
                                 @endif
@@ -175,7 +175,7 @@
                             <label for="sebab_ketidaksesuaian" class="col-sm-4 col-form-label" style="text-align:right;">Sebab Ketidaksesuaian</label>
                             <div class="col-sm-2 col-form-label">
                                 <div class="icheck-primary d-inline">
-                                    <input type="radio" id="sebab_ketidaksesuaian_operator" name="sebab_ketidaksesuaian" value="operator" checked>
+                                    <input type="radio" id="sebab_ketidaksesuaian_operator" name="sebab_ketidaksesuaian" value="operator" disabled>
                                     <label for="sebab_ketidaksesuaian_operator">
                                         Operator
                                     </label>
@@ -183,7 +183,7 @@
                             </div>
                             <div class="col-sm-2 col-form-label">
                                 <div class="icheck-primary d-inline">
-                                    <input type="radio" id="sebab_ketidaksesuaian_bahan_baku" name="sebab_ketidaksesuaian" value="bahan_baku">
+                                    <input type="radio" id="sebab_ketidaksesuaian_bahan_baku" name="sebab_ketidaksesuaian" value="bahan_baku" disabled>
                                     <label for="sebab_ketidaksesuaian_bahan_baku">
                                         Bahan Baku
                                     </label>
@@ -198,7 +198,7 @@
                         <div class="form-group row">
                             <label for="tanggal_pengerjaan" class="col-sm-4 col-form-label" style="text-align:right;">Tanggal Pengerjaan</label>
                             <div class="col-sm-8">
-                                <input type="date" class="form-control" name="tanggal_pengerjaan" id="tanggal_pengerjaan" value="{{old('tanggal_pengerjaan')}}" style="width: 25%;">
+                                <input type="date" class="form-control" name="tanggal_pengerjaan" id="tanggal_pengerjaan" value="{{old('tanggal_pengerjaan')}}" style="width: 25%;" >
                                 @if ($errors->has('tanggal_pengerjaan'))
                                 <span class="invalid-feedback" role="alert">{{$errors->first('tanggal_pengerjaan')}}</span>
                                 @endif
@@ -209,7 +209,8 @@
                             <label for="karyawan_id" class="col-sm-4 col-form-label" style="text-align:right;">Operator Perbaikan</label>
                             <div class="col-sm-5">
                                 <div class="select2-info">
-                                    <select class="select2 form-control @error('karyawan_id') is-invalid @enderror karyawan_id" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;" name="karyawan_id" id="karyawan_id">
+                                    <select class="select2 form-control @error('karyawan_id') is-invalid @enderror karyawan_id" data-placeholder="Pilih Operator" data-dropdown-css-class="select2-info" style="width: 100%;" name="karyawan_id" id="karyawan_id" disabled>
+                                        <option value=""></option>
                                         @foreach($k as $i)
                                         <option value="{{$i->id}}" @if($s->karyawan_id == $i->id)
                                             selected
@@ -227,7 +228,7 @@
                         <div class="form-group row">
                             <label for="analisa" class="col-sm-4 col-form-label" style="text-align:right;">Analisa</label>
                             <div class="col-sm-8">
-                                <textarea class="form-control" name="analisa" id="analisa"></textarea>
+                                <textarea class="form-control" name="analisa" id="analisa" readonly></textarea>
                                 @if ($errors->has('analisa'))
                                 <span class="invalid-feedback" role="alert">{{$errors->first('analisa')}}</span>
                                 @endif
@@ -237,7 +238,7 @@
                         <div class="form-group row">
                             <label for="realisasi_pengerjaan" class="col-sm-4 col-form-label" style="text-align:right;">Realisasi Pengerjaan</label>
                             <div class="col-sm-8">
-                                <textarea class="form-control" name="realisasi_pengerjaan" id="realisasi_pengerjaan"></textarea>
+                                <textarea class="form-control" name="realisasi_pengerjaan" id="realisasi_pengerjaan" readonly></textarea>
                                 @if ($errors->has('realisasi_pengerjaan'))
                                 <span class="invalid-feedback" role="alert">{{$errors->first('realisasi_pengerjaan')}}</span>
                                 @endif
@@ -246,11 +247,33 @@
 
                         <h3>Part</h3>
                         <div class="form-group row">
-                            <label for="realisasi_pengerjaan" class="col-sm-4 col-form-label" style="text-align:right;">Keperluan Part</label>
+                            <label for="kebutuhan_part" class="col-sm-4 col-form-label" style="text-align:right;">Kebutuhan Part</label>
+                            <div class="col-sm-2 col-form-label">
+                                <div class="icheck-primary d-inline">
+                                    <input type="radio" id="kebutuhan_part_ya" name="kebutuhan_part" value="ya" disabled>
+                                    <label for="kebutuhan_part_ya">
+                                        <span style="color:green;">Dengan Part</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-2 col-form-label">
+                                <div class="icheck-primary d-inline">
+                                    <input type="radio" id="kebutuhan_part_tidak" name="kebutuhan_part" value="tidak" disabled>
+                                    <label for="kebutuhan_part_tidak">
+                                        <span style="color:red;">Tanpa Part</span>
+                                    </label>
+                                </div>
+                            </div>
+                            @if ($errors->has('kebutuhan_part'))
+                            <span class="invalid-feedback" role="alert">{{$errors->first('kebutuhan_part')}}</span>
+                            @endif
+                        </div>
+                        <div class="form-group row" id="daftar-part" hidden>
+                            <label for="realisasi_pengerjaan" class="col-sm-4 col-form-label" style="text-align:right;">Daftar Part</label>
                             <div class="col-sm-8">
                                 @foreach($p as $i)
                                 <div class="form-check  col-form-label">
-                                    <input class="form-check-input" type="checkbox" value="{{$i->bill_of_material_id}}" name="part[]" id="part">
+                                    <input class="form-check-input part" type="checkbox" value="{{$i->bill_of_material_id}}" name="part[]" id="part">
                                     <label class="form-check-label" for="part">
                                         {{$i->BillOfMaterial->part_eng_id}} - {{$i->BillOfMaterial->PartEng->nama}}
                                     </label>
@@ -266,7 +289,7 @@
                         <button type="button" class="btn btn-block btn-danger btn-rounded" style="width:200px;float:left;"><i class="fas fa-times"></i>&nbsp;Batal</button>
                     </span>
                     <span>
-                        <button type="submit" class="btn btn-block btn-warning btn-rounded" style="width:200px;float:right;"><i class="fas fa-plus-circle"></i>&nbsp;Tambah Data</button>
+                        <button type="submit" class="btn btn-block btn-warning btn-rounded" style="width:200px;float:right;" id="tambahlaporan" disabled><i class="fas fa-plus-circle"></i>&nbsp;Tambah Data</button>
                     </span>
                 </div>
                 </form>
@@ -295,6 +318,98 @@
         today = yyyy + '-' + mm + '-' + dd;
         $('input[name="tanggal_pengerjaan"]').val(today);
         $('#tanggal_permintaan').val(today);
+
+        $("#nomor").on('keyup', function()
+        {
+            var res = $(this).val();
+            if(res != "")
+            {
+                $("#kondisi_produk").removeAttr('readonly');
+            }
+            else
+            {
+                $("#kondisi_produk").attr('readonly', true);
+            }
+        })
+
+        $("#kondisi_produk").on('keyup', function()
+        {
+            var res = $(this).val();
+            if(res != "")
+            {
+                $("input[type=radio][name='sebab_ketidaksesuaian']").removeAttr('disabled');
+            }
+            else
+            {
+                $("input[type=radio][name='sebab_ketidaksesuaian']").attr('disabled', true);
+            }
+        });
+
+        $("input[type=radio][name='sebab_ketidaksesuaian']").on('change', function(){
+            $(".karyawan_id").removeAttr('disabled');
+        });
+        
+        $(".karyawan_id").on("change", function(){
+            var res = $(this).val();
+            if(res != "")
+            {
+                $("#analisa").removeAttr("readonly");
+            }
+            else
+            {
+                $("#analisa").attr("readonly", true);
+            }
+        });
+
+        $("#analisa").on("keyup", function(){
+            var res = $(this).val();
+            if(res != "")
+            {
+                $('#realisasi_pengerjaan').removeAttr("readonly");
+            }
+            else
+            {
+                $('#realisasi_pengerjaan').attr("readonly", true);
+            }
+        });
+
+        $("#realisasi_pengerjaan").on("keyup", function(){
+            var res = $(this).val();
+            if(res != "")
+            {
+                $("input[type=radio][name='kebutuhan_part']").removeAttr("disabled");
+            }
+            else
+            {
+                $("input[type=radio][name='kebutuhan_part']").attr("disabled", true);
+            }
+        });
+
+        $("input[type=radio][name='kebutuhan_part']").on('change', function(){
+            if(this.value == "ya")
+            {
+                $("#daftar-part").removeAttr("hidden");
+                $("#tambahlaporan").attr("disabled", true);
+            }
+            else if(this.value == "tidak")
+            {
+                $("#daftar-part").attr("hidden", true);
+                $("input[type=checkbox][name='part[]']").prop("checked", false);
+                $("#tambahlaporan").removeAttr("disabled");
+            }
+        });
+
+        $('input[type=checkbox][name="part[]"]').on('change', function(){
+            var numberOfChecked = $('input[type=checkbox][name="part[]"]:checked').length;
+            if(numberOfChecked > 0)
+            {
+                $("#tambahlaporan").removeAttr("disabled");
+            }
+            else{
+                $("#tambahlaporan").attr("disabled", true);
+            }
+        })
+
     });
 </script>
 @endsection

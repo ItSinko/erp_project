@@ -584,6 +584,7 @@ Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {
 Route::group(['prefix' => '/pengemasan', 'middleware' => 'auth'], function () {
     Route::get('/', 'ProduksiController@pengemasan')->name('pengemasan');
     Route::get('/bppb/{id}', 'ProduksiController@pengemasan_bppb')->name('pengemasan.bppb');
+    Route::get('/hasil/status/{id}/{status}', 'ProduksiController@pengemasan_hasil_status')->name('pengemasan.hasil.status');
     Route::get('/bppb/show/{id}', 'ProduksiController@pengemasan_bppb_show')->name('pengemasan.bppb.show');
     Route::get('/mtc', 'MtcController@pengemasan')->name('pengemasan.mtc');
     Route::get('/show/mtc', 'MtcController@pengemasan_show')->name('pengemasan.show.mtc');
@@ -616,6 +617,9 @@ Route::group(['prefix' => '/pengemasan', 'middleware' => 'auth'], function () {
     Route::get('/hasil/create/getbarcode/{id}', 'GetController@getbarcode');
     Route::get('/hasil/create/count_status_histori_perakitan/{id}/{status}', 'GetController@count_status_histori_perakitan');
     Route::put('/hasil/store/{id}', 'ProduksiController@pengemasan_hasil_store')->name('pengemasan.hasil.store');
+    Route::get('/analisa_ps/show/{id}', 'EngController@pengemasan_analisa_ps_show')->name('pengemasan.analisa_ps.show');
+    Route::get('/analisa_ps/create/{id}', 'EngController@pengemasan_analisa_ps_create')->name('pengemasan.analisa_ps.create');
+    Route::put('/analisa_ps/store/{id}', 'EngController@pengemasan_analisa_ps_store')->name('pengemasan.analisa_ps.store');
 });
 
 

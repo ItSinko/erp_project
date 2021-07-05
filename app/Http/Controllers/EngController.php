@@ -522,17 +522,19 @@ class EngController extends Controller
                 return $s->Pengemasan->Bppb->no_bppb;
             })
             ->addColumn('produk', function ($s) {
-                $btn = '<hgroup><h6 class="heading">' . $s->Pengemasan->Bppb->DetailProduk->nama . '</h6><div class="subheading text-muted">' . $s->Perakitan->Bppb->DetailProduk->Produk->KelompokProduk->nama . '</div></hgroup>';
+                $btn = '<hgroup><h6 class="heading">' . $s->Pengemasan->Bppb->DetailProduk->nama . '</h6><div class="subheading text-muted">' . $s->Pengemasan->Bppb->DetailProduk->Produk->KelompokProduk->nama . '</div></hgroup>';
                 return $btn;
-            })
-            ->editColumn('tanggal', function ($s) {
-                return Carbon::createFromFormat('Y-m-d', $s->tanggal)->format('d-m-Y');
             })
             ->addColumn('operator', function ($s) {
                 return $s->Pengemasan->Karyawan->nama;
             })
-            ->addColumn('no_seri', function ($s) {
-                return $s->HasilPerakitan->no_seri;
+            ->addColumn('no_barcode', function ($s) {
+                if($s->no_barcode != ""){
+                    return str_replace("/", "", $s->Pengemasan->alias_barcode).$s->no_barcode;
+                }
+                else{
+                    return str_replace("/", "", $s->HasilPerakitan->HasilMonitoringProses->first()->MonitoringProses->alias_barcode).$s->HasilPerakitan->HasilMonitoringProses->first()->no_barcode;
+                }
             })
             ->editColumn('status', function ($s) {
                 $btn = "";
@@ -551,12 +553,11 @@ class EngController extends Controller
                 }
                 else if ($s->status == 'rej_pengemasan') {
                     if ($s->tindak_lanjut == "produk_spesialis") {
-                        $btn = '<a href="/perbaikan/produksi/create/' . $s->id . '/pengujian"><button type="button" class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-wrench"></i></button>
-                        <div><small> Permohonan Analisa</small></div></a>
-                        <div><small class="danger-text">Pengujian Ditolak</small></div>';
+                        $btn = '<a href="/pengemasan/analisa_ps/create/' . $s->id . '"><button type="button" class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-wrench"></i></button>
+                        <div><small> Permohonan Analisa</small></div></a>';
                         if ($p) {
                             $btn .= '<a class="perbaikanproduksimodal" data-toggle="modal" data-target="#perbaikanproduksimodal" data-attr="/perbaikan/produksi/detail/' . $p->id . '" data-id="' . $p->id . '">
-                                    <button class="btn btn-sm btn-info"><small><i class="fas fa-cog"></i>&nbsp;Hasil Perbaikan</small></button></a>';
+                                    <button class="btn btn-sm btn-outline-info"><i class="fas fa-search"></i>&nbsp;Hasil Perbaikan</button></a>';
                         }
                     }
                 }

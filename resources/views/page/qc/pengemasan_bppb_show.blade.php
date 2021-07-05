@@ -137,13 +137,13 @@
                                         @endif
                                     </td>
                                     <td>{{$i->keterangan}}</td>
-                                    <td>{{ucfirst($i->tindak_lanjut)}}</td>
+                                    <td>{{str_replace("_", " ", ucfirst($i->tindak_lanjut))}}</td>
                                     <td>@if($i->status == 'req_pengemasan')
                                         <a href="/pengemasan/hasil/edit/qc/{{$i->id}}">
                                             <button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-cog"></i></button>
                                             <div><small>Periksa </small></div>
                                         </a>
-                                        @elseif($i->status == 'rej_pemeriksaan')
+                                        @elseif($i->status == 'rej_pengemasan')
                                             @if($i->tindak_lanjut == "perbaikan")
                                             <div><small class="danger-text">Perbaikan</small></div>
                                             @elseif($i->tindak_lanjut == "produk_spesialis")

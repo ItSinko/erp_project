@@ -197,11 +197,9 @@
                 // $('select').select2('val', '');
                 $('select').val('').trigger('change');
                 $("select option[value='ok']").attr('disabled', true);
-                if (countStatus < 2) {
-                    $("select option[value='perbaikan']").attr('disabled', false);
-                } else if (countStatus >= 2) {
-                    $("select option[value='produk_spesialis']").attr('disabled', false);
-                }
+                $("select option[value='perbaikan']").attr('disabled', false);
+                $("select option[value='produk_spesialis']").attr('disabled', false);
+                
             }
         });
         $('select[name="tindak_lanjut"]').on("change", function() {

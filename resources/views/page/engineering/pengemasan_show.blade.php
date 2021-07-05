@@ -32,9 +32,8 @@
                                 <th>No</th>
                                 <th>No BPPB</th>
                                 <th>Tipe dan Nama</th>
-                                <th>No Seri</th>
+                                <th>No Barcode</th>
                                 <th>Operator</th>
-                                <th>Tanggal</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
@@ -46,9 +45,8 @@
                                 <th>No</th>
                                 <th>No BPPB</th>
                                 <th>Tipe dan Nama</th>
-                                <th>No Seri</th>
+                                <th>No Barcode</th>
                                 <th>Operator</th>
-                                <th>Tanggal</th>
                                 <th>Status</th>
                             </tr>
                         </tfoot>
@@ -86,16 +84,12 @@
                     name: 'produk'
                 },
                 {
-                    data: 'no_seri',
-                    name: 'no_seri'
+                    data: 'no_barcode',
+                    name: 'no_barcode'
                 },
                 {
                     data: 'operator',
                     name: 'operator'
-                },
-                {
-                    data: 'tanggal',
-                    name: 'tanggal'
                 },
                 {
                     data: 'status',

@@ -48,7 +48,7 @@
             @endif
             <div class="card">
                 <div class="card-header bg-success">
-                    <div class="card-title"><i class="fas fa-plus-circle"></i>&nbsp;Analisa Pengujian</div>
+                    <div class="card-title"><i class="fas fa-plus-circle"></i>&nbsp;Analisa Pengemasan</div>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
@@ -57,7 +57,7 @@
                         {{ method_field('PUT') }}
                         <h3>BPPB</h3>
                         <div class="form-group row">
-                            <label for="no_seri" class="col-sm-4 col-form-label" style="text-align:right;">Kode Pengujian</label>
+                            <label for="no_seri" class="col-sm-4 col-form-label" style="text-align:right;">Kode Pengemasan</label>
                             <label for="no_seri" class="col-sm-8 col-form-label">{{$s->HasilPerakitan->Perakitan->alias_tim}}{{$s->HasilPerakitan->no_seri}}
                                 @if($s->no_barcode != "")
                                 / {{str_replace('/', '', $s->Pengemasan->alias_barcode)}}{{$s->no_barcode}}
@@ -91,7 +91,7 @@
                         <div class="form-group row">
                             <label for="realisasi_pengerjaan" class="col-sm-4 col-form-label" style="text-align:right;">Realisasi Pengerjaan</label>
                             <div class="col-sm-8">
-                                <textarea class="form-control @error('realisasi_pengerjaan') is-invalid @enderror" name="realisasi_pengerjaan" id="realisasi_pengerjaan"></textarea>
+                                <textarea class="form-control @error('realisasi_pengerjaan') is-invalid @enderror" name="realisasi_pengerjaan" id="realisasi_pengerjaan" readonly></textarea>
                                 @if ($errors->has('realisasi_pengerjaan'))
                                 <span class="invalid-feedback" role="alert">{{$errors->first('realisasi_pengerjaan')}}</span>
                                 @endif
@@ -102,7 +102,7 @@
                             <label for="tindak_lanjut" class="col-sm-4 col-form-label" style="text-align:right;">Tindak Lanjut</label>
                             <div class="col-sm-2 col-form-label">
                                 <div class="icheck-primary d-inline">
-                                    <input type="radio" class="@error('tindak_lanjut') is-invalid @enderror" id="tindak_lanjut_operator" name="tindak_lanjut" value="operator" @if($s->status == "rej_monitoring_proses") disabled @endif>
+                                    <input type="radio" class="@error('tindak_lanjut') is-invalid @enderror" id="tindak_lanjut_operator" name="tindak_lanjut" value="operator" @if($s->status == "rej_monitoring_proses") disabled @endif disabled>
                                     <label for="tindak_lanjut_operator">
                                         Operator
                                     </label>
@@ -111,7 +111,7 @@
 
                             <div class="col-sm-2 col-form-label">
                                 <div class="icheck-primary d-inline">
-                                    <input type="radio" class="@error('tindak_lanjut') is-invalid @enderror" id="tindak_lanjut_perbaikan" name="tindak_lanjut" value="perbaikan">
+                                    <input type="radio" class="@error('tindak_lanjut') is-invalid @enderror" id="tindak_lanjut_perbaikan" name="tindak_lanjut" value="perbaikan" disabled>
                                     <label for="tindak_lanjut_perbaikan">
                                         Perbaikan
                                     </label>
@@ -120,7 +120,7 @@
 
                             <div class="col-sm-2 col-form-label">
                                 <div class="icheck-primary d-inline">
-                                    <input type="radio" class="@error('tindak_lanjut') is-invalid @enderror" id="tindak_lanjut_karantina" name="tindak_lanjut" value="karantina">
+                                    <input type="radio" class="@error('tindak_lanjut') is-invalid @enderror" id="tindak_lanjut_karantina" name="tindak_lanjut" value="karantina" disabled>
                                     <label for="tindak_lanjut_karantina">
                                         Karantina
                                     </label>
@@ -132,8 +132,8 @@
                         </div>
 
                         <h3>Part</h3>
-                        <div class="form-group row">
-                            <label for="realisasi_pengerjaan" class="col-sm-4 col-form-label" style="text-align:right;">Keperluan Part</label>
+                        <div class="form-group row" id="daftar-part" hidden>
+                            <label for="part" class="col-sm-4 col-form-label" style="text-align:right;">Keperluan Part</label>
                             <div class="col-sm-8">
                                 @foreach($bom as $i)
                                 <div class="form-check col-form-label">
@@ -180,6 +180,59 @@
         today = yyyy + '-' + mm + '-' + dd;
         $('input[name="tanggal_pengerjaan"]').val(today);
         $('#tanggal_permintaan').val(today);
+
+        $("#analisa").on("keyup", function(){
+            var res = $(this).val();
+            if(res != "")
+            {
+                $('#realisasi_pengerjaan').removeAttr("readonly");
+            }
+            else
+            {
+                $('#realisasi_pengerjaan').attr("readonly", true);
+            }
+        });
+
+        $("#realisasi_pengerjaan").on("keyup", function(){
+            var res = $(this).val();
+            if(res != "")
+            {
+                $("input[type=radio][name='tindak_lanjut']").removeAttr("disabled");
+            }
+            else
+            {
+                $("input[type=radio][name='tindak_lanjut']").attr("disabled", true);
+            }
+        });
+
+        $("input[type=radio][name='tindak_lanjut']").on("change", function(){
+            $("input[type=radio][name='kebutuhan_part']").removeAttr("disabled");
+        });
+
+        $("input[type=radio][name='kebutuhan_part']").on('change', function(){
+            if(this.value == "ya")
+            {
+                $("#daftar-part").removeAttr("hidden");
+                $("#tambahlaporan").attr("disabled", true);
+            }
+            else if(this.value == "tidak")
+            {
+                $("#daftar-part").attr("hidden", true);
+                $("input[type=checkbox][name='part[]']").prop("checked", false);
+                $("#tambahlaporan").removeAttr("disabled");
+            }
+        });
+
+        $('input[type=checkbox][name="part[]"]').on('change', function(){
+            var numberOfChecked = $('input[type=checkbox][name="part[]"]:checked').length;
+            if(numberOfChecked > 0)
+            {
+                $("#tambahlaporan").removeAttr("disabled");
+            }
+            else{
+                $("#tambahlaporan").attr("disabled", true);
+            }
+        })
     });
 </script>
 @endsection

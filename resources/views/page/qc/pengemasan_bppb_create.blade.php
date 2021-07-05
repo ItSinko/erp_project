@@ -260,12 +260,8 @@
                 // $('select').select2('val', '');
                 $(this).closest('tr').find('select.tindak_lanjut').val('').trigger('change');
                 $(this).closest('tr').find("select.tindak_lanjut option[value='ok']").attr('disabled', true);
-                if(pemeriksaan_ke < 1){
-                    $(this).closest('tr').find("select.tindak_lanjut option[value='perbaikan']").attr('disabled', false);
-                }
-                else if(pemeriksaan_ke >= 1){
-                    $(this).closest('tr').find("select.tindak_lanjut option[value='produk_spesialis']").attr('disabled', false);
-                }
+                $(this).closest('tr').find("select.tindak_lanjut option[value='perbaikan']").attr('disabled', false);
+                $(this).closest('tr').find("select.tindak_lanjut option[value='produk_spesialis']").attr('disabled', false);
             }
         });
     });
