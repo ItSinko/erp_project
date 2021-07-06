@@ -111,7 +111,11 @@
                                         <label for="fungsi" class="col-sm-4 col-form-label" style="text-align:right;">Fungsi</label>
                                         <div class="col-sm-1 col-form-label">
                                             <div class="icheck-primary d-inline">
-                                                <input type="radio" id="fungsi_ok" name="fungsi" value="ok" checked>
+                                                <input type="radio" id="fungsi_ok" name="fungsi" value="ok" @if($s->fungsi == "ok")
+                                                checked
+                                                @elseif($s->fungsi == "")
+                                                checked
+                                                @endif>
                                                 <label for="fungsi_ok">
                                                     Baik
                                                 </label>
@@ -119,7 +123,9 @@
                                         </div>
                                         <div class="col-sm-2 col-form-label">
                                             <div class="icheck-primary d-inline">
-                                                <input type="radio" id="fungsi_nok" name="fungsi" value="nok">
+                                                <input type="radio" id="fungsi_nok" name="fungsi" value="nok" @if($s->fungsi == "nok")
+                                                checked
+                                                @endif>
                                                 <label for="fungsi_nok">
                                                     Tidak Baik
                                                 </label>
@@ -135,7 +141,11 @@
 
                                         <div class="col-sm-1 col-form-label">
                                             <div class="icheck-primary d-inline">
-                                                <input type="radio" id="kondisi_setelah_proses_ok" name="kondisi_setelah_proses" value="ok" checked>
+                                                <input type="radio" id="kondisi_setelah_proses_ok" name="kondisi_setelah_proses" value="ok" @if($s->kondisi_setelah_proses == "ok")
+                                                checked
+                                                @elseif($s->kondisi_setelah_proses == "")
+                                                checked
+                                                @endif>
                                                 <label for="kondisi_setelah_proses_ok">
                                                     Baik
                                                 </label>
@@ -144,7 +154,9 @@
 
                                         <div class="col-sm-2 col-form-label">
                                             <div class="icheck-primary d-inline">
-                                                <input type="radio" id="kondisi_setelah_proses_nok" name="kondisi_setelah_proses" value="nok">
+                                                <input type="radio" id="kondisi_setelah_proses_nok" name="kondisi_setelah_proses" value="nok" @if($s->kondisi_setelah_proses == "nok")
+                                                checked
+                                                @endif>
                                                 <label for="kondisi_setelah_proses_nok">
                                                     Tidak Baik
                                                 </label>
@@ -159,7 +171,11 @@
                                         <label for="hasil" class="col-sm-4 col-form-label" style="text-align:right;">Hasil</label>
                                         <div class="col-sm-1 col-form-label">
                                             <div class="icheck-primary d-inline">
-                                                <input type="radio" id="hasil_ok" name="hasil_tertutup" value="ok" checked>
+                                                <input type="radio" id="hasil_ok" name="hasil_tertutup" value="ok" @if($s->hasil_tertutup == "ok")
+                                                checked
+                                                @elseif($s->hasil_tertutup == "")
+                                                checked
+                                                @endif>
                                                 <label for="hasil_ok">
                                                     Baik
                                                 </label>
@@ -167,7 +183,9 @@
                                         </div>
                                         <div class="col-sm-2 col-form-label">
                                             <div class="icheck-primary d-inline">
-                                                <input type="radio" id="hasil_nok" name="hasil_tertutup" value="nok">
+                                                <input type="radio" id="hasil_nok" name="hasil_tertutup" value="nok" @if($s->hasil_tertutup == "nok")
+                                                checked
+                                                @endif>
                                                 <label for="hasil_nok">
                                                     Tidak Baik
                                                 </label>
@@ -183,9 +201,25 @@
                                         <div class="col-sm-8">
                                             <select class="form-control select2 select2-info @error('tindak_lanjut_tertutup') is-invalid @enderror" data-dropdown-css-class="select2-info" style="width: 30%;" data-placeholder="Pilih Tindak Lanjut" name="tindak_lanjut_tertutup" id="tindak_lanjut_tertutup">
                                                 <option value=""></option>
-                                                <option value="aging">Pengujian</option>
-                                                <option value="perbaikan" disabled>Perbaikan</option>
-                                                <option value="produk_spesialis" disabled>Produk Spesialis</option>
+                                                <option value="aging" @if($s->tindak_lanjut_tertutup == "aging")
+                                                    selected
+                                                    @elseif($s->tindak_lanjut_tertutup != "aging")
+                                                    @if($s->tindak_lanjut_tertutup == "")
+                                                    selected
+                                                    @else
+                                                    disabled
+                                                    @endif
+                                                    @endif>Pengujian</option>
+                                                <option value="perbaikan" @if($s->tindak_lanjut_tertutup == "perbaikan")
+                                                    selected
+                                                    @elseif($s->tindak_lanjut_tertutup == "")
+                                                    disabled
+                                                    @endif>Perbaikan</option>
+                                                <option value="produk_spesialis" @if($s->tindak_lanjut_tertutup == "produk_spesialis")
+                                                    selected
+                                                    @elseif($s->tindak_lanjut_tertutup == "")
+                                                    disabled
+                                                    @endif>Produk Spesialis</option>
                                             </select>
                                             <small id="alert-perubahan"></small>
                                             @if ($errors->has('tindak_lanjut_tertutup'))
@@ -198,7 +232,7 @@
                                     <div class="form-group row">
                                         <label for="divisi_id" class="col-sm-4 col-form-label" style="text-align:right;">Keterangan</label>
                                         <div class="col-sm-8">
-                                            <textarea name="keterangan_tindak_lanjut_tertutup" id="keterangan_tindak_lanjut_tertutup" class="form-control @error('keterangan_tindak_lanjut_tertutup') is-invalid @enderror"></textarea>
+                                            <textarea name="keterangan_tindak_lanjut_tertutup" id="keterangan_tindak_lanjut_tertutup" class="form-control @error('keterangan_tindak_lanjut_tertutup') is-invalid @enderror">{{$s->keterangan_tindak_lanjut_tertutup}}</textarea>
                                             @if ($errors->has('keterangan_tindak_lanjut_tertutup'))
                                             <span class="invalid-feedback" role="alert">{{$errors->first('keterangan_tindak_lanjut_tertutup')}}</span>
                                             @endif
