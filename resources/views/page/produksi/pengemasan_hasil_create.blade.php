@@ -11,8 +11,9 @@
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item active">Pengemasan</li>
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item"><a href="/pengemasan">Pengemasan</a></li>
+                    <li class="breadcrumb-item active">Tambah No Seri di Laporan</li>
                 </ol>
             </div>
         </div>
@@ -107,25 +108,25 @@
                                         <div class="form-group row">
                                             <label for="kode_barcode" class="col-sm-5 col-form-label" style="text-align:right;">Kode Barcode</label>
                                             <div class="col-sm-1">
-                                                <input type="text" class="form-control  @error('inisial_produk') is-invalid @enderror " name="inisial_produk" id="inisial_produk" @if($barcode != "") value="{{old('inisial_produk', $barcode[0])}}" readonly @endif placeholder="Inisial Produk">
+                                                <input type="text" class="form-control  @error('inisial_produk') is-invalid @enderror " name="inisial_produk" id="inisial_produk" @if($barcode !="" ) value="{{old('inisial_produk', $barcode[0])}}" readonly @endif placeholder="Inisial Produk">
                                                 @if ($errors->has('inisial_produk'))
                                                 <span class="invalid-feedback" role="alert">{{$errors->first('inisial_produk')}}</span>
                                                 @endif
                                             </div>
                                             <div class="col-sm-1">
-                                                <input type="text" class="form-control  @error('tipe_produk') is-invalid @enderror " name="tipe_produk" id="tipe_produk" @if($barcode != "") value="{{old('tipe_produk', $barcode[1])}}" readonly @endif placeholder="Tipe Produk">
+                                                <input type="text" class="form-control  @error('tipe_produk') is-invalid @enderror " name="tipe_produk" id="tipe_produk" @if($barcode !="" ) value="{{old('tipe_produk', $barcode[1])}}" readonly @endif placeholder="Tipe Produk">
                                                 @if ($errors->has('tipe_produk'))
                                                 <span class="invalid-feedback" role="alert">{{$errors->first('tipe_produk')}}</span>
                                                 @endif
                                             </div>
                                             <div class="col-sm-1">
-                                                <input type="text" class="form-control  @error('waktu_produksi') is-invalid @enderror " name="waktu_produksi" id="waktu_produksi" @if($barcode != "") value="{{old('waktu_produksi', $barcode[2])}}" readonly @endif placeholder="Waktu Produksi">
+                                                <input type="text" class="form-control  @error('waktu_produksi') is-invalid @enderror " name="waktu_produksi" id="waktu_produksi" @if($barcode !="" ) value="{{old('waktu_produksi', $barcode[2])}}" readonly @endif placeholder="Waktu Produksi">
                                                 @if ($errors->has('waktu_produksi'))
                                                 <span class="invalid-feedback" role="alert">{{$errors->first('waktu_produksi')}}</span>
                                                 @endif
                                             </div>
                                             <div class="col-sm-1">
-                                                <input type="text" class="form-control  @error('urutan_bb') is-invalid @enderror " name="urutan_bb" id="urutan_bb" @if($barcode != "") value="{{old('urutan_bb', $barcode[3])}}" readonly @endif placeholder="Kedatangan Part">
+                                                <input type="text" class="form-control  @error('urutan_bb') is-invalid @enderror " name="urutan_bb" id="urutan_bb" @if($barcode !="" ) value="{{old('urutan_bb', $barcode[3])}}" readonly @endif placeholder="Kedatangan Part">
                                                 @if ($errors->has('urutan_bb'))
                                                 <span class="invalid-feedback" role="alert">{{$errors->first('urutan_bb')}}</span>
                                                 @endif
@@ -163,7 +164,7 @@
                                                                     <select class="select2 form-control @error('no_seri') is-invalid @enderror no_seri" data-placeholder="Pilih No Seri" data-dropdown-css-class="select2-info" style="width: 100%;" name="no_seri[0]" id="no_seri0">
                                                                         <option value=""></option>
                                                                         @foreach($s as $i)
-                                                                        <option value="{{$i->HasilPerakitan->id}}">{{$i->HasilPerakitan->no_seri}}
+                                                                        <option value="{{$i->HasilPerakitan->id}}">{{$i->HasilPerakitan->Perakitan->alias_tim}}{{$i->HasilPerakitan->no_seri}}
                                                                         </option>
                                                                         @endforeach
                                                                     </select>
@@ -262,7 +263,7 @@
                     </div>
                     <div class="card-footer">
                         <span>
-                            <button type="button" class="btn btn-block btn-danger rounded-pill" style="width:200px;float:left;"><i class="fas fa-times"></i>&nbsp;Batal</button>
+                            <a class="cancelmodal" data-toggle="modal" data-target="#cancelmodal"><button type="button" class="btn btn-block btn-danger rounded-pill" style="width:200px;float:left;"><i class="fas fa-times"></i>&nbsp;Batal</button></a>
                         </span>
                         <span>
                             <button type="submit" class="btn btn-block btn-success rounded-pill" style="width:200px;float:right;" id="tambahlaporan" disabled><i class="fas fa-plus"></i>&nbsp;Tambah Data</button>
@@ -274,6 +275,35 @@
             </div>
             <!-- /.row -->
         </div><!-- /.container-fluid -->
+        <div class="modal fade" id="cancelmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color:	#778899;">
+                        <h4 class="modal-title" id="myModalLabel" style="color:white;">Keluar Halaman</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body" id="cancel">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="card">
+                                    <div class="card-body" style="text-align:center;">
+                                        <h6>Apakah anda yakin meninggalkan halaman ini?</h6>
+                                    </div>
+                                    <div class="card-footer col-12" style="margin-bottom: 2%;">
+                                        <span>
+                                            <button type="button" class="btn btn-block btn-secondary" data-dismiss="modal" id="batalhapussk" style="width:30%;float:left;">Batal</button>
+                                        </span>
+                                        <span>
+                                            <a href="/pengemasan" id="cancelform"><button type="submit" class="btn btn-block btn-danger" id="hapussk" style="width:30%;float:right;">Keluar</button></a>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 </section>
 @endsection
 
@@ -283,35 +313,28 @@
         var rdb = "";
         var add = 0;
 
-        $('#tableitem').on('change', '.no_seri', function(){
-            var no_seri = $(this).closest('tr').find('.no_seri');
+        $('#tableitem').on('change', '.no_seri', function() {
+            var no_seri = $(this).closest('tr').find('.no_seri').val();
             var has_barcode = $(this).closest('tr').find('.has_barcode');
             var no_barcode = $(this).closest('tr').find('.barcode');
-            if(no_seri)
-            {
+            console.log(no_seri)
+            if (no_seri) {
                 $.ajax({
-                    url: 'hasil/create/getbarcode/' + no_seri,
+                    url: 'getbarcode/' + no_seri,
                     type: "GET",
                     dataType: "json",
                     success: function(data) {
-                        if(data != "")
-                        {
+                        if (data != "") {
                             has_barcode.val("yes");
-                            
-                            if(data[0]['monitoring_proses']['alias_barcode'] != "")
-                            {
-                                no_barcode.val(data[0]['monitoring_proses']['alias_barcode'].replace("/", "") + data[0]['no_barcode']);
-                            }
-                            else if(data[0]['pengemasan']['alias_barcode'] != "")
-                            {
-                                no_barcode.val(data[0]['pengamasan']['alias_barcode'].replace("/", "") + data[0]['no_barcode']);
+                            if (data['monitoring_proses']['alias_barcode'] != "") {
+                                no_barcode.val(data['monitoring_proses']['alias_barcode'].replace("/", "") + '/' + data['no_barcode']);
+                            } else if (data['pengemasan']['alias_barcode'] != "") {
+                                no_barcode.val(data['pengemasan']['alias_barcode'].replace("/", "") + '/' + data['no_barcode']);
                             }
                             no_barcode.attr("readonly", true);
                             $('#tambahitem').removeAttr('disabled');
                             $('#tambahlaporan').removeAttr('disabled');
-                        }
-                        else
-                        {
+                        } else {
                             has_barcode.val("no");
                             no_barcode.val("");
                             no_barcode.removeAttr("readonly", true);
@@ -320,20 +343,21 @@
                         }
                     }
                 });
-
-                
+            } else {
+                has_barcode.val("");
+                no_barcode.val("");
+                no_barcode.removeAttr("readonly", true);
+                $('#tambahitem').attr('disabled', true);
+                $('#tambahlaporan').attr('disabled', true);
             }
         })
 
-        $('#tableitem').on('change', '.no_seri', function(){
+        $('#tableitem').on('change', '.no_seri', function() {
             var no_barcode = $(this).closest('tr').find('.barcode');
-            if(no_barcode != "")
-            {
+            if (no_barcode != "") {
                 $('#tambahitem').removeAttr('disabled');
                 $('#tambahlaporan').removeAttr('disabled');
-            }
-            else
-            {
+            } else {
                 $('#tambahitem').attr('disabled', true);
                 $('#tambahlaporan').attr('disabled', true);
             }
@@ -377,6 +401,7 @@
         }
 
         $('#tambahitem').click(function(e) {
+            add++;
             $('#tambahitem').attr('disabled', true);
             $('#tambahlaporan').attr('disabled', true);
             var data = `
@@ -388,7 +413,7 @@
                         <select class="select2 form-control @error('no_seri') is-invalid @enderror no_seri" data-placeholder="Pilih No Seri" data-dropdown-css-class="select2-info" style="width: 100%;" name="no_seri[` + add + `]" id="no_seri` + add + `">
                             <option value=""></option>
                             @foreach($s as $i)
-                            <option value="{{$i->HasilPerakitan->id}}">{{$i->HasilPerakitan->no_seri}}
+                            <option value="{{$i->HasilPerakitan->id}}">{{$i->HasilPerakitan->Perakitan->alias_tim}}{{$i->HasilPerakitan->no_seri}}
                             </option>
                             @endforeach
                         </select>

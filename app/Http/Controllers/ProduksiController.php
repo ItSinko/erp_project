@@ -1000,7 +1000,7 @@ class ProduksiController extends Controller
             ->editColumn('no_seri', function ($s) {
                 $res = $s->HasilPerakitan->Perakitan->alias_tim . $s->HasilPerakitan->no_seri;
                 if ($s->no_barcode) {
-                    $res .= " / " . str_replace("/", "", $s->alias_barcode) . $s->no_barcode;
+                    $res .= " / " . str_replace("/", "", $s->MonitoringProses->alias_barcode) . $s->no_barcode;
                 }
                 return $res;
             })
@@ -1226,6 +1226,7 @@ class ProduksiController extends Controller
             $q->whereIn('status', ['pengemasan']);
         })->get();
 
+
         return DataTables::of($s)
             ->addIndexColumn()
             ->addColumn('gambar', function ($s) {
@@ -1248,24 +1249,18 @@ class ProduksiController extends Controller
             })
             ->addColumn('laporan', function ($s) {
                 $btn = '<a class="detailmodal" data-toggle="modal" data-target="#detailmodal" data-attr="/pengemasan/laporan/show/' . $s->id . '" data-id="' . $s->id . '">
+                        <div>
                             <button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-search"></i></button>
-                        </a>
-                        <a href="/pengemasan/bppb/' . $s->id . '">
-                            <button type="button" class="btn btn-success btn-sm m-1" style="border-radius:50%;"><i class="fas fa-eye"></i></button>
-                        </a>';
+                        </div>
+                        <div><small>Data Laporan</small></div></a>';
                 return $btn;
             })
             ->addColumn('aksi', function ($s) {
-                $btn = "";
-                if ($s->jumlah > $s->countHasilPengemasan()) {
-                    $btn = '<a href="/pengemasan/laporan/create/' . $s->id . '">';
-                    $btn .= '<button type="button" class="rounded-pill btn btn-sm btn-primary">';
-                    $btn .= '<span style="color:white;"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Tambah Laporan</a></span></button></a>';
-                } else if ($s->jumlah <= $s->countHasilPengemasan()) {
-                    $btn = '<button type="button" class="rounded-pill btn btn-sm btn-secondary" disabled>
-                      <span style="color:white;"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Tambah Laporan</a></span>
-                    </button>';
-                }
+                $btn = '<a href="/pengemasan/bppb/' . $s->id . '">
+                <div>
+                    <button type="button" class="btn btn-success btn-sm m-1" style="border-radius:50%;"><i class="fas fa-eye"></i></button>
+                </div>
+                <div><small>Lihat Semua No Seri</small></div></a>';
                 return $btn;
             })
             ->rawColumns(['gambar', 'produk', 'jumlah', 'laporan', 'aksi'])
@@ -1420,18 +1415,18 @@ class ProduksiController extends Controller
             })
             ->addColumn('status', function ($s) {
                 $btn = "";
-                // if ($s->status == "dibuat") {
-                if ($s->countHasilPengemasanStatus(['req_pengemasan', 'rej_pengemasan']) <= 0) {
-                    $btn = '<a href="/pengemasan/laporan/status/' . $s->id . '/penyerahan">
+                if ($s->status == "dibuat") {
+                    if ($s->countHasilPengemasanStatus(['req_pengemasan', 'rej_pengemasan']) <= 0) {
+                        $btn = '<a href="/pengemasan/laporan/status/' . $s->id . '/penyerahan">
                             <button class="btn btn-info btn-sm m-1" style="border-radius:50%;">
                             <i class="fas fa-paper-plane"></i></button></a><div><small>Penyerahan</small></div>';
-                } else if ($s->countHasilPengemasanStatus(['req_pengemasan', 'rej_pengemasan']) > 0) {
-                    $btn = '<button class="btn btn-secondary btn-sm m-1" style="border-radius:50%;" disabled>
+                    } else if ($s->countHasilPengemasanStatus(['req_pengemasan', 'rej_pengemasan']) > 0) {
+                        $btn = '<button class="btn btn-secondary btn-sm m-1" style="border-radius:50%;" disabled>
                         <i class="fas fa-paper-plane"></i></button><div><small>Penyerahan</small></div>';
+                    }
+                } else if ($s->status == "penyerahan") {
+                    $btn = '<div class="info-text">Diserahkan</div>';
                 }
-                // } else if ($s->status == "penyerahan") {
-                //     $btn = '<div class="info-text">Diserahkan</div>';
-                // }
                 return $btn;
             })
             ->rawColumns(['aksi', 'status'])
@@ -1466,76 +1461,84 @@ class ProduksiController extends Controller
     {
         if ($status == "penyerahan") {
             $s = Pengemasan::find($id);
-            // $s->status = $status;
-            // $u = $s->save();
+            $s->status = $status;
+            $u = $s->save();
 
-            // if ($u) {
-            $gbj = PenyerahanBarangJadi::where([
-                ['bppb_id', '=', $s->bppb_id],
-                ['tanggal', '=', Carbon::now()->toDateString()],
-                ['status', '=', 'req_penyerahan']
-            ])->whereHas('Divisi', function ($q) {
-                $q->where('nama', 'Gudang Barang Jadi');
-            })->first();
+            if ($u) {
+                $gbj = PenyerahanBarangJadi::where([
+                    ['bppb_id', '=', $s->bppb_id],
+                    ['tanggal', '=', Carbon::now()->toDateString()],
+                    ['status', '=', 'req_penyerahan']
+                ])->whereHas('Divisi', function ($q) {
+                    $q->where('nama', 'Gudang Barang Jadi');
+                })->first();
 
-            $gk = PenyerahanBarangJadi::where([
-                ['bppb_id', '=', $s->bppb_id],
-                ['tanggal', '=', Carbon::now()->toDateString()],
-                ['status', '=', 'req_penyerahan']
-            ])->whereHas('Divisi', function ($q) {
-                $q->where('nama', 'Gudang Karantina');
-            })->first();
+                $gk = PenyerahanBarangJadi::where([
+                    ['bppb_id', '=', $s->bppb_id],
+                    ['tanggal', '=', Carbon::now()->toDateString()],
+                    ['status', '=', 'req_penyerahan']
+                ])->whereHas('Divisi', function ($q) {
+                    $q->where('nama', 'Gudang Karantina');
+                })->first();
 
-            $hp = HasilPengemasan::where('pengemasan_id', $id)->get();
-            $bool = true;
-            foreach ($hp as $i) {
-                if ($i->hasil == "ok" && $i->tindak_lanjut == "ok") {
-                    if (empty($gbj)) {
-                        $c = PenyerahanBarangJadi::create([
-                            'divisi_id' => 13,
-                            'bppb_id' => $s->bppb_id,
-                            'tanggal' => Carbon::now()->toDateString(),
-                            'status' => 'req_penyerahan'
-                        ]);
-                        if ($c) {
-                            $gbj = PenyerahanBarangJadi::find($c->id);
+                $hp = HasilPengemasan::where('pengemasan_id', $id)->get();
+                $bool = true;
+                foreach ($hp as $i) {
+                    if ($i->hasil == "ok" && $i->tindak_lanjut == "ok") {
+                        if (empty($gbj)) {
+                            $c = PenyerahanBarangJadi::create([
+                                'divisi_id' => 13,
+                                'bppb_id' => $s->bppb_id,
+                                'tanggal' => Carbon::now()->toDateString(),
+                                'status' => 'req_penyerahan'
+                            ]);
+                            if ($c) {
+                                $gbj = PenyerahanBarangJadi::find($c->id);
+                            }
                         }
-                    }
-                    $cs = DetailPenyerahanBarangJadi::create([
-                        'penyerahan_barang_jadi_id' => $gbj->id,
-                        'hasil_perakitan_id' => $i->hasil_perakitan_id
-                    ]);
-
-                    if (!$cs) {
-                        $bool = false;
-                    }
-                } else if ($i->hasil == "nok") {
-                    if (empty($gk)) {
-                        $c = PenyerahanBarangJadi::create([
-                            'divisi_id' => 12,
-                            'bppb_id' => $s->bppb_id,
-                            'tanggal' => Carbon::now()->toDateString(),
-                            'status' => 'req_penyerahan'
+                        $cs = DetailPenyerahanBarangJadi::create([
+                            'penyerahan_barang_jadi_id' => $gbj->id,
+                            'hasil_perakitan_id' => $i->hasil_perakitan_id
                         ]);
-                        if ($c) {
-                            $gk = PenyerahanBarangJadi::find($c->id);
-                        }
-                    }
-                    $cs = DetailPenyerahanBarangJadi::create([
-                        'penyerahan_barang_jadi_id' => $gk->id,
-                        'hasil_perakitan_id' => $i->hasil_perakitan_id
-                    ]);
 
-                    if (!$cs) {
-                        $bool = false;
+                        if (!$cs) {
+                            $bool = false;
+                        } else if ($cs) {
+                            $uhp = HasilPengemasan::find($i->id);
+                            $uhp->status = "proses_penyerahan";
+                            $uhp->save();
+                        }
+                    } else if ($i->hasil == "nok" && ($i->tindak_lanjut != "proses_penyerahan" || $i->tindak_lanjut != "penyerahan")) {
+                        if (empty($gk)) {
+                            $c = PenyerahanBarangJadi::create([
+                                'divisi_id' => 12,
+                                'bppb_id' => $s->bppb_id,
+                                'tanggal' => Carbon::now()->toDateString(),
+                                'status' => 'req_penyerahan'
+                            ]);
+                            if ($c) {
+                                $gk = PenyerahanBarangJadi::find($c->id);
+                            }
+                        }
+                        $cs = DetailPenyerahanBarangJadi::create([
+                            'penyerahan_barang_jadi_id' => $gk->id,
+                            'hasil_perakitan_id' => $i->hasil_perakitan_id
+                        ]);
+
+                        if (!$cs) {
+                            $bool = false;
+                        } else if ($cs) {
+                            $uhp = HasilPengemasan::find($i->id);
+                            $uhp->status = "proses_penyerahan";
+                            $uhp->save();
+                        }
                     }
                 }
-            }
 
-            if ($bool == true) {
-                return redirect()->back();
+                if ($bool == true) {
+                    return redirect()->back();
+                }
             }
-            // }
         }
     }
 
@@ -1598,8 +1601,10 @@ class ProduksiController extends Controller
                 'pic_id' => Auth::user()->id,
                 'karyawan_id' => $request->karyawan_id,
                 'tanggal' => $request->tanggal_laporan,
-                'alias_barcode' => $alias_barcode
+                'alias_barcode' => $alias_barcode,
+                'status' => 'dibuat'
             ]);
+
 
             if (!empty($request->no_seri)) {
                 $bool = true;
@@ -1721,6 +1726,11 @@ class ProduksiController extends Controller
                     $alias_barcode = NULL;
                 }
                 $bool = true;
+
+                $ps = Pengemasan::find($id);
+                $ps->status = 'dibuat';
+                $ps->save();
+
                 for ($i = 0; $i < count($request->no_seri); $i++) {
                     $cs = HasilPengemasan::create([
                         'pengemasan_id' => $id,
