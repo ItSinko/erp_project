@@ -1382,12 +1382,13 @@ class QCController extends Controller
     {
         $b = MonitoringProses::find($id);
         $bs = $b->bppb_id;
+        $alias_barcode = explode('/', $b->alias_barcode);
         $s = HasilPerakitan::whereHas('Perakitan', function ($q) use ($bs) {
             $q->where('bppb_id', $bs);
         })->doesntHave('HasilMonitoringProses')
             ->whereIn('status', ['acc_pemeriksaan_tertutup'])->get();
         $p = IkPemeriksaanPengujian::where('detail_produk_id', '=', $b->Bppb->detail_produk_id)->get();
-        return view('page.qc.pengujian_monitoring_proses_hasil_create', ['id' => $id, 's' => $s, 'b' => $b, 'p' => $p]);
+        return view('page.qc.pengujian_monitoring_proses_hasil_create', ['id' => $id, 's' => $s, 'b' => $b, 'p' => $p, 'alias_barcode' => $alias_barcode]);
     }
 
     public function pengujian_monitoring_proses_hasil_status($id, $status)

@@ -962,11 +962,9 @@ class ProduksiController extends Controller
             })
             ->editColumn('jumlah', function ($s) {
                 $bppb_id = $s->id;
-                $count = HasilPerakitan::whereHas('Perakitan', function ($q) use ($bppb_id) {
+                $count = HasilMonitoringProses::whereHas('MonitoringProses', function ($q) use ($bppb_id) {
                     $q->where('bppb_id', $bppb_id);
-                })->whereDoesntHave('HasilMonitoringProses', function ($q) {
-                    $q->where('hasil', 'ok');
-                })->whereIn('status', ['acc_pemeriksaan_tertutup'])->count();
+                })->count();
                 $btn = '<hgroup>
                     <h6 class="heading">' . $s->jumlah . " " . $s->DetailProduk->satuan . '</h6>
                     <div class="subheading"><small class="info-text">Pengujian: ' . $count . ' ' . $s->DetailProduk->satuan . '</small></div>
@@ -1350,31 +1348,38 @@ class ProduksiController extends Controller
                         $q->where('id', $hid);
                     })->orderBy('updated_at', 'desc')->first();
 
-                    // if ($h->status == "req_pengemasan") {
-                    //     $str = '<div><small class="warning-text">Menunggu QC</small></div>';
-                    // } else if ($h->status == "rej_pengemasan") {
-                    //     if($h->tindak_lanjut == "perbaikan"){
-                    //         $str = '<div><small class="danger-text">Perbaikan Produksi</small></div>';
-                    //     } else if($h->tindak_lanjut == "analisa_pengemasan_ps"){
-                    //         $str = '<div><small class="danger-text">Analisa Produk Spesialis</small></div>';
-                    //     }
-                    // } else if ($h->status == "perbaikan_pengemasan") {
-                    //     $str = '<a class="perbaikanproduksimodal" data-toggle="modal" data-target="#perbaikanproduksimodal" data-attr="/perbaikan/produksi/detail/' . $p->id . '" data-id="' . $p->id . '"><button type="button" class="btn btn-outline-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-search"></i></button>
-                    //             <div><small> Lihat Hasil Perbaikan</small></div></a>
-                    //             <div><small class="info-text">Perbaikan Produksi</small></div>';
-                    // } else if ($h->status == "analisa_pengemasan_ps") {
-                    //     if ($a->tindak_lanjut == "perbaikan") {
-                    //         $str = '<a class="analisapsmodal" data-toggle="modal" data-target="#analisapsmodal" data-attr="/pengemasan/analisa_ps/show/' . $a->id . '" data-id="' . $a->id . '">
-                    //             <button class="btn btn-sm btn-outline-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-search"></i></button>
-                    //             <div><small>Lihat Hasil Analisa</small></div></a>
-                    //             <div><small class="warning-text">Sedang dalam Perbaikan</small></div>';
-                    //     } else if ($a->tindak_lanjut == "karantina") {
-                    //         $str = '<a class="analisapsmodal" data-toggle="modal" data-target="#analisapsmodal" data-attr="/pengemasan/analisa_ps/show/' . $a->id . '" data-id="' . $a->id . '">
-                    //             <button class="btn btn-sm btn-outline-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-search"></i></button>
-                    //             <div><small> Lihat Hasil Analisa</small></div></a>
-                    //             <div><small class="danger-text">Masuk Gudang Karantina</small></div>';
-                    //     }
-                    // }
+                    if ($h->status == "req_pengemasan") {
+                        $str = '<div><small class="warning-text">Menunggu QC</small></div>';
+                    } else if ($h->status == "rej_pengemasan") {
+                        if ($h->tindak_lanjut == "perbaikan") {
+                            $str = '<div><small class="danger-text">Perbaikan Produksi</small></div>';
+                        } else if ($h->tindak_lanjut == "analisa_pengemasan_ps") {
+                            $str = '<div><small class="danger-text">Analisa Produk Spesialis</small></div>';
+                        }
+                    } else if ($h->status == "perbaikan_pengemasan") {
+                        $str = '<a class="perbaikanproduksimodal" data-toggle="modal" data-target="#perbaikanproduksimodal" data-attr="/perbaikan/produksi/detail/' . $p->id . '" data-id="' . $p->id . '"><button type="button" class="btn btn-outline-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-search"></i></button>
+                                <div><small> Lihat Hasil Perbaikan</small></div></a>
+                                <div><small class="info-text">Perbaikan Produksi</small></div>';
+                    } else if ($h->status == "analisa_pengemasan_ps") {
+                        if ($a->tindak_lanjut == "perbaikan") {
+                            $str = '<a class="analisapsmodal" data-toggle="modal" data-target="#analisapsmodal" data-attr="/pengemasan/analisa_ps/show/' . $a->id . '" data-id="' . $a->id . '">
+                                <button class="btn btn-sm btn-outline-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-search"></i></button>
+                                <div><small>Lihat Hasil Analisa</small></div></a>
+                                <div><small class="warning-text">Sedang dalam Perbaikan</small></div>';
+                        } else if ($a->tindak_lanjut == "karantina") {
+                            $str = '<a class="analisapsmodal" data-toggle="modal" data-target="#analisapsmodal" data-attr="/pengemasan/analisa_ps/show/' . $a->id . '" data-id="' . $a->id . '">
+                                <button class="btn btn-sm btn-outline-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-search"></i></button>
+                                <div><small> Lihat Hasil Analisa</small></div></a>
+                                <div><small class="danger-text">Masuk Gudang Karantina</small></div>';
+                        }
+                    } else if ($h->status == "ok") {
+                        $str = '<div><i class="fas fa-check-circle" style="color:green;"></i></div>';
+                        $str .= '<div>Ok</div>';
+                    } else if ($h->status == "proses_penyerahan") {
+                        $str = '<div><small class="purple-text">Proses Penyerahan</small></div>';
+                    } else if ($h->status == "penyerahan") {
+                        $str = '<div><small class="info-text">Penyerahan</small></div>';
+                    }
                 }
                 return $str;
             })

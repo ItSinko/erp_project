@@ -129,22 +129,41 @@
                                     </td>
                                     <td>{{$i->keterangan}}</td>
                                     <td>{{ucfirst($i->tindak_lanjut)}}</td>
-                                    <td>@if($i->status == 'req_perbaikan')
-                                        <a href="/perbaikan/produksi/create/{{$i->id}}/pengemasan">
-                                            <button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-paper-plane"></i></button>
-                                            <div><small>Perbaikan</small></div>
-                                        </a>
-                                        @elseif($i->status == 'acc_perbaikan')
-                                        <small class="danger-text">Perbaikan</small>
-                                        @elseif($i->status == 'rej_pemeriksaan')
-                                        @if($i->tindak_lanjut == 'perbaikan')
-                                        <a href="/perbaikan/produksi/create/{{$i->id}}/pengemasan">
-                                            <button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-paper-plane"></i></button>
-                                            <div><small>Perbaikan</small></div>
-                                        </a>
-                                        @elseif($i->tindak_lanjut == 'produk_spesialis')
-                                        <small class="danger-text">Produk Spesialis</small>
+                                    <td>@if ($i->status == "req_pengemasan")
+                                        <div><small class="warning-text">Menunggu QC</small></div>
+                                        @elseif ($i->status == "rej_pengemasan")
+                                        @if ($i->tindak_lanjut == "perbaikan")
+                                        <div><small class="danger-text">Perbaikan Produksi</small></div>
+                                        @elseif ($i->tindak_lanjut == "analisa_pengemasan_ps")
+                                        <div><small class="danger-text">Analisa Produk Spesialis</small></div>
                                         @endif
+                                        @elseif ($i->status == "perbaikan_pengemasan")
+                                        <a class="perbaikanproduksimodal" data-toggle="modal" data-target="#perbaikanproduksimodal" data-attr="/perbaikan/produksi/detail/{{$i->latestPerbaikan()->id}}" data-id="{{$i->latestPerbaikan()->id}}">
+                                            <button type="button" class="btn btn-outline-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-search"></i></button>
+                                            <div><small> Lihat Hasil Perbaikan</small></div>
+                                        </a>
+                                        <div><small class="info-text">Perbaikan Produksi</small></div>
+                                        @elseif ($i->status == "analisa_pengemasan_ps")
+                                        @if ($i->latestAnalisaPs()->tindak_lanjut == "perbaikan")
+                                        <a class="analisapsmodal" data-toggle="modal" data-target="#analisapsmodal" data-attr="/pengemasan/analisa_ps/show/{{$i->latestAnalisaPs()->id}}" data-id="{{$i->latestAnalisaPs()->id}}">
+                                            <button class="btn btn-sm btn-outline-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-search"></i></button>
+                                            <div><small>Lihat Hasil Analisa</small></div>
+                                        </a>
+                                        <div><small class="warning-text">Sedang dalam Perbaikan</small></div>
+                                        @elseif ($i->latestAnalisaPs()->tindak_lanjut == "karantina")
+                                        <a class="analisapsmodal" data-toggle="modal" data-target="#analisapsmodal" data-attr="/pengemasan/analisa_ps/show/{{$i->latestAnalisaPs()->id}}" data-id="{{$i->latestAnalisaPs()->id}}">
+                                            <button class="btn btn-sm btn-outline-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-search"></i></button>
+                                            <div><small> Lihat Hasil Analisa</small></div>
+                                        </a>
+                                        <div><small class="danger-text">Masuk Gudang Karantina</small></div>
+                                        @endif
+                                        @elseif ($i->status == "ok")
+                                        <div><i class="fas fa-check-circle" style="color:green;"></i></div>
+                                        <div>Ok</div>
+                                        @elseif ($i->status == "proses_penyerahan")
+                                        <div><small class="purple-text">Proses Penyerahan</small></div>
+                                        @elseif ($i->status == "penyerahan")
+                                        <div><small class="info-text">Penyerahan</small></div>
                                         @endif
                                     </td>
                                 </tr>

@@ -11,8 +11,9 @@
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item active">Pengemasan</li>
+                    <li class="breadcrumb-item"><a href="">Home</a></li>
+                    <li class="breadcrumb-item"><a href="/pengujian">Pengujian</a></li>
+                    <li class="breadcrumb-item active">Tambah Data Monitoring Proses</li>
                 </ol>
             </div>
         </div>
@@ -110,29 +111,28 @@
                                             <span class="invalid-feedback" role="alert">{{$errors->first('brc')}}</span>
                                             @endif
                                         </div>
-
                                         <div class="form-group row">
                                             <label for="kode_barcode" class="col-sm-4 col-form-label" style="text-align:right;">Tanggal Laporan</label>
-                                            <div class="col-sm-2">
-                                                <input type="text" class="form-control  @error('inisial_produk') is-invalid @enderror " name="inisial_produk" id="inisial_produk" value="{{old('inisial_produk')}}" style="width: 20%;">
+                                            <div class="col-sm-1">
+                                                <input type="text" class="form-control  @error('inisial_produk') is-invalid @enderror" name="inisial_produk" id="inisial_produk" @if($alias_barcode !="" ) value="{{old('inisial_produk', $alias_barcode[0])}}" readonly @else value="{{old('inisial_produk')}}" @endif>
                                                 @if ($errors->has('inisial_produk'))
                                                 <span class="invalid-feedback" role="alert">{{$errors->first('inisial_produk')}}</span>
                                                 @endif
                                             </div>
                                             <div class="col-sm-1">
-                                                <input type="text" class="form-control  @error('tipe_produk') is-invalid @enderror " name="tipe_produk" id="tipe_produk" value="{{old('tipe_produk')}}" style="width: 20%;">
+                                                <input type="text" class="form-control  @error('tipe_produk') is-invalid @enderror" name="tipe_produk" id="tipe_produk" @if($alias_barcode !="" ) value="{{old('tipe_produk', $alias_barcode[1])}}" readonly @else value="{{old('tipe_produk')}}" @endif>
                                                 @if ($errors->has('tipe_produk'))
                                                 <span class="invalid-feedback" role="alert">{{$errors->first('tipe_produk')}}</span>
                                                 @endif
                                             </div>
-                                            <div class="col-sm-2">
-                                                <input type="text" class="form-control  @error('waktu_produksi') is-invalid @enderror " name="waktu_produksi" id="waktu_produksi" value="{{old('waktu_produksi')}}" style="width: 20%;">
+                                            <div class="col-sm-1">
+                                                <input type="text" class="form-control  @error('waktu_produksi') is-invalid @enderror" name="waktu_produksi" id="waktu_produksi" @if($alias_barcode !="" ) value="{{old('waktu_produksi', $alias_barcode[2])}}" readonly @else value="{{old('waktu_produksi')}}" @endif>
                                                 @if ($errors->has('waktu_produksi'))
                                                 <span class="invalid-feedback" role="alert">{{$errors->first('waktu_produksi')}}</span>
                                                 @endif
                                             </div>
                                             <div class="col-sm-1">
-                                                <input type="text" class="form-control  @error('urutan_bb') is-invalid @enderror " name="urutan_bb" id="urutan_bb" value="{{old('urutan_bb')}}" style="width: 20%;">
+                                                <input type="text" class="form-control  @error('urutan_bb') is-invalid @enderror" name="urutan_bb" id="urutan_bb" @if($alias_barcode !="" ) value="{{old('urutan_bb', $alias_barcode[3])}}" readonly @else value="{{old('urutan_bb')}}" @endif>
                                                 @if ($errors->has('urutan_bb'))
                                                 <span class="invalid-feedback" role="alert">{{$errors->first('urutan_bb')}}</span>
                                                 @endif
@@ -278,17 +278,23 @@
 <script>
     $(function() {
         var rdb = "";
+        var ab = "{{$alias_barcode[0]}}";
         $('input[type="radio"][name="brc"]').on("change", function() {
             if (this.value == 'ya') {
-                $('.barcode').attr('readonly', false);
-                $('#insial_produk').attr('readonly', false);
-                $('#tipe_produk').attr('readonly', false);
-                $('#waktu_produksi').attr('readonly', false);
-                $('#urutan_bb').attr('readonly', false);
-                rdb = 'ya';
+                if (ab == "") {
+                    $('#inisial_produk').attr('readonly', false);
+                    $('#tipe_produk').attr('readonly', false);
+                    $('#waktu_produksi').attr('readonly', false);
+                    $('#urutan_bb').attr('readonly', false);
+                    $('.barcode').attr('readonly', false);
+                    rdb = 'ya';
+                } else {
+                    $('.barcode').attr('readonly', false);
+                    rdb = 'ya';
+                }
             } else if (this.value == 'tidak') {
                 $('.barcode').attr('readonly', true);
-                $('#insial_produk').attr('readonly', true);
+                $('#inisial_produk').attr('readonly', true);
                 $('#tipe_produk').attr('readonly', true);
                 $('#waktu_produksi').attr('readonly', true);
                 $('#urutan_bb').attr('readonly', true);

@@ -37,6 +37,15 @@ class HasilPengemasan extends Model
         return $p->id;
     }
 
+    public function latestAnalisaPs()
+    {
+        $id = $this->Pengemasan->id;
+        $a = AnalisaPsPengemasan::whereHas('HasilPengemasan', function ($q) use ($id) {
+            $q->where('id', $id);
+        })->orderby('updated_at', 'desc')->first();
+        return $a->id;
+    }
+
     public function countStatus($status)
     {
         $k = $this->HasilPerakitan->id;

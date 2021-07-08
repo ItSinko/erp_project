@@ -276,7 +276,7 @@
             <!-- /.row -->
         </div><!-- /.container-fluid -->
         <div class="modal fade" id="cancelmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-            <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-dialog modal-md" role="document">
                 <div class="modal-content">
                     <div class="modal-header" style="background-color:	#778899;">
                         <h4 class="modal-title" id="myModalLabel" style="color:white;">Keluar Halaman</h4>

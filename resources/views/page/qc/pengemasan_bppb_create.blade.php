@@ -84,110 +84,110 @@
                                     <h3>Data Pengemasan</h3>
                                     <div class="form-horizontal">
                                         <div class="form-group row">
-                                        <div class="table-responsive">
-                                            <table id="tableitem" class="table table-hover table-bordered">
-                                                <thead style="text-align: center;">
-                                                    <tr>
-                                                        <th rowspan="2">No</th>
-                                                        <th rowspan="2">Kode Perakitan</th>
-                                                        <th rowspan="2">Barcode</th>
-                                                        <th rowspan="2" hidden>Pemeriksaan</th>
-                                                        <th rowspan="2">Kondisi Unit</th>
-                                                        @foreach($c as $cps)
-                                                        <th colspan="{{count($cps->DetailCekPengemasan)}}">{{$cps->perlengkapan}}</th>
-                                                        @endforeach
-                                                        <th rowspan="2">Hasil</th>
-                                                        <th rowspan="2">Keterangan</th>
-                                                        <th rowspan="2">Tindak Lanjut</th>
-                                                    </tr>
-                                                    <tr>
-                                                        @foreach($c as $cs)
-                                                        @foreach($cs->DetailCekPengemasan as $i)
-                                                        <th>{{$i->nama_barang}}</th>
-                                                        @endforeach
-                                                        @endforeach
-                                                    </tr>
-                                                </thead>
-                                                <tbody style="text-align:center;">
-                                                    @foreach($hp as $i)
-                                                    <tr>
-                                                        <td>{{$loop->iteration}}</td>
-                                                        <td>
-                                                            <input type="text" name="hasil_pengemasan_id[{{$loop->iteration - 1}}]" id="hasil_pengemasan_id" value="{{$i->id}}" hidden>{{$i->HasilPerakitan->no_seri}}
-                                                        </td>
-                                                        <td>
-                                                        @if($i->no_barcode != "")
-                                                        {{str_replace("/", "", $i->Pengemasan->alias_barcode)}}{{$i->no_barcode}}
-                                                        @else
-                                                        {{str_replace("/", "", $i->HasilPerakitan->HasilMonitoringProses->first()->MonitoringProses->alias_barcode)}}{{$i->HasilPerakitan->HasilMonitoringProses->first()->no_barcode}}
-                                                        @endif
-                                                        </td>
-                                                        <td hidden><input type="text" class="pemeriksaan_ke" name="pemeriksaan_ke[{{$loop->iteration - 1}}]" id="pemeriksaan_ke" value="{{$i->countStatus('pemeriksaan_pengemasan')}}" hidden></td>
-                                                        <td>
-                                                            @if($i->kondisi_unit == "tidak")
-                                                            <i class="fas fa-times-circle" style="color:red;"></i>
-                                                            @elseif($i->kondisi_unit == "baik")
-                                                            <i class="fas fa-check-circle" style="color:green;"></i>
-                                                            @endif
-                                                        </td>
-                                                        @foreach($c as $cs)
-                                                        @foreach($cs->DetailCekPengemasan as $h)
-                                                        <td>@if($i->DetailCekPengemasan->contains('id', $h->id))
-                                                            <i class="fas fa-check" style="color:green;"></i>
-                                                            @else
-                                                            <i class="fas fa-times" style="color:red;"></i>
-                                                            @endif
-                                                        </td>
-                                                        @endforeach
-                                                        @endforeach
-                                                        <td>
-                                                            <div class="row">
-                                                                <div class="col-sm-12">
-                                                                    <div class="form-group clearfix">
-                                                                        <div class="icheck-success d-inline checked">
-                                                                            <input type="radio" name="hasil[{{$loop->iteration - 1}}]" id="ok{{$loop->iteration - 1}}" class="hasil" value="ok" checked>
-                                                                            <label for="ok{{$loop->iteration - 1}}">
-                                                                                <i class="fas fa-check-circle" style="color:green;"></i>
-                                                                            </label>
+                                            <div class="table-responsive">
+                                                <table id="tableitem" class="table table-hover table-bordered">
+                                                    <thead style="text-align: center;">
+                                                        <tr>
+                                                            <th rowspan="2">No</th>
+                                                            <th rowspan="2">Kode Perakitan</th>
+                                                            <th rowspan="2">Barcode</th>
+                                                            <th rowspan="2" hidden>Pemeriksaan</th>
+                                                            <th rowspan="2">Kondisi Unit</th>
+                                                            @foreach($c as $cps)
+                                                            <th colspan="{{count($cps->DetailCekPengemasan)}}">{{$cps->perlengkapan}}</th>
+                                                            @endforeach
+                                                            <th rowspan="2">Hasil</th>
+                                                            <th rowspan="2">Keterangan</th>
+                                                            <th rowspan="2">Tindak Lanjut</th>
+                                                        </tr>
+                                                        <tr>
+                                                            @foreach($c as $cs)
+                                                            @foreach($cs->DetailCekPengemasan as $i)
+                                                            <th>{{$i->nama_barang}}</th>
+                                                            @endforeach
+                                                            @endforeach
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody style="text-align:center;">
+                                                        @foreach($hp as $i)
+                                                        <tr>
+                                                            <td>{{$loop->iteration}}</td>
+                                                            <td>
+                                                                <input type="text" name="hasil_pengemasan_id[{{$loop->iteration - 1}}]" id="hasil_pengemasan_id" value="{{$i->id}}" hidden>{{$i->HasilPerakitan->no_seri}}
+                                                            </td>
+                                                            <td>
+                                                                @if($i->no_barcode != "")
+                                                                {{str_replace("/", "", $i->Pengemasan->alias_barcode)}}{{$i->no_barcode}}
+                                                                @else
+                                                                {{str_replace("/", "", $i->HasilPerakitan->HasilMonitoringProses->first()->MonitoringProses->alias_barcode)}}{{$i->HasilPerakitan->HasilMonitoringProses->first()->no_barcode}}
+                                                                @endif
+                                                            </td>
+                                                            <td hidden><input type="text" class="pemeriksaan_ke" name="pemeriksaan_ke[{{$loop->iteration - 1}}]" id="pemeriksaan_ke" value="{{$i->countStatus('pemeriksaan_pengemasan')}}" hidden></td>
+                                                            <td>
+                                                                @if($i->kondisi_unit == "tidak")
+                                                                <i class="fas fa-times-circle" style="color:red;"></i>
+                                                                @elseif($i->kondisi_unit == "baik")
+                                                                <i class="fas fa-check-circle" style="color:green;"></i>
+                                                                @endif
+                                                            </td>
+                                                            @foreach($c as $cs)
+                                                            @foreach($cs->DetailCekPengemasan as $h)
+                                                            <td>@if($i->DetailCekPengemasan->contains('id', $h->id))
+                                                                <i class="fas fa-check" style="color:green;"></i>
+                                                                @else
+                                                                <i class="fas fa-times" style="color:red;"></i>
+                                                                @endif
+                                                            </td>
+                                                            @endforeach
+                                                            @endforeach
+                                                            <td>
+                                                                <div class="row">
+                                                                    <div class="col-sm-12">
+                                                                        <div class="form-group clearfix">
+                                                                            <div class="icheck-success d-inline checked">
+                                                                                <input type="radio" name="hasil[{{$loop->iteration - 1}}]" id="ok{{$loop->iteration - 1}}" class="hasil" value="ok" checked>
+                                                                                <label for="ok{{$loop->iteration - 1}}">
+                                                                                    <i class="fas fa-check-circle" style="color:green;"></i>
+                                                                                </label>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-sm-12">
-                                                                    <div class="form-group clearfix">
-                                                                        <div class="icheck-danger d-inline">
-                                                                            <input type="radio" name="hasil[{{$loop->iteration - 1}}]" id="nok{{$loop->iteration - 1}}" value="nok" class="hasil">
-                                                                            <label for="nok{{$loop->iteration - 1}}">
-                                                                                <i class="fas fa-times-circle" style="color:red;"></i>
-                                                                            </label>
+                                                                <div class="row">
+                                                                    <div class="col-sm-12">
+                                                                        <div class="form-group clearfix">
+                                                                            <div class="icheck-danger d-inline">
+                                                                                <input type="radio" name="hasil[{{$loop->iteration - 1}}]" id="nok{{$loop->iteration - 1}}" value="nok" class="hasil">
+                                                                                <label for="nok{{$loop->iteration - 1}}">
+                                                                                    <i class="fas fa-times-circle" style="color:red;"></i>
+                                                                                </label>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <div class="form-group">
-                                                                <div class="input-group">
-                                                                    <textarea class="form-control @error('keterangan') is-invalid @enderror" name="keterangan[{{$loop->iteration - 1}}]" id="keterangan"></textarea>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group">
+                                                                    <div class="input-group">
+                                                                        <textarea class="form-control @error('keterangan') is-invalid @enderror" name="keterangan[{{$loop->iteration - 1}}]" id="keterangan"></textarea>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <select class="select2 custom-select form-control tindak_lanjut  @error('tindak_lanjut') is-invalid @enderror " name="tindak_lanjut[{{$loop->iteration - 1}}]" id="tindak_lanjut{{$loop->iteration - 1}}" data-placeholder="Pilih Tindak Lanjut" data-dropdown-css-class="select2-info" style="width: 80%;">
-                                                                <option value="ok">OK</option>
-                                                                <option value="perbaikan" disabled>Perbaikan</option>
-                                                                <option value="produk_spesialis" disabled>Produk Spesialis</option>
-                                                            </select>
-                                                            @if ($errors->has('tindak_lanjut'))
-                                                            <span class="invalid-feedback" role="alert">{{$errors->first('tindak_lanjut')}}</span>
-                                                            @endif
-                                                        </td>
-                                                    </tr>
-                                                    @endforeach
-                                                </tbody>
+                                                            </td>
+                                                            <td>
+                                                                <select class="select2 custom-select form-control tindak_lanjut  @error('tindak_lanjut') is-invalid @enderror " name="tindak_lanjut[{{$loop->iteration - 1}}]" id="tindak_lanjut{{$loop->iteration - 1}}" data-placeholder="Pilih Tindak Lanjut" data-dropdown-css-class="select2-info" style="width: 80%;">
+                                                                    <option value="ok">OK</option>
+                                                                    <option value="perbaikan" disabled>Perbaikan</option>
+                                                                    <option value="produk_spesialis" disabled>Produk Spesialis</option>
+                                                                </select>
+                                                                @if ($errors->has('tindak_lanjut'))
+                                                                <span class="invalid-feedback" role="alert">{{$errors->first('tindak_lanjut')}}</span>
+                                                                @endif
+                                                            </td>
+                                                        </tr>
+                                                        @endforeach
+                                                    </tbody>
 
-                                            </table>
+                                                </table>
                                             </div>
                                         </div>
                                     </div>
@@ -196,7 +196,7 @@
                     </div>
                     <div class="card-footer">
                         <span>
-                            <button type="button" class="btn btn-block btn-danger rounded-pill" style="width:200px;float:left;"><i class="fas fa-times"></i>&nbsp;Batal</button>
+                            <a class="cancelmodal" data-toggle="modal" data-target="#cancelmodal"><button type="button" class="btn btn-block btn-danger rounded-pill" style="width:200px;float:left;"><i class="fas fa-times"></i>&nbsp;Batal</button></a>
                         </span>
                         <span>
                             <button type="submit" class="btn btn-block btn-success rounded-pill" style="width:200px;float:right;"><i class="fas fa-plus"></i>&nbsp;Tambah Data</button>
