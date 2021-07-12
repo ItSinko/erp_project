@@ -430,10 +430,6 @@ Route::group(['prefix' => '/perakitan', 'middleware' => 'auth'], function () {
     Route::get('/show/eng', 'EngController@perakitan_show')->name('perakitan.show.eng');
     Route::get('/mtc', 'MtcController@perakitan')->name('perakitan.mtc');
     Route::get('/show/mtc', 'MtcController@perakitan_show')->name('perakitan.show.mtc');
-
-    Route::get('/mtc', 'MtcController@perakitan')->name('perakitan.mtc');
-    Route::get('/show/mtc', 'MtcController@perakitan_show')->name('perakitan.show.mtc');
-
     Route::get('/', 'ProduksiController@perakitan')->name('perakitan');
     Route::get('/show', 'ProduksiController@perakitan_show')->name('perakitan.show');
     Route::get('/create', 'ProduksiController@perakitan_create')->name('perakitan.create');   /* Create dari BPPB */
@@ -634,6 +630,20 @@ Route::group(['prefix' => '/perbaikan', 'middleware' => 'auth'], function () {
     Route::get('/produksi/detail/{id}', 'ProduksiController@perbaikan_produksi_detail')->name('perbaikan.produksi.detail');
 });
 
+//INCOMING (KEDATANGAN)
+Route::group(['prefix' => '/kedatangan', 'middleware' => 'auth'], function () {
+    Route::get('/packing_list', 'QCController@kedatangan_packing_list')->name('kedatangan.packing_list');
+    Route::get('/packing_list/show', 'QCController@kedatangan_packing_list_show')->name('kedatangan.packing_list.show');
+    Route::get('/sampling', 'QCController@kedatangan_sampling')->name('kedatangan.sampling');
+    Route::get('/sampling/show', 'QCController@kedatangan_sampling_show')->name('kedatangan.sampling.show');
+    Route::get('/analisa', 'QCController@kedatangan_analisa')->name('kedatangan.analisa');
+    Route::get('/analisa/show', 'QCController@kedatangan_analisa_show')->name('kedatangan.analisa.show');
+});
+
+//OUTGOING 
+// Route::group(['prefix' => 'pemeriksaan', 'middleware' => 'auth'], function(){
+//     Route::get('')
+// })
 
 // DOCUMENT CONTROL
 Route::group(['prefix' => 'dc', 'middleware' => 'auth'], function () {
