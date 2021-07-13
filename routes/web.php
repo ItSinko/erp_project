@@ -667,13 +667,15 @@ Route::get('/gudang/data', 'GudangController@get_data')->name('gudang.data');
 
 
 //PPIC
-Route::group(['prefix' => 'ppic', 'middleware' => 'auth'], function () {
+Route::group(['prefix' => 'ppic'], function () {
     Route::get('/schedule', 'PpicController@schedule_show');
     Route::post('/schedule/create', 'PpicController@schedule_create');
     Route::post('/schedule/delete', 'PpicController@schedule_delete');
-    Route::get('/bom', 'PpicController@bom');
-    Route::get('/get_bom/{id}', 'PpicController@get_bom');
-    Route::get('/get_version', 'PpicController@get_version');
+    Route::get('/get_item_bom', 'PpicController@get_item_bom');
+    Route::get('/get_versi_bom', 'PpicController@get_versi_bom');
+    Route::get('/add_part_order/{id}/{quantity}', 'PpicController@add_part_order');
+    Route::get('/delete_part_order/{id}/{quantity}', 'PpicController@delete_part_order');
+    Route::post('/notif', 'PpicController@schedule_notif');
 });
 
 
@@ -689,7 +691,6 @@ Route::get('/chat', 'ChatController@index');
 Route::get('/message', 'ChatController@fetchMessages');
 Route::post('/message', 'ChatController@sendMessage');
 
-Route::post('/notif', 'PpicController@schedule_notif')->middleware('auth');
 Route::get('/stok', function () {
     event(new cek_stok('pesan'));
     return "notif send";

@@ -16,18 +16,12 @@
 @stop
 
 @section('content_header')
-<div class="row">
-    <div class="col-6">
-        <h1 id="page_header" class="m-0 text-dark">Jadwal Produksi</h1>
-    </div>
-    <div class="col-6">
-        <div class="btn-toolbar justify-content-between float-right" role="toolbar">
-            <div class="btn-group" role="group" id="view-button">
-                <button type="button" class="btn view btn-primary">Kalender</button>
-                <button type="button" class="btn view btn-info">Tabel</button>
-                <button type="button" class="btn view btn-warning">Daftar</button>
-            </div>
-        </div>
+<div class="d-flex justify-content-between">
+    <h1>Jadwal Produksi</h1>
+    <div class="btn-group" id="view-button">
+        <button type="button" class="btn view btn-primary">Kalender</button>
+        <button type="button" class="btn view btn-info">Tabel</button>
+        <button type="button" class="btn view btn-warning">Daftar</button>
     </div>
 </div>
 @stop
@@ -59,21 +53,22 @@
     <div id="data_user">{{ Auth::user() }}</div>
 </div>
 
-<div class="row">
-    <div class="col-md-12">
-        <div class="alert alert-info alert-dismissible" id="status_penyusunan" style="display: none;">
-            <h5><i class="icon fas fa-info"></i> Status </h5>
-            Penyusunan
-        </div>
-        <div class="alert alert-warning alert-dismissible" id="status_pelaksanaan" style="display: none;">
-            <h5><i class="icon fas fa-hard-hat"></i> Status</h5>
-            Pelaksanaan
-        </div>
-        <div class="alert alert-success alert-dismissible" id="status_selesai" style="display: none;">
-            <h5><i class="icon fas fa-check"></i> Status</h5>
-            Selesai
-        </div>
+<div>
+    <div class="alert alert-info alert-dismissible" id="status_penyusunan" style="display: none;">
+        <h5><i class="icon fas fa-info"></i> Status </h5>
+        Penyusunan
     </div>
+    <div class="alert alert-warning alert-dismissible" id="status_pelaksanaan" style="display: none;">
+        <h5><i class="icon fas fa-hard-hat"></i> Status</h5>
+        Pelaksanaan
+    </div>
+    <div class="alert alert-success alert-dismissible" id="status_selesai" style="display: none;">
+        <h5><i class="icon fas fa-check"></i> Status</h5>
+        Selesai
+    </div>
+</div>
+
+<div class="row">
     <div class="col-md-3 view-calendar" style="display: none">
         <div class="sticky-top">
             <div class="card">
@@ -104,8 +99,12 @@
             <button class="btn btn-danger btn-block" id="acc-button">Persetujuan</button>
             @endif
             @endcan
-            @if (Auth::user()->divisi_id == 3)
-            <button class="btn btn-info btn-block" id="bppb-button" style="display: none;">BPPB</button>
+            @if (Auth::user()->divisi_id == 24)
+            @if ($status == "pelaksanaan")
+            <button class="btn btn-info btn-block" id="bppb-button">BPPB</button>
+            @elseif ($status == "penyusunan")
+            <button class="btn btn-primary btn-block" id="approval-button">Minta persetujuan</button>
+            @endif
             @endif
         </div>
     </div>
@@ -116,83 +115,85 @@
             </div>
         </div>
     </div>
-    <div class="col-12 table-view" style="display: none;">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Table View</h3>
-                <div class="card-tools">
-                    <div class="btn-group" role="group" id="button-date">
-                        <button type="button" class="btn btn-secondary"><i class="fas fa-less-than"></i></button>
-                        <button type="button" class="btn btn-secondary"><i class="fas fa-greater-than"></i></button>
-                    </div>
+</div>
+
+<div class="table-view" style="display: none;">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Table View</h3>
+            <div class="card-tools">
+                <div class="btn-group" role="group" id="button-date">
+                    <button type="button" class="btn btn-secondary"><i class="fas fa-less-than"></i></button>
+                    <button type="button" class="btn btn-secondary"><i class="fas fa-greater-than"></i></button>
                 </div>
             </div>
-            <div class="card-body" style="overflow-x: auto;">
-                <table class="table table-bordered center">
-                    <thead>
-                        <tr>
-                            <th style="width: 20%">Produk</th>
-                            <th style="width: 10%">Jumlah Produksi</th>
-                            @for ($i = 1; $i <= date('t'); $i++) <th>{{$i}}</th>
-                                @endfor
-                        </tr>
-                    </thead>
-                    <tbody id="table-date" data-num_date="{{ date('t') }}">
-                    </tbody>
-                </table>
-            </div>
-            <div class="card-footer">
-                <span style="background-color: black; display: inline-block; height:15px; width:15px; margin-right:10px;"></span><span>Hari libur</span><br>
-                <span style="background-color: yellow; display: inline-block; height:15px; width:15px; margin-right:10px;"></span><span>Hari produksi</span><br>
-                <span style="background-color: white; display: inline-block; height:15px; width:15px; margin-right:10px;"></span><span>Hari kosong</span><br>
-            </div>
+        </div>
+        <div class="card-body" style="overflow-x: auto;">
+            <table class="table table-bordered center">
+                <thead>
+                    <tr>
+                        <th style="width: 20%">Produk</th>
+                        <th style="width: 10%">Jumlah Produksi</th>
+                        @for ($i = 1; $i <= date('t'); $i++) <th>{{$i}}</th>
+                            @endfor
+                    </tr>
+                </thead>
+                <tbody id="table-date" data-num_date="{{ date('t') }}">
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer">
+            <span style="background-color: black; display: inline-block; height:15px; width:15px; margin-right:10px;"></span><span>Hari libur</span><br>
+            <span style="background-color: yellow; display: inline-block; height:15px; width:15px; margin-right:10px;"></span><span>Hari produksi</span><br>
+            <span style="background-color: white; display: inline-block; height:15px; width:15px; margin-right:10px;"></span><span>Hari kosong</span><br>
         </div>
     </div>
-    <div class="col-12 list-view" style="display: none;">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">List View</h3>
-                <div class="card-tools">
-                    <div class="input-group input-group-sm" style="width: 150px;">
-                        <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+</div>
 
-                        <div class="input-group-append">
-                            <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
-                        </div>
+<div class="list-view" style="display: none;">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">List View</h3>
+            <div class="card-tools">
+                <div class="input-group input-group-sm" style="width: 150px;">
+                    <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
                     </div>
                 </div>
             </div>
-            <div class="card-body table-responsive p-0">
-                <table class="table table-head-fixed text-nowrap">
-                    <thead>
-                        <tr>
-                            <th>Produk</th>
-                            <th>Tanggal Mulai</th>
-                            <th>Tanggal Selesai</th>
-                            <th>Status</th>
-                            <th>Progress</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($event as $e)
-                        <tr>
-                            <td>{{$e->nama}}</td>
-                            <td>{{$e->tanggal_mulai}}</td>
-                            <td>{{$e->tanggal_selesai}}</td>
-                            <td>On Progress</td>
-                            <td>
-                                <div class="progress progress-xs">
-                                    <div class="progress-bar progress-bar-danger" style="width: 55%"></div>
-                                </div>
-                                <span class="badge bg-danger">55%</span>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-            <!-- /.card-body -->
         </div>
+        <div class="card-body table-responsive p-0">
+            <table class="table table-head-fixed text-nowrap" id="list-view-table">
+                <thead>
+                    <tr>
+                        <th>Produk</th>
+                        <th>Tanggal Mulai</th>
+                        <th>Tanggal Selesai</th>
+                        <th>Status</th>
+                        <th>Progress</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($event as $e)
+                    <tr data-id="{{$e->id}}">
+                        <td>{{$e->nama}}</td>
+                        <td>{{$e->tanggal_mulai}}</td>
+                        <td>{{$e->tanggal_selesai}}</td>
+                        <td>On Progress</td>
+                        <td>
+                            <div class="progress progress-xs">
+                                <div class="progress-bar progress-bar-danger" style="width: 55%"></div>
+                            </div>
+                            <span class="badge bg-danger">55%</span>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+        <!-- /.card-body -->
     </div>
 </div>
 
@@ -221,18 +222,19 @@
                     <div class="form-group row">
                         <label for="product-name" class="col-sm-2 col-form-label">Produksi</label>
                         <div class="col-sm-10">
-                            <select id="product-name" class="form-control select2" data-placeholder="Pilih Produk..." required>
+                            <select id="product-name" class="form-control" placeholder="Pilih Produk...">
                                 <option value=""></option>
                                 @foreach($detail_produk as $e)
                                 <option value="{{ $e->id }}">{{ $e->nama }}</option>
                                 @endforeach
                             </select>
+                            <span style='color: red;'></span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="product-bom" class="col-sm-2 col-form-label">Versi BOM</label>
+                        <label for="product-bom-version" class="col-sm-2 col-form-label">Versi BOM</label>
                         <div class="col-sm-10">
-                            <select class="form-control" id="product-bom" required disabled>
+                            <select class="form-control" id="product-bom-version" disabled>
                                 <option value=""></option>
                             </select>
                             <span style='color: red;'></span>
@@ -241,7 +243,7 @@
                     <div class="form-group row">
                         <label for="product-quantity" class="col-sm-2 col-form-label">Jumlah Produksi</label>
                         <div class="col-sm-10">
-                            <input type="number" class="form-control" id="product-quantity" required disabled>
+                            <input type="number" class="form-control" id="product-quantity" disabled>
                             <span style='color: grey;'></span>
                         </div>
                     </div>
@@ -284,7 +286,7 @@
                     <div class="input-group-prepend">
                         <label class="input-group-text" for="input">Search</label>
                     </div>
-                    <select class="form-control" id="bom-input">
+                    <select class="form-control" id="bom-version-input">
                         <option value=""></option>
                     </select>
                 </div>
@@ -361,7 +363,7 @@
     var event = JSON.parse($('#data_event').html()); // GET data event from controller
     var user = JSON.parse($('#data_user').html()); // GET data user
     var status = $('#data_status').html(); // GET data status from controller
-
+    console.log("user");
     console.log(user);
 
     // ajax setup
@@ -430,7 +432,6 @@
         if (status == 'penyusunan') {
             $('#status_penyusunan').show();
             $('#status_pelaksanaan, #status_selesai').hide();
-            choose_view('Kalender');
         } else if (status == 'pelaksanaan') {
             $('#status_pelaksanaan').show();
             $('#status_penyusunan, #status_selesai').hide();
@@ -464,6 +465,23 @@
             else
                 table_row.append(`<td></td>`);
         }
+    }
+    // list-view function
+    function list_view_table_update(event) {
+        $('#list-view-table tbody').append(`
+        <tr data-id="${event.id}">
+            <td>${event.nama}</td>
+            <td>${event.tanggal_mulai}</td>
+            <td>${event.tanggal_selesai}</td>
+            <td>On Progress</td>
+            <td>
+                <div class="progress progress-xs">
+                    <div class="progress-bar progress-bar-danger" style="width: 55%"></div>
+                </div>
+                <span class="badge bg-danger">55%</span>
+            </td>
+        </tr>
+        `);
     }
 
     // calendar-view setting
@@ -521,8 +539,7 @@
                                 method: "POST",
                                 success: function() {
                                     info.event.remove();
-                                    $('#row1_' + info.event._def.publicId).remove();
-                                    $('#row2_' + info.event._def.publicId).remove();
+                                    $(`tr[data-id="${info.event._def.publicId}"]`).remove();
                                 }
                             });
                         }
@@ -548,20 +565,23 @@
         }
 
     // ajax function
-    var bom_input_change = function() {
+    var table_product_click_callback = function(event) {
         $('#modal-show-bom').modal('show');
-        event_info = {
-            id: this.dataset.id
-        };
+        $('#table-bom tbody').empty();
+        let id_event = this.dataset.id;
         $.ajax({
-            url: "/ppic/get_version",
+            url: "/ppic/get_versi_bom",
             method: "GET",
-            data: event_info,
-            success: function(result) {
-                $('#bom-input').empty();
-                $('#bom-input').append(`<option value=""></option>`);
-                result.forEach(element => {
-                    $('#bom-input').append(`<option value="` + element.id + `">` + element.versi + `</option>`);
+            data: {
+                id: id_event,
+            },
+            success: function(response) {
+                console.log(response)
+                $('#bom-version-input').attr('data-detail_produk_id', response[0].detail_produk_id);
+                $('#bom-version-input').empty();
+                $('#bom-version-input').append(`<option value=""></option>`);
+                response.forEach(element => {
+                    $('#bom-version-input').append(`<option value="` + element.versi + `">` + element.versi + `</option>`);
                 });
             },
             error: function(xhr, status, err) {
@@ -569,13 +589,17 @@
             }
         });
     }
-    var product_bom_change = function() {
+    var product_bom_version_change = function() {
+        let versi = this.value;
+        let detail_produk_id = this.dataset.detail_produk_id;
         $('#product-quantity').next("span").html("");
         $.ajax({
-            url: `/ppic/get_bom/${this.value}`,
+            url: `/ppic/get_item_bom`,
             method: "GET",
             data: {
-                count: true
+                count: true,
+                versi: versi,
+                detail_produk_id: detail_produk_id,
             },
             success: function(result) {
                 $('#product-quantity').next('span').html(`max: ${result}`);
@@ -590,8 +614,8 @@
     // reset form
     function reset_form() {
         $('#product-form')[0].reset();
-        $('.select2').val(null);
-        $('#product-bom').prop('disabled', true);
+        $('#product-form span').html("");
+        $('#product-bom-version').prop('disabled', true);
         $('#product-quantity').prop('disabled', true);
     }
 
@@ -607,6 +631,7 @@
 
         reset_form(); // reset form
         choose_status(status); // choose status info
+        choose_view('Kalender');
         $('.view').click(function() {
             choose_view($(this).text()); // choose display mode
         });
@@ -641,26 +666,28 @@
             })
         });
         $('#product-name').change(function() {
-            $('#product-bom').next("span").html("");
+            let detail_produk_id = this.value;
+            $('#product-bom-version').next("span").html("");
             $('#product-quantity').next("span").html("");
             $.ajax({
-                url: "/ppic/get_version",
+                url: "/ppic/get_versi_bom",
                 method: "GET",
                 data: {
-                    detail_produk_id: this.value,
+                    detail_produk_id: detail_produk_id,
                 },
                 success: function(result) {
                     if (result.length != 0) {
-                        $('#product-bom').empty();
-                        $('#product-bom').append(`<option value=""></option>`);
+                        $('#product-bom-version').attr('data-detail_produk_id', detail_produk_id);
+                        $('#product-bom-version').empty();
+                        $('#product-bom-version').append(`<option value=""></option>`);
                         result.forEach(element => {
-                            $('#product-bom').append(`<option value="${element.id}">${element.versi}</option>`);
+                            $('#product-bom-version').append(`<option value="${element.versi}">${element.versi}</option>`);
                         });
-                        $('#product-bom').prop('disabled', false);
-                        $('#product-bom').change(product_bom_change);
+                        $('#product-bom-version').prop('disabled', false);
+                        $('#product-bom-version').change(product_bom_version_change);
                     } else {
-                        $('#product-bom').next('span').html("Bom belum tersedia");
-                        $('#product-bom').empty().prop('disabled', true);
+                        $('#product-bom-version').next('span').html("Bom belum tersedia");
+                        $('#product-bom-version').empty().prop('disabled', true);
                     }
                     $('#product-quantity').prop('disabled', true);
                 },
@@ -677,10 +704,9 @@
                 end: $('#date_end').val(),
                 status: "penyusunan",
                 jumlah: $('#product-quantity').val(),
-                bom: $('#product-bom').val(),
+                bom: $('#product-bom-version').val(),
                 color: color,
             }
-            console.log(data_saved);
             $.ajax({
                 url: "/ppic/schedule/create",
                 method: "POST",
@@ -695,24 +721,28 @@
                         borderColor: color,
                     });
                     $('#modal-input-product').modal('hide');
-                    $('#table-product').append(`<tr data-id="${result.id}">
-                        <td>${result.nama}</td>
-                        <td>${result.jumlah_produksi}</td>
-                    </tr>`);
+                    $('#table-product').append(
+                        `<tr data-id="${result.id}">
+                            <td>${result.nama}</td>
+                            <td>${result.jumlah_produksi}</td>
+                        </tr>`
+                    );
                     date_mark(result);
-                    $('#table-product tr').click(bom_input_change);
+                    list_view_table_update(result);
+                    $('#table-product tr').click(table_product_click_callback);
+                    reset_form();
                 },
                 error: function(xhr, status, err) {
-                    console.log("product-submit: " + err);
+                    alert("Form belum lengkap");
                 }
             });
-            reset_form();
         });
-        $('#table-product tr').click(bom_input_change);
+        $('#table-product tr').click(table_product_click_callback);
         let initialize = true;
         let table;
-        $("#bom-input").change(function() {
-            let temp = this.value;
+        $("#bom-version-input").change(function() {
+            let versi = this.value;
+            let detail_produk_id = this.dataset.detail_produk_id;
             if (initialize) {
                 initialize = false;
             } else {
@@ -722,7 +752,13 @@
                 paging: false,
                 info: false,
                 pageLength: -1,
-                ajax: '/ppic/get_bom/' + temp,
+                ajax: {
+                    url: '/ppic/get_item_bom/',
+                    data: {
+                        detail_produk_id: detail_produk_id,
+                        versi: versi,
+                    },
+                },
                 columns: [{
                         data: 'DT_RowIndex',
                         orderable: false,
@@ -818,6 +854,26 @@
                 });
             }
         });
+
+        $("#approval-button").click(function() {
+            let message = "Persetujuan jadwal produksi";
+            let status = "Penyusunan";
+            $.ajax({
+                url: "/ppic/notif",
+                method: "POST",
+                data: {
+                    message: message,
+                    status: status,
+                    user: user,
+                },
+                success: function() {
+                    alert("success");
+                },
+                error: function() {
+                    alert("error");
+                }
+            })
+        })
     });
 </script>
 

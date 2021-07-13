@@ -16,6 +16,7 @@ use App\BillOfMaterial;
 use App\DetailProduk;
 use App\Produk;
 use App\Part;
+use App\PartOrder;
 use App\Bppb;
 use App\DetailPenyerahanBarangJadi;
 use App\KelompokProduk;
@@ -36,11 +37,6 @@ use PhpParser\Node\Expr\AssignOp\Div;
 
 class PPICController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     public function schedule_show(Request $request)
     {
 
@@ -69,24 +65,7 @@ class PPICController extends Controller
 
     public function schedule_create(Request $request)
     {
-        if ($request->id_event != NULL) {
-            $event = Event::find($request->id_event);
-            $event->versi_bom = $request->versi;
-            $event->save();
-
-            return $event;
-            // return $request->id_event
-        }
-        // if ($request->versi != NULL) {
-        //     $versi = ProdukBillOfMaterial::find($request->versi);
-        //     $event = Event::find($request->id_event);
-
-        //     $event->versi_bom = $versi->versi;
-        //     $event->save();
-
-        //     return $event;
-        // }
-
+        // Update status column
         if ($request->status_update != NULL && $request->status_update == true) {
             $event = Event::find((int)$request->id);
             $event->status = $request->status;
@@ -96,6 +75,13 @@ class PPICController extends Controller
 
             return $event;
         }
+
+        // Create new row
+        $request->validate([
+            'id_produk' => 'required',
+            'bom' => 'required',
+            'jumlah' => 'required',
+        ]);
 
         $data = [
             'detail_produk_id' => $request->id_produk,
@@ -107,84 +93,103 @@ class PPICController extends Controller
             'versi_bom' => $request->bom,
         ];
 
-        // if ($request->bom != null) {
-        //     $data = Event::where('id_produk', $request->id_produk)->update(['bom' => $request->bom]);
-        //     return $request->id_produk;
-        // }
-
         Event::create($data);
-        $data['nama'] = Event::latest()->first()->detail_produk->nama;
-        $data['id'] = Event::latest()->first()->id;
+        $new_event = Event::latest()->first();
+        $data['nama'] = $new_event->detail_produk->nama;
+        $data['id'] = $new_event->id;
+        $bom_id = ProdukBillOfMaterial::where('detail_produk_id', $new_event->detail_produk_id)->where('versi', $new_event->versi_bom)->first()->id;
+
+        $this->add_part_order($bom_id, $new_event->jumlah_produksi);
+
         return $data;
     }
 
     public function schedule_delete(Request $request)
     {
+        $event = Event::find($request->id);
+        $bom_id = ProdukBillOfMaterial::where('detail_produk_id', $event->detail_produk_id)->where('versi', $event->versi_bom)->first()->id;
+        $quantity = $event->jumlah_produksi;
+        $this->delete_part_order($bom_id, $quantity);
         if ($request->id != "") Event::destroy($request->id);
+    }
+
+    public function add_part_order($bom_id, $quantity)
+    {
+        $bom = DB::table('bill_of_materials')
+            ->where('produk_bill_of_material_id', '=', $bom_id)
+            ->join('part_gudang_part_engs', 'bill_of_materials.part_eng_id', '=', 'part_gudang_part_engs.kode_eng')
+            ->join('part_engs', 'part_gudang_part_engs.kode_eng', '=', 'part_engs.kode_part')
+            ->join('parts', 'part_gudang_part_engs.kode_gudang', '=', 'parts.kode')
+            ->select('parts.kode', 'bill_of_materials.jumlah')
+            ->get();
+
+        foreach ($bom as $d) {
+            $data_order = PartOrder::where('kode', $d->kode);
+            if ($data_order->exists()) {
+                $current_quantity = $data_order->first()->jumlah;
+                $data_order->update(['jumlah' => $current_quantity + $d->jumlah * $quantity]);
+            } else {
+                PartOrder::create([
+                    'kode' => $d->kode,
+                    'jumlah' => $d->jumlah * $quantity,
+                ]);
+            }
+        }
+        return "done";
+    }
+
+    public function delete_part_order($bom_id, $quantity)
+    {
+        $bom = DB::table('bill_of_materials')
+            ->where('produk_bill_of_material_id', '=', $bom_id)
+            ->join('part_gudang_part_engs', 'bill_of_materials.part_eng_id', '=', 'part_gudang_part_engs.kode_eng')
+            ->join('part_engs', 'part_gudang_part_engs.kode_eng', '=', 'part_engs.kode_part')
+            ->join('parts', 'part_gudang_part_engs.kode_gudang', '=', 'parts.kode')
+            ->select('parts.kode', 'bill_of_materials.jumlah')
+            ->get();
+
+        foreach ($bom as $d) {
+            $data_order = PartOrder::where('kode', $d->kode);
+            if ($data_order->exists()) {
+                $current_quantity = $data_order->first()->jumlah;
+                $next_quantity = $current_quantity - $d->jumlah * $quantity;
+                if ($next_quantity <= 0) $data_order->delete();
+                else $data_order->update(['jumlah' => $next_quantity]);
+            }
+        }
+        return "done";
     }
 
     public function schedule_notif(Request $request)
     {
         event(new RealTimeMessage(Auth::user(), $request->message, $request->status));
-
-        // $date = Event::toBase()->orderBy('start', 'asc')->get();
-        // $today = date('m');
-        // foreach ($date as $d) {
-        //     $temp = strtotime($d->start);
-        //     if ($today == date('m', $temp)) {
-        //         $temp = Event::find($d->id);
-        //         $temp->status = $request->status;
-        //         $temp->save();
-        //     }
-        // }
     }
 
-    public function bom()
+    public function get_item_bom(Request $request)
     {
-        $produk = Produk::all();
-        $detail_produk = DetailProduk::all();
-        $produk_bom = ProdukBillOfMaterial::all();
+        $detail_produk_id = $request->detail_produk_id;
+        $versi_bom = $request->versi;
 
-        return view('page.ppic.bom_show', compact('produk', 'detail_produk', 'produk_bom'));
-    }
+        $id = ProdukBillOfMaterial::where('detail_produk_id', $detail_produk_id)->where('versi', $versi_bom)->first()->id;
 
-    public function get_bom(Request $request, $id)
-    {
-        // if ($id == null) {
-        //     if ($request->id != null) {
-        //         $event = Event::find($request->detail_id);
-        //         return DetailProduk::where('detail_produks.id', $event->detail_produk_id)
-        //             ->join('produk_bill_of_materials', 'detail_produk_id', 'detail_produks.id')
-        //             ->select('versi', 'produk_bill_of_materials.id')
-        //             ->get();
-        //     }
-
-        //     if ($request->produk_bill_of_material_id) {
-        //         $bom = BillOfMaterial::where('produk_bill_of_material_id', (int)$request->produk_bill_of_material_id)
-        //             ->join('part_gudang_part_engs', 'bill_of_materials.part_eng_id', '=', 'part_gudang_part_engs.kode_eng')
-        //             ->join('parts', 'part_gudang_part_engs.kode_gudang', '=', 'parts.kode')
-        //             ->join('part_engs', 'part_gudang_part_engs.kode_eng', '=', 'part_engs.kode_part')
-        //             ->select('part_engs.nama', 'bill_of_materials.jumlah', 'parts.jumlah as stok')
-        //             ->get();
-        //         return $bom;
-        //     }
-        // }
-
-        $bom = DB::table('bill_of_materials')
-            ->where('produk_bill_of_material_id', '=', $id)
+        $bom = BillOfMaterial::where('produk_bill_of_material_id', '=', $id)
             ->join('part_gudang_part_engs', 'bill_of_materials.part_eng_id', '=', 'part_gudang_part_engs.kode_eng')
             ->join('part_engs', 'part_gudang_part_engs.kode_eng', '=', 'part_engs.kode_part')
             ->join('parts', 'part_gudang_part_engs.kode_gudang', '=', 'parts.kode')
-            ->select('bill_of_materials.id', 'part_engs.nama', 'bill_of_materials.jumlah', 'parts.jumlah as stok')
+            ->select('bill_of_materials.id', 'part_engs.nama', 'bill_of_materials.jumlah', 'parts.jumlah as stok', 'parts.kode')
             ->get();
 
-        if ($request->count != NULL) {
+        // Count maximum number of product
+        if (isset($request->count)) {
             $max_val = INF;
             foreach ($bom as $data) {
-                $result = (int)($data->stok / $data->jumlah);
+                $part_order = PartOrder::where('kode', $data->kode);
+                if ($part_order->exists()) $order = $part_order->first()->jumlah;
+                else $order = 0;
+                $remainder = $data->stok - $order;
+                $result = (int)($remainder / $data->jumlah);
                 if ($result < $max_val) $max_val = $result;
             }
-
             return $result;
         }
 
@@ -193,14 +198,14 @@ class PPICController extends Controller
             ->make(true);
     }
 
-    public function get_version(Request $request)
+    public function get_versi_bom(Request $request)
     {
         if ($request->id != NULL) $detail_produk_id = Event::find($request->id)->detail_produk_id;
         else if ($request->detail_produk_id != NULL) $detail_produk_id = $request->detail_produk_id;
 
         return DetailProduk::where('detail_produks.id', $detail_produk_id)
             ->join('produk_bill_of_materials', 'detail_produk_id', 'detail_produks.id')
-            ->select('versi', 'produk_bill_of_materials.id')
+            ->select('versi', 'detail_produk_id')
             ->get();
     }
 
