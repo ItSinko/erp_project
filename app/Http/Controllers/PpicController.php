@@ -66,7 +66,7 @@ class PPICController extends Controller
     public function schedule_create(Request $request)
     {
         // Update status column
-        if ($request->status_update != NULL && $request->status_update == true) {
+        if (isset($request->status_update) && $request->status_update == true) {
             $event = Event::find((int)$request->id);
             $event->status = $request->status;
             $event->save();
@@ -218,8 +218,15 @@ class PPICController extends Controller
         return view('page.ppic.bom_show', compact('produk', 'detail_produk', 'produk_bom'));
     }
 
-    public function get_part_coversion()
+    public function schedule_event_change_status(Request $request)
     {
+        foreach ($request->event as $data) {
+            $item = Event::find($data['id']);
+            $item->status = "disetujui";
+            $item->save();
+        }
+        $this->schedule_notif($request);
+        return "done";
     }
 
     public function bppb()

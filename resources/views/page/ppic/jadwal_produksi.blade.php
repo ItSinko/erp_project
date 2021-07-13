@@ -3,7 +3,7 @@
 @section('title', 'Beta Version')
 
 @section('content_top_nav_right')
-<!-- <li class="nav-item dropdown">
+<li class="nav-item dropdown">
     <a class="nav-link" data-toggle="dropdown" href="#">
         <i class="far fa-bell"></i>
         <span class="badge badge-danger navbar-badge" style="display: none;">0</span>
@@ -12,7 +12,7 @@
         <div class="dropdown-divider"></div>
         <span class="dropdown-item dropdown-header" id="notif-header">0 Notifications</span>
     </div>
-</li> -->
+</li>
 @stop
 
 @section('content_header')
@@ -58,6 +58,10 @@
         <h5><i class="icon fas fa-info"></i> Status </h5>
         Penyusunan
     </div>
+    <div class="alert alert-info alert-dismissible" id="status_disetujui" style="display: none;">
+        <h5><i class="icon far fa-thumbs-up"></i> Status </h5>
+        Disetujui
+    </div>
     <div class="alert alert-warning alert-dismissible" id="status_pelaksanaan" style="display: none;">
         <h5><i class="icon fas fa-hard-hat"></i> Status</h5>
         Pelaksanaan
@@ -96,15 +100,12 @@
             </div>
             @can('admin')
             @if ($status == "penyusunan")
-            <button class="btn btn-danger btn-block" id="acc-button">Persetujuan</button>
+            <button class="btn btn-danger btn-block" id="acc-button">Kofirmasi jadwal</button>
             @endif
             @endcan
             @if (Auth::user()->divisi_id == 24)
-            @if ($status == "pelaksanaan")
-            <button class="btn btn-info btn-block" id="bppb-button">BPPB</button>
-            @elseif ($status == "penyusunan")
-            <button class="btn btn-primary btn-block" id="approval-button">Minta persetujuan</button>
-            @endif
+            <button class="btn btn-info btn-block" id="bppb-button" style="display: none;">BPPB</button>
+            <button class="btn btn-primary btn-block" id="approval-button" style="display: none;">Minta persetujuan</button>
             @endif
         </div>
     </div>
@@ -363,8 +364,6 @@
     var event = JSON.parse($('#data_event').html()); // GET data event from controller
     var user = JSON.parse($('#data_user').html()); // GET data user
     var status = $('#data_status').html(); // GET data status from controller
-    console.log("user");
-    console.log(user);
 
     // ajax setup
     $.ajaxSetup({
@@ -430,14 +429,19 @@
     // action base on status sended
     function choose_status(status) {
         if (status == 'penyusunan') {
+            $('#approval-button').show();
             $('#status_penyusunan').show();
-            $('#status_pelaksanaan, #status_selesai').hide();
+            $('#status_disetujui, #status_pelaksanaan, #status_selesai').hide();
         } else if (status == 'pelaksanaan') {
             $('#status_pelaksanaan').show();
-            $('#status_penyusunan, #status_selesai').hide();
+            $('#status_disetujui, #status_penyusunan, #status_selesai').hide();
         } else if (status == 'selesai') {
             $('#status_selesai').show();
-            $('#status_penyusunan, #status_pelaksanaan').hide();
+            $('#status_disetujui, #status_penyusunan, #status_pelaksanaan').hide();
+        } else if (status == 'disetujui') {
+            $('#bppb-button').show();
+            $('#status_disetujui').show();
+            $('#status_selesai, #status_penyusunan, #status_pelaksanaan').hide();
         }
     }
 
@@ -630,6 +634,9 @@
         }
 
         reset_form(); // reset form
+        if (status == "penyusunan") {
+            status = event[0].status;
+        }
         choose_status(status); // choose status info
         choose_view('Kalender');
         $('.view').click(function() {
@@ -794,12 +801,24 @@
                 },
                 callback: function(result) {
                     if (result) {
+                        console.log(event);
                         $.ajax({
-                            url: "/notif",
+                            url: "/ppic/change_status_event",
                             method: "POST",
                             data: {
-                                status: "Setuju",
-                                message: "Jadwal telah disetujui"
+                                event: event,
+                                user: user,
+                                message: "Jadwal telah disetujui",
+                                status: "Disetujui",
+                            },
+                            success: function(response) {
+                                bootbox.alert({
+                                    message: "jadwal telah disetujui",
+                                    centerVertical: true,
+                                })
+                            },
+                            error: function() {
+                                alert("error");
                             }
                         });
                     } else {
@@ -808,11 +827,12 @@
                             centerVertical: true,
                             callback: function(result) {
                                 $.ajax({
-                                    url: "/notif",
+                                    url: "/ppic/notif",
                                     method: "POST",
                                     data: {
-                                        status: "Tolak",
-                                        message: result
+                                        status: "Ditolak",
+                                        message: result,
+                                        user: user,
                                     }
                                 })
                             }
@@ -867,7 +887,10 @@
                     user: user,
                 },
                 success: function() {
-                    alert("success");
+                    bootbox.alert({
+                        message: `<i class="fas fa-check-circle" style="color: green;"></i> Permintaan telah dikirim`,
+                        centerVertical: true,
+                    });
                 },
                 error: function() {
                     alert("error");

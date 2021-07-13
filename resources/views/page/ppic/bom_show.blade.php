@@ -66,6 +66,10 @@
                         <tbody>
                         </tbody>
                     </table>
+                    <div class="table-footer" style="display: flex; justify-content: space-between; align-items: center;">
+                        <h1></h1>
+                        <button class="btn btn-info btn-block"></button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -150,6 +154,21 @@
                         }
                     ]
                 });
+                $.ajax({
+                    url: '/ppic/get_item_bom',
+                    method: 'GET',
+                    data: {
+                        detail_produk_id: detail_produk_id,
+                        versi: versi,
+                        count: true,
+                    },
+                    success: function(response) {
+                        $('.table-footer button').html(`Maksimum perakitan: ${response}`);
+                    },
+                    error: function() {
+                        alert("error");
+                    }
+                })
             } else {
                 initialize = false;
                 table.destroy();

@@ -677,6 +677,7 @@ Route::group(['prefix' => 'ppic'], function () {
     Route::get('/delete_part_order/{id}/{quantity}', 'PpicController@delete_part_order');
     Route::post('/notif', 'PpicController@schedule_notif');
     Route::get('/bom', 'PpicController@bom');
+    Route::post('/change_status_event', 'PpicController@schedule_event_change_status');
 });
 
 
