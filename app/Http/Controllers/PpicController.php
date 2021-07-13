@@ -209,6 +209,15 @@ class PPICController extends Controller
             ->get();
     }
 
+    public function bom()
+    {
+        $produk = Produk::all();
+        $detail_produk = DetailProduk::all();
+        $produk_bom = ProdukBillOfMaterial::all();
+
+        return view('page.ppic.bom_show', compact('produk', 'detail_produk', 'produk_bom'));
+    }
+
     public function get_part_coversion()
     {
     }
