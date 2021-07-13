@@ -721,13 +721,33 @@ class PPICController extends Controller
                 return $btn;
             })
             ->addColumn('aksi', function ($s) {
-
-                $btn = '<a href = "/bppb/penyerahan_barang_jadi/detail/' . $s->id . '"><button class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-eye"></i></button></a>';
+                $btn = '<a class="detailmodal" data-toggle="modal" data-target="#detailmodal" data-attr="/bppb/penyerahan_barang_jadi/detail/show/' . $s->id . '" data-id="' . $s->id . '"><button class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-eye"></i></button></a>';
                 $btn .= '<a href = "/bppb/penyerahan_barang_jadi/edit/' . $s->id . '"><button class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-edit"></i></button></a>';
                 $btn .= '<a class="deletemodal" data-toggle="modal" data-target="#deletemodal" data-attr="/bppb/penyerahan_barang_jadi/delete/' . $s->id . '"><button class="btn btn-danger btn-sm m-1" style="border-radius:50%;"><i class="fas fa-trash"></i></button></a>';
                 return $btn;
             })
             ->rawColumns(['no_seri', 'aksi', 'status'])
+            ->make(true);
+    }
+
+    public function bppb_penyerahan_barang_jadi_detail($id)
+    {
+        return view('page.ppic.bppb_penyerahan_barang_jadi_detail_show', ['id' => $id]);
+    }
+
+    public function bppb_penyerahan_barang_jadi_detail_show($id)
+    {
+        $s = DetailPenyerahanBarangJadi::where('penyerahan_barang_jadi_id', $id)->get();
+        return DataTables::of($s)
+            ->addIndexColumn()
+            ->addColumn('hasil_perakitan_id', function ($s) {
+                if ($s->HasilPerakitan->HasilPengemasan->first()->no_barcode != "") {
+                    return str_replace("/", "", $s->HasilPerakitan->HasilPengemasan->first()->Pengemasan->alias_barcode) . $s->HasilPerakitan->HasilPengemasan->first()->no_barcode;
+                } else {
+                    return str_replace("/", "", $s->HasilPerakitan->HasilMonitoringProses->first()->MonitoringProses->alias_barcode) . $s->HasilPerakitan->HasilMonitoringProses->first()->no_barcode;
+                }
+            })
+            ->rawColumns(['hasil_perakitan_id'])
             ->make(true);
     }
 

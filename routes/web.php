@@ -393,6 +393,8 @@ Route::group(['prefix' => '/bppb', 'middleware' => 'auth'], function () {
         Route::get('/status/{id}/{status}', 'PpicController@bppb_penyerahan_barang_jadi_status')->name('bppb.penyerahan_barang_jadi.status');
         Route::get('/create/{id}', 'ProduksiController@bppb_penyerahan_barang_jadi_create')->name('bppb.penyerahan_barang_jadi.create');
         Route::put('/store/{id}', 'ProduksiController@bppb_penyerahan_barang_jadi_store')->name('bppb.penyerahan_barang_jadi.store');
+        Route::get('/detail/{id}', 'PpicController@bppb_penyerahan_barang_jadi_detail')->name('bppb.penyerahan_barang_jadi.detail');
+        Route::get('/detail/show/{id}', 'PpicController@bppb_penyerahan_barang_jadi_detail_show')->name('bppb.penyerahan_barang_jadi.detail.show');
     });
 
     Route::get('/show', 'PpicController@bppb_show')->name('bppb.show');
