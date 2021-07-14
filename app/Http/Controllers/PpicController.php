@@ -236,7 +236,12 @@ class PPICController extends Controller
 
     public function bppb_show()
     {
-        $b = Bppb::all();
+        $b = "";
+        if (Auth::user()->Divisi->nama == "PPIC") {
+            $b = Bppb::all();
+        } else if (Auth::user()->Divisi->nama == "Quality Control" || Auth::user()->Divisi->nama == "Produksi") {
+            $b = Bppb::where('divisi_id', '=', Auth::user()->Divisi->id)->get();
+        }
         return DataTables::of($b)
             ->addIndexColumn()
             ->addColumn('gambar', function ($s) {
@@ -452,7 +457,7 @@ class PPICController extends Controller
     public function bppb_permintaan_bahan_baku_show($id)
     {
         $s = "";
-        if (Auth::user()->Divisi->nama == "Produksi" || Auth::user()->Divisi->nama == "PPIC") {
+        if (Auth::user()->Divisi->nama == "Produksi" || Auth::user()->Divisi->nama == "PPIC" || Auth::user()->Divisi->nama == "Quality Control") {
             $s = PermintaanBahanBaku::where('bppb_id', $id)->get();
         } else if (Auth::user()->Divisi->nama == "Gudang Bahan Material") {
             $s = PermintaanBahanBaku::where([
@@ -471,7 +476,7 @@ class PPICController extends Controller
             })
             ->editColumn('status', function ($s) {
                 $btn = "";
-                if (Auth::user()->divisi->nama == "Produksi") {
+                if (Auth::user()->divisi->nama == "Produksi" || Auth::user()->Divisi->nama == "Quality Control") {
                     if ($s->status == "dibuat") {
                         $btn = '<a href="/bppb/permintaan_bahan_baku/status/' . $s->id . '/req_permintaan">
                                 <button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-paper-plane"></i></button>
@@ -584,7 +589,7 @@ class PPICController extends Controller
     public function bppb_pengembalian_barang_gudang_show($id)
     {
         $s = "";
-        if (Auth::user()->Divisi->nama == "Produksi" || Auth::user()->Divisi->nama == "PPIC") {
+        if (Auth::user()->Divisi->nama == "Produksi" || Auth::user()->Divisi->nama == "PPIC" || Auth::user()->Divisi->nama == "Quality Control") {
             $s = PengembalianBarangGudang::where('bppb_id', $id)->get();
         } else if (Auth::user()->Divisi->nama == "Gudang Bahan Material") {
             $s = PengembalianBarangGudang::where([
@@ -603,7 +608,7 @@ class PPICController extends Controller
             })
             ->editColumn('status', function ($s) {
                 $btn = "";
-                if (Auth::user()->divisi->nama == "Produksi") {
+                if (Auth::user()->divisi->nama == "Produksi" || Auth::user()->Divisi->nama == "Quality Control") {
                     if ($s->status == "dibuat") {
                         $btn = '<a href="/bppb/pengembalian_barang_gudang/status/' . $s->id . '/req_pengembalian">
                                 <button type="button" class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-paper-plane"></i></button>
@@ -680,7 +685,7 @@ class PPICController extends Controller
     public function bppb_penyerahan_barang_jadi_show($id)
     {
         $s = "";
-        if (Auth::user()->Divisi->nama == "Produksi" || Auth::user()->Divisi->nama == "PPIC") {
+        if (Auth::user()->Divisi->nama == "Produksi" || Auth::user()->Divisi->nama == "PPIC" || Auth::user()->Divisi->nama == "Quality Control") {
             $s = PenyerahanBarangJadi::where('bppb_id', $id)->get();
         } else if (Auth::user()->Divisi->nama == "Gudang Barang Jadi" || Auth::user()->Divisi->nama == "Gudang Karantina") {
             $s = PenyerahanBarangJadi::where([
@@ -737,13 +742,33 @@ class PPICController extends Controller
                 return $btn;
             })
             ->addColumn('aksi', function ($s) {
-
-                $btn = '<a href = "/bppb/penyerahan_barang_jadi/detail/' . $s->id . '"><button class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-eye"></i></button></a>';
+                $btn = '<a class="detailmodal" data-toggle="modal" data-target="#detailmodal" data-attr="/bppb/penyerahan_barang_jadi/detail/show/' . $s->id . '" data-id="' . $s->id . '"><button class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-eye"></i></button></a>';
                 $btn .= '<a href = "/bppb/penyerahan_barang_jadi/edit/' . $s->id . '"><button class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-edit"></i></button></a>';
                 $btn .= '<a class="deletemodal" data-toggle="modal" data-target="#deletemodal" data-attr="/bppb/penyerahan_barang_jadi/delete/' . $s->id . '"><button class="btn btn-danger btn-sm m-1" style="border-radius:50%;"><i class="fas fa-trash"></i></button></a>';
                 return $btn;
             })
             ->rawColumns(['no_seri', 'aksi', 'status'])
+            ->make(true);
+    }
+
+    public function bppb_penyerahan_barang_jadi_detail($id)
+    {
+        return view('page.ppic.bppb_penyerahan_barang_jadi_detail_show', ['id' => $id]);
+    }
+
+    public function bppb_penyerahan_barang_jadi_detail_show($id)
+    {
+        $s = DetailPenyerahanBarangJadi::where('penyerahan_barang_jadi_id', $id)->get();
+        return DataTables::of($s)
+            ->addIndexColumn()
+            ->addColumn('hasil_perakitan_id', function ($s) {
+                if ($s->HasilPerakitan->HasilPengemasan->first()->no_barcode != "") {
+                    return str_replace("/", "", $s->HasilPerakitan->HasilPengemasan->first()->Pengemasan->alias_barcode) . $s->HasilPerakitan->HasilPengemasan->first()->no_barcode;
+                } else {
+                    return str_replace("/", "", $s->HasilPerakitan->HasilMonitoringProses->first()->MonitoringProses->alias_barcode) . $s->HasilPerakitan->HasilMonitoringProses->first()->no_barcode;
+                }
+            })
+            ->rawColumns(['hasil_perakitan_id'])
             ->make(true);
     }
 
