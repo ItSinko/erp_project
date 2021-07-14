@@ -22,6 +22,8 @@ use App\Http\Controllers\UserLogController;
 use App\PerbaikanProduksi;
 use App\HasilPengemasan;
 use App\CekPengemasan;
+use App\PackingList;
+use App\PeriksaBarangMasuk;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -38,6 +40,30 @@ class QCController extends Controller
     ) {
         $this->NotifikasiController = $NotifikasiController;
         $this->UserLogController = $UserLogController;
+    }
+
+    public function kedatangan_packing_list()
+    {
+        return view('page.qc.kedatangan_packing_list_show');
+    }
+
+    public function kedatangan_packing_list_show()
+    {
+        $s = PeriksaBarangMasuk::all();
+        return DataTables::of($s)
+            ->addIndexColumn()
+            ->editColumn('part_id', function ($s) {
+                return $s->Part->nama;
+            })
+            ->editColumn('karyawan_id', function ($s) {
+                return $s->Karyawan->nama;
+            })
+            ->make(true);
+    }
+
+    public function kedatangan_sampling()
+    {
+        return view('page.qc.kedatangan_sampling_show');
     }
 
     public function perakitan_pemeriksaan()
