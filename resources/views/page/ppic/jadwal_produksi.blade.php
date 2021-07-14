@@ -634,10 +634,7 @@
         }
 
         reset_form(); // reset form
-        if (status == "penyusunan") {
-            status = event[0].status;
-        }
-        choose_status(status); // choose status info
+
         choose_view('Kalender');
         $('.view').click(function() {
             choose_view($(this).text()); // choose display mode
@@ -648,6 +645,10 @@
         if (status == 'penyusunan') {
             calendar.next();
         }
+        if (status == "penyusunan") {
+            status = event.length && event[0].status;
+        }
+        choose_status(status); // choose status info
 
         var create_bppb = false;
         for (var i = 0; i < event.length; i++) {
