@@ -50,13 +50,23 @@ class PPICController extends Controller
         if ($request->pelaksanaan == true) {
             $event = $event->whereYear('tanggal_mulai', $year)->whereMonth('tanggal_mulai', $month)->get();
             $status = 'pelaksanaan';
+            foreach ($event as $data) {
+                $item = Event::find($data['id']);
+                $item->status = "pelaksanaan";
+                $item->save();
+            }
         } else if ($request->penyusunan == true) {
             $month += 1;
             $event = $event->where('tanggal_mulai', '>=', "$year-$month-01")->get();
-            $status = 'penyusunan';
+            $status = "penyusunan";
         } else if ($request->selesai == true) {
             $event = $event->where('tanggal_mulai', '<', "$year-$month-01")->get();
             $status = 'selesai';
+            foreach ($event as $data) {
+                $item = Event::find($data['id']);
+                $item->status = "selesai";
+                $item->save();
+            }
         }
 
         $detail_produk = DetailProduk::select('nama', 'id')->get();
@@ -229,14 +239,37 @@ class PPICController extends Controller
         return "done";
     }
 
+    public function bppb_ppic(Request $request)
+    {
+        if ($request->pelaksanaan == true) $status = "pelaksanaan";
+        if ($request->penyusunan == true) $status = "penyusunan";
+        if ($request->selesai == true) $status = "selesai";
+
+        return view('page.ppic.bppb_ppic', compact('status'));
+    }
+
     public function bppb()
     {
         return view('page.ppic.bppb_show');
     }
 
-    public function bppb_show()
+    public function bppb_show(Request $request)
     {
-        $b = Bppb::all();
+        $month = date('m');
+        $year = date('Y');
+        $b = Bppb::orderBy('tanggal_bppb', 'asc');
+
+        if ($request->status == "pelaksanaan") {
+            $b = $b->whereYear('tanggal_bppb', $year)->whereMonth('tanggal_bppb', $month)->get();
+        } else if ($request->status == "penyusunan") {
+            $month += 1;
+            $b = $b->where('tanggal_bppb', '>=', "$year-$month-01")->get();
+        } else if ($request->status = "selesai") {
+            $b = $b->where('tanggal_bppb', '<', "$year-$month-01")->get();
+        } else {
+            $b = Bppb::all();
+        }
+
         return DataTables::of($b)
             ->addIndexColumn()
             ->addColumn('gambar', function ($s) {

@@ -81,28 +81,54 @@
 
     <style>
         #loader {
-            opacity: 0.8;
-            background-color: #ccc;
             position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            top: 0px;
-            left: 0px;
             z-index: 10000;
+            background-color: #000;
         }
 
-        #loading_gif {
-            position: absolute;
+        #loading-gif {
+            display: block;
+            position: relative;
             left: 50%;
             top: 50%;
-            width: 120px;
-            height: 120px;
-            margin: -76px 0 0 -76px;
-            border: 16px solid #f3f3f3;
+            width: 150px;
+            height: 150px;
+            margin: -75px 0 0 -75px;
             border-radius: 50%;
-            border-top: 16px solid #3498db;
-            -webkit-animation: spin 2s linear infinite;
+            border: 3px solid transparent;
+            border-top-color: #3489db;
             animation: spin 2s linear infinite;
+            z-index: 10001;
+        }
+
+        #loading-gif:before {
+            content: "";
+            position: absolute;
+            left: 5px;
+            top: 5px;
+            right: 5px;
+            bottom: 5px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            border-top-color: #f9c922;
+            animation: spin 3s linear infinite;
+        }
+
+        #loading-gif:after {
+            content: "";
+            position: absolute;
+            left: 15px;
+            top: 15px;
+            right: 15px;
+            bottom: 15px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            border-top-color: #e74c3c;
+            animation: spin 1.5s linear infinite;
         }
 
         @keyframes spin {
@@ -119,7 +145,7 @@
 
 <body class="@yield('classes_body')" style="font-family:Inter;" @yield('body_data')>
     <div id="loader">
-        <div id="loading_gif"></div>
+        <div id="loading-gif"></div>
     </div>
     {{-- Body Content --}}
     @yield('body')
@@ -172,7 +198,7 @@
 
         $(document).ready(function() {
             setTimeout(function() {
-                $('#loader').hide();
+                $('#loader').fadeOut();
             }, 1000);
         });
     </script>

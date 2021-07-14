@@ -616,6 +616,29 @@ return [
             'auth' => [24, 1]
         ],
         [
+            'text'    => 'BPPB',
+            'icon'    => 'fas fa-project-diagram',
+            'url' => '/bppb',
+            'auth' => [24, 1],
+            'submenu'   =>  [
+                [
+                    'text'  =>  'Penyusunan',
+                    'icon'  =>  'far fa-circle',
+                    'url'   =>  '/ppic/bppb/?penyusunan=true'
+                ],
+                [
+                    'text'  =>  'Pelaksanaan',
+                    'icon'  =>  'far fa-circle',
+                    'url'   =>  '/ppic/bppb/?pelaksanaan=true',
+                ],
+                [
+                    'text'  =>  'Selesai',
+                    'icon'  =>  'far fa-circle',
+                    'url'   =>  '/ppic/bppb/?selesai=true'
+                ],
+            ]
+        ],
+        [
             'header' => 'PERSIAPAN',
             'auth' => [17]
         ],
@@ -639,7 +662,7 @@ return [
             'text'    => 'BPPB',
             'icon'    => 'fas fa-project-diagram',
             'url' => '/bppb',
-            'auth' => [17, 24, 1],
+            'auth' => [17],
         ],
         [
             'text'    => 'Perakitan',

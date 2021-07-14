@@ -19,9 +19,9 @@
 <div class="d-flex justify-content-between">
     <h1>Jadwal Produksi</h1>
     <div class="btn-group" id="view-button">
-        <button type="button" class="btn view btn-primary">Kalender</button>
-        <button type="button" class="btn view btn-info">Tabel</button>
-        <button type="button" class="btn view btn-warning">Daftar</button>
+        <button type="button" data-view="calendar" class="btn view btn-primary">Kalender</button>
+        <button type="button" data-view="table" class="btn view btn-info">Tabel</button>
+        <button type="button" data-view="list" class="btn view btn-warning">Daftar</button>
     </div>
 </div>
 @stop
@@ -205,7 +205,7 @@
                 <div class="modal-header text-center">
                     <h4 class="modal-title w-100 font-weight-bold">Produksi</h4>
                     <button type="button" class="close" data-dismiss="modal">
-                        <span aria-hidden="true">&times;</span>
+                        <i class="fas fa-times"></i>
                     </button>
                 </div>
                 <div class="modal-body">
@@ -279,7 +279,7 @@
             <div class="modal-header text-center">
                 <h4 class="modal-title w-100 font-weight-bold">Pilih BOM</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                    <i class="fas fa-times"></i>
                 </button>
             </div>
             <div class="modal-body">
@@ -314,7 +314,7 @@
             <div class="modal-header text-center">
                 <h4 class="modal-title w-100 font-weight-bold">Pilih BOM</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                    <i class="fas fa-times"></i>
                 </button>
             </div>
             <div class="modal-body">
@@ -344,7 +344,6 @@
                 </table>
             </div>
             <div class="modal-footer justify-content-center">
-                <button type="submit" class="btn btn-primary" id="done-bppb">Selesai</button>
                 <button type="submit" class="btn btn-danger" id="send-all">Kirim Semua</button>
             </div>
         </div>
@@ -414,13 +413,13 @@
 
     // choose view template
     function choose_view(view) {
-        if (view == 'Kalender') {
+        if (view == 'calendar') {
             $('.view-calendar').show(500);
             $('.table-view, .list-view').hide();
-        } else if (view == 'Tabel') {
+        } else if (view == 'table') {
             $('.table-view').show(500);
             $('.view-calendar, .list-view').hide();
-        } else if (view == 'Daftar') {
+        } else if (view == 'list') {
             $('.list-view').show(500);
             $('.view-calendar, .table-view').hide();
         }
@@ -490,7 +489,7 @@
 
     // calendar-view setting
     var calendar_setting;
-    if (user.divisi_id == 24)
+    if (status === "penyusunan")
         calendar_setting = {
             locale: 'id',
             headerToolbar: {
@@ -507,6 +506,7 @@
             events: initial_event,
 
             select: function(info) {
+                reset_form();
                 var date1 = new Date(info.startStr);
                 var date2 = new Date(info.endStr);
 
@@ -626,38 +626,29 @@
     $(document).ready(function() {
         var Calendar = FullCalendar.Calendar;
         var calendarEl = document.getElementById('calendar');
-
-        var event_info;
-
+        // choose view
+        choose_view('calendar'); // default view
+        $('.view').click(function() {
+            choose_view(this.dataset.view);
+        });
+        // generate calendar view
+        var calendar = new Calendar(calendarEl, calendar_setting);
+        calendar.render();
+        // generate table view
         for (i in event) {
             date_mark(event[i]);
         }
-
-        reset_form(); // reset form
-
-        choose_view('Kalender');
-        $('.view').click(function() {
-            choose_view($(this).text()); // choose display mode
-        });
-
-        var calendar = new Calendar(calendarEl, calendar_setting);
-        calendar.render();
-        if (status == 'penyusunan') {
-            calendar.next();
-        }
+        // choose status info
         if (status == "penyusunan") {
-            status = event.length && event[0].status;
+            if (event.length != 0) status = event[0].status
+            calendar.next();
+            $('#acc-button').show();
+        } else if (status == "selesai") {
+            calendar.prev();
         }
-        choose_status(status); // choose status info
-
-        var create_bppb = false;
-        for (var i = 0; i < event.length; i++) {
-            if (event[i].status == 'disetujui' || event[i].status == 'permintaan') {
-                create_bppb = true;
-                break;
-            }
-        }
-        if (create_bppb) {
+        choose_status(status);
+        // alert for ppic
+        if (status == "disetujui") {
             bootbox.alert({
                 centerVertical: true,
                 message: "<p>Jadwal telah disetujui</p>" +
@@ -665,7 +656,7 @@
             });
             $('#bppb-button').show();
         }
-
+        // fill product form
         $('#choose_color > button').click(function(e) {
             var currColor = $(this).css('background-color');
             $('#product-submit').css({
@@ -704,6 +695,7 @@
                 }
             })
         });
+        // submit product form
         $('#product-submit').click(function() {
             let color = $(this).css('background-color');
             let data_saved = {
@@ -745,7 +737,9 @@
                 }
             });
         });
+        // show bom from table product
         $('#table-product tr').click(table_product_click_callback);
+        // select and reset bom table
         let initialize = true;
         let table;
         $("#bom-version-input").change(function() {
@@ -785,9 +779,7 @@
             });
             $('#table-card').show();
         });
-
-
-
+        // accept production schedule
         $('#acc-button').on('click', function() {
             bootbox.confirm({
                 centerVertical: true,
@@ -842,61 +834,60 @@
                 }
             });
         });
-
+        // show bppb form
         $("#bppb-button").click(function() {
             $("#create-bppb").modal('show');
         });
-
+        // send bppb
         $(".send").click(function() {
             $(this).html(`<i class="fas fa-check"></i>`)
         });
-
+        // send all bppb
         $("#send-all").click(function() {
             $(".send").html(`<i class="fas fa-check"></i>`)
         });
+        // action for bppb form
+        // $(".send").on("click", function() {
+        //     if ($(this).val() != "permintaan") {
+        //         $.ajax({
+        //             url: "/ppic/schedule/create",
+        //             method: "POST",
+        //             data: {
+        //                 status_update: true,
+        //                 status: "permintaan",
+        //                 id: $(this).val(),
+        //             },
+        //             success: function(result) {
+        //                 console.log(result);
+        //             }
+        //         });
+        //     }
+        // });
 
-        $("#done-bppb").click(function() {
-            $("#create-bppb").modal("hide");
-        });
-
-        $(".send").on("click", function() {
-            if ($(this).val() != "permintaan") {
-                $.ajax({
-                    url: "/ppic/schedule/create",
-                    method: "POST",
-                    data: {
-                        status_update: true,
-                        status: "permintaan",
-                        id: $(this).val(),
-                    },
-                    success: function(result) {
-                        console.log(result);
-                    }
-                });
-            }
-        });
-
+        // sent request for acc schedule 
         $("#approval-button").click(function() {
-            let message = "Persetujuan jadwal produksi";
-            let status = "Penyusunan";
-            $.ajax({
-                url: "/ppic/notif",
-                method: "POST",
-                data: {
-                    message: message,
-                    status: status,
-                    user: user,
-                },
-                success: function() {
-                    bootbox.alert({
-                        message: `<i class="fas fa-check-circle" style="color: green;"></i> Permintaan telah dikirim`,
-                        centerVertical: true,
-                    });
-                },
-                error: function() {
-                    alert("error");
-                }
-            })
+            bootbox.alert({
+                message: `<i class="fas fa-check-circle" style="color: green;"></i> Permintaan telah dikirim`,
+                centerVertical: true,
+            });
+            // action for aproval button
+            // let message = "Persetujuan jadwal produksi";
+            // let status = "Penyusunan";
+            // $.ajax({
+            //     url: "/ppic/notif",
+            //     method: "POST",
+            //     data: {
+            //         message: message,
+            //         status: status,
+            //         user: user,
+            //     },
+            //     success: function() {
+
+            //     },
+            //     error: function() {
+            //         alert("error");
+            //     }
+            // })
         })
     });
 </script>
