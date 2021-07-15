@@ -100,7 +100,7 @@
             </div>
             @if (Auth::user()->divisi_id == 3)
             @if ($status == "penyusunan")
-            <button class="btn btn-danger btn-block" id="acc-button">Kofirmasi jadwal</button>
+            <button class="btn btn-danger btn-block" id="acc-button" style="display: none;">Kofirmasi jadwal</button>
             @endif
             @endif
             @if (Auth::user()->divisi_id == 24)
@@ -644,13 +644,16 @@
         if (status == "penyusunan" || status == "permintaan" || status == "disetujui") {
             calendar.next();
             $('#acc-button').show();
-            if (status == "permintaan" || status == "disetujui") $('#acc-button').attr('disabled');
+            if (status == "permintaan" || status == "disetujui") {
+                console.log("why you not seen");
+                $('#acc-button').prop('disabled', true);
+            }
         } else if (status == "selesai") {
             calendar.prev();
         }
         choose_status(status);
         // alert for ppic
-        if (status == "disetujui") {
+        if (user.divisi_id == 24 && status == "disetujui") {
             bootbox.alert({
                 centerVertical: true,
                 message: "<p>Jadwal telah disetujui</p>" +
