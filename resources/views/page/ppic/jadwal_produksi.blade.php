@@ -328,10 +328,10 @@
                     </thead>
                     <tbody>
                         @foreach($event as $e)
-                        <tr id="row2_{{ $e->id }}">
+                        <tr data-id="{{ $e->id }}">
                             <td>{{ $e->nama }}</td>
                             <td>{{ $e->jumlah_produksi }}</td>
-                            <td><button class="btn btn-info send" value="{{ $e->id }}">
+                            <td><button class="btn btn-info send" data-id="{{ $e->id }}">
                                     @if ($e->status == "permintaan")
                                     <i class="fas fa-check"></i>
                                     @else
@@ -363,6 +363,7 @@
     var event = JSON.parse($('#data_event').html()); // GET data event from controller
     var user = JSON.parse($('#data_user').html()); // GET data user
     var status = $('#data_status').html(); // GET data status from controller
+    console.log(user);
 
     // ajax setup
     $.ajaxSetup({
@@ -437,7 +438,7 @@
         } else if (status == 'selesai') {
             $('#status_selesai').show();
             $('#status_disetujui, #status_penyusunan, #status_pelaksanaan').hide();
-        } else if (status == 'disetujui') {
+        } else if (status == 'disetujui' || status == "permintaan") {
             $('#bppb-button').show();
             $('#status_disetujui').show();
             $('#status_selesai, #status_penyusunan, #status_pelaksanaan').hide();
@@ -489,6 +490,7 @@
 
     // calendar-view setting
     var calendar_setting;
+    if (event.length != 0) status = event[0].status
     if (status === "penyusunan")
         calendar_setting = {
             locale: 'id',
@@ -639,10 +641,10 @@
             date_mark(event[i]);
         }
         // choose status info
-        if (status == "penyusunan") {
-            if (event.length != 0) status = event[0].status
+        if (status == "penyusunan" || status == "permintaan" || status == "disetujui") {
             calendar.next();
             $('#acc-button').show();
+            if (status == "permintaan" || status == "disetujui") $('#acc-button').attr('disabled');
         } else if (status == "selesai") {
             calendar.prev();
         }
@@ -729,7 +731,6 @@
                     );
                     date_mark(result);
                     list_view_table_update(result);
-                    $('#table-product tr').click(table_product_click_callback);
                     reset_form();
                 },
                 error: function(xhr, status, err) {
@@ -738,7 +739,7 @@
             });
         });
         // show bom from table product
-        $('#table-product tr').click(table_product_click_callback);
+        $('#table-product tr').on('click', table_product_click_callback);
         // select and reset bom table
         let initialize = true;
         let table;
@@ -840,11 +841,20 @@
         });
         // send bppb
         $(".send").click(function() {
-            $(this).html(`<i class="fas fa-check"></i>`)
+            $(this).html(`<i class="fas fa-check"></i>`);
+            $.ajax({
+                url: "/ppic/change_status_event",
+                data: {
+                    id: this.dataset.id,
+                    divisi_id: user.divisi_id,
+                    status: "permintaan",
+                },
+                method: "POST",
+            });
         });
         // send all bppb
         $("#send-all").click(function() {
-            $(".send").html(`<i class="fas fa-check"></i>`)
+            $(".send").trigger("click");
         });
         // action for bppb form
         // $(".send").on("click", function() {

@@ -230,6 +230,28 @@ class PPICController extends Controller
 
     public function schedule_event_change_status(Request $request)
     {
+        if (isset($request->id)) {
+            $item = Event::find($request->id);
+            $item->status = $request->status;
+            $item->save();
+
+            // Update bppb
+            $month = date('m');
+            $year = date('Y');
+            $no_bppb = "0001" . '/' . "TEST" . $item->detail_produk_id . '/' . $month . '/' . $year;
+            $month += 1;
+            Bppb::create([
+                'no_bppb' => $no_bppb,
+                'detail_produk_id' => $item->detail_produk_id,
+                'versi_bom' => $item->versi_bom,
+                'divisi_id' => $request->divisi_id,
+                'tanggal_bppb' => "$year-$month-01",
+                'jumlah' => $item->jumlah_produksi
+            ]);
+
+            return "done";
+        }
+
         foreach ($request->event as $data) {
             $item = Event::find($data['id']);
             $item->status = "disetujui";
@@ -289,6 +311,12 @@ class PPICController extends Controller
                 return $btn;
             })
             ->addColumn('laporan', function ($s) {
+                if (Auth::user()->Divisi->nama == "PPIC") {
+                    $btn = "";
+                    $btn .= '<button data-toggle="modal" data-target="#detail_bom" data-detail_produk_id="' . $s->detail_produk_id . '" data-versi_bom="' . $s->versi_bom . '" data-jumlah="' . $s->jumlah . '" class="btn btn-info btn-sm m-1 detail_bom_class" style="border-radius:10%;">Detail</button>  ';
+                    return $btn;
+                }
+
                 $btn = '<a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="Klik untuk melihat detail BPPB">';
                 $btn .= '<i class="fas fa-eye" aria-hidden="true"></i> </a>';
 

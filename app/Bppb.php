@@ -12,7 +12,7 @@ use App\HasilIkPemeriksaanPengujian;
 
 class Bppb extends Model
 {
-    protected $fillable = ['detail_produk_id', 'no_bppb', 'tanggal_bppb', 'divisi_id', 'jumlah'];
+    protected $fillable = ['detail_produk_id', 'versi_bom', 'no_bppb', 'tanggal_bppb', 'divisi_id', 'jumlah'];
 
     public function DetailProduk()
     {

@@ -28,9 +28,8 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <!-- /.card-header -->
                 <div class="card-body">
-                    <table id="example" class="table table-hover styled-table" style="text-align: center;">
+                    <table id="bppb_table" class="table table-hover styled-table" style="text-align: center;">
                         <thead>
                             <tr>
                                 <th>No</th>
@@ -49,26 +48,43 @@
 
                     </table>
                 </div>
-                <!-- /.card-body -->
             </div>
-            <!-- /.card -->
+            <div class="modal fade" id="detail_bom" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header" style="background-color:	#006400;">
+                            <h4 class="modal-title" id="myModalLabel" style="color:white;">Laporan</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        </div>
+                        <div class="modal-body">
+                            <table id="bom-table" class="table table-hover styled-table" style="text-align: center;">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Nama</th>
+                                        <th>Kode</th>
+                                        <th>Jumlah</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <!-- /.col -->
     </div>
-    <!-- /.row -->
-
 </section>
 @endsection
 
 @section('adminlte_js')
 <script>
     $(function() {
-        $('#example').DataTable({
+        $('#bppb_table').DataTable({
             paging: false,
             info: false,
             pageLength: -1,
-            processing: true,
-            serverSide: true,
             ajax: {
                 url: "{{ route('bppb.show') }}",
                 data: {
@@ -110,7 +126,36 @@
                     orderable: false,
                     searchable: false
                 },
-            ]
+            ],
+        });
+
+        console.log("add event handler");
+        $(document).on('click', '.detail_bom_class', function(event) {
+            console.log("click button");
+            $.ajax({
+                url: "/ppic/get_item_bom",
+                data: {
+                    detail_produk_id: event.target.dataset.detail_produk_id,
+                    versi: event.target.dataset.versi_bom,
+                    option: "detail_bppb",
+                },
+                success: function(response) {
+                    // console.log(response);
+                    console.log($("#bom-table > tbody"));
+                    console.log("initial iteration");
+                    $("#bom-table > tbody").empty();
+                    for (let i = 0; i < response.data.length; i++) {
+                        $("#bom-table > tbody").append(`
+                            <tr>
+                                <td>${response.data[i].DT_RowIndex}</td>
+                                <td>${response.data[i].nama}</td>
+                                <td>${response.data[i].kode}</td>
+                                <td>${response.data[i].jumlah * event.target.dataset.jumlah}</td>
+                            </tr>
+                        `)
+                    }
+                }
+            })
         });
     });
 </script>
