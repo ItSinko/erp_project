@@ -234,7 +234,7 @@ return [
         ],
         [
             'header' => 'MASTER DATA',
-            'auth' => [14, 17, 26, 23, 24, 1]
+            'auth' => [14, 17, 26, 23, 24, 3, 1]
         ],
         [
             'text' => 'Penjualan Produk',
@@ -460,7 +460,7 @@ return [
         [
             'text'  =>  'Stok',
             'icon'  =>  'fas fa-boxes',
-            'auth'  => [24, 1],
+            'auth'  => [24, 3, 1],
             'submenu'   =>  [
                 [
                     'text'  =>  'Gudang',
@@ -477,7 +477,7 @@ return [
         [
             'text'  =>  'Laporan',
             'icon'  =>  'fas fa-file',
-            'auth'  => [24, 1],
+            'auth'  => [24, 3, 1],
             'submenu'   =>  [
                 [
                     'text'  =>  'Pembelian',
@@ -585,12 +585,12 @@ return [
         ],
         [
             'header' => 'PPIC',
-            'auth' => [24, 1]
+            'auth' => [24, 3, 1]
         ],
         [
             'text' => 'Jadwal Produksi',
             'icon' => 'fas fa-calendar-alt',
-            'auth' => [24, 1],
+            'auth' => [24, 3, 1],
             'submenu'   =>  [
                 [
                     'text'  =>  'Penyusunan',
@@ -613,13 +613,13 @@ return [
             'text' => 'BOM',
             'url'  => '/ppic/bom',
             'icon' => 'fas fa-list-alt',
-            'auth' => [24, 1]
+            'auth' => [24, 3, 1]
         ],
         [
             'text'    => 'BPPB',
             'icon'    => 'fas fa-project-diagram',
             'url' => '/bppb',
-            'auth' => [24, 1],
+            'auth' => [24, 3, 1],
             'submenu'   =>  [
                 [
                     'text'  =>  'Penyusunan',

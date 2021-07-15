@@ -98,11 +98,11 @@
                     </table>
                 </div>
             </div>
-            @can('admin')
+            @if (Auth::user()->divisi_id == 3)
             @if ($status == "penyusunan")
             <button class="btn btn-danger btn-block" id="acc-button">Kofirmasi jadwal</button>
             @endif
-            @endcan
+            @endif
             @if (Auth::user()->divisi_id == 24)
             <button class="btn btn-info btn-block" id="bppb-button" style="display: none;">BPPB</button>
             <button class="btn btn-primary btn-block" id="approval-button" style="display: none;">Minta persetujuan</button>

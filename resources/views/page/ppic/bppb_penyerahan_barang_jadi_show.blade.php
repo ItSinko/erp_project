@@ -142,12 +142,8 @@
                     </div>
                 </div>
             </div>
-
-            <!-- /.card -->
         </div>
-        <!-- /.col -->
     </div>
-    <!-- /.row -->
 </section>
 @endsection
 
