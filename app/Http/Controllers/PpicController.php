@@ -281,13 +281,15 @@ class PPICController extends Controller
         $year = date('Y');
         $b = Bppb::orderBy('tanggal_bppb', 'asc');
 
-        if ($request->status == "pelaksanaan") {
-            $b = $b->whereYear('tanggal_bppb', $year)->whereMonth('tanggal_bppb', $month)->get();
-        } else if ($request->status == "penyusunan") {
-            $month += 1;
-            $b = $b->where('tanggal_bppb', '>=', "$year-$month-01")->get();
-        } else if ($request->status = "selesai") {
-            $b = $b->where('tanggal_bppb', '<', "$year-$month-01")->get();
+        if (isset($request->status)) {
+            if ($request->status == "pelaksanaan") {
+                $b = $b->whereYear('tanggal_bppb', $year)->whereMonth('tanggal_bppb', $month)->get();
+            } else if ($request->status == "penyusunan") {
+                $month += 1;
+                $b = $b->where('tanggal_bppb', '>=', "$year-$month-01")->get();
+            } else if ($request->status = "selesai") {
+                $b = $b->where('tanggal_bppb', '<', "$year-$month-01")->get();
+            }
         } else {
             $b = Bppb::all();
         }
