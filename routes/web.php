@@ -498,7 +498,7 @@ Route::group(['prefix' => '/perakitan', 'middleware' => 'auth'], function () {
 });
 
 
-//PENGUJIAN
+// PENGUJIAN
 Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {
     Route::get('/', 'QCController@pengujian')->name('pengujian');
 
@@ -575,6 +575,17 @@ Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {
     Route::get('/analisa_ps/show/{id}', 'EngController@pengujian_analisa_ps_show')->name('pengujian.analisa_ps.show');
     Route::get('/analisa_ps/create/{id}', 'EngController@pengujian_analisa_ps_create')->name('pengujian.analisa_ps.create');
     Route::put('/analisa_ps/store/{id}', 'EngController@pengujian_analisa_ps_store')->name('pengujian.analisa_ps.store');
+});
+
+
+// KALIBRASI
+Route::group(['prefix' => '/kalibrasi', 'middleware' => 'auth'], function () {
+    Route::get('/', 'QCController@kalibrasi')->name('kalibrasi');
+    Route::get('/show', 'QCController@kalibrasi_show')->name('kalibrasi.show');
+    Route::get('/create', 'QCController@kalibrasi_create')->name('kalibrasi.create');
+    Route::put('/store/{id}', 'QCController@kalibrasi_store')->name('kalibrasi.store');
+    Route::get('/edit', 'QCController@kalibrasi_edit')->name('kalibrasi.edit');
+    Route::put('/update/{id}', 'QCController@kalibrasi_update')->name('kalibrasi.update');
 });
 
 

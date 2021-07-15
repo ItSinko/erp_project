@@ -14,9 +14,9 @@ class CreatePackingListsTable extends Migration
     public function up()
     {
         Schema::create('packing_lists', function (Blueprint $table) {
-            $table->id();
-            $table->bigInteger('suppliers_id')->unsigned();
-            $table->foreign('suppliers_id')->references('id')->on('suppliers')->onDelete('cascade');
+            $table->bigIncrements('id');
+            $table->integer('supplier_id')->nullable()->unsigned();
+            $table->foreign('supplier_id')->references('id')->on('suppliers')->onDelete('set null');
             $table->date('tanggal');
             $table->string('nomor', '50');
             $table->enum('status', ['dibuat', 'menunggu', 'selesai']);

@@ -1868,6 +1868,16 @@ class QCController extends Controller
         // return redirect()->back()->with();
     }
 
+    public function kalibrasi()
+    {
+        return view('page.qc.kalibrasi_show');
+    }
+
+    public function kalibrasi_show()
+    {
+        // $s = Kalibrasi::all();
+    }
+
     public function pengemasan()
     {
         return view('page.qc.pengemasan_show');

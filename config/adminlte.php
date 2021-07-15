@@ -823,7 +823,7 @@ return [
                 [
                     'icon' => 'far fa-circle',
                     'text' => 'Kalibrasi',
-                    'url'  => '/',
+                    'url'  => '/kalibrasi',
                     'auth' => [23],
                 ],
                 [
