@@ -761,8 +761,8 @@ class QCController extends Controller
             ->addColumn('aksi', function ($s) {
                 $btn = '<a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Klik untuk melihat laporan"><i class="fas fa-plus-circle" aria-hidden="true"></i></a>';
                 $btn .= '<div class="dropdown-menu" aria-labelledby="dropdownMenuLink2">';
-                if ($s->DetailProduk->Produk->kalibrasi == "tidak") {
-                    $btn .= '<a class="dropdown-item" href="/pengujian/kalibrasi/hasil/' . $s->id . '"><span style="color: black;"><i class="fas fa-plus" aria-hidden="true"></i>&nbsp;Kalibrasi</span></a>';
+                if ($s->DetailProduk->Produk->kalibrasi == "ya") {
+                    $btn .= '<a class="dropdown-item" href="/kalibrasi_internal/create/' . $s->id . '"><span style="color: black;"><i class="fas fa-plus" aria-hidden="true"></i>&nbsp;Kalibrasi</span></a>';
                 }
                 $btn .= '<a class="dropdown-item" href="/pengujian/monitoring_proses/create/' . $s->id . '"><span style="color: black;"><i class="fas fa-plus" aria-hidden="true"></i>&nbsp;Monitoring Proses</span></a>';
                 $btn .= '<a class="dropdown-item luplkpmodal" data-toggle="modal" data-target="#luplkpmodal" data-attr="/produk/detail/show/' . $s->id . '" data-id="' . $s->id . '"><span style="color: black;"><i class="fas fa-plus" aria-hidden="true"></i>&nbsp;LUP dan LKP</span></a>';
@@ -1888,9 +1888,16 @@ class QCController extends Controller
         // return redirect()->back()->with();
     }
 
-    public function kalibrasi()
+    public function kalibrasi_internal_create($bppb_id)
     {
-        return view('page.qc.kalibrasi_show');
+        $s = Bppb::find($bppb_id);
+        $k = Karyawan::whereNotIn('jabatan', ['direktur'])->get();
+        $hp = HasilPerakitan::whereHas('Perakitan', function ($q) use ($bppb_id) {
+            $q->where('bppb_id', $bppb_id);
+        })->where('tindak_lanjut_tertutup', 'aging')
+            ->orderBy('updated_at', 'desc')
+            ->get();
+        return view('page.qc.kalibrasi_internal_create', ['s' => $s, 'k' => $k, 'hp' => $hp]);
     }
 
     public function pengemasan()

@@ -579,13 +579,13 @@ Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {
 
 
 // KALIBRASI
-Route::group(['prefix' => '/kalibrasi', 'middleware' => 'auth'], function () {
-    Route::get('/', 'QCController@kalibrasi')->name('kalibrasi');
-    Route::get('/show', 'QCController@kalibrasi_show')->name('kalibrasi.show');
-    Route::get('/create', 'QCController@kalibrasi_create')->name('kalibrasi.create');
-    Route::put('/store/{id}', 'QCController@kalibrasi_store')->name('kalibrasi.store');
-    Route::get('/edit', 'QCController@kalibrasi_edit')->name('kalibrasi.edit');
-    Route::put('/update/{id}', 'QCController@kalibrasi_update')->name('kalibrasi.update');
+Route::group(['prefix' => '/kalibrasi_internal', 'middleware' => 'auth'], function () {
+    Route::get('/', 'QCController@kalibrasi_internal')->name('kalibrasi_internal');
+    Route::get('/show', 'QCController@kalibrasi_internal_show')->name('kalibrasi_internal.show');
+    Route::get('/create/{bppb_id}', 'QCController@kalibrasi_internal_create')->name('kalibrasi_internal.create');
+    Route::put('/store/{bppb_id}', 'QCController@kalibrasi_internal_store')->name('kalibrasi_internal.store');
+    Route::get('/edit/{bppb_id}', 'QCController@kalibrasi_internal_edit')->name('kalibrasi_internal.edit');
+    Route::put('/update/{bppb_id}', 'QCController@kalibrasi_internal_update')->name('kalibrasi_internal.update');
 });
 
 

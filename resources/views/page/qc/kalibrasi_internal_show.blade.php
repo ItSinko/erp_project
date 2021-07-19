@@ -35,12 +35,11 @@
                                 </tr>
                                 <tr>
                                     <th>No</th>
-                                    <th>No BPPB</th>
                                     <th>Tanggal</th>
-                                    <th>No Kalibrasi</th>
+                                    <th>No BPPB</th>
                                     <th>Nama Produk</th>
-                                    <th>Kalibrator</th>
-                                    <th>Hasil</th>
+                                    <th>No Pendaftaran</th>
+                                    <th>Diajukan</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
