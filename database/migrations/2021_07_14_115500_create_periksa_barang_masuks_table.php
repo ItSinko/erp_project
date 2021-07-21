@@ -17,8 +17,8 @@ class CreatePeriksaBarangMasuksTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('packing_list_id')->unsigned();
             $table->foreign('packing_list_id')->references('id')->on('packing_lists')->onDelete('cascade');
-            $table->bigInteger('part_id')->unsigned();
-            $table->foreign('part_id')->references('id')->on('parts')->onDelete('cascade');
+            $table->string('part_id', '50');
+            $table->foreign('part_id')->references('kode')->on('parts')->onDelete('cascade');
             $table->bigInteger('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->bigInteger('karyawan_id')->unsigned();

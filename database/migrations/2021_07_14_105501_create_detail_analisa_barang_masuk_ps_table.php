@@ -15,8 +15,8 @@ class CreateDetailAnalisaBarangMasukPsTable extends Migration
     {
         Schema::create('detail_analisa_barang_masuk_ps', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->bigInteger('analisa_barang_masuk_ps_id')->unsigned();
-            $table->foreign('analisa_barang_masuk_ps_id')->references('id')->on('analisa_barang_masuk_ps')->onDelete('cascade');
+            $table->bigInteger('analisa_id')->unsigned();
+            $table->foreign('analisa_id')->references('id')->on('analisa_barang_masuk_ps')->onDelete('cascade');
             $table->text('aspek_pemeriksaan');
             $table->text('keterangan')->nullable();
             $table->timestamps();
