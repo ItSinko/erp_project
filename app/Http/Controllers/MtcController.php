@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\AnalisaPsPengujian;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -13,9 +12,15 @@ use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 use Carbon\Carbon;
 use App\HasilPerakitan;
-use App\AnalisaPsPerakitan;
-use App\BillOfMaterial;
 use App\HasilMonitoringProses;
+use App\HasilPengemasan;
+
+use App\AnalisaPsPerakitan;
+use App\AnalisaPsPengujian;
+use App\AnalisaPsPengemasan;
+
+use App\BillOfMaterial;
+
 use App\PerbaikanProduksi;
 
 class MtcController extends Controller
@@ -206,5 +211,92 @@ class MtcController extends Controller
             })
             ->rawColumns(['operator', 'status', 'aksi', 'produk', 'no_seri'])
             ->make(true);
+    }
+
+    public function pengemasan()
+    {
+        return view('page.maintenance.pengemasan_show');
+    }
+
+    public function pengemasan_show()
+    {
+        $s = HasilPengemasan::whereHas('HasilPerakitan.HistoriHasilPerakitan', function ($q) {
+            $q->where([
+                ['tindak_lanjut', '=', 'perbaikan'],
+                ['kegiatan', '=', 'pemeriksaan_pengemasan']
+            ]);
+        })->get();
+
+        return DataTables::of($s)
+            ->addIndexColumn()
+            ->addColumn('no_seri', function ($s) {
+                $str = "";
+                if ($s->no_barcode != "") {
+                    $str = str_replace("/", "", $s->Pengemasan->alias_barcode) . $s->no_barcode;
+                } else {
+                    $str = str_replace("/", "", $s->HasilPerakitan->HasilMonitoringProses->first()->MonitoringProses->alias_barcode) . $s->HasilPerakitan->HasilMonitoringProses->first()->no_barcode;
+                }
+                return $str;
+            })
+            ->addColumn('no_bppb', function ($s) {
+                return $s->Pengemasan->Bppb->no_bppb;
+            })
+            ->addColumn('produk', function ($s) {
+                $str = $s->Pengemasan->Bppb->DetailProduk->nama;
+                return $str;
+            })
+            ->addColumn('operator', function ($s) {
+                return $s->Pengemasan->Karyawan->nama;
+            })
+            ->addColumn('tanggal', function ($s) {
+                return $s->Pengemasan->tanggal;
+            })
+            ->editColumn('status', function ($s) {
+                $hp = $s->id;
+                $a = AnalisaPsPengemasan::where('hasil_pengemasan_id', '=', $s->id)
+                    ->orderBy('updated_at', 'desc')
+                    ->first();
+                $p = PerbaikanProduksi::where('ketidaksesuaian_proses', '=', 'pengemasan')
+                    ->whereHas('HasilPengemasan', function ($q) use ($hp) {
+                        $q->where('id', $hp);
+                    })
+                    ->orderBy('updated_at', 'desc')->first();
+                $str = "";
+
+                if ($s->status == "req_pengemasan") {
+                    return '<div><small class="warning-text">Pemeriksaan QC</small></div>';
+                } else if ($s->status == "rej_pengemasan") {
+                    if ($s->tindak_lanjut == "perbaikan") {
+                            $str = '<a href="/perbaikan/produksi/create/' . $s->id . '/pengemasan"><button type="button" class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-wrench"></i></button><div><small> Lakukan Perbaikan</small></div></a>';
+                    } else if ($s->tindak_lanjut == "produk_spesialis") {
+                        $str = '<div><small class="danger-text">Analisa Produk Spesialis</small></div>';
+                    }
+                } else if ($s->status == "analisa_pengemasan_ps") {
+                    if ($a->tindak_lanjut == "perbaikan") {
+                        $str = '<a href="/perbaikan/produksi/create/' . $s->id . '/pengemasan"><button type="button" class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-wrench"></i></button><div><small>Lakukan Perbaikan</small></div></a>';
+                        $str .= '<div><a class="analisapsmodal" data-toggle="modal" data-target="#analisapsmodal" data-attr="/pengemasan/analisa_ps/show/' . $a->id . '"><button type="button" class="btn btn-outline-info btn-sm"><i class="fas fa-search"></i> Hasil Analisa</button></div>';
+                    } else if ($a->tindak_lanjut == "karantina") {
+                        $str = '<div><small class="danger-text">Masuk Gudang Karantina</small></div>';
+                    }
+                } else if ($s->status == "perbaikan_pengemasan") {
+                    $hmp = HasilMonitoringProses::where('hasil_perakitan_id', $s->hasil_perakitan_id)->first();
+                    if($hmp->status == "pengemasan"){
+                        if($p){
+                            $str = '<a href="/pengemasan/hasil/status/' . $s->id . '/req_pengemasan"><button type="button" class="btn btn-success btn-sm m-1" style="border-radius:50%;"><i class="fas fa-paper-plane"></i></button><div><small> Lapor Pengujian</small></div></a>';
+                            $str .= '<div><a class="perbaikanproduksimodal" data-toggle="modal" data-target="#perbaikanproduksimodal" data-attr="/perbaikan/produksi/detail/' . $p->id . '"><button type="button" class="btn btn-outline-info btn-sm"><i class="fas fa-search"></i> Hasil Perbaikan</button></a></div>';
+                        }
+                    }
+                    else if($hmp->status != "pengemasan")
+                    {
+                        $str .= "<div><small class='warning-text'>Masuk ke Pengujian</small></div>";
+                    }
+                } else if ($s->status == "ok") {
+                    $str = '<div><i class="fas fa-check-circle" style="color:green;"></i></div><div><small>Penyerahan</small></div>';
+                }
+                return $str;
+            })
+            ->rawColumns(['operator', 'status', 'aksi', 'produk', 'no_seri'])
+            ->make(true);
+
     }
 }

@@ -11,8 +11,10 @@
       </div>
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
-          <li class="breadcrumb-item"><a href="#">Home</a></li>
-          <li class="breadcrumb-item active">DataTables</li>
+          <li class="breadcrumb-item"><a href="/">Home</a></li>
+          <li class="breadcrumb-item"><a href="/perakitan">Perakitan</a></li>
+          <li class="breadcrumb-item"><a href="/perakitan/hasil/{{$sh->id}}">Laporan Perakitan</a></li>
+          <li class="breadcrumb-item active">Tambah No Seri</li>
         </ol>
       </div>
     </div>
@@ -206,26 +208,40 @@
               </div>
             </div>
           </div>
-          <div class="modal fade" id="cancelmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-            <div class="modal-dialog modal-lg" role="document">
-              <div class="modal-content">
-                <div class="modal-header" style="background-color:	#778899;">
-                  <h4 class="modal-title" id="myModalLabel" style="color:white;">Keluar Halaman</h4>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                </div>
-                <div class="modal-body" id="cancel">
+        </div>
+      </form>
+    </div>
+    <!-- /.col -->
+  </div>
 
+  <div class="modal fade" id="cancelmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-md" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="background-color:	#778899;">
+          <h4 class="modal-title" id="myModalLabel" style="color:white;">Keluar Halaman</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body" id="cancel">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="card">
+                <div class="card-body" style="text-align:center;">
+                  <h6>Apakah anda yakin meninggalkan halaman ini?</h6>
+                </div>
+                <div class="card-footer col-12" style="margin-bottom: 2%;">
+                  <span>
+                    <button type="button" class="btn btn-block btn-secondary" data-dismiss="modal" id="batalhapussk" style="width:30%;float:left;">Batal</button>
+                  </span>
+                  <span>
+                    <a href="/perakitan/hasil/{{$sh->id}}"><button type="submit" class="btn btn-block btn-danger" id="hapussk" style="width:30%;float:right;">Keluar</button></a>
+                  </span>
                 </div>
               </div>
             </div>
           </div>
-
         </div>
-      </form>
+      </div>
     </div>
-
-
-    <!-- /.col -->
   </div>
   <!-- /.row -->
 </section>

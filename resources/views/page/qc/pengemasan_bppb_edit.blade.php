@@ -114,7 +114,11 @@
                                                             <input type="text" name="hasil_pengemasan_id[{{$loop->iteration - 1}}]" id="hasil_pengemasan_id" value="{{$i->id}}" hidden>{{$i->HasilPerakitan->no_seri}}
                                                         </td>
                                                         <td>
+                                                            @if($i->no_barcode != "")
                                                             {{str_replace('/', '', $i->Pengemasan->alias_barcode)}}{{$i->no_barcode}}
+                                                            @else
+                                                            {{str_replace('/', '', $i->HasilPerakitan->HasilMonitoringProses->MonitoringProses->alias_barcode)}}{{$i->HasilPerakitan->HasilMonitoringProses->no_barcode}}
+                                                            @endif
                                                         </td>
                                                         <td>
                                                             @if($i->kondisi_unit == "tidak")

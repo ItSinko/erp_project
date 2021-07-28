@@ -732,8 +732,23 @@ class PPICController extends Controller
         $s->status = $status;
         $u = $s->save();
 
-        if ($u) {
-            return redirect()->back();
+        $pbj = DetailPenyerahanBarangJadi::where('penyerahan_barang_jadi_id', $s->id)->get();
+        $bool = true;
+        foreach ($pbj as $i) {
+            $hp = HasilPengemasan::where('hasil_perakitan_id', $i->hasil_perakitan_id)
+                ->orderBy('updated_at', 'desc')
+                ->first();
+            $hps = HasilPengemasan::find($hp->id);
+            $hps->status = "penyerahan";
+            $us = $hps->save();
+            if (!$us) {
+                $bool = false;
+            }
+        }
+        if ($bool == true) {
+            return redirect()->back()->with('success', "Berhasil merubah status Penyerahan");
+        } else {
+            return redirect()->back()->with('error', "Gagal merubah status Penyerahan");
         }
     }
 }

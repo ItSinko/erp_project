@@ -19,8 +19,9 @@
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item active">DataTables</li>
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item"><a href="/pengujian/prd">Pengujian</a></li>
+                    <li class="breadcrumb-item active">Laporan Pengujian</li>
                 </ol>
             </div>
         </div>
@@ -53,7 +54,7 @@
                         <div class="row">
                             <label for="tanggal" class="col-sm-6 col-form-label">Tanggal</label>
                             <div class="col-sm-6 col-form-label" style="text-align:right;">
-                                {{date("d-m-Y", strtotime($s->tanggal))}}
+                                {{date("d-m-Y", strtotime($s->tanggal_bppb))}}
                             </div>
                         </div>
                     </div>

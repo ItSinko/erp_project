@@ -11,8 +11,10 @@
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item active">Perakitan</li>
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item"><a href="/perakitan/pemeriksaan">Perakitan</a></li>
+                    <li class="breadcrumb-item"><a href="/perakitan/pemeriksaan/bppb/{{$s->Perakitan->Bppb->id}}">Hasil Perakitan</a></li>
+                    <li class="breadcrumb-item active">Pemeriksaan Tertutup</li>
                 </ol>
             </div>
         </div>
@@ -111,7 +113,11 @@
                                         <label for="fungsi" class="col-sm-4 col-form-label" style="text-align:right;">Fungsi</label>
                                         <div class="col-sm-1 col-form-label">
                                             <div class="icheck-primary d-inline">
-                                                <input type="radio" id="fungsi_ok" name="fungsi" value="ok" checked>
+                                                <input type="radio" id="fungsi_ok" name="fungsi" value="ok" @if($s->fungsi == "ok")
+                                                checked
+                                                @elseif($s->fungsi == "")
+                                                checked
+                                                @endif>
                                                 <label for="fungsi_ok">
                                                     Baik
                                                 </label>
@@ -119,7 +125,9 @@
                                         </div>
                                         <div class="col-sm-2 col-form-label">
                                             <div class="icheck-primary d-inline">
-                                                <input type="radio" id="fungsi_nok" name="fungsi" value="nok">
+                                                <input type="radio" id="fungsi_nok" name="fungsi" value="nok" @if($s->fungsi == "nok")
+                                                checked
+                                                @endif>
                                                 <label for="fungsi_nok">
                                                     Tidak Baik
                                                 </label>
@@ -135,7 +143,11 @@
 
                                         <div class="col-sm-1 col-form-label">
                                             <div class="icheck-primary d-inline">
-                                                <input type="radio" id="kondisi_setelah_proses_ok" name="kondisi_setelah_proses" value="ok" checked>
+                                                <input type="radio" id="kondisi_setelah_proses_ok" name="kondisi_setelah_proses" value="ok" @if($s->kondisi_setelah_proses == "ok")
+                                                checked
+                                                @elseif($s->kondisi_setelah_proses == "")
+                                                checked
+                                                @endif>
                                                 <label for="kondisi_setelah_proses_ok">
                                                     Baik
                                                 </label>
@@ -144,7 +156,9 @@
 
                                         <div class="col-sm-2 col-form-label">
                                             <div class="icheck-primary d-inline">
-                                                <input type="radio" id="kondisi_setelah_proses_nok" name="kondisi_setelah_proses" value="nok">
+                                                <input type="radio" id="kondisi_setelah_proses_nok" name="kondisi_setelah_proses" value="nok" @if($s->kondisi_setelah_proses == "nok")
+                                                checked
+                                                @endif>
                                                 <label for="kondisi_setelah_proses_nok">
                                                     Tidak Baik
                                                 </label>
@@ -159,7 +173,11 @@
                                         <label for="hasil" class="col-sm-4 col-form-label" style="text-align:right;">Hasil</label>
                                         <div class="col-sm-1 col-form-label">
                                             <div class="icheck-primary d-inline">
-                                                <input type="radio" id="hasil_ok" name="hasil_tertutup" value="ok" checked>
+                                                <input type="radio" id="hasil_ok" name="hasil_tertutup" value="ok" @if($s->hasil_tertutup == "ok")
+                                                checked
+                                                @elseif($s->hasil_tertutup == "")
+                                                checked
+                                                @endif>
                                                 <label for="hasil_ok">
                                                     Baik
                                                 </label>
@@ -167,7 +185,9 @@
                                         </div>
                                         <div class="col-sm-2 col-form-label">
                                             <div class="icheck-primary d-inline">
-                                                <input type="radio" id="hasil_nok" name="hasil_tertutup" value="nok">
+                                                <input type="radio" id="hasil_nok" name="hasil_tertutup" value="nok" @if($s->hasil_tertutup == "nok")
+                                                checked
+                                                @endif>
                                                 <label for="hasil_nok">
                                                     Tidak Baik
                                                 </label>
@@ -183,9 +203,25 @@
                                         <div class="col-sm-8">
                                             <select class="form-control select2 select2-info @error('tindak_lanjut_tertutup') is-invalid @enderror" data-dropdown-css-class="select2-info" style="width: 30%;" data-placeholder="Pilih Tindak Lanjut" name="tindak_lanjut_tertutup" id="tindak_lanjut_tertutup">
                                                 <option value=""></option>
-                                                <option value="aging">Pengujian</option>
-                                                <option value="perbaikan" disabled>Perbaikan</option>
-                                                <option value="produk_spesialis" disabled>Produk Spesialis</option>
+                                                <option value="aging" @if($s->tindak_lanjut_tertutup == "aging")
+                                                    selected
+                                                    @elseif($s->tindak_lanjut_tertutup != "aging")
+                                                    @if($s->tindak_lanjut_tertutup == "")
+                                                    selected
+                                                    @else
+                                                    disabled
+                                                    @endif
+                                                    @endif>Pengujian</option>
+                                                <option value="perbaikan" @if($s->tindak_lanjut_tertutup == "perbaikan")
+                                                    selected
+                                                    @elseif($s->tindak_lanjut_tertutup == "")
+                                                    disabled
+                                                    @endif>Perbaikan</option>
+                                                <option value="produk_spesialis" @if($s->tindak_lanjut_tertutup == "produk_spesialis")
+                                                    selected
+                                                    @elseif($s->tindak_lanjut_tertutup == "")
+                                                    disabled
+                                                    @endif>Produk Spesialis</option>
                                             </select>
                                             <small id="alert-perubahan"></small>
                                             @if ($errors->has('tindak_lanjut_tertutup'))
@@ -198,7 +234,7 @@
                                     <div class="form-group row">
                                         <label for="divisi_id" class="col-sm-4 col-form-label" style="text-align:right;">Keterangan</label>
                                         <div class="col-sm-8">
-                                            <textarea name="keterangan_tindak_lanjut_tertutup" id="keterangan_tindak_lanjut_tertutup" class="form-control @error('keterangan_tindak_lanjut_tertutup') is-invalid @enderror"></textarea>
+                                            <textarea name="keterangan_tindak_lanjut_tertutup" id="keterangan_tindak_lanjut_tertutup" class="form-control @error('keterangan_tindak_lanjut_tertutup') is-invalid @enderror">{{$s->keterangan_tindak_lanjut_tertutup}}</textarea>
                                             @if ($errors->has('keterangan_tindak_lanjut_tertutup'))
                                             <span class="invalid-feedback" role="alert">{{$errors->first('keterangan_tindak_lanjut_tertutup')}}</span>
                                             @endif
@@ -211,7 +247,7 @@
                     </div>
                     <div class="card-footer">
                         <span>
-                            <button type="button" class="btn btn-block btn-danger rounded-pill" style="width:200px;float:left;"><i class="fas fa-times"></i>&nbsp;Batal</button>
+                            <a class="cancelmodal" data-toggle="modal" data-target="#cancelmodal"><button type="button" class="btn btn-block btn-danger rounded-pill" style="width:200px;float:left;"><i class="fas fa-times"></i>&nbsp;Batal</button></a>
                         </span>
                         <span>
                             <button type="submit" class="btn btn-block btn-warning rounded-pill" style="width:200px;float:right;"><i class="fas fa-check"></i>&nbsp;Simpan Hasil</button>
@@ -224,6 +260,36 @@
         </div>
         <!-- /.row -->
     </div><!-- /.container-fluid -->
+
+    <div class="modal fade" id="cancelmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:	#778899;">
+                    <h4 class="modal-title" id="myModalLabel" style="color:white;">Keluar Halaman</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body" id="cancel">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card">
+                                <div class="card-body" style="text-align:center;">
+                                    <h6>Apakah anda yakin meninggalkan halaman ini?</h6>
+                                </div>
+                                <div class="card-footer col-12" style="margin-bottom: 2%;">
+                                    <span>
+                                        <button type="button" class="btn btn-block btn-secondary" data-dismiss="modal" id="batalhapussk" style="width:30%;float:left;">Batal</button>
+                                    </span>
+                                    <span>
+                                        <a href="/perakitan/pemeriksaan/bppb/{{$s->Perakitan->Bppb->id}}" id="cancelform"><button type="submit" class="btn btn-block btn-danger" id="hapussk" style="width:30%;float:right;">Keluar</button></a>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 @endsection
 

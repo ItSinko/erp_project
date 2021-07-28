@@ -711,7 +711,7 @@ return [
         ],
         [
             'text'    => 'Pengujian',
-            'icon'    => 'fas fa-wrench',
+            'icon'    => 'fab fa-searchengin',
             'url'  => '/pengujian/mtc',
             'auth' => [16],
         ],
@@ -720,6 +720,12 @@ return [
             'icon'    => 'fab fa-searchengin',
             'url'  => '/pengujian/eng',
             'auth' => [10],
+        ],
+        [
+            'text'    => 'Pengemasan',
+            'icon'    => 'fas fa-box-open',
+            'url'  => '/pengemasan/mtc',
+            'auth' => [16],
         ],
         [
             'text'    => 'Pengemasan',

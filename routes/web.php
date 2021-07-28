@@ -592,12 +592,17 @@ Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {
 Route::group(['prefix' => '/pengemasan', 'middleware' => 'auth'], function () {
     Route::get('/', 'ProduksiController@pengemasan')->name('pengemasan');
     Route::get('/bppb/{id}', 'ProduksiController@pengemasan_bppb')->name('pengemasan.bppb');
+    Route::get('/hasil/status/{id}/{status}', 'ProduksiController@pengemasan_hasil_status')->name('pengemasan.hasil.status');
     Route::get('/bppb/show/{id}', 'ProduksiController@pengemasan_bppb_show')->name('pengemasan.bppb.show');
+    Route::get('/mtc', 'MtcController@pengemasan')->name('pengemasan.mtc');
+    Route::get('/show/mtc', 'MtcController@pengemasan_show')->name('pengemasan.show.mtc');
     Route::get('/eng', 'EngController@pengemasan')->name('pengemasan.eng');
     Route::get('/show/eng', 'EngController@pengemasan_show')->name('pengemasan.show.eng');
     Route::get('/qc', 'QCController@pengemasan')->name('pengemasan.qc');
     Route::get('/show/qc', 'QCController@pengemasan_show')->name('pengemasan.show.qc');
     Route::get('/bppb/show/qc/{bppbid}', 'QCController@pengemasan_bppb_show')->name('pengemasan.bppb.show.qc');
+    Route::get('/bppb/create/qc/{bppbid}/{arr}', 'QCController@pengemasan_bppb_create')->name('pengemasan.bppb.create.qc');
+    Route::post('/bppb/store/qc/{bppbid}', 'QCController@pengemasan_bppb_store')->name('pengemasan.bppb.store.qc');
     Route::get('/bppb/edit/qc/{bppbid}', 'QCController@pengemasan_bppb_edit')->name('pengemasan.bppb.edit.qc');
     Route::put('/bppb/update/qc/{bppbid}', 'QCController@pengemasan_bppb_update')->name('pengemasan.bppb.update.qc');
     Route::get('/hasil/edit/qc/{id}', 'QCController@pengemasan_hasil_edit')->name('pengemasan.hasil.edit.qc');
@@ -617,7 +622,12 @@ Route::group(['prefix' => '/pengemasan', 'middleware' => 'auth'], function () {
     Route::get('/hasil/{id}', 'ProduksiController@pengemasan_hasil')->name('pengemasan.hasil');
     Route::get('/hasil/show/{id}', 'ProduksiController@pengemasan_hasil_show')->name('pengemasan.hasil.show');
     Route::get('/hasil/create/{id}', 'ProduksiController@pengemasan_hasil_create')->name('pengemasan.hasil.create');
+    Route::get('/hasil/create/getbarcode/{id}', 'GetController@getbarcode');
+    Route::get('/hasil/create/count_status_histori_perakitan/{id}/{status}', 'GetController@count_status_histori_perakitan');
     Route::put('/hasil/store/{id}', 'ProduksiController@pengemasan_hasil_store')->name('pengemasan.hasil.store');
+    Route::get('/analisa_ps/show/{id}', 'EngController@pengemasan_analisa_ps_show')->name('pengemasan.analisa_ps.show');
+    Route::get('/analisa_ps/create/{id}', 'EngController@pengemasan_analisa_ps_create')->name('pengemasan.analisa_ps.create');
+    Route::put('/analisa_ps/store/{id}', 'EngController@pengemasan_analisa_ps_store')->name('pengemasan.analisa_ps.store');
 });
 
 
