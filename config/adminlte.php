@@ -234,7 +234,13 @@ return [
         ],
         [
             'header' => 'MASTER DATA',
-            'auth' => [14, 17, 26, 23, 24, 1]
+            'auth' => [14, 17, 26, 23, 24, 1, 11]
+        ],
+        [
+            'text' => 'Daftar Part',
+            'url'  => '/daftar_part',
+            'icon' => 'fas fa-table',
+            'auth' => [11]
         ],
         [
             'text' => 'Penjualan Produk',
@@ -758,7 +764,20 @@ return [
             'url' => '/perbaikan/produksi',
             'auth' => [17],
         ],
-
+        ['header' => 'TRANSAKSI',
+        'auth' => [22],],
+        [
+            'text'    => 'Kalibrasi Internal',
+            'icon'    => 'fas fa-box-open',
+            'url'  => '/ka_internal/',
+            'auth' => [22],
+        ],
+        [
+            'text'    => 'Kalibrasi Eksternal',
+            'icon'    => 'fas fa-box-open',
+            'url'  => '/ka_eksternal/',
+            'auth' => [22],
+        ],
         ['header' => 'LOGOUT'],
         [
             'text' => 'Logout',
@@ -766,12 +785,12 @@ return [
             'icon' => 'fas fa-sign-out-alt',
             'form' => true,
         ],
-
         [
             'text' => 'test',
             'isNavbarRightItem' => true,
             'icon' => 'fas fa-sign-out-alt',
         ],
+
     ],
 
     /*

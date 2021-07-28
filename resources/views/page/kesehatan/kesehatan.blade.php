@@ -24,6 +24,7 @@
                 <th>No</th>
                 <th>Divisi</th>
                 <th>Nama</th>
+                <th>Umur</th>
                 <th>Berat</th>
                 <th>Tinggi</th>
                 <th>BMI</th>
@@ -123,7 +124,7 @@
   $(function() {
     var tabel = $('#tabel').DataTable({
       processing: true,
-      serverSide: true,
+      serverSide: false,
       language: {
         processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
       },
@@ -138,6 +139,9 @@
         },
         {
           data: 'karyawan.nama'
+        },
+        {
+          data: 'umur'
         },
         {
           data: 'berat_kg'
@@ -161,7 +165,6 @@
             } else {
               return parseFloat(data).toFixed(2) + $k;
             }
-
           }
         },
         {
