@@ -17,4 +17,9 @@ class KalibrasiInternal extends Model
     {
         return $this->belongsTo(User::class, 'pic_id');
     }
+
+    public function ListKalibrasiInternal()
+    {
+        return $this->hasMany(ListKalibrasiInternal::class);
+    }
 }

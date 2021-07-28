@@ -22,6 +22,8 @@ use App\Http\Controllers\UserLogController;
 use App\PerbaikanProduksi;
 use App\HasilPengemasan;
 use App\CekPengemasan;
+use App\KalibrasiInternal;
+use App\ListKalibrasiInternal;
 use App\PackingList;
 use App\PeriksaBarangMasuk;
 use Carbon\Carbon;
@@ -745,7 +747,7 @@ class QCController extends Controller
                 $btn = '<a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Klik untuk melihat laporan"><i class="fas fa-ellipsis-h"></i></a>';
                 $btn .= '<div class="dropdown-menu" aria-labelledby="dropdownMenuLink1">';
                 if ($s->DetailProduk->Produk->kalibrasi == "ya") {
-                    $btn .= '<a class="dropdown-item" href="/pengujian/kalibrasi/hasil/' . $s->id . '"><span style="color: black;"><i class="fas fa-eye" aria-hidden="true"></i>&nbsp;Kalibrasi</span></a>';
+                    $btn .= '<a class="dropdown-item" href="/kalibrasi_internal/' . $s->id . '"><span style="color: black;"><i class="fas fa-eye" aria-hidden="true"></i>&nbsp;Kalibrasi</span></a>';
                 }
                 $btn .= '<a class="dropdown-item monitoringprosesmodal" data-toggle="modal" data-target="#monitoringprosesmodal" data-attr="/pengujian/monitoring_proses/show/' . $s->id . '" data-id="' . $s->id . '"><span style="color: black;"><i class="fas fa-eye" aria-hidden="true"></i>&nbsp;Monitoring Proses</span></a>';
                 $btn .= '<a class="dropdown-item" href="/pengujian/pemeriksaan_proses/hasil/' . $s->id . '"><span style="color: black;"><i class="fas fa-eye" aria-hidden="true"></i>&nbsp;Pemeriksaan Proses</span></a>';
@@ -1888,6 +1890,37 @@ class QCController extends Controller
         // return redirect()->back()->with();
     }
 
+    public function kalibrasi_internal($bppb_id)
+    {
+        $b = Bppb::where('id', $bppb_id)->get();
+        $k = KalibrasiInternal::where('bppb_id', $bppb_id)->get();
+        return view('page.qc.kalibrasi_internal_show', ['bppb_id' => $bppb_id, 'b' => $b, 'k' => $k]);
+    }
+
+    public function kalibrasi_internal_show($bppb_id, $id)
+    {
+        $s = "";
+        if ($id == "0") {
+            $s = ListKalibrasiInternal::whereHas('KalibrasiInternal', function ($q) use ($bppb_id) {
+                $q->where('bppb_id', $bppb_id);
+            })->get();
+        } else {
+            $s = ListKalibrasiInternal::where('kalibrasi_internal_id', $id)->get();
+        }
+        return DataTables::of($s)
+            ->addIndexColumn()
+            ->editColumn('hasil_perakitan_id', function ($s) {
+                return $s->HasilPerakitan->Perakitan->alias_tim . str_replace("/", "", $s->HasilPerakitan->no_seri);
+            })
+            ->editColumn('hasil', function ($s) {
+                if ($s->hasil);
+            })
+            ->editColumn('tindak_lanjut', function ($s) {
+                return $s->tindak_lanjut;
+            })
+            ->make(true);
+    }
+
     public function kalibrasi_internal_create($bppb_id)
     {
         $s = Bppb::find($bppb_id);
@@ -1895,9 +1928,54 @@ class QCController extends Controller
         $hp = HasilPerakitan::whereHas('Perakitan', function ($q) use ($bppb_id) {
             $q->where('bppb_id', $bppb_id);
         })->where('tindak_lanjut_tertutup', 'aging')
+            ->doesntHave('ListKalibrasiInternal')
             ->orderBy('updated_at', 'desc')
             ->get();
         return view('page.qc.kalibrasi_internal_create', ['s' => $s, 'k' => $k, 'hp' => $hp]);
+    }
+
+    public function kalibrasi_internal_store(Request $request, $bppb_id)
+    {
+        $v = Validator::make(
+            $request->all(),
+            [
+                'tanggal' => 'required',
+            ],
+            [
+                'tanggal.*.required' => "Tanggal harus diisi",
+            ]
+        );
+
+        if ($v->fails()) {
+            return redirect()->back()->withErrors($v);
+        } else {
+            $ki = KalibrasiInternal::create([
+                'bppb_id' => $bppb_id,
+                'tanggal_daftar' => $request->tanggal,
+                'pic_id' => Auth::user()->id
+            ]);
+
+            if ($ki) {
+                $bool = true;
+                for ($i = 0; $i < count($request->hasil_perakitan_id); $i++) {
+                    $l = ListKalibrasiInternal::create([
+                        'kalibrasi_internal_id' => $ki->id,
+                        'hasil_perakitan_id' => $request->hasil_perakitan_id[$i],
+                        'status' => 'req_kalibrasi'
+                    ]);
+
+                    if (!$l) {
+                        $bool = false;
+                    }
+                }
+
+                if ($bool == true) {
+                    return redirect()->back()->with('success', "Berhasil mengirimkan List No Seri");
+                } else if ($bool == false) {
+                    return redirect()->back()->with('error', "Gagal mengirimkan List No Seri");
+                }
+            }
+        }
     }
 
     public function pengemasan()
