@@ -30,6 +30,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
+use PDF;
 
 class QCController extends Controller
 {
@@ -698,6 +699,12 @@ class QCController extends Controller
     public function pengujian()
     {
         return view('page.qc.pengujian_show');
+    }
+
+    public function pdf_lup()
+    {
+        $pdf = PDF::loadView('page.qc.pdf_lup')->setPaper('A4');
+        return $pdf->stream('');
     }
 
     public function pengujian_show()
@@ -1912,12 +1919,44 @@ class QCController extends Controller
             ->editColumn('hasil_perakitan_id', function ($s) {
                 return $s->HasilPerakitan->Perakitan->alias_tim . str_replace("/", "", $s->HasilPerakitan->no_seri);
             })
+            ->editColumn('tanggal_kalibrasi', function ($s) {
+                if (!empty($s->tanggal_kalibrasi)) {
+                    return '<span>' . Carbon::createFromFormat('Y-m-d', $s->tanggal_kalibrasi)->format('d-m-Y') . '</span>';
+                } else {
+                    return '<span class="text-muted">-</span>';
+                }
+            })
+            ->editColumn('tanggal_selesai', function ($s) {
+                if (!empty($s->tanggal_selesai)) {
+                    return '<span>' . Carbon::createFromFormat('Y-m-d', $s->tanggal_selesai)->format('d-m-Y') . '</span>';
+                } else {
+                    return '<span class="text-muted">-</span>';
+                }
+            })
             ->editColumn('hasil', function ($s) {
-                if ($s->hasil);
+                if (!empty($s->hasil)) {
+                    if ($s->hasil == "ok") {
+                        return '<i class="fas fa-check-circle" style="color:green;"></i>';
+                    } else {
+                        return '<i class="fas fa-times-circle" style="color:red;"></i>';
+                    }
+                } else {
+                    return '<span class="text-muted">-</span>';
+                }
             })
             ->editColumn('tindak_lanjut', function ($s) {
-                return $s->tindak_lanjut;
+                if (!empty($s->tindak_lanjut)) {
+                    return '<span>' . $s->tindak_lanjut . '</span>';
+                } else {
+                    return '<span class="text-muted">-</span>';
+                }
             })
+            ->addColumn('aksi', function ($s) {
+                if ($s->status == "req_kalibrasi") {
+                    return '<small class="warning-text">Proses Uji Lab</small>';
+                }
+            })
+            ->rawColumns(['tanggal_kalibrasi', 'tanggal_selesai', 'hasil', 'tindak_lanjut', 'aksi'])
             ->make(true);
     }
 
@@ -1928,7 +1967,7 @@ class QCController extends Controller
         $hp = HasilPerakitan::whereHas('Perakitan', function ($q) use ($bppb_id) {
             $q->where('bppb_id', $bppb_id);
         })->where('tindak_lanjut_tertutup', 'aging')
-            ->doesntHave('ListKalibrasiInternal')
+
             ->orderBy('updated_at', 'desc')
             ->get();
         return view('page.qc.kalibrasi_internal_create', ['s' => $s, 'k' => $k, 'hp' => $hp]);
@@ -1942,7 +1981,7 @@ class QCController extends Controller
                 'tanggal' => 'required',
             ],
             [
-                'tanggal.*.required' => "Tanggal harus diisi",
+                'tanggal.required' => "Tanggal harus diisi",
             ]
         );
 

@@ -44,16 +44,14 @@
                     <div class="table-responsive">
                         <table id="example1" class="table table-hover styled-table">
                             <thead style="text-align: center;">
-                                <tr style="text-align: right;">
-                                    <th colspan="12"><button class="btn btn-sm btn-success" id="tambahlaporan" disabled><i class="fas fa-plus"></i>&nbsp; Tambah Pengemasan</button></th>
-                                </tr>
                                 <tr>
                                     <th>No</th>
-                                    <th>No Seri</th>
+                                    <th>Kode Perakitan</th>
                                     <th>Tgl Kalibrasi</th>
                                     <th>Tgl Selesai</th>
                                     <th>Hasil</th>
                                     <th>Tindak Lanjut</th>
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody style="text-align:center;" id="tbodies">
@@ -99,7 +97,7 @@
             $('#example1').DataTable({
                 destroy: true,
                 processing: true,
-                serverSide: true,
+                serverSide: false,
                 ajax: "/kalibrasi_internal/show/" + "{{$bppb_id}}" + "/" + id,
                 columns: [{
                         data: 'DT_RowIndex',
@@ -126,6 +124,10 @@
                     {
                         data: 'tindak_lanjut',
                         name: 'tindak_lanjut'
+                    },
+                    {
+                        data: 'aksi',
+                        name: 'aksi'
                     },
                 ]
             });
