@@ -168,7 +168,7 @@
         var detail_karyawan = function() {
             $.ajax({
                 url: "/kesehatan/data/" + karyawan_id,
-                type: 'POST',
+                type: 'GET',
                 dataType: 'json',
                 success: function(data) {
                     console.log(data);

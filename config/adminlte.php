@@ -772,12 +772,33 @@ return [
         ],
         ['header' => 'TRANSAKSI',
         'auth' => [22],],
+
         [
             'text'    => 'Kalibrasi Internal',
             'icon'    => 'fas fa-box-open',
-            'url'  => '/ka_internal/',
             'auth' => [22],
+            'submenu' => [
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Rumus',
+                    'url'  => '/pengemasan',
+                    'auth' => [22],
+                ],
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Kalibrasi',
+                    'url'  => '/pengemasan',
+                    'auth' => [22],
+                ],
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Hasil',
+                    'url'  => '/pengemasan',
+                    'auth' => [22],
+                ]
+            ],
         ],
+       
         [
             'text'    => 'Kalibrasi Eksternal',
             'icon'    => 'fas fa-box-open',

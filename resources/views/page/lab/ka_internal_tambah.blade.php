@@ -42,7 +42,7 @@
                                             <div class="form-group row">
                                                 <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">No Pendaftaran</label>
                                                 <div class="col-sm-8">
-                                                    <input type="date" class="form-control @error('karyawan_id') is-invalid @enderror" name="karyawan_id" style="width:45%;">
+                                                    <input type="text" class="form-control @error('karyawan_id') is-invalid @enderror" name="karyawan_id" style="width:45%;">
                                                     @if($errors->has('karyawan_id'))
                                                     <div class="text-danger">
                                                         {{ $errors->first('karyawan_id')}}
@@ -51,7 +51,36 @@
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-                                                <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">BPPB </label>
+                                                <label for="keterangan" class="col-sm-4 col-form-label" style="text-align:right;">Tinggi Badan</label>
+                                                <div class="col-sm-2">
+                                                    <div class="input-group mb-3">
+                                                        <input type="number" class="form-control" name="tinggi" id="tinggi" value="{{ old('tinggi') }}">
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text">Cm</span>
+                                                        </div>
+                                                    </div>
+                                                    @if($errors->has('tinggi'))
+                                                    <div class="text-danger">
+                                                        {{ $errors->first('tinggi')}}
+                                                    </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Type Produk</label>
+                                                <div class="col-sm-8">
+                                                    <select type="text" class="form-control @error('karyawan_id') is-invalid @enderror select2" name="karyawan_id" style="width:45%;">
+                                                        <option value=""></option>
+                                                    </select>
+                                                    @if($errors->has('karyawan_id'))
+                                                    <div class="text-danger">
+                                                        {{ $errors->first('karyawan_id')}}
+                                                    </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Type Produk</label>
                                                 <div class="col-sm-8">
                                                     <select type="text" class="form-control @error('karyawan_id') is-invalid @enderror select2" name="karyawan_id" style="width:45%;">
                                                         <option value=""></option>
@@ -75,34 +104,6 @@
                     </div>
                 </form>
             </div>
-        </div>
-        <div class="col-lg-12">
-            <form action="/kesehatan_harian/aksi_tambah" method="post">
-                {{ csrf_field() }}
-                <div class="card">
-                    <div class="card-header bg-success">
-                        <div class="card-title">Daftar Awal</div>
-                    </div>
-                    <div class="card-body">
-                        <div class='table-responsive'>
-                            <table id="tensi_tabel" class="table table-hover styled-table table-striped">
-                                <thead style="text-align: center;">
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Tgl Pengecekan</th>
-                                        <th>Sistolik</th>
-                                        <th>Diastolik</th>
-                                        <th>Catatan</th>
-                                    </tr>
-                                </thead>
-                                <tbody style="text-align: center;">
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </form>
-
         </div>
     </div>
 </section>

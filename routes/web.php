@@ -151,6 +151,7 @@ Route::get('/pengeluaran/tambah', 'GudangMaterialController@pengeluaran_tambah')
 
 //Lab
 Route::get('/ka_internal/tambah', 'LabController@ka_internal_tambah');
+Route::get('/ka_internal/cetak', 'LabController@ka_internal_form');
 
 //Karyawan
 Route::group(['prefix' => '/karyawan', 'middleware' => 'auth'], function () {

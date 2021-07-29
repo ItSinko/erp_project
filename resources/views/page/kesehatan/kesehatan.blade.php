@@ -192,6 +192,7 @@
       $('.data_detail_head').html(
         rows[0]['karyawan']['nama']
       );
+
       $('input[id="tinggi"]').val(rows[0]['tinggi']);
 
       var value1 = $('.modal-body input[id=berat]').val();
@@ -208,7 +209,6 @@
       } else {
         $('#status_bmi').text('Kekurangan Berat Badan');
       }
-
       $('#berat_mod').modal('show');
     })
   });
