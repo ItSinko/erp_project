@@ -442,3 +442,147 @@
         </table>
     </div>
 </div>
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <table border=0 class="table" width="100%">
+                <tbody>
+                    <tr>
+                        <td></td>
+
+                    </tr>
+                    <tr>
+                        <td></td>
+
+                    </tr>
+                    <tr>
+                        <td></td>
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <table width="100%">
+            <tbody>
+                <tr>
+                    <td><span>G. Pengukuran Konsentrasi Oksigen (%)</span>
+                        <table border="1" width="100%">
+                            <thead>
+                                <tr>
+                                    <th rowspan="2">No</th>
+                                    <th rowspan="2">Parameter</th>
+                                    <th rowspan="2">Setting</th>
+                                    <th colspan="6">Hasil Pembacaan</th>
+                                    <th rowspan="2">Rata Rata</th>
+                                    <th rowspan="2">Hasil Uji</th>
+                                    <th rowspan="2">Standar Toleransi</th>
+                                </tr>
+                                <tr>
+                                    <th>I</th>
+                                    <th>II</th>
+                                    <th>III</th>
+                                    <th>IV</th>
+                                    <th>V</th>
+                                    <th>VI</th>
+                                </tr>
+                            </thead>
+                            <tbody class="nospace">
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <table border=0 class="table" width="100%">
+                <tbody>
+                    <tr>
+                        <td></td>
+
+                    </tr>
+                    <tr>
+                        <td></td>
+
+                    </tr>
+                    <tr>
+                        <td></td>
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <table border=0 class="table" width="100%">
+                <tbody>
+                    <tr>
+                        <td width="46%">
+                            <div>H. Telaah Teknis Pengujian</div>
+                            <table width="100%" border="1" style="border-collapse: collapse;">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Pengukuran</th>
+                                        <th>Kategori</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Kinerja</td>
+                                        <td>OK</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                        <td width="8%">
+                            <table width="100%">
+                                <tbody>
+                                    <tr>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                        <td width="46%">
+                            <div>I. Kesimpulan Telaah Teknis Pengujian</div>
+                            <table width="100%" border="1" style="border-collapse: collapse;">
+                                <tbody>
+                                    <tr>
+                                        <td width="75%">Berdasarkan hasil Pengujian alat kesehatan tersebut dinyatakan:</td>
+                                        <td width="25%">OK</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
