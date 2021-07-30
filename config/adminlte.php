@@ -770,8 +770,10 @@ return [
             'url' => '/perbaikan/produksi',
             'auth' => [17],
         ],
-        ['header' => 'TRANSAKSI',
-        'auth' => [22],],
+        [
+            'header' => 'TRANSAKSI',
+            'auth' => [22],
+        ],
 
         [
             'text'    => 'Kalibrasi Internal',
@@ -780,7 +782,7 @@ return [
             'submenu' => [
                 [
                     'icon' => 'far fa-circle',
-                    'text' => 'Rumus',
+                    'text' => 'Data',
                     'url'  => '/pengemasan',
                     'auth' => [22],
                 ],
@@ -798,7 +800,7 @@ return [
                 ]
             ],
         ],
-       
+
         [
             'text'    => 'Kalibrasi Eksternal',
             'icon'    => 'fas fa-box-open',
