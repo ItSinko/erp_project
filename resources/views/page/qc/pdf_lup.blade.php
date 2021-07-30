@@ -1,6 +1,6 @@
 <style>
     .mdtxt {
-        font-size: 14px;
+        font-size: 13px;
     }
 
     .nospace {
@@ -11,16 +11,24 @@
     .vera {
         vertical-align: top;
     }
+
+    .veramd {
+        vertical-align: middle;
+    }
+
+    .wb {
+        word-break: break-all;
+    }
 </style>
 <div class="card">
     <div class="card-body">
         <div class="row">
             <div class="col-lg-12">
                 <div class="table-responsive">
-                    <table class="table mdtxt" style="width:100%;" border='1'>
+                    <table class="table mdtxt" style="width:100%;" border=1 style="border-collapse: collapse;">
                         <tbody>
                             <tr>
-                                <td style="text-align:center;">
+                                <td style="text-align:center;" class="wb">
                                     <b>PT SINKO PRIMA ALLOY</b> <br>
                                     LEMBAR KERJA PENGUJIAN<br>
                                     MAP 100 AIR PURIFIER AND OXYGEN CONCENTRATOR
@@ -68,10 +76,6 @@
                         <td></td>
 
                     </tr>
-                    <tr>
-                        <td></td>
-
-                    </tr>
                 </tbody>
             </table>
         </div>
@@ -81,60 +85,60 @@
     <div class="card-body">
         <div class="row">
             <div class="table-responsive">
-                <table class="table">
+                <table class="table mdtxt">
                     <tbody class="vera">
                         <tr>
-                            <td rowspan="10">A.</td>
-                            <td>Data Administrasi</td>
+                            <td rowspan="10" class="nospace">A.</td>
+                            <td class="nospace">Data Administrasi</td>
                             <td>:</td>
                             <td colspan="6">SPA/LKP/OCO010</td>
                         </tr>
                         <tr>
-                            <td>Tempat Pengujian</td>
+                            <td class="nospace">Tempat Pengujian</td>
                             <td>:</td>
                             <td colspan="6">PT. Sinko Prima Alloy</td>
                         </tr>
                         <tr>
-                            <td>Ruangan Pengujian</td>
+                            <td class="nospace">Ruangan Pengujian</td>
                             <td>:</td>
                             <td colspan="6">Quality Control</td>
                         </tr>
                         <tr>
-                            <td>Tanggal Pengujian</td>
+                            <td class="nospace">Tanggal Pengujian</td>
                             <td>:</td>
                             <td colspan="6">06 Januari 2009</td>
                         </tr>
                         <tr>
-                            <td>Metode Kerja</td>
+                            <td class="nospace">Metode Kerja</td>
                             <td>:</td>
                             <td colspan="6">Pengujian Oxygen Concentrator</td>
                         </tr>
                         <tr>
-                            <td rowspan="4">Data Alat</td>
+                            <td rowspan="4" class="nospace">Data Alat</td>
                             <td rowspan="4">:</td>
                             <td class="nospace">Nama</td>
                             <td class="nospace">:</td>
-                            <td colspan="2" style="word-break: break-all;">Oxygen Concentrator</td>
+                            <td colspan="4" class="wb vera">Oxygen Concentrator Oxygen Concentrator Oxygen Concentrator jfkhakhak fhkahkfahk fkahfkhk khakhf</td>
                         </tr>
                         <tr>
-                            <td>Tipe</td>
+                            <td class="nospace">Tipe</td>
                             <td class="nospace">:</td>
-                            <td colspan="2">MOC-A</td>
+                            <td colspan="4">MOC-A</td>
                         </tr>
                         <tr>
-                            <td>Merk</td>
+                            <td class="nospace">Merk</td>
                             <td class="nospace">:</td>
-                            <td colspan="2">Elitech</td>
+                            <td colspan="4">Elitech</td>
                         </tr>
                         <tr>
-                            <td>No Seri</td>
+                            <td class="nospace">No Seri</td>
                             <td class="nospace">:</td>
-                            <td colspan="2">OC01215C0053</td>
+                            <td colspan="4">OC01215C0053</td>
                         </tr>
                         <tr>
                             <td>Berlaku s/d tgl</td>
-                            <td>:</td>
-                            <td>06 September 2010</td>
+                            <td class="nospace">:</td>
+                            <td colspan="6">06 September 2010</td>
                         </tr>
                     </tbody>
                 </table>
@@ -156,10 +160,6 @@
                         <td></td>
 
                     </tr>
-                    <tr>
-                        <td></td>
-
-                    </tr>
                 </tbody>
             </table>
         </div>
@@ -167,9 +167,9 @@
 </div>
 <div class="card">
     <div class="card-body">
-        <div class="row">
-            <span>B. Daftar Alat Ukur</span>
-            <table class="table" border="1" width="80%">
+        <div class="row mdtxt">
+            <div>B. Daftar Alat Ukur</div>
+            <table class="table" border="1" style="border-collapse: collapse; text-align:center;" width="80%">
                 <thead>
                     <tr>
                         <th>No</th>
@@ -185,27 +185,27 @@
                         <td>Thermohygrometer</td>
                         <td>KT</td>
                         <td>903</td>
-                        <td>904902578267856280</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Thermohygrometer SPO2 Simulator</td>
-                        <td>KT</td>
-                        <td>903</td>
                         <td>-</td>
                     </tr>
                     <tr>
-                        <td>1</td>
-                        <td>Thermohygrometer</td>
-                        <td>KT</td>
-                        <td>903</td>
-                        <td>904902578267856280</td>
+                        <td>2</td>
+                        <td>SPO2 Simulator</td>
+                        <td>Fluke Biomedical</td>
+                        <td>Spot Light</td>
+                        <td>2597028</td>
                     </tr>
                     <tr>
-                        <td>2</td>
-                        <td>Thermohygrometer SPO2 Simulator</td>
-                        <td>KT</td>
-                        <td>903</td>
+                        <td>3</td>
+                        <td>Oxygen Analyzer</td>
+                        <td>MaxTec</td>
+                        <td>UltraMaxO2</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Pressure Meter</td>
+                        <td>Yuantai</td>
+                        <td>-</td>
                         <td>-</td>
                     </tr>
                 </tbody>
@@ -226,10 +226,6 @@
                         <td></td>
 
                     </tr>
-                    <tr>
-                        <td></td>
-
-                    </tr>
                 </tbody>
             </table>
         </div>
@@ -240,11 +236,12 @@
         <div class="col">
             <div class="card">
                 <div class="card-body">
-                    <table width="100%">
+                    <table width="100%" class="mdtxt">
                         <tbody>
                             <tr>
-                                <td width="38%"><span>C. Pengukuran Kondisi Lingkungan</span>
-                                    <table border="1" width="100%">
+                                <td width="38%" class="vera">
+                                    <div>C. Pengukuran Kondisi Lingkungan</div>
+                                    <table border="1" style="border-collapse: collapse;text-align:center;" width="100%">
                                         <thead>
                                             <tr>
                                                 <th rowspan="2">No</th>
@@ -256,19 +253,26 @@
                                                 <th>Akhir</th>
                                             </tr>
                                         </thead>
-                                        <tbody class="nospace">
+                                        <tbody>
                                             <tr>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td class="nospace">1</td>
+                                                <td class="wb">Temprature</td>
+                                                <td class="nospace"></td>
+                                                <td class="nospace"></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="nospace">2</td>
+                                                <td class="wb">Kelembapan</td>
+                                                <td class="nospace"></td>
+                                                <td class="nospace"></td>
                                             </tr>
                                         </tbody>
                                     </table>
                                 </td>
                                 <td width="5%"></td>
-                                <td width="57%"><span>D. Pemeriksaan Kondisi Fisik & Fungsi</span>
-                                    <table border="1" width="100%">
+                                <td width="57%" class="vera">
+                                    <div>D. Pemeriksaan Kondisi Fisik & Fungsi</div>
+                                    <table border="1" style="border-collapse: collapse;text-align:center;" width="100%">
                                         <thead>
                                             <tr>
                                                 <th rowspan="2">No</th>
@@ -283,11 +287,39 @@
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>1</td>
+                                                <td>Kontrol / Indikator</td>
+                                                <td>v</td>
+                                                <td>v</td>
+                                                <td>OK</td>
+                                            </tr>
+                                            <tr>
+                                                <td>2</td>
+                                                <td>SPO2 Sensor</td>
+                                                <td>v</td>
+                                                <td>v</td>
+                                                <td>OK</td>
+                                            </tr>
+                                            <tr>
+                                                <td>3</td>
+                                                <td>Flow Meter</td>
+                                                <td>v</td>
+                                                <td>v</td>
+                                                <td>OK</td>
+                                            </tr>
+                                            <tr>
+                                                <td>4</td>
+                                                <td>Power Cable</td>
+                                                <td>v</td>
+                                                <td>v</td>
+                                                <td>OK</td>
+                                            </tr>
+                                            <tr>
+                                                <td>5</td>
+                                                <td>Accessories</td>
+                                                <td>v</td>
+                                                <td>v</td>
+                                                <td>OK</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -313,10 +345,6 @@
                         <td></td>
 
                     </tr>
-                    <tr>
-                        <td></td>
-
-                    </tr>
                 </tbody>
             </table>
         </div>
@@ -324,16 +352,17 @@
 </div>
 <div class="card">
     <div class="card-body">
-        <table width="100%">
+        <table width="100%" class="mdtxt">
             <tbody>
                 <tr>
-                    <td><span>E. Pengukuran Heart Rate (BPM) dan Saturasi Oksigen (SPO2)</span>
-                        <table border="1" width="100%">
+                    <td>
+                        <div>E. Pengukuran Heart Rate (BPM) dan Saturasi Oksigen (SPO2)</div>
+                        <table border="1" style="border-collapse: collapse;text-align:center;" width="100%">
                             <thead>
                                 <tr>
-                                    <th rowspan="2">No</th>
-                                    <th rowspan="2">Parameter</th>
-                                    <th rowspan="2">Setting</th>
+                                    <th rowspan="2" class="nospace">No</th>
+                                    <th rowspan="2" class="nospace">Parameter</th>
+                                    <th rowspan="2" class="nospace">Setting</th>
                                     <th colspan="6">Hasil Pembacaan</th>
                                     <th rowspan="2">Rata Rata</th>
                                     <th rowspan="2">Hasil Uji</th>
@@ -348,20 +377,78 @@
                                     <th>VI</th>
                                 </tr>
                             </thead>
-                            <tbody class="nospace">
+                            <tbody>
                                 <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                    <td rowspan="3" class="nospace">1</td>
+                                    <td class="wb" rowspan="3">SPO2 (%)</td>
+                                    <td class="wb">80%</td>
+                                    <td class="nospace">81</td>
+                                    <td class="nospace">80</td>
+                                    <td class="nospace">80</td>
+                                    <td class="nospace">81</td>
+                                    <td class="nospace">80</td>
+                                    <td class="nospace">80</td>
+                                    <td class="nospace">80,3333</td>
+                                    <td class="nospace">TIDAK OK</td>
+                                    <td class="nospace" rowspan="3">2%</td>
+                                </tr>
+                                <tr>
+                                    <td class="wb">90%</td>
+                                    <td class="nospace">90</td>
+                                    <td class="nospace">90</td>
+                                    <td class="nospace">90</td>
+                                    <td class="nospace">90</td>
+                                    <td class="nospace">90</td>
+                                    <td class="nospace">90</td>
+                                    <td class="nospace">90,3333</td>
+                                    <td class="nospace">TIDAK OK</td>
+                                </tr>
+                                <tr>
+                                    <td class="wb">100%</td>
+                                    <td class="nospace">99</td>
+                                    <td class="nospace">99</td>
+                                    <td class="nospace">99</td>
+                                    <td class="nospace">99</td>
+                                    <td class="nospace">99</td>
+                                    <td class="nospace">99</td>
+                                    <td class="nospace">99,3333</td>
+                                    <td class="nospace">TIDAK OK</td>
+                                </tr>
+                                <tr>
+                                    <td rowspan="3" class="nospace">2</td>
+                                    <td class="wb" rowspan="3">BPM</td>
+                                    <td class="wb">60</td>
+                                    <td class="nospace">60</td>
+                                    <td class="nospace">60</td>
+                                    <td class="nospace">60</td>
+                                    <td class="nospace">60</td>
+                                    <td class="nospace">60</td>
+                                    <td class="nospace">60</td>
+                                    <td class="nospace">80,3333</td>
+                                    <td class="nospace">TIDAK OK</td>
+                                    <td class="nospace" rowspan="3">2%</td>
+                                </tr>
+                                <tr>
+                                    <td class="wb">90%</td>
+                                    <td class="nospace">90</td>
+                                    <td class="nospace">90</td>
+                                    <td class="nospace">90</td>
+                                    <td class="nospace">90</td>
+                                    <td class="nospace">90</td>
+                                    <td class="nospace">90</td>
+                                    <td class="nospace">90,3333</td>
+                                    <td class="nospace">TIDAK OK</td>
+                                </tr>
+                                <tr>
+                                    <td class="wb">100%</td>
+                                    <td class="nospace">99</td>
+                                    <td class="nospace">99</td>
+                                    <td class="nospace">99</td>
+                                    <td class="nospace">99</td>
+                                    <td class="nospace">99</td>
+                                    <td class="nospace">99</td>
+                                    <td class="nospace">99,3333</td>
+                                    <td class="nospace">TIDAK OK</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -384,10 +471,6 @@
                         <td></td>
 
                     </tr>
-                    <tr>
-                        <td></td>
-
-                    </tr>
                 </tbody>
             </table>
         </div>
@@ -395,11 +478,11 @@
 </div>
 <div class="card">
     <div class="card-body">
-        <table width="100%">
+        <table width="100%" class="mdtxt">
             <tbody>
                 <tr>
                     <td><span>F. Pengukuran Tekanan</span>
-                        <table border="1" width="100%">
+                        <table border="1" style="border-collapse: collapse;" width="100%">
                             <thead>
                                 <tr>
                                     <th rowspan="2">No</th>
@@ -419,20 +502,20 @@
                                     <th>VI</th>
                                 </tr>
                             </thead>
-                            <tbody class="nospace">
+                            <tbody>
                                 <tr>
                                     <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                    <td class="wb">jekhkrhakgtjkagtjkathka hkjhakhka atatataaatatat</td>
+                                    <td class="wb">najhrgarkahkrhakhrkahrka</td>
+                                    <td class="nospace">4444</td>
+                                    <td class="nospace">4444</td>
+                                    <td class="nospace">4444</td>
+                                    <td class="nospace">4444</td>
+                                    <td class="nospace">4444</td>
+                                    <td class="nospace">4444</td>
+                                    <td class="nospace">± 4444,444444</td>
+                                    <td class="nospace">TIDAK OK</td>
+                                    <td class="nospace"></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -455,10 +538,6 @@
                         <td></td>
 
                     </tr>
-                    <tr>
-                        <td></td>
-
-                    </tr>
                 </tbody>
             </table>
         </div>
@@ -466,11 +545,12 @@
 </div>
 <div class="card">
     <div class="card-body">
-        <table width="100%">
+        <table width="100%" class="mdtxt">
             <tbody>
                 <tr>
-                    <td><span>G. Pengukuran Konsentrasi Oksigen (%)</span>
-                        <table border="1" width="100%">
+                    <td>
+                        <div>G. Pengukuran Konsentrasi Oksigen (%)</div>
+                        <table border="1" style="border-collapse: collapse;" width="100%">
                             <thead>
                                 <tr>
                                     <th rowspan="2">No</th>
@@ -490,20 +570,20 @@
                                     <th>VI</th>
                                 </tr>
                             </thead>
-                            <tbody class="nospace">
+                            <tbody>
                                 <tr>
                                     <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                    <td class="wb">jekhkrhakgtjkagtjkathka hkjhakhka </td>
+                                    <td class="wb">najhrgarkahkrhakhrkahrka</td>
+                                    <td class="nospace">4444</td>
+                                    <td class="nospace">4444</td>
+                                    <td class="nospace">4444</td>
+                                    <td class="nospace">4444</td>
+                                    <td class="nospace">4444</td>
+                                    <td class="nospace">4444</td>
+                                    <td class="nospace">4444,444444</td>
+                                    <td class="nospace">TIDAK OK</td>
+                                    <td class="nospace"></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -526,10 +606,6 @@
                         <td></td>
 
                     </tr>
-                    <tr>
-                        <td></td>
-
-                    </tr>
                 </tbody>
             </table>
         </div>
@@ -538,29 +614,34 @@
 <div class="card">
     <div class="card-body">
         <div class="row">
-            <table border=0 class="table" width="100%">
+            <table border=0 class="table mdtxt" width="100%">
                 <tbody>
                     <tr>
-                        <td width="46%">
+                        <td width="47%">
                             <div>H. Telaah Teknis Pengujian</div>
                             <table width="100%" border="1" style="border-collapse: collapse;">
                                 <thead>
                                     <tr>
-                                        <th>No</th>
+                                        <th class="nospace">No</th>
                                         <th>Pengukuran</th>
-                                        <th>Kategori</th>
+                                        <th class="nospace" style="text-align:center;">Kategori</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>1</td>
-                                        <td>Kinerja</td>
-                                        <td>OK</td>
+                                        <td>12</td>
+                                        <td class="wb">Keamanan Listrik dan Kinerja</td>
+                                        <td class="nospace" style="text-align:center;">TIDAK OK</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td class="wb">Kinerja</td>
+                                        <td class="nospace" style="text-align:center;">OK</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </td>
-                        <td width="8%">
+                        <td width="5%">
                             <table width="100%">
                                 <tbody>
                                     <tr>
@@ -569,13 +650,13 @@
                                 </tbody>
                             </table>
                         </td>
-                        <td width="46%">
+                        <td width="47%" class="vera">
                             <div>I. Kesimpulan Telaah Teknis Pengujian</div>
                             <table width="100%" border="1" style="border-collapse: collapse;">
                                 <tbody>
                                     <tr>
-                                        <td width="75%">Berdasarkan hasil Pengujian alat kesehatan tersebut dinyatakan:</td>
-                                        <td width="25%">OK</td>
+                                        <td class="wb">Berdasarkan hasil Pengujian alat kesehatan tersebut dinyatakan:</td>
+                                        <td class="nospace" style="font-size:20px;" style="text-align:center;"><b>TIDAK OK</b></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -584,5 +665,43 @@
                 </tbody>
             </table>
         </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <table border=0 class="table" width="100%">
+                <tbody>
+                    <tr>
+                        <td></td>
+
+                    </tr>
+                    <tr>
+                        <td></td>
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <table width="100%" class="mdtxt">
+            <tbody>
+                <tr>
+                    <td>
+                        <div>I. Saran</div>
+                        <table border="1" style="border-collapse: collapse;" width="100%">
+                            <tbody>
+                                <tr>
+                                    <td class="wb">Pada hari minggu ku turut ayah ke kota naik delman istimewa ku duduk dimuka ku duduk samping pak kusir yang sedang bekerja mengendarai kuda supaya baik jalannya HEYYYY!!!!!!</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
