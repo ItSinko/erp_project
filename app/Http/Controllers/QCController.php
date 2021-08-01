@@ -701,9 +701,9 @@ class QCController extends Controller
         return view('page.qc.pengujian_show');
     }
 
-    public function pdf_lup()
+    public function pdf_lkp($produk)
     {
-        $pdf = PDF::loadView('page.qc.pdf_lup')->setPaper('A4');
+        $pdf = PDF::loadView('page.qc.lkp.'.$produk)->setPaper('A4');
         return $pdf->stream('');
     }
 

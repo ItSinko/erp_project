@@ -1,6 +1,6 @@
 <style>
     .mdtxt {
-        font-size: 13px;
+        font-size: 12px;
     }
 
     .nospace {
@@ -72,10 +72,6 @@
                         <td></td>
 
                     </tr>
-                    <tr>
-                        <td></td>
-
-                    </tr>
                 </tbody>
             </table>
         </div>
@@ -85,60 +81,64 @@
     <div class="card-body">
         <div class="row">
             <div class="table-responsive">
-                <table class="table mdtxt">
+                <table class="table mdtxt" width=100%>
                     <tbody class="vera">
                         <tr>
-                            <td rowspan="10" class="nospace">A.</td>
+                            <td rowspan="7" class="nospace">A.</td>
                             <td class="nospace">Data Administrasi</td>
                             <td>:</td>
-                            <td colspan="6">SPA/LKP/OCO010</td>
+                            <td>SPA/LKP/OCO010</td>
                         </tr>
                         <tr>
                             <td class="nospace">Tempat Pengujian</td>
                             <td>:</td>
-                            <td colspan="6">PT. Sinko Prima Alloy</td>
+                            <td>PT. Sinko Prima Alloy</td>
                         </tr>
                         <tr>
                             <td class="nospace">Ruangan Pengujian</td>
                             <td>:</td>
-                            <td colspan="6">Quality Control</td>
+                            <td>Quality Control</td>
                         </tr>
                         <tr>
                             <td class="nospace">Tanggal Pengujian</td>
                             <td>:</td>
-                            <td colspan="6">06 Januari 2009</td>
+                            <td>06 Januari 2009</td>
                         </tr>
                         <tr>
                             <td class="nospace">Metode Kerja</td>
                             <td>:</td>
-                            <td colspan="6">Pengujian Oxygen Concentrator</td>
+                            <td>Pengujian Oxygen Concentrator</td>
                         </tr>
                         <tr>
-                            <td rowspan="4" class="nospace">Data Alat</td>
-                            <td rowspan="4">:</td>
-                            <td class="nospace">Nama</td>
-                            <td class="nospace">:</td>
-                            <td colspan="4" class="wb vera">Oxygen Concentrator Oxygen Concentrator Oxygen Concentrator jfkhakhak fhkahkfahk fkahfkhk khakhf</td>
-                        </tr>
-                        <tr>
-                            <td class="nospace">Tipe</td>
-                            <td class="nospace">:</td>
-                            <td colspan="4">MOC-A</td>
-                        </tr>
-                        <tr>
-                            <td class="nospace">Merk</td>
-                            <td class="nospace">:</td>
-                            <td colspan="4">Elitech</td>
-                        </tr>
-                        <tr>
-                            <td class="nospace">No Seri</td>
-                            <td class="nospace">:</td>
-                            <td colspan="4">OC01215C0053</td>
+                            <td class="nospace">Data Alat</td>
+                            <td>:</td>
+                            <td>
+                                <table width=100% class="vera">
+                                    <tbody>
+                                    <tr>
+                                        <td class="nospace">Nama</td>
+                                        <td class="nospace">:</td>
+                                        <td class="wb vera">Oxygen Concentrator</td>
+                                        <td class="nospace">Tipe</td>
+                                        <td class="nospace">:</td>
+                                        <td>MOC-A</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="nospace">Merk</td>
+                                        <td class="nospace">:</td>
+                                        <td>Elitech</td>
+                                        <td class="nospace">No Seri</td>
+                                        <td class="nospace">:</td>
+                                        <td>OC01215C0053</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </td>
                         </tr>
                         <tr>
                             <td>Berlaku s/d tgl</td>
                             <td class="nospace">:</td>
-                            <td colspan="6">06 September 2010</td>
+                            <td>06 September 2010</td>
                         </tr>
                     </tbody>
                 </table>
@@ -154,11 +154,6 @@
                 <tbody>
                     <tr>
                         <td></td>
-
-                    </tr>
-                    <tr>
-                        <td></td>
-
                     </tr>
                 </tbody>
             </table>
@@ -218,10 +213,6 @@
         <div class="row">
             <table border=0 class="table" width="100%">
                 <tbody>
-                    <tr>
-                        <td></td>
-
-                    </tr>
                     <tr>
                         <td></td>
 
@@ -341,10 +332,6 @@
                         <td></td>
 
                     </tr>
-                    <tr>
-                        <td></td>
-
-                    </tr>
                 </tbody>
             </table>
         </div>
@@ -429,25 +416,25 @@
                                     <td class="nospace" rowspan="3">2%</td>
                                 </tr>
                                 <tr>
-                                    <td class="wb">90%</td>
-                                    <td class="nospace">90</td>
-                                    <td class="nospace">90</td>
-                                    <td class="nospace">90</td>
-                                    <td class="nospace">90</td>
-                                    <td class="nospace">90</td>
-                                    <td class="nospace">90</td>
-                                    <td class="nospace">90,3333</td>
+                                    <td class="wb">120</td>
+                                    <td class="nospace">120</td>
+                                    <td class="nospace">120</td>
+                                    <td class="nospace">120</td>
+                                    <td class="nospace">120</td>
+                                    <td class="nospace">120</td>
+                                    <td class="nospace">120</td>
+                                    <td class="nospace">120</td>
                                     <td class="nospace">TIDAK OK</td>
                                 </tr>
                                 <tr>
-                                    <td class="wb">100%</td>
-                                    <td class="nospace">99</td>
-                                    <td class="nospace">99</td>
-                                    <td class="nospace">99</td>
-                                    <td class="nospace">99</td>
-                                    <td class="nospace">99</td>
-                                    <td class="nospace">99</td>
-                                    <td class="nospace">99,3333</td>
+                                    <td class="wb">180</td>
+                                    <td class="nospace">180</td>
+                                    <td class="nospace">180</td>
+                                    <td class="nospace">180</td>
+                                    <td class="nospace">180</td>
+                                    <td class="nospace">180</td>
+                                    <td class="nospace">180</td>
+                                    <td class="nospace">180</td>
                                     <td class="nospace">TIDAK OK</td>
                                 </tr>
                             </tbody>
@@ -463,10 +450,6 @@
         <div class="row">
             <table border=0 class="table" width="100%">
                 <tbody>
-                    <tr>
-                        <td></td>
-
-                    </tr>
                     <tr>
                         <td></td>
 
@@ -530,10 +513,6 @@
         <div class="row">
             <table border=0 class="table" width="100%">
                 <tbody>
-                    <tr>
-                        <td></td>
-
-                    </tr>
                     <tr>
                         <td></td>
 
@@ -602,10 +581,6 @@
                         <td></td>
 
                     </tr>
-                    <tr>
-                        <td></td>
-
-                    </tr>
                 </tbody>
             </table>
         </div>
@@ -629,8 +604,8 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>12</td>
-                                        <td class="wb">Keamanan Listrik dan Kinerja</td>
+                                        <td>1</td>
+                                        <td class="wb">Keamanan Listrik</td>
                                         <td class="nospace" style="text-align:center;">TIDAK OK</td>
                                     </tr>
                                     <tr>
@@ -676,10 +651,6 @@
                         <td></td>
 
                     </tr>
-                    <tr>
-                        <td></td>
-
-                    </tr>
                 </tbody>
             </table>
         </div>
@@ -700,6 +671,17 @@
                             </tbody>
                         </table>
                     </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body mdtxt">
+        <table>
+            <tbody>
+                <tr>
+                    <td style="text-align:center;">Dilarang keras mengutip/memperbanyak dan/atau mempublikasikan seluruh atau sebagain isi dari lembaran kerja  ini tanpa ijin tertulis dari PT.SINKO PRIMA ALLOY.Sertifikat ini sah bila dibubuhi cap PT.SINKO PRIMA ALLOY dan ditandatangani oleh pejabat yang berwenang.</td>
                 </tr>
             </tbody>
         </table>

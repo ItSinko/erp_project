@@ -501,7 +501,7 @@ Route::group(['prefix' => '/perakitan', 'middleware' => 'auth'], function () {
 // PENGUJIAN
 Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {
     Route::get('/', 'QCController@pengujian')->name('pengujian');
-    Route::get('/pdf_lup', 'QCController@pdf_lup')->name('pdf_lup');
+    Route::get('/pdf_lkp/{produk}', 'QCController@pdf_lkp')->name('pdf_lkp');
 
 
     Route::get('/bppb/{id}', 'QCController@pengujian_bppb')->name('pengujian.bppb');
