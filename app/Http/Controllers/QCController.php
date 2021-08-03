@@ -22,6 +22,8 @@ use App\Http\Controllers\UserLogController;
 use App\PerbaikanProduksi;
 use App\HasilPengemasan;
 use App\CekPengemasan;
+use App\PackingList;
+use App\PeriksaBarangMasuk;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -38,6 +40,30 @@ class QCController extends Controller
     ) {
         $this->NotifikasiController = $NotifikasiController;
         $this->UserLogController = $UserLogController;
+    }
+
+    public function kedatangan_packing_list()
+    {
+        return view('page.qc.kedatangan_packing_list_show');
+    }
+
+    public function kedatangan_packing_list_show()
+    {
+        $s = PeriksaBarangMasuk::all();
+        return DataTables::of($s)
+            ->addIndexColumn()
+            ->editColumn('part_id', function ($s) {
+                return $s->Part->nama;
+            })
+            ->editColumn('karyawan_id', function ($s) {
+                return $s->Karyawan->nama;
+            })
+            ->make(true);
+    }
+
+    public function kedatangan_sampling()
+    {
+        return view('page.qc.kedatangan_sampling_show');
     }
 
     public function perakitan_pemeriksaan()
@@ -71,12 +97,14 @@ class QCController extends Controller
             })
             ->addColumn('laporan', function ($s) {
                 $btn = '<a class="detailmodal" data-toggle="modal" data-target="#detailmodal" data-attr="/perakitan/pemeriksaan/laporan/show/' . $s->id . '" data-id="' . $s->id . '">';
-                $btn .= '<button type="button" class="rounded-pill btn btn-sm btn-info">';
-                $btn .= '<span style="color:white;"><i class="fa fa-search" aria-hidden="true"></i>&nbsp;Detail Laporan</span></button></a>';
+                $btn .= '<div><button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fa fa-search"></i></button></div>';
+                $btn .= '<div><small>Detail Laporan</small></div></a>';
                 return $btn;
             })
             ->addColumn('aksi', function ($s) {
-                $btn = '<a href="/perakitan/pemeriksaan/bppb/' . $s->id . '"><button type="button" class="rounded-pill btn btn-sm btn-primary"><i class="fas fa-eye" aria-hidden="true"></i>&nbsp;Lihat Semua Data</button>';
+                $btn = '<a href="/perakitan/pemeriksaan/bppb/' . $s->id . '">';
+                $btn .= '<div><button type="button" class="btn btn-primary btn-sm m-1" style="border-radius:50%;"><i class="fas fa-eye"></i></button></div>';
+                $btn .= '<div><small>Lihat Semua Data</small></div></a>';
                 return $btn;
             })
             ->rawColumns(['gambar', 'produk', 'jumlah', 'laporan', 'aksi'])
@@ -672,9 +700,18 @@ class QCController extends Controller
 
     public function pengujian_show()
     {
-        $s = Bppb::with('Perakitan')->whereHas('Perakitan.HasilPerakitan', function ($q) {
-            $q->whereIn('status', ['acc_pemeriksaan_tertutup']);
-        })->get();
+        $s = "";
+        if (Auth::user()->divisi->nama == "Quality Control") {
+            $s = Bppb::with('Perakitan')->whereHas('Perakitan.HasilPerakitan', function ($q) {
+                $q->whereIn('status', ['acc_pemeriksaan_tertutup']);
+            })->get();
+        } else if (Auth::user()->divisi->nama == "Laboratorium") {
+            $s = Bppb::with('Perakitan')->whereHas('Perakitan.HasilPerakitan', function ($q) {
+                $q->whereIn('status', ['acc_pemeriksaan_tertutup']);
+            })->whereHas('DetailProduk.Produk', function ($q) {
+                $q->where('kalibrasi', '=', 'ya');
+            })->get();
+        }
         return DataTables::of($s)
             ->addIndexColumn()
             ->addColumn('gambar', function ($s) {
@@ -707,17 +744,26 @@ class QCController extends Controller
             ->addColumn('laporan', function ($s) {
                 $btn = '<a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Klik untuk melihat laporan"><i class="fas fa-ellipsis-h"></i></a>';
                 $btn .= '<div class="dropdown-menu" aria-labelledby="dropdownMenuLink1">';
+                if ($s->DetailProduk->Produk->kalibrasi == "ya") {
+                    $btn .= '<a class="dropdown-item" href="/pengujian/kalibrasi/hasil/' . $s->id . '"><span style="color: black;"><i class="fas fa-eye" aria-hidden="true"></i>&nbsp;Kalibrasi</span></a>';
+                }
                 $btn .= '<a class="dropdown-item monitoringprosesmodal" data-toggle="modal" data-target="#monitoringprosesmodal" data-attr="/pengujian/monitoring_proses/show/' . $s->id . '" data-id="' . $s->id . '"><span style="color: black;"><i class="fas fa-eye" aria-hidden="true"></i>&nbsp;Monitoring Proses</span></a>';
                 $btn .= '<a class="dropdown-item" href="/pengujian/pemeriksaan_proses/hasil/' . $s->id . '"><span style="color: black;"><i class="fas fa-eye" aria-hidden="true"></i>&nbsp;Pemeriksaan Proses</span></a>';
                 $btn .= '<a class="dropdown-item luplkpmodal" data-toggle="modal" data-target="#luplkpmodal" data-attr="/produk/detail/show/' . $s->id . '" data-id="' . $s->id . '"><span style="color: black;"><i class="fas fa-eye" aria-hidden="true"></i>&nbsp;LUP dan LKP</span></a>';
                 return $btn;
             })
             ->addColumn('data', function ($s) {
-                return '<a href="/pengujian/bppb/' . $s->id . '"><button type="button" class="rounded-pill btn btn-sm btn-primary"><i class="fas fa-eye" aria-hidden="true"></i>&nbsp;Lihat Semua Data</button>';
+                return '<a href = "/pengujian/bppb/' . $s->id . '">
+                <div><button class="btn btn-primary btn-sm m-1" style="border-radius:50%;"><i class="fas fa-eye" aria-hidden="true"></i></button></div>
+                <div><small>Lihat Semua Data</small></div>
+                </a>';
             })
             ->addColumn('aksi', function ($s) {
                 $btn = '<a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Klik untuk melihat laporan"><i class="fas fa-plus-circle" aria-hidden="true"></i></a>';
                 $btn .= '<div class="dropdown-menu" aria-labelledby="dropdownMenuLink2">';
+                if ($s->DetailProduk->Produk->kalibrasi == "ya") {
+                    $btn .= '<a class="dropdown-item" href="/kalibrasi_internal/create/' . $s->id . '"><span style="color: black;"><i class="fas fa-plus" aria-hidden="true"></i>&nbsp;Kalibrasi</span></a>';
+                }
                 $btn .= '<a class="dropdown-item" href="/pengujian/monitoring_proses/create/' . $s->id . '"><span style="color: black;"><i class="fas fa-plus" aria-hidden="true"></i>&nbsp;Monitoring Proses</span></a>';
                 $btn .= '<a class="dropdown-item luplkpmodal" data-toggle="modal" data-target="#luplkpmodal" data-attr="/produk/detail/show/' . $s->id . '" data-id="' . $s->id . '"><span style="color: black;"><i class="fas fa-plus" aria-hidden="true"></i>&nbsp;LUP dan LKP</span></a>';
                 return $btn;
@@ -1840,6 +1886,18 @@ class QCController extends Controller
         // ]);
 
         // return redirect()->back()->with();
+    }
+
+    public function kalibrasi_internal_create($bppb_id)
+    {
+        $s = Bppb::find($bppb_id);
+        $k = Karyawan::whereNotIn('jabatan', ['direktur'])->get();
+        $hp = HasilPerakitan::whereHas('Perakitan', function ($q) use ($bppb_id) {
+            $q->where('bppb_id', $bppb_id);
+        })->where('tindak_lanjut_tertutup', 'aging')
+            ->orderBy('updated_at', 'desc')
+            ->get();
+        return view('page.qc.kalibrasi_internal_create', ['s' => $s, 'k' => $k, 'hp' => $hp]);
     }
 
     public function pengemasan()

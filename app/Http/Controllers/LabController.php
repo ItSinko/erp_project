@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\daftar_part;
+
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use PDF;
