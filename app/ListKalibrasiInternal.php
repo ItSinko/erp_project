@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ListKalibrasiInternal extends Model
 {
-    protected $fillable = ['kalibrasi_internal_id', 'hasil_perakitan_id', 'no_barcode', 'tanggal_kalibrasi', 'tanggal_selesai', 'hasil', 'tindak_lanjut', 'status'];
+    protected $fillable = ['id', 'kalibrasi_internal_id', 'hasil_perakitan_id', 'tanggal_kalibrasi', 'tanggal_selesai', 'hasil', 'tindak_lanjut', 'status'];
 
     public function KalibrasiInternal()
     {

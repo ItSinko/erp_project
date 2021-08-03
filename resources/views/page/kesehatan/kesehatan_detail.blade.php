@@ -58,7 +58,7 @@
                                                         <b>Umur</b> <a class="float-right" id="umur">23 tahun</a>
                                                     </li>
                                                     <li class="list-group-item">
-                                                        <b>Jenis kelamin</b> <a class="float-right">Wanita</a>
+                                                        <b>Jenis kelamin</b> <a class="float-right" id="kelamin"></a>
                                                     </li>
                                                     <li class="list-group-item">
                                                         <b>Berat badan</b> <a class="float-right" id="berat"></a>
@@ -183,9 +183,24 @@
                         } else {
                             $('#status_tubuh').text('Kekurangan Berat Badan');
                         }
+
+
+                        if (data[0].karyawan.kelamin == "L") {
+                            $("#kelamin").text('Laki Laki');
+                        }  else {
+                            $("#kelamin").text('Perempuan');
+                        }
+
+                        //Hitung Umur 
+                        dobDate = new Date(data[0].karyawan.tgllahir);
+					    nowDate = new Date();
+                        var diff = nowDate.getTime() - dobDate.getTime();
+                        var ageDate = new Date(diff); // miliseconds from epoch
+					    var age = Math.abs(ageDate.getUTCFullYear() - 1970);
+
                         $("#detail_gagal").hide('1000');
                         $("#detail").show('1000');
-                        $("#umur").text(23);
+                        $("#umur").text(age + " Tahun");
                         $("#nama").text(data[0].karyawan.nama);
                         $("#jabatan").text(data[0].karyawan.jabatan);
                         $("#tinggi").text(data[0].tinggi + " Cm");
@@ -216,4 +231,5 @@
         detail_karyawan();
     });
 </script>
+
 @endsection

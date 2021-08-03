@@ -277,7 +277,7 @@
       $(function() {
         var tensi_tabel = $('#tensi_tabel').DataTable({
           processing: true,
-          serverSide: true,
+          serverSide: false,
           language: {
             processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
           },
@@ -335,7 +335,7 @@
       $(function() {
         var rapid_tabel = $('#rapid_tabel').DataTable({
           processing: true,
-          serverSide: true,
+          serverSide: false,
           language: {
             processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
           },

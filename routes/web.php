@@ -43,7 +43,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/template_form_cancel', 'ItController@template_form_cancel')->name('template-form-cancel');
 });
 
-
 //Kesehatan
 /* Tabel */
 Route::get('/kesehatan', 'KesehatanController@kesehatan');
@@ -145,6 +144,17 @@ Route::get('/laporan_mingguan/data/{filter_mingguan}/{filter}/{id}/{start}/{end}
 Route::get('/laporan_bulanan/data/{filter_bulanan}/{filter}/{id}/{start}/{end}', 'KesehatanController@laporan_bulanan_data');
 Route::get('/laporan_tahunan/data/{filter}/{id}/{start}/{end}', 'KesehatanController@laporan_tahunan_data');
 
+//Gudang Material
+Route::get('/daftar_part', 'GudangMaterialController@daftar_part');
+Route::get('/daftar_part/data', 'GudangMaterialController@daftar_part_data');
+Route::get('/pengeluaran/tambah', 'GudangMaterialController@pengeluaran_tambah');
+
+//Lab
+Route::get('/ka_internal/tambah', 'LabController@ka_internal_tambah');
+Route::get('/ka_internal/cetak', 'LabController@ka_internal_form');
+Route::get('/ka_internal/cetak2', 'LabController@ka_permintaan_form');
+Route::get('/ka_internal/lup_steril', 'LabController@lup_steril');
+
 //Karyawan
 Route::group(['prefix' => '/karyawan', 'middleware' => 'auth'], function () {
     Route::get('/', 'CommonController@karyawan');   /* Tabel */
@@ -173,6 +183,7 @@ Route::group(['prefix' => '/nama_alamat', 'middleware' => 'auth'], function () {
     Route::post('/aksi_tambah', 'CommonController@nama_alamat_aksi_tambah');    /* Action */
     Route::put('/aksi_ubah/{id}', 'CommonController@nama_alamat_aksi_ubah');
 });
+
 
 
 //PENJUALAN PRODUK

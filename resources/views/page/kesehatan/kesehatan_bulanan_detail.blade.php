@@ -149,7 +149,7 @@
         var karyawan_id = 0;
         var tensi_tabel = $('#tensi_tabel').DataTable({
             processing: true,
-            serverSide: true,
+            serverSide: false,
             ajax: '/kesehatan_bulanan_gcu/detail/' + karyawan_id,
             language: {
                 processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
@@ -223,7 +223,7 @@
 
         var berat_tabel = $('#berat_tabel').DataTable({
             processing: true,
-            serverSide: true,
+            serverSide: false,
             ajax: '/kesehatan_bulanan_gcu/detail/' + karyawan_id,
             language: {
                 processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
