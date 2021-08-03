@@ -101,14 +101,14 @@
                 </div>
             </div>
 
-            <div class="modal fade" id="monitoringprosesmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal fade" id="detailmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                 <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header" style="background-color:	#006400;">
                             <h4 class="modal-title" id="myModalLabel" style="color:white;">Laporan</h4>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         </div>
-                        <div class="modal-body" id="monitoringproses">
+                        <div class="modal-body" id="detail">
 
                         </div>
                     </div>
@@ -142,12 +142,8 @@
                     </div>
                 </div>
             </div>
-
-            <!-- /.card -->
         </div>
-        <!-- /.col -->
     </div>
-    <!-- /.row -->
 </section>
 @endsection
 
@@ -187,6 +183,48 @@
                 },
 
             ]
+        });
+
+        $(document).on('click', '.detailmodal', function(event) {
+            event.preventDefault();
+            var dataid = $(this).attr('data-id');
+            $.ajax({
+                url: "{{route('bppb.penyerahan_barang_jadi.detail', ['id' => " + dataid + "])}}",
+                beforeSend: function() {
+                    $('#loader').show();
+                },
+                success: function(result) {
+                    $('#detailmodal').modal("show");
+                    $('#detail').html(result).show();
+                    console.log("{{route('bppb.penyerahan_barang_jadi.detail', ['id' => " + dataid + "])}}");
+                    console.log(result);
+                    $('#detaildata').DataTable({
+                        processing: true,
+                        serverSide: true,
+                        ajax: "/bppb/penyerahan_barang_jadi/detail/show/" + dataid + "",
+                        columns: [{
+                                data: 'DT_RowIndex',
+                                name: 'DT_RowIndex',
+                                orderable: false,
+                                searchable: false
+                            },
+                            {
+                                data: 'hasil_perakitan_id',
+                                name: 'hasil_perakitan_id'
+                            },
+                        ]
+                    });
+                },
+                complete: function() {
+                    $('#loader').hide();
+                },
+                error: function(jqXHR, testStatus, error) {
+                    console.log(error);
+                    alert("Page " + '/bppb/permintaan_bahan_baku/detail' + " cannot open. Error:" + error);
+                    $('#loader').hide();
+                },
+                timeout: 8000
+            })
         });
     });
 </script>

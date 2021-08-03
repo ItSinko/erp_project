@@ -234,6 +234,7 @@ return [
         ],
         [
             'header' => 'MASTER DATA',
+<<<<<<< HEAD
             'auth' => [14, 17, 26, 23, 24, 1, 11]
         ],
         [
@@ -241,6 +242,9 @@ return [
             'url'  => '/daftar_part',
             'icon' => 'fas fa-table',
             'auth' => [11]
+=======
+            'auth' => [14, 17, 26, 23, 24, 3, 1]
+>>>>>>> 9626a519074693001a15d6070905d3533771c0a4
         ],
         [
             'text' => 'Penjualan Produk',
@@ -466,7 +470,7 @@ return [
         [
             'text'  =>  'Stok',
             'icon'  =>  'fas fa-boxes',
-            'auth'  => [24, 1],
+            'auth'  => [24, 3, 1],
             'submenu'   =>  [
                 [
                     'text'  =>  'Gudang',
@@ -483,7 +487,7 @@ return [
         [
             'text'  =>  'Laporan',
             'icon'  =>  'fas fa-file',
-            'auth'  => [24, 1],
+            'auth'  => [24, 3, 1],
             'submenu'   =>  [
                 [
                     'text'  =>  'Pembelian',
@@ -590,13 +594,13 @@ return [
             ],
         ],
         [
-            'header'    =>  'PPIC',
-            'auth'  =>  [24, 1]
+            'header' => 'PPIC',
+            'auth' => [24, 3, 1]
         ],
         [
             'text' => 'Jadwal Produksi',
             'icon' => 'fas fa-calendar-alt',
-            'auth' => [24, 1],
+            'auth' => [24, 3, 1],
             'submenu'   =>  [
                 [
                     'text'  =>  'Penyusunan',
@@ -619,7 +623,30 @@ return [
             'text' => 'BOM',
             'url'  => '/ppic/bom',
             'icon' => 'fas fa-list-alt',
-            'auth' => [24, 1]
+            'auth' => [24, 3, 1]
+        ],
+        [
+            'text'    => 'BPPB',
+            'icon'    => 'fas fa-project-diagram',
+            'url' => '/bppb',
+            'auth' => [24, 3, 1],
+            'submenu'   =>  [
+                [
+                    'text'  =>  'Penyusunan',
+                    'icon'  =>  'far fa-circle',
+                    'url'   =>  '/ppic/bppb/?penyusunan=true'
+                ],
+                [
+                    'text'  =>  'Pelaksanaan',
+                    'icon'  =>  'far fa-circle',
+                    'url'   =>  '/ppic/bppb/?pelaksanaan=true',
+                ],
+                [
+                    'text'  =>  'Selesai',
+                    'icon'  =>  'far fa-circle',
+                    'url'   =>  '/ppic/bppb/?selesai=true'
+                ],
+            ]
         ],
         [
             'header' => 'PERSIAPAN',
@@ -633,7 +660,7 @@ return [
         ],
         [
             'header' => 'PRODUKSI',
-            'auth' => [17, 23, 10, 16]
+            'auth' => [17, 10, 16]
         ],
         [
             'text'    => 'Jadwal Kerja Produksi',
@@ -645,30 +672,18 @@ return [
             'text'    => 'BPPB',
             'icon'    => 'fas fa-project-diagram',
             'url' => '/bppb',
-            'auth' => [17, 24, 1],
+            'auth' => [17],
         ],
         [
             'text'    => 'Perakitan',
             'icon'    => 'fas fa-cogs',
-            'auth' => [17, 23],
+            'auth' => [17],
             'submenu' => [
                 [
                     'icon' => 'far fa-circle',
                     'text' => 'Laporan',
                     'url'  => '/perakitan',
                     'auth' => [17],
-                ],
-                [
-                    'icon' => 'far fa-circle',
-                    'text' => 'Laporan',
-                    'url'  => '/perakitan/pemeriksaan',
-                    'auth' => [23],
-                ],
-                [
-                    'icon' => 'far fa-circle',
-                    'text' => 'IK Pemeriksaan',
-                    'url'  => '/perakitan/ik_pemeriksaan',
-                    'auth' => [23],
                 ],
             ],
         ],
@@ -687,20 +702,8 @@ return [
         [
             'text'    => 'Pengujian',
             'icon'    => 'fab fa-searchengin',
-            'auth' => [17, 23],
+            'auth' => [17],
             'submenu' => [
-                [
-                    'icon' => 'far fa-circle',
-                    'text' => 'Laporan',
-                    'url'  => '/pengujian',
-                    'auth' => [23],
-                ],
-                [
-                    'icon' => 'far fa-circle',
-                    'text' => 'IK Pemeriksaan',
-                    'url'  => '/pengujian/ik_pemeriksaan',
-                    'auth' => [23],
-                ],
                 [
                     'icon' => 'far fa-circle',
                     'text' => 'Laporan',
@@ -710,27 +713,27 @@ return [
             ],
         ],
         [
-            'text'    => 'Pengujian',
-            'icon'    => 'fab fa-searchengin',
+            'text' => 'Pengujian',
+            'icon' => 'fab fa-searchengin',
             'url'  => '/pengujian/mtc',
             'auth' => [16],
         ],
         [
-            'text'    => 'Pengujian',
-            'icon'    => 'fab fa-searchengin',
+            'text' => 'Pengujian',
+            'icon' => 'fab fa-searchengin',
             'url'  => '/pengujian/eng',
             'auth' => [10],
         ],
         [
-            'text'    => 'Pengemasan',
-            'icon'    => 'fas fa-box-open',
+            'text' => 'Pengemasan',
+            'icon' => 'fas fa-box-open',
             'url'  => '/pengemasan/mtc',
             'auth' => [16],
         ],
         [
-            'text'    => 'Pengemasan',
-            'icon'    => 'fas fa-box-open',
-            'auth' => [17, 23],
+            'text' => 'Pengemasan',
+            'icon' => 'fas fa-box-open',
+            'auth' => [17],
             'submenu' => [
                 [
                     'icon' => 'far fa-circle',
@@ -740,21 +743,9 @@ return [
                 ],
                 [
                     'icon' => 'far fa-circle',
-                    'text' => 'Laporan',
-                    'url'  => '/pengemasan/qc',
-                    'auth' => [23],
-                ],
-                [
-                    'icon' => 'far fa-circle',
                     'text' => 'Form Produk',
                     'url'  => '/pengemasan/form',
                     'auth' => [17],
-                ],
-                [
-                    'icon' => 'far fa-circle',
-                    'text' => 'IK Pemeriksaan',
-                    'url'  => '/pengemasan/ik_pemeriksaan',
-                    'auth' => [23],
                 ],
             ],
         ],
@@ -771,8 +762,111 @@ return [
             'auth' => [17],
         ],
         [
+<<<<<<< HEAD
             'header' => 'TRANSAKSI',
             'auth' => [22],
+=======
+            'header' => 'INCOMING',
+            'auth' => [23]
+        ],
+        [
+            'text' => 'Kedatangan',
+            'icon' => 'fas fa-dolly-flatbed',
+            'auth' => [23],
+            'submenu' => [
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Packing List',
+                    'url'  => '/kedatangan/packing_list',
+                    'auth' => [23],
+                ],
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Analisa',
+                    'url'  => '/kedatangan/analisa',
+                    'auth' => [23],
+                ],
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Sampling',
+                    'url'  => '/kedatangan/sampling',
+                    'auth' => [23],
+                ],
+            ],
+        ],
+        [
+            'text' => 'BPPB',
+            'icon' => 'fas fa-project-diagram',
+            'url' => '/bppb',
+            'auth' => [23],
+        ],
+        [
+            'header' => 'INPROCESS',
+            'auth' => [23]
+        ],
+        [
+            'text'    => 'Perakitan',
+            'icon'    => 'fas fa-cogs',
+            'auth' => [23],
+            'submenu' => [
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Laporan',
+                    'url'  => '/perakitan/pemeriksaan',
+                    'auth' => [23],
+                ],
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'IK Pemeriksaan',
+                    'url'  => '/perakitan/ik_pemeriksaan',
+                    'auth' => [23],
+                ],
+            ],
+        ],
+        [
+            'text'    => 'Pengujian',
+            'icon'    => 'fab fa-searchengin',
+            'auth' => [23],
+            'submenu' => [
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Laporan',
+                    'url'  => '/pengujian',
+                    'auth' => [23],
+                ],
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Kalibrasi',
+                    'url'  => '/kalibrasi',
+                    'auth' => [23],
+                ],
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'IK Pemeriksaan',
+                    'url'  => '/pengujian/ik_pemeriksaan',
+                    'auth' => [23],
+                ],
+            ],
+        ],
+        [
+            'text'    => 'Pengemasan',
+            'icon'    => 'fas fa-box-open',
+            'auth' => [23],
+            'submenu' => [
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Laporan',
+                    'url'  => '/pengemasan/qc',
+                    'auth' => [23],
+                ],
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'IK Pemeriksaan',
+                    'url'  => '/pengemasan/ik_pemeriksaan',
+                    'auth' => [23],
+                ],
+            ],
+>>>>>>> 9626a519074693001a15d6070905d3533771c0a4
         ],
 
         [
