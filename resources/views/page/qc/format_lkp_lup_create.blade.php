@@ -73,16 +73,6 @@
                             </div>
 
                             <div class="form-group row">
-                                <label for="tanggal" class="col-sm-5 col-form-label" style="text-align:right;">Tanggal</label>
-                                <div class="col-sm-7">
-                                    <input type="date" class="form-control  @error('tanggal') is-invalid @enderror" name="tanggal" id="tanggal" value="" style="width: 30%;">
-                                </div>
-                                @if ($errors->has('tanggal'))
-                                <span class="invalid-feedback" role="alert">{{$errors->first('tanggal')}}</span>
-                                @endif
-                            </div>
-
-                            <div class="form-group row">
                                 <label for="jumlah_produksi" class="col-sm-5 col-form-label" style="text-align:right;">Jumlah Produksi</label>
                                 <div class="col-sm-7">
                                     <input type="text" class="form-control" name="jumlah_produksi" id="jumlah_produksi" value="{{$b->jumlah}}" style="width: 50%;">

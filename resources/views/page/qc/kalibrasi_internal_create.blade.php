@@ -69,16 +69,58 @@
                                     </div>
 
                                     <div class="form-group row">
-                                        <label for="nama_produk" class="col-sm-4 col-form-label" style="text-align:right;">Nama Produk</label>
+                                        <label for="nama_produk" class="col-sm-4 col-form-label" style="text-align:right;">Produk</label>
                                         <div class="col-sm-8">
-                                            <input type="text" class="form-control" name="nama_produk" id="nama_produk" value="{{old('nama_produk', $s->DetailProduk->nama)}}" style="width: 50%;" readonly>
+                                            <input type="text" class="form-control" name="nama_produk" id="nama_produk" value="{{old('nama_produk', $s->DetailProduk->Produk->nama)}}" style="width: 50%;" readonly>
                                         </div>
                                     </div>
 
                                     <div class="form-group row">
-                                        <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;">Tanggal Pendaftaran</label>
+                                        <label for="type_produk" class="col-sm-4 col-form-label" style="text-align:right;">Tipe Produk</label>
                                         <div class="col-sm-8">
-                                            <input type="date" class="form-control" name="tanggal" id="tanggal" value="" style="width: 50%;">
+                                            <input type="text" class="form-control" name="type_produk" id="type_produk" value="{{old('type_produk', $s->DetailProduk->nama)}}" style="width: 50%;" readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label for="tanggal_daftar" class="col-sm-4 col-form-label" style="text-align:right;">Tanggal Pendaftaran</label>
+                                        <div class="col-sm-8">
+                                            <input type="date" class="form-control" name="tanggal_daftar" id="tanggal_daftar" value="" style="width: 50%;">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label for="tanggal_permintaan_selesai" class="col-sm-4 col-form-label" style="text-align:right;">Tanggal Permintaan Selesai</label>
+                                        <div class="col-sm-8">
+                                            <input type="date" class="form-control" name="tanggal_permintaan_selesai" id="tanggal_permintaan_selesai" value="" style="width: 50%;" readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label for="kode_barcode" class="col-sm-4 col-form-label" style="text-align:right;">Kode Barcode</label>
+                                        <div class="col-sm-1">
+                                            <input type="text" class="form-control  @error('inisial_produk') is-invalid @enderror " name="inisial_produk" id="inisial_produk" value="{{old('inisial_produk', $s->DetailProduk->Produk->kode_barcode)}}" readonly>
+                                            @if ($errors->has('inisial_produk'))
+                                            <span class="invalid-feedback" role="alert">{{$errors->first('inisial_produk')}}</span>
+                                            @endif
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <input type="text" class="form-control  @error('tipe_produk') is-invalid @enderror " name="tipe_produk" id="tipe_produk" value="{{old('tipe_produk')}}" readonly>
+                                            @if ($errors->has('tipe_produk'))
+                                            <span class="invalid-feedback" role="alert">{{$errors->first('tipe_produk')}}</span>
+                                            @endif
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <input type="text" class="form-control  @error('waktu_produksi') is-invalid @enderror " name="waktu_produksi" id="waktu_produksi" value="{{old('waktu_produksi')}}" readonly>
+                                            @if ($errors->has('waktu_produksi'))
+                                            <span class="invalid-feedback" role="alert">{{$errors->first('waktu_produksi')}}</span>
+                                            @endif
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <input type="text" class="form-control  @error('urutan_bb') is-invalid @enderror " name="urutan_bb" id="urutan_bb" value="{{old('urutan_bb')}}">
+                                            @if ($errors->has('urutan_bb'))
+                                            <span class="invalid-feedback" role="alert">{{$errors->first('urutan_bb')}}</span>
+                                            @endif
                                         </div>
                                     </div>
 
@@ -86,11 +128,12 @@
                                     <div class="form-horizontal">
                                         <div class="form-group row">
                                             <div class="table-responsive">
-                                                <table id="tableitem" class="table table-hover table-bordered">
+                                                <table id="tableitem" class="table table-hover table-striped">
                                                     <thead style="text-align: center;">
                                                         <tr>
                                                             <th>No</th>
                                                             <th>Kode Perakitan</th>
+                                                            <th>Urutan Barcode</th>
                                                             <th>Perakit</th>
                                                             <th>Aksi</th>
                                                             <th hidden>ID</th>
@@ -103,6 +146,17 @@
                                                             <td>{{$loop->iteration}}</td>
                                                             <td>
                                                                 {{str_replace("/", "", $i->Perakitan->alias_tim)}}{{$i->no_seri}}
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group">
+                                                                    <div class="input-group">
+                                                                        <input type="text" class="form-control @error('no_barcode') is-invalid @enderror barcode" name="no_barcode[]" id="no_barcode">
+                                                                    </div>
+                                                                    @if ($errors->has('no_barcode'))
+                                                                    <span class="invalid-feedback" role="alert">{{$errors->first('no_barcode')}}</span>
+                                                                    @endif
+                                                                    <span id="no_barcode-message[]" role="alert"></span>
+                                                                </div>
                                                             </td>
                                                             <td>
                                                                 @foreach ($i->Perakitan->Karyawan as $kry)
@@ -177,7 +231,42 @@
 @section('adminlte_js')
 <script>
     $(function() {
-        $('#tanggal').on('change', function() {
+        function formatted_string(pad, user_str, pad_pos) {
+            if (typeof user_str === 'undefined')
+                return pad;
+            if (pad_pos == 'l') {
+                return (pad + user_str).slice(-pad.length);
+            } else {
+                return (user_str + pad).substring(0, pad.length);
+            }
+        }
+
+        function numberRows($t) {
+            var c = 0 - 1;
+            var k = 0;
+            $t.find("tr").each(function(ind, el) {
+                $(el).find("td:eq(0)").html(++c);
+                k = k + 1;
+                $(this).find('.barcode').val(formatted_string('00000', (parseInt("{{$c}}") + (k - 1)), 'l'));
+            });
+        }
+
+
+        $('#tanggal_daftar').on('change', function() {
+            var t = $(this).val();
+            if (t != "") {
+                var date = new Date($(this).val());
+                var month = String(date.getMonth() + 1);
+                var year = String(date.getFullYear());
+                $('#tipe_produk').val(year.substr(2));
+                $('#waktu_produksi').val(formatted_string('00', month, 'l'));
+                $('#tanggal_permintaan_selesai').removeAttr('readonly');
+            } else {
+                $('#tanggal_permintaan_selesai').attr('readonly', true);
+            }
+        });
+
+        $('#tanggal_permintaan_selesai').on('change', function() {
             var t = $(this).val();
             if (t != "") {
                 $('#tambahlaporan').removeAttr('disabled');
@@ -188,8 +277,16 @@
 
         $('#tableitem').on('click', '#removeitem', function(e) {
             $(this).closest('tr').remove();
+            numberRows($("#tableitem"));
         });
 
+        $('#tableitem').ready(function() {
+            var d = 0;
+            $(this).find("tr").each(function() {
+                d = d + 1;
+                $(this).find('.barcode').val(formatted_string('00000', (parseInt("{{$c}}") + (d - 1)), 'l'));
+            });
+        });
     });
 </script>
 @stop

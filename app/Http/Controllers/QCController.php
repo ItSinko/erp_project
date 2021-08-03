@@ -703,7 +703,7 @@ class QCController extends Controller
 
     public function pdf_lkp($produk)
     {
-        $pdf = PDF::loadView('page.qc.lkp.'.$produk)->setPaper('A4');
+        $pdf = PDF::loadView('page.qc.lkp.' . $produk)->setPaper('A4');
         return $pdf->stream('');
     }
 
@@ -1901,6 +1901,8 @@ class QCController extends Controller
     {
         $b = Bppb::where('id', $bppb_id)->get();
         $k = KalibrasiInternal::where('bppb_id', $bppb_id)->get();
+
+
         return view('page.qc.kalibrasi_internal_show', ['bppb_id' => $bppb_id, 'b' => $b, 'k' => $k]);
     }
 
@@ -1964,13 +1966,25 @@ class QCController extends Controller
     {
         $s = Bppb::find($bppb_id);
         $k = Karyawan::whereNotIn('jabatan', ['direktur'])->get();
+
         $hp = HasilPerakitan::whereHas('Perakitan', function ($q) use ($bppb_id) {
             $q->where('bppb_id', $bppb_id);
         })->where('tindak_lanjut_tertutup', 'aging')
-
+            ->whereDoesntHave('ListKalibrasiInternal')
             ->orderBy('updated_at', 'desc')
             ->get();
-        return view('page.qc.kalibrasi_internal_create', ['s' => $s, 'k' => $k, 'hp' => $hp]);
+
+        $lki = ListKalibrasiInternal::whereHas('KalibrasiInternal', function ($q) use ($bppb_id) {
+            $q->where('bppb_id', $bppb_id);
+        })->whereNotNull('no_barcode')->count();
+
+        // $hpg =  HasilPengemasan::whereHas('Pengemasan', function ($q) use ($bppb_id) {
+        //     $q->where('bppb_id', $bppb_id);
+        // })->whereNotNull('no_barcode')->count();
+
+        // $c = $lki + $hpg;
+
+        return view('page.qc.kalibrasi_internal_create', ['s' => $s, 'k' => $k, 'hp' => $hp, 'c' => $lki]);
     }
 
     public function kalibrasi_internal_store(Request $request, $bppb_id)
@@ -1978,10 +1992,22 @@ class QCController extends Controller
         $v = Validator::make(
             $request->all(),
             [
-                'tanggal' => 'required',
+                'tanggal_daftar' => 'required',
+                'tanggal_permintaan_selesai' => 'required',
+                'inisial_produk' => 'required',
+                'tipe_produk' => 'required',
+                'waktu_produksi' => 'required',
+                'urutan_bb' => 'required',
+                'no_barcode.*' => 'required'
             ],
             [
-                'tanggal.required' => "Tanggal harus diisi",
+                'tanggal_daftar.required' => "Tanggal Pendaftaran harus diisi",
+                'tanggal_permintaan_selesai.required' => "Tanggal Permintaan Selesai harus diisi",
+                'inisial_produk.required' => 'Kode Barcode Harus diisi',
+                'tipe_produk.required' => 'Kode Barcode Harus diisi',
+                'waktu_produksi.required' => 'Kode Barcode Harus diisi',
+                'urutan_bb.required' => 'Kode Barcode Harus diisi',
+                'no_barcode.*.required' => "No Barcode Harus diisi"
             ]
         );
 
@@ -1990,7 +2016,9 @@ class QCController extends Controller
         } else {
             $ki = KalibrasiInternal::create([
                 'bppb_id' => $bppb_id,
-                'tanggal_daftar' => $request->tanggal,
+                'tanggal_daftar' => $request->tanggal_daftar,
+                'tanggal_permintaan_selesai' => $request->tanggal_permintaan_selesai,
+                'alias_barcode' => $request->inisial_produk . "/" . $request->tipe_produk . "/" . $request->waktu_produksi . "/" . $request->urutan_bb,
                 'pic_id' => Auth::user()->id
             ]);
 
@@ -2000,6 +2028,7 @@ class QCController extends Controller
                     $l = ListKalibrasiInternal::create([
                         'kalibrasi_internal_id' => $ki->id,
                         'hasil_perakitan_id' => $request->hasil_perakitan_id[$i],
+                        'no_barcode' => $request->no_barcode[$i],
                         'status' => 'req_kalibrasi'
                     ]);
 

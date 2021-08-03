@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class KalibrasiInternal extends Model
 {
-    protected $fillable = ['bppb_id', 'tanggal_daftar', 'no_pendaftaran', 'tanggal_req_selesai', 'pic_id', 'status'];
+    protected $fillable = ['bppb_id', 'podo_online_id', 'pic_id', 'tanggal_daftar', 'tanggal_permintaan_selesai', 'alias_barcode', 'no_pendaftaran', 'status'];
 
     public function Bppb()
     {
