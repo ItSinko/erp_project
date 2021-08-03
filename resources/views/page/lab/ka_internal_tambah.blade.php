@@ -40,6 +40,24 @@
                                     <div class="col-lg-12">
                                         <div class="form-horizontal">
                                             <div class="form-group row">
+                                                <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;">Kalibrasi</label>
+                                                <div class="col-sm-8" style="margin-top:7px;">
+                                                    <div class="icheck-success d-inline col-sm-4">
+                                                        <input type="radio" name="status_vaksin" value="Belum" checked="0">
+                                                        <label for="no">
+                                                            Internal
+                                                        </label>
+                                                    </div>
+                                                    <div class="icheck-warning d-inline col-sm-4">
+                                                        <input type="radio" name="status_vaksin" value="Sudah">
+                                                        <label for="sample">
+                                                            Eksternal
+                                                        </label>
+                                                    </div>
+                                                    <span class="invalid-feedback" role="alert" id="kondisi-msg"></span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
                                                 <label for="keterangan" class="col-sm-4 col-form-label" style="text-align:right;">No Pendaftaran</label>
                                                 <div class="col-sm-2">
                                                     <div class="input-group mb-3">
@@ -50,30 +68,40 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class=" form-group row">
+                                                    <div class=" form-group row">
                                                         <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">No Seri</label>
                                                         <div class="col-sm-8">
                                                             <select type="text" class="form-control @error('karyawan_id') is-invalid @enderror select2" name="karyawan_id" style="width:45%;">
                                                                 <option value=""></option>
                                                             </select>
-                                                            @if($errors->has('karyawan_id'))
-                                                            <div class="text-danger">
-                                                                {{ $errors->first('karyawan_id')}}
-                                                            </div>
-                                                            @endif
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
-                                                        <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Type Produk</label>
+                                                        <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Type</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="text" class="form-control @error('karyawan_id') is-invalid @enderror" name="karyawan_id" style="width:45%;" readonly>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Nama</label>
+                                                        <div class="col-sm-8">
+                                                            <textarea type="text" class="form-control @error('karyawan_id') is-invalid @enderror" name="karyawan_id" style="width:45%;" readonly></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class=" form-group row">
+                                                        <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Jenis</label>
                                                         <div class="col-sm-8">
                                                             <select type="text" class="form-control @error('karyawan_id') is-invalid @enderror select2" name="karyawan_id" style="width:45%;">
-                                                                <option value=""></option>
+                                                                <option value="">Pilih</option>
+                                                                <option value="rsud">Rumah Sakit Umum Daerah (RSUD)</option>
+                                                                <option value="dinkes">Dinas Kesehatan</option>
+                                                                <option value="puskes">Puskesmas</option>
+                                                                <option value="puskes">Personal</option>
+                                                                <option value="lab">Laboratorium</option>
+                                                                <option value="cip">PT Cipta Jaya</option>
+                                                                <option value="pt">Perseorangan Terbatas (PT)</option>
+                                                                <option value="univ">Universitas</option>
                                                             </select>
-                                                            @if($errors->has('karyawan_id'))
-                                                            <div class="text-danger">
-                                                                {{ $errors->first('karyawan_id')}}
-                                                            </div>
-                                                            @endif
                                                         </div>
                                                     </div>
                                                 </div>
