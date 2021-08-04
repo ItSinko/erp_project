@@ -154,6 +154,7 @@ Route::get('/ka_internal/tambah', 'LabController@ka_internal_tambah');
 Route::get('/ka_internal/cetak', 'LabController@ka_internal_form');
 Route::get('/ka_internal/cetak2', 'LabController@ka_permintaan_form');
 Route::get('/ka_internal/lup_steril', 'LabController@lup_steril');
+Route::get('/ka_internal/detail/seri_kalibrasi/{kalibrasi_internal_id}', 'LabController@detail_seri_kalibrasi');
 
 //Karyawan
 Route::group(['prefix' => '/karyawan', 'middleware' => 'auth'], function () {

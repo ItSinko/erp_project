@@ -101,18 +101,15 @@
                                                                         <option value="{{$k->id}}">{{$k->nama}}</option>
                                                                         @endforeach
                                                                     </select></td>
-                                                                <td><select type="text" class="form-control @error('karyawan_id') is-invalid @enderror select2" name="karyawan_id" style="width:100%">
+                                                                <td><select type="text" class="form-control @error('karyawan_id') is-invalid @enderror select2" id="barcode" style="width:100%">
                                                                         <option value="">Pilih</option>
-                                                                        @foreach($karyawan as $k)
-                                                                        <option value="{{$k->id}}">{{$k->nama}}</option>
+                                                                        @foreach($listkalibrasiinternal as $k)
+                                                                        <option value="{{$k->kalibrasi_internal_id}}">{{str_replace("/", "", $k->KalibrasiInternal->alias_barcode) . $k->no_barcode}}</option>
                                                                         @endforeach
                                                                     </select></td>
                                                                 </td>
-                                                                <td><input type="text" placeholder="Type Produk" class="form-control" nama="tprd" id="tprd">
-                                                                    <small id="tprd_status" class="form-text text-danger d-inline"></small>
-
-                                                                </td>
-                                                                <td><textarea type="nama" placeholder="Nama Produk" class="form-control" id="nama" readonly></textarea></td>
+                                                                <td><input type="text" placeholder="Type Produk" class="form-control" id="type_produk" readonly></td>
+                                                                <td><textarea type="nama" placeholder="Nama Produk" class="form-control" id="nama_produk" readonly></textarea></td>
                                                                 <td><textarea type="nama" placeholder="Nama Produk" class="form-control" id="nama" readonly></textarea></td>
                                                                 <td><button type="button" name="add" id="add" class="btn btn-success"><i class="nav-icon fas fa-plus-circle"></i></button></td>
                                                             </tr>
@@ -138,12 +135,6 @@
 <script type="text/javascript">
     var i = 0;
     $("#add").click(function() {
-        var tprd = document.getElementById('tprd').value;
-        if (tprd == "") {
-            $('#tprd_status').text('Lengkapi field !');
-        } else {
-            $('#tprd_status').text('');
-        }
         ++i;
         $("#user_table ").append(`<tr>
                                 <td>
@@ -167,21 +158,20 @@
                                                                         @endforeach
                                                                         </select> 
                                                                         <td>
-                                                                        <select type="text" class="form-control select2" name="karyawan_id" id="noseri` + i + `"  style="width:100%">
+                                                                        <select type="text" class="form-control @error('karyawan_id') is-invalid @enderror select2" id="barcode` + i + `" style="width:100%">
                                                                         <option value="">Pilih</option>
-                                                                        @foreach($karyawan as $k)
-                                                                        <option value="{{$k->id}}">{{$k->nama}}</option>
+                                                                        @foreach($listkalibrasiinternal as $k)
+                                                                        <option value="{{$k->kalibrasi_internal_id}}">{{str_replace("/", "", $k->KalibrasiInternal->alias_barcode) . $k->no_barcode}}</option>
                                                                         @endforeach
                                                                     </select></td>
                                                                 </td>
-                                                                <td><input type="text" placeholder="Type Produk" class="form-control" id="type" readonly></td>
-                                                                <td><textarea type="nama" placeholder="Nama Produk" class="form-control" id="nama" readonly></textarea></td>
+                                                                <td><input type="text" placeholder="Type Produk" class="form-control" id="type_produk` + i + `"  "></td>
+                                                                <td><textarea type="nama" placeholder="Nama Produk" class="form-control"id="nama_produk` + i + `" readonly></textarea></td>
                                                                 <td><textarea type="nama" placeholder="Nama Produk" class="form-control" id="nama" readonly></textarea></td>
                                 <td>
                                 <button type="button" class="btn btn-danger remove-tr"><i class="fas fa-trash"></i></button>
                                 </td>
                                 </tr>`);
-
         $('#kalibrasi_jenis' + i + '').select2({
             placeholder: "Pilih Data",
             allowClear: true,
@@ -192,18 +182,67 @@
             allowClear: true,
             theme: 'bootstrap4',
         })
-        $('#noseri' + i + '').select2({
+        $('#barcode' + i + '').select2({
             placeholder: "Pilih Data",
             allowClear: true,
             theme: 'bootstrap4',
         })
+
+        $(document).ready(function() {
+            $('select[id="barcode' + i + '"]').on('change', function() {
+                var kalibrasi_internal_id = jQuery(this).val();
+                $.ajax({
+                    url: '/ka_internal/detail/seri_kalibrasi/' + kalibrasi_internal_id,
+                    type: "GET",
+                    dataType: "json",
+                    success: function(data) {
+                        $('input[id="type_produk' + i + '"]').val(data[0]['bppb']['detailproduk']['nama']);
+                        $('textarea[id="nama_produk' + i + '"]').val(data[0]['bppb']['detailproduk']['produk']['nama']);
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            });
+        });
+
     });
     $(document).on('click', '.remove-tr', function() {
-
         let konfirmasi = confirm('Yakin menghapus baris ini ?');
         let pesan = konfirmasi ? $(this).parents('tr').remove() :
             '';
+    });
+</script>
 
+
+<script type="text/javascript">
+    // function myFunction() {
+    //     var x = document.getElementById("tprd");
+    //     var add = $("#add");
+    //     if (x.value != "") {
+    //         add.removeAttr("disabled");
+    //     } else {
+    //         add.attr("disabled", "disabled");
+    //     }
+    // }
+
+    $(document).ready(function() {
+        $('select[id="barcode"]').on('change', function() {
+            var kalibrasi_internal_id = jQuery(this).val();
+            $.ajax({
+                url: '/ka_internal/detail/seri_kalibrasi/' + kalibrasi_internal_id,
+                type: "GET",
+                dataType: "json",
+                success: function(data) {
+                    console.log(data[0]['bppb']['detailproduk']['produk']['nama']);
+                    $('input[id="type_produk"]').val(data[0]['bppb']['detailproduk']['nama']);
+                    $('textarea[id="nama_produk"]').val(data[0]['bppb']['detailproduk']['produk']['nama']);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        });
     });
 </script>
 @stop

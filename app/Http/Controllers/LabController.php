@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Bppb;
 use App\HasilPerakitan;
 use App\KalibrasiInternal;
 use App\Karyawan;
+use App\ListKalibrasiInternal;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use PDF;
@@ -16,19 +18,21 @@ class LabController extends Controller
 {
     public function ka_internal_tambah()
     {
-        $hasil_perakitan = HasilPerakitan::all();
+        $listkalibrasiinternal = ListKalibrasiInternal::has('KalibrasiInternal')->get();
         $karyawan = Karyawan::where('divisi_id', '22')->get();
-        return view('page.lab.ka_internal_tambah',  ['hasil_perakitan' => $hasil_perakitan, 'karyawan' => $karyawan]);
+        return view('page.lab.ka_internal_tambah',  ['listkalibrasiinternal' => $listkalibrasiinternal, 'karyawan' => $karyawan]);
+    }
+
+    public function detail_seri_kalibrasi($kalibrasi_internal_id)
+    {
+        $data = KalibrasiInternal::with('Bppb.detailproduk.produk')
+            ->where('id', $kalibrasi_internal_id)
+            ->get();
+        echo json_encode($data);
     }
 
     public function ka_internal_form()
     {
-        //     $penawaran_offline = Penawaran_offline::with('karyawan', 'offline')
-        //     ->where('offline_id', $id)
-        //     ->first();
-        // $detail_offline = Detail_offline::where('offline_id', $id)
-        //     ->get();
-
         $pdf = PDF::loadView('page.lab.ka_internal_form')->setPaper('A4');
         return $pdf->stream('');
     }
