@@ -152,8 +152,8 @@ class Bppb extends Model
         return $this->hasMany(PenyerahanBarangJadi::class);
     }
 
-    public function KalibrasiInternal()
+    public function Kalibrasi()
     {
-        return $this->hasMany(KalibrasiInternal::class);
+        return $this->hasMany(Kalibrasi::class);
     }
 }

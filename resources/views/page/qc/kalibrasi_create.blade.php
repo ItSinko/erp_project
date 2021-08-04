@@ -56,7 +56,7 @@
                     <div class="card-body">
 
                         <div class="col-md-12">
-                            <form action="{{ route('kalibrasi_internal.store', ['bppb_id' => $s->id]) }}" method="post" enctype="multipart/form-data">
+                            <form action="{{ route('kalibrasi.store', ['bppb_id' => $s->id]) }}" method="post" enctype="multipart/form-data">
                                 {{ csrf_field() }}
                                 {{ method_field('PUT') }}
                                 <h3>Info BPPB</h3>
@@ -80,6 +80,29 @@
                                         <div class="col-sm-8">
                                             <input type="text" class="form-control" name="type_produk" id="type_produk" value="{{old('type_produk', $s->DetailProduk->nama)}}" style="width: 50%;" readonly>
                                         </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label for="jenis_kalibrasi" class="col-sm-4 col-form-label" style="text-align:right;">Jenis Kalibrasi</label>
+                                        <div class="col-sm-1 col-form-label">
+                                            <div class="icheck-primary d-inline">
+                                                <input type="radio" id="jenis_kalibrasi_internal" name="jenis_kalibrasi" value="internal" checked>
+                                                <label for="jenis_kalibrasi_internal">
+                                                    Internal
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-2 col-form-label">
+                                            <div class="icheck-primary d-inline">
+                                                <input type="radio" id="jenis_kalibrasi_eksternal" name="jenis_kalibrasi" value="eksternal" disabled>
+                                                <label for="jenis_kalibrasi_eksternal">
+                                                    Eksternal
+                                                </label>
+                                            </div>
+                                        </div>
+                                        @if ($errors->has('jenis_kalibrasi'))
+                                        <span class="invalid-feedback" role="alert">{{$errors->first('jenis_kalibrasi')}}</span>
+                                        @endif
                                     </div>
 
                                     <div class="form-group row">
@@ -117,7 +140,7 @@
                                             @endif
                                         </div>
                                         <div class="col-sm-1">
-                                            <input type="text" class="form-control  @error('urutan_bb') is-invalid @enderror " name="urutan_bb" id="urutan_bb" value="{{old('urutan_bb')}}">
+                                            <input type="text" class="form-control  @error('urutan_bb') is-invalid @enderror " name="urutan_bb" id="urutan_bb" value="{{old('urutan_bb')}}" readonly>
                                             @if ($errors->has('urutan_bb'))
                                             <span class="invalid-feedback" role="alert">{{$errors->first('urutan_bb')}}</span>
                                             @endif
@@ -269,10 +292,25 @@
         $('#tanggal_permintaan_selesai').on('change', function() {
             var t = $(this).val();
             if (t != "") {
-                $('#tambahlaporan').removeAttr('disabled');
+                $('#urutan_bb').removeAttr('readonly');
+            } else {
+                $('#urutan_bb').attr('readonly', true);
+            }
+        });
+
+        $('#urutan_bb').on('keyup change', function() {
+            var t = $(this).val();
+            var arr = JSON.parse('{{json_encode($hp)}}');
+            if (t != "") {
+                if (arr.length > 0) {
+                    $('#tambahlaporan').removeAttr('disabled');
+                } else if (arr.length <= 0) {
+                    alert("Produk tidak ditemukan");
+                }
             } else {
                 $('#tambahlaporan').attr('disabled', true);
             }
+
         });
 
         $('#tableitem').on('click', '#removeitem', function(e) {

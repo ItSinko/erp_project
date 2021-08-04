@@ -97,6 +97,11 @@ class User extends Authenticatable
         return $this->hasMany(Produk::class, 'ppic_id');
     }
 
+    public function Kalibrasi()
+    {
+        return $this->belongsTo(User::class, 'pic_id');
+    }
+
     public function AnalisaPsPerakitan()
     {
         return $this->hasMany(AnalisaPsPerakitan::class, 'ppic_id');
