@@ -12,4 +12,9 @@ class ListKalibrasiInternal extends Model
     {
         return $this->belongsTo(KalibrasiInternal::class);
     }
+
+    public function HasilPerakitan()
+    {
+        return $this->belongsTo(HasilPerakitan::class);
+    }
 }

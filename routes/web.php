@@ -513,6 +513,8 @@ Route::group(['prefix' => '/perakitan', 'middleware' => 'auth'], function () {
 // PENGUJIAN
 Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {
     Route::get('/', 'QCController@pengujian')->name('pengujian');
+    Route::get('/pdf_lkp/{produk}', 'QCController@pdf_lkp')->name('pdf_lkp');
+
 
     Route::get('/bppb/{id}', 'QCController@pengujian_bppb')->name('pengujian.bppb');
     Route::get('/bppb/show/{id}', 'QCController@pengujian_bppb_show')->name('pengujian.bppb.show');
@@ -592,8 +594,8 @@ Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {
 
 // KALIBRASI
 Route::group(['prefix' => '/kalibrasi_internal', 'middleware' => 'auth'], function () {
-    Route::get('/', 'QCController@kalibrasi_internal')->name('kalibrasi_internal');
-    Route::get('/show', 'QCController@kalibrasi_internal_show')->name('kalibrasi_internal.show');
+    Route::get('/{bppb_id}', 'QCController@kalibrasi_internal')->name('kalibrasi_internal');
+    Route::get('/show/{bppb_id}/{id}', 'QCController@kalibrasi_internal_show')->name('kalibrasi_internal.show');
     Route::get('/create/{bppb_id}', 'QCController@kalibrasi_internal_create')->name('kalibrasi_internal.create');
     Route::put('/store/{bppb_id}', 'QCController@kalibrasi_internal_store')->name('kalibrasi_internal.store');
     Route::get('/edit/{bppb_id}', 'QCController@kalibrasi_internal_edit')->name('kalibrasi_internal.edit');

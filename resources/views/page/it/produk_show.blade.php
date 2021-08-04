@@ -105,7 +105,10 @@
     $('#example').DataTable({
       processing: true,
       serverSide: true,
-      ajax: "{{ route('produk.show') }}",
+      ajax: {
+        url: "{{ route('produk.show') }}",
+        method: 'GET'
+      },
       columns: [{
           data: 'DT_RowIndex',
           name: 'DT_RowIndex',
