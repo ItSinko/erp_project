@@ -67,53 +67,64 @@
                                                         <input type="number" class="form-control" ">
                                                     </div>
                                                 </div>
-                                            </div>
-                                                    <div class=" form-group row">
-                                                        <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">No Seri</label>
-                                                        <div class="col-sm-8">
-                                                            <select type="text" class="form-control @error('karyawan_id') is-invalid @enderror select2" name="karyawan_id" style="width:45%;">
-                                                                <option value=""></option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group row">
-                                                        <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Type</label>
-                                                        <div class="col-sm-8">
-                                                            <input type="text" class="form-control @error('karyawan_id') is-invalid @enderror" name="karyawan_id" style="width:45%;" readonly>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group row">
-                                                        <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Nama</label>
-                                                        <div class="col-sm-8">
-                                                            <textarea type="text" class="form-control @error('karyawan_id') is-invalid @enderror" name="karyawan_id" style="width:45%;" readonly></textarea>
-                                                        </div>
-                                                    </div>
-                                                    <div class=" form-group row">
-                                                        <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Jenis</label>
-                                                        <div class="col-sm-8">
-                                                            <select type="text" class="form-control @error('karyawan_id') is-invalid @enderror select2" name="karyawan_id" style="width:45%;">
-                                                                <option value="">Pilih</option>
-                                                                <option value="rsud">Rumah Sakit Umum Daerah (RSUD)</option>
-                                                                <option value="dinkes">Dinas Kesehatan</option>
-                                                                <option value="puskes">Puskesmas</option>
-                                                                <option value="puskes">Personal</option>
-                                                                <option value="lab">Laboratorium</option>
-                                                                <option value="cip">PT Cipta Jaya</option>
-                                                                <option value="pt">Perseorangan Terbatas (PT)</option>
-                                                                <option value="univ">Universitas</option>
-                                                            </select>
-                                                        </div>
+                                            </div>                                                 
+                                                    <table class=" table table-bordered table-striped" style="width:100%" id="user_table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th width="10%">Kalibrasi</th>
+                                                                <th width="10%">PIC</th>
+                                                                <th width="10%">No Seri</th>
+                                                                <th width="10%">Type</th>
+                                                                <th width="15%">Nama</th>
+                                                                <th width="15%">Distributor</th>
+                                                                <th width="1%"></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <select type="text" class="form-control @error('karyawan_id') is-invalid @enderror select2" name="karyawan_id" style="width:100%">
+                                                                        <option value="">Pilih</option>
+                                                                        <option value="rsud">Rumah Sakit Umum Daerah (RSUD)</option>
+                                                                        <option value="dinkes">Dinas Kesehatan</option>
+                                                                        <option value="puskes">Puskesmas</option>
+                                                                        <option value="puskes">Personal</option>
+                                                                        <option value="lab">Laboratorium</option>
+                                                                        <option value="cip">PT Cipta Jaya</option>
+                                                                        <option value="pt">Perseorangan Terbatas (PT)</option>
+                                                                        <option value="univ">Universitas</option>
+                                                                    </select>
+                                                                </td>
+                                                                <td><select type="text" class="form-control @error('karyawan_id') is-invalid @enderror select2" name="karyawan_id" style="width:100%">
+                                                                        <option value="">Pilih</option>
+                                                                        @foreach($karyawan as $k)
+                                                                        <option value="{{$k->id}}">{{$k->nama}}</option>
+                                                                        @endforeach
+                                                                    </select></td>
+                                                                <td><select type="text" class="form-control @error('karyawan_id') is-invalid @enderror select2" id="barcode" style="width:100%">
+                                                                        <option value="">Pilih</option>
+                                                                        @foreach($listkalibrasiinternal as $k)
+                                                                        <option value="{{$k->kalibrasi_internal_id}}">{{str_replace("/", "", $k->KalibrasiInternal->alias_barcode) . $k->no_barcode}}</option>
+                                                                        @endforeach
+                                                                    </select></td>
+                                                                </td>
+                                                                <td><input type="text" placeholder="Type Produk" class="form-control" id="type_produk" readonly></td>
+                                                                <td><textarea type="nama" placeholder="Nama Produk" class="form-control" id="nama_produk" readonly></textarea></td>
+                                                                <td><textarea type="nama" placeholder="Nama Produk" class="form-control" id="nama" readonly></textarea></td>
+                                                                <td><button type="button" name="add" id="add" class="btn btn-success"><i class="nav-icon fas fa-plus-circle"></i></button></td>
+                                                            </tr>
+                                                        </tbody>
+                                                        </table>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="card-footer">
+                                        <span class="float-left"><a class="btn btn-danger rounded-pill" href="/kesehatan"><i class="fas fa-times"></i>&nbsp;Batal</a></span>
+                                        <span class="float-right"><button class="btn btn-success rounded-pill" id="button_tambah"><i class="fas fa-plus"></i>&nbsp;Tambah Data</button></span>
+                                    </div>
                                 </div>
-                                <div class="card-footer">
-                                    <span class="float-left"><a class="btn btn-danger rounded-pill" href="/kesehatan"><i class="fas fa-times"></i>&nbsp;Batal</a></span>
-                                    <span class="float-right"><button class="btn btn-success rounded-pill" id="button_tambah"><i class="fas fa-plus"></i>&nbsp;Tambah Data</button></span>
-                                </div>
-                            </div>
                 </form>
             </div>
         </div>
@@ -121,4 +132,117 @@
 </section>
 @endsection
 @section('adminlte_js')
+<script type="text/javascript">
+    var i = 0;
+    $("#add").click(function() {
+        ++i;
+        $("#user_table ").append(`<tr>
+                                <td>
+                                <select type="text" class="form-control select2" name="" id="kalibrasi_jenis` + i + `" style="width:100%">
+                                                                        <option value="">Pilih</option>
+                                                                        <option value="rsud">Rumah Sakit Umum Daerah (RSUD)</option>
+                                                                        <option value="dinkes">Dinas Kesehatan</option>
+                                                                        <option value="puskes">Puskesmas</option>
+                                                                        <option value="puskes">Personal</option>
+                                                                        <option value="lab">Laboratorium</option>
+                                                                        <option value="cip">PT Cipta Jaya</option>
+                                                                        <option value="pt">Perseorangan Terbatas (PT)</option>
+                                                                        <option value="univ">Universitas</option>
+                                                                    </select>
+                                </td>
+                                <td>
+                                <select type="text" class="form-control select2" name="" style="width:100%" id="karyawan` + i + `">
+                                                                        <option value="">Pilih</option>
+                                                                        @foreach($karyawan as $k)
+                                                                        <option value="{{$k->id}}">{{$k->nama}}</option>
+                                                                        @endforeach
+                                                                        </select> 
+                                                                        <td>
+                                                                        <select type="text" class="form-control @error('karyawan_id') is-invalid @enderror select2" id="barcode` + i + `" style="width:100%">
+                                                                        <option value="">Pilih</option>
+                                                                        @foreach($listkalibrasiinternal as $k)
+                                                                        <option value="{{$k->kalibrasi_internal_id}}">{{str_replace("/", "", $k->KalibrasiInternal->alias_barcode) . $k->no_barcode}}</option>
+                                                                        @endforeach
+                                                                    </select></td>
+                                                                </td>
+                                                                <td><input type="text" placeholder="Type Produk" class="form-control" id="type_produk` + i + `"  "></td>
+                                                                <td><textarea type="nama" placeholder="Nama Produk" class="form-control"id="nama_produk` + i + `" readonly></textarea></td>
+                                                                <td><textarea type="nama" placeholder="Nama Produk" class="form-control" id="nama" readonly></textarea></td>
+                                <td>
+                                <button type="button" class="btn btn-danger remove-tr"><i class="fas fa-trash"></i></button>
+                                </td>
+                                </tr>`);
+        $('#kalibrasi_jenis' + i + '').select2({
+            placeholder: "Pilih Data",
+            allowClear: true,
+            theme: 'bootstrap4',
+        })
+        $('#karyawan' + i + '').select2({
+            placeholder: "Pilih Data",
+            allowClear: true,
+            theme: 'bootstrap4',
+        })
+        $('#barcode' + i + '').select2({
+            placeholder: "Pilih Data",
+            allowClear: true,
+            theme: 'bootstrap4',
+        })
+
+        $(document).ready(function() {
+            $('select[id="barcode' + i + '"]').on('change', function() {
+                var kalibrasi_internal_id = jQuery(this).val();
+                $.ajax({
+                    url: '/ka_internal/detail/seri_kalibrasi/' + kalibrasi_internal_id,
+                    type: "GET",
+                    dataType: "json",
+                    success: function(data) {
+                        $('input[id="type_produk' + i + '"]').val(data[0]['bppb']['detailproduk']['nama']);
+                        $('textarea[id="nama_produk' + i + '"]').val(data[0]['bppb']['detailproduk']['produk']['nama']);
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            });
+        });
+
+    });
+    $(document).on('click', '.remove-tr', function() {
+        let konfirmasi = confirm('Yakin menghapus baris ini ?');
+        let pesan = konfirmasi ? $(this).parents('tr').remove() :
+            '';
+    });
+</script>
+
+
+<script type="text/javascript">
+    // function myFunction() {
+    //     var x = document.getElementById("tprd");
+    //     var add = $("#add");
+    //     if (x.value != "") {
+    //         add.removeAttr("disabled");
+    //     } else {
+    //         add.attr("disabled", "disabled");
+    //     }
+    // }
+
+    $(document).ready(function() {
+        $('select[id="barcode"]').on('change', function() {
+            var kalibrasi_internal_id = jQuery(this).val();
+            $.ajax({
+                url: '/ka_internal/detail/seri_kalibrasi/' + kalibrasi_internal_id,
+                type: "GET",
+                dataType: "json",
+                success: function(data) {
+                    console.log(data[0]['bppb']['detailproduk']['produk']['nama']);
+                    $('input[id="type_produk"]').val(data[0]['bppb']['detailproduk']['nama']);
+                    $('textarea[id="nama_produk"]').val(data[0]['bppb']['detailproduk']['produk']['nama']);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        });
+    });
+</script>
 @stop

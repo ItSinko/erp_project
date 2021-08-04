@@ -139,7 +139,10 @@
     $('#example').DataTable({
       processing: true,
       serverSide: true,
-      ajax: "{{ route('bppb.show') }}",
+      ajax: {
+        url: "{{ route('bppb.show') }}",
+        method: 'POST'
+      },
       columns: [{
           data: 'DT_RowIndex',
           name: 'DT_RowIndex',

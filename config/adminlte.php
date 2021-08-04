@@ -235,16 +235,24 @@ return [
         [
             'header' => 'MASTER DATA',
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> wisnu
             'auth' => [14, 17, 26, 23, 24, 1, 11]
         ],
         [
             'text' => 'Daftar Part',
             'url'  => '/daftar_part',
             'icon' => 'fas fa-table',
+<<<<<<< HEAD
             'auth' => [11]
 =======
             'auth' => [14, 17, 26, 23, 24, 3, 1]
 >>>>>>> 9626a519074693001a15d6070905d3533771c0a4
+=======
+            'auth' => [11],
+            'auth' => [14, 17, 26, 23, 24, 3, 1]
+>>>>>>> wisnu
         ],
         [
             'text' => 'Penjualan Produk',
@@ -763,9 +771,14 @@ return [
         ],
         [
 <<<<<<< HEAD
+<<<<<<< HEAD
             'header' => 'TRANSAKSI',
             'auth' => [22],
 =======
+=======
+            'header' => 'TRANSAKSI',
+            'auth' => [22],
+>>>>>>> wisnu
             'header' => 'INCOMING',
             'auth' => [23]
         ],
@@ -866,7 +879,10 @@ return [
                     'auth' => [23],
                 ],
             ],
+<<<<<<< HEAD
 >>>>>>> 9626a519074693001a15d6070905d3533771c0a4
+=======
+>>>>>>> wisnu
         ],
 
         [
