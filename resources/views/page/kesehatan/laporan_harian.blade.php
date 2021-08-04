@@ -229,7 +229,7 @@
     var harian = $('#harian').DataTable({
       processing: true,
       dom: 'Bfrtip',
-      serverSide: true,
+      serverSide: false,
       language: {
         processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
       },

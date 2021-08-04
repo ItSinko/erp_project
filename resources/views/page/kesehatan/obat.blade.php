@@ -79,7 +79,7 @@
   $(function() {
     var tabel = $('#tabel').DataTable({
       processing: true,
-      serverSide: true,
+      serverSide: false,
       language: {
         processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
       },
@@ -111,7 +111,7 @@
       var y = $('#tabel_detail').DataTable({
         processing: true,
         destroy: true,
-        serverSide: true,
+        serverSide: false,
         language: {
           processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
         },

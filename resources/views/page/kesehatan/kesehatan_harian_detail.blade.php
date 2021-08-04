@@ -131,7 +131,7 @@
         var karyawan_id = 0;
         var tabel = $('#tabel').DataTable({
             processing: true,
-            serverSide: true,
+            serverSide: false,
             ajax: '/kesehatan_harian/detail/' + karyawan_id,
             language: {
                 processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'

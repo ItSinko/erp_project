@@ -40,7 +40,7 @@ class KesehatanController extends Controller
     {
         $data = Kesehatan_awal::with('karyawan')
             ->where('karyawan_id', $karyawan_id)->get();
-        echo json_encode($data);
+            echo json_encode($data);
     }
     public function kesehatan_detail()
     {
@@ -75,6 +75,13 @@ class KesehatanController extends Controller
             })
             ->addColumn('pr', function ($data) {
                 return $data->pr . ' bpm';
+            })
+            ->addColumn('umur', function ($data) {
+                $tgl  = $data->karyawan->tgllahir;
+                $age = Carbon::parse($tgl)->diff(Carbon::now())->y;
+               
+                
+                return $age." Thn"; 
             })
             ->addColumn('button', function ($data) {
                 $btn = '<div class="inline-flex"><a href="/kesehatan/ubah/' . $data->id . '"><button type="button" class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-edit"></i></button></a>';
@@ -486,7 +493,11 @@ class KesehatanController extends Controller
     }
     public function kesehatan_mingguan_detail()
     {
-        $karyawan = Karyawan::orderBy('nama', 'ASC')->get();
+
+        $karyawan = Karyawan::orderBy('nama', 'ASC')
+            ->has('Kesehatan_awal')
+            ->get();
+
         return view('page.kesehatan.kesehatan_mingguan_detail', ['karyawan' => $karyawan]);
     }
     public function kesehatan_mingguan_tensi_detail_data($karyawan_id)
@@ -497,8 +508,6 @@ class KesehatanController extends Controller
             ->addColumn('sis', function ($data) {
                 return $data->sistolik . ' mmHg';
             })
-
-
             ->addColumn('dias', function ($data) {
                 return $data->diastolik . ' mmHg';
             })

@@ -234,6 +234,13 @@ return [
         ],
         [
             'header' => 'MASTER DATA',
+            'auth' => [14, 17, 26, 23, 24, 1, 11]
+        ],
+        [
+            'text' => 'Daftar Part',
+            'url'  => '/daftar_part',
+            'icon' => 'fas fa-table',
+            'auth' => [11],
             'auth' => [14, 17, 26, 23, 24, 3, 1]
         ],
         [
@@ -752,6 +759,8 @@ return [
             'auth' => [17],
         ],
         [
+            'header' => 'TRANSAKSI',
+            'auth' => [22],
             'header' => 'INCOMING',
             'auth' => [23]
         ],
@@ -854,6 +863,38 @@ return [
             ],
         ],
 
+        [
+            'text'    => 'Kalibrasi Internal',
+            'icon'    => 'fas fa-box-open',
+            'auth' => [22],
+            'submenu' => [
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Data',
+                    'url'  => '/pengemasan',
+                    'auth' => [22],
+                ],
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Kalibrasi',
+                    'url'  => '/pengemasan',
+                    'auth' => [22],
+                ],
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Hasil',
+                    'url'  => '/pengemasan',
+                    'auth' => [22],
+                ]
+            ],
+        ],
+
+        [
+            'text'    => 'Kalibrasi Eksternal',
+            'icon'    => 'fas fa-box-open',
+            'url'  => '/ka_eksternal/',
+            'auth' => [22],
+        ],
         ['header' => 'LOGOUT'],
         [
             'text' => 'Logout',
@@ -861,12 +902,12 @@ return [
             'icon' => 'fas fa-sign-out-alt',
             'form' => true,
         ],
-
         [
             'text' => 'test',
             'isNavbarRightItem' => true,
             'icon' => 'fas fa-sign-out-alt',
         ],
+
     ],
 
     /*

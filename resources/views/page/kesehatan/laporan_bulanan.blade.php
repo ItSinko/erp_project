@@ -292,7 +292,7 @@
     var gcu_tabel = $('#gcu_tabel').DataTable({
       processing: true,
       dom: 'Bfrtip',
-      serverSide: true,
+      serverSide: false,
       language: {
         processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
       },
@@ -387,7 +387,7 @@
     var berat_tabel = $('#berat_tabel').DataTable({
       processing: true,
       dom: 'Bfrtip',
-      serverSide: true,
+      serverSide: false,
       language: {
         processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
       },

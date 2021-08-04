@@ -303,7 +303,7 @@
       $(function() {
         var berat_tabel = $('#berat_tabel').DataTable({
           processing: true,
-          serverSide: true,
+          serverSide: false,
           language: {
             processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
           },
@@ -399,7 +399,7 @@
       $(function() {
         var gcu_tabel = $('#gcu_tabel').DataTable({
           processing: true,
-          serverSide: true,
+          serverSide: false,
           language: {
             processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
           },
