@@ -22,9 +22,8 @@ use App\Http\Controllers\UserLogController;
 use App\PerbaikanProduksi;
 use App\HasilPengemasan;
 use App\CekPengemasan;
-use App\KalibrasiInternal;
-use App\ListKalibrasiInternal;
-use App\PackingList;
+use App\Kalibrasi;
+use App\ListKalibrasi;
 use App\PeriksaBarangMasuk;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -754,7 +753,7 @@ class QCController extends Controller
                 $btn = '<a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Klik untuk melihat laporan"><i class="fas fa-ellipsis-h"></i></a>';
                 $btn .= '<div class="dropdown-menu" aria-labelledby="dropdownMenuLink1">';
                 if ($s->DetailProduk->Produk->kalibrasi == "ya") {
-                    $btn .= '<a class="dropdown-item" href="/kalibrasi_internal/' . $s->id . '"><span style="color: black;"><i class="fas fa-eye" aria-hidden="true"></i>&nbsp;Kalibrasi</span></a>';
+                    $btn .= '<a class="dropdown-item" href="/kalibrasi/' . $s->id . '"><span style="color: black;"><i class="fas fa-eye" aria-hidden="true"></i>&nbsp;Kalibrasi</span></a>';
                 }
                 $btn .= '<a class="dropdown-item monitoringprosesmodal" data-toggle="modal" data-target="#monitoringprosesmodal" data-attr="/pengujian/monitoring_proses/show/' . $s->id . '" data-id="' . $s->id . '"><span style="color: black;"><i class="fas fa-eye" aria-hidden="true"></i>&nbsp;Monitoring Proses</span></a>';
                 $btn .= '<a class="dropdown-item" href="/pengujian/pemeriksaan_proses/hasil/' . $s->id . '"><span style="color: black;"><i class="fas fa-eye" aria-hidden="true"></i>&nbsp;Pemeriksaan Proses</span></a>';
@@ -771,7 +770,7 @@ class QCController extends Controller
                 $btn = '<a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Klik untuk melihat laporan"><i class="fas fa-plus-circle" aria-hidden="true"></i></a>';
                 $btn .= '<div class="dropdown-menu" aria-labelledby="dropdownMenuLink2">';
                 if ($s->DetailProduk->Produk->kalibrasi == "ya") {
-                    $btn .= '<a class="dropdown-item" href="/kalibrasi_internal/create/' . $s->id . '"><span style="color: black;"><i class="fas fa-plus" aria-hidden="true"></i>&nbsp;Kalibrasi</span></a>';
+                    $btn .= '<a class="dropdown-item" href="/kalibrasi/create/' . $s->id . '"><span style="color: black;"><i class="fas fa-plus" aria-hidden="true"></i>&nbsp;Kalibrasi</span></a>';
                 }
                 $btn .= '<a class="dropdown-item" href="/pengujian/monitoring_proses/create/' . $s->id . '"><span style="color: black;"><i class="fas fa-plus" aria-hidden="true"></i>&nbsp;Monitoring Proses</span></a>';
                 $btn .= '<a class="dropdown-item luplkpmodal" data-toggle="modal" data-target="#luplkpmodal" data-attr="/produk/detail/show/' . $s->id . '" data-id="' . $s->id . '"><span style="color: black;"><i class="fas fa-plus" aria-hidden="true"></i>&nbsp;LUP dan LKP</span></a>';
@@ -1897,29 +1896,32 @@ class QCController extends Controller
         // return redirect()->back()->with();
     }
 
-    public function kalibrasi_internal($bppb_id)
+    public function kalibrasi($bppb_id)
     {
-        $b = Bppb::where('id', $bppb_id)->get();
-        $k = KalibrasiInternal::where('bppb_id', $bppb_id)->get();
+        $b = Bppb::find($bppb_id);
+        $k = Kalibrasi::where('bppb_id', $bppb_id)->get();
 
 
-        return view('page.qc.kalibrasi_internal_show', ['bppb_id' => $bppb_id, 'b' => $b, 'k' => $k]);
+        return view('page.qc.kalibrasi_show', ['bppb_id' => $bppb_id, 'b' => $b, 'k' => $k]);
     }
 
-    public function kalibrasi_internal_show($bppb_id, $id)
+    public function kalibrasi_show($bppb_id, $id)
     {
         $s = "";
         if ($id == "0") {
-            $s = ListKalibrasiInternal::whereHas('KalibrasiInternal', function ($q) use ($bppb_id) {
+            $s = ListKalibrasi::whereHas('Kalibrasi', function ($q) use ($bppb_id) {
                 $q->where('bppb_id', $bppb_id);
             })->get();
         } else {
-            $s = ListKalibrasiInternal::where('kalibrasi_internal_id', $id)->get();
+            $s = ListKalibrasi::where('kalibrasi_id', $id)->get();
         }
         return DataTables::of($s)
             ->addIndexColumn()
             ->editColumn('hasil_perakitan_id', function ($s) {
                 return $s->HasilPerakitan->Perakitan->alias_tim . str_replace("/", "", $s->HasilPerakitan->no_seri);
+            })
+            ->addColumn('barcode', function ($s) {
+                return str_replace("/", "", $s->Kalibrasi->alias_barcode) . $s->no_barcode;
             })
             ->editColumn('tanggal_kalibrasi', function ($s) {
                 if (!empty($s->tanggal_kalibrasi)) {
@@ -1962,7 +1964,13 @@ class QCController extends Controller
             ->make(true);
     }
 
-    public function kalibrasi_internal_create($bppb_id)
+    public function kalibrasi_detail($id)
+    {
+        $k = Kalibrasi::find($id);
+        return json_encode($k);
+    }
+
+    public function kalibrasi_create($bppb_id)
     {
         $s = Bppb::find($bppb_id);
         $k = Karyawan::whereNotIn('jabatan', ['direktur'])->get();
@@ -1970,11 +1978,11 @@ class QCController extends Controller
         $hp = HasilPerakitan::whereHas('Perakitan', function ($q) use ($bppb_id) {
             $q->where('bppb_id', $bppb_id);
         })->where('tindak_lanjut_tertutup', 'aging')
-            ->whereDoesntHave('ListKalibrasiInternal')
+            ->whereDoesntHave('ListKalibrasi')
             ->orderBy('updated_at', 'desc')
             ->get();
 
-        $lki = ListKalibrasiInternal::whereHas('KalibrasiInternal', function ($q) use ($bppb_id) {
+        $lki = ListKalibrasi::whereHas('Kalibrasi', function ($q) use ($bppb_id) {
             $q->where('bppb_id', $bppb_id);
         })->whereNotNull('no_barcode')->count();
 
@@ -1984,10 +1992,10 @@ class QCController extends Controller
 
         // $c = $lki + $hpg;
 
-        return view('page.qc.kalibrasi_internal_create', ['s' => $s, 'k' => $k, 'hp' => $hp, 'c' => $lki]);
+        return view('page.qc.kalibrasi_create', ['s' => $s, 'k' => $k, 'hp' => $hp, 'c' => $lki]);
     }
 
-    public function kalibrasi_internal_store(Request $request, $bppb_id)
+    public function kalibrasi_store(Request $request, $bppb_id)
     {
         $v = Validator::make(
             $request->all(),
@@ -2014,8 +2022,9 @@ class QCController extends Controller
         if ($v->fails()) {
             return redirect()->back()->withErrors($v);
         } else {
-            $ki = KalibrasiInternal::create([
+            $ki = Kalibrasi::create([
                 'bppb_id' => $bppb_id,
+                'jenis_kalibrasi' => $request->jenis_kalibrasi,
                 'tanggal_daftar' => $request->tanggal_daftar,
                 'tanggal_permintaan_selesai' => $request->tanggal_permintaan_selesai,
                 'alias_barcode' => $request->inisial_produk . "/" . $request->tipe_produk . "/" . $request->waktu_produksi . "/" . $request->urutan_bb,
@@ -2025,8 +2034,8 @@ class QCController extends Controller
             if ($ki) {
                 $bool = true;
                 for ($i = 0; $i < count($request->hasil_perakitan_id); $i++) {
-                    $l = ListKalibrasiInternal::create([
-                        'kalibrasi_internal_id' => $ki->id,
+                    $l = ListKalibrasi::create([
+                        'kalibrasi_id' => $ki->id,
                         'hasil_perakitan_id' => $request->hasil_perakitan_id[$i],
                         'no_barcode' => $request->no_barcode[$i],
                         'status' => 'req_kalibrasi'

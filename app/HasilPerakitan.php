@@ -53,8 +53,8 @@ class HasilPerakitan extends Model
         return $h;
     }
 
-    public function ListKalibrasiInternal()
+    public function ListKalibrasi()
     {
-        return $this->hasMany(ListKalibrasiInternal::class);
+        return $this->hasMany(ListKalibrasi::class);
     }
 }
