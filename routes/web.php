@@ -150,11 +150,18 @@ Route::get('/daftar_part/data', 'GudangMaterialController@daftar_part_data');
 Route::get('/pengeluaran/tambah', 'GudangMaterialController@pengeluaran_tambah');
 
 //Lab
-Route::get('/ka_internal/tambah', 'LabController@ka_internal_tambah');
-Route::get('/ka_internal/cetak', 'LabController@ka_internal_form');
-Route::get('/ka_internal/cetak2', 'LabController@ka_permintaan_form');
-Route::get('/ka_internal/lup_steril', 'LabController@lup_steril');
-Route::get('/ka_internal/detail/seri_kalibrasi/{kalibrasi_internal_id}', 'LabController@detail_seri_kalibrasi');
+Route::get('/kalibrasi', 'LabController@kalibrasi');
+Route::get('/acc_kalibrasi', 'LabController@acc_kalibrasi');
+Route::get('/acc_kalibrasi/data', 'LabController@acc_kalibrasi_data');
+Route::get('/acc_list_kalibrasi/data', 'LabController@acc_list_kalibrasi_data');
+
+Route::get('/kalibrasi/data', 'LabController@kalibrasi_data');
+Route::get('/kalibrasi/tambah/{id}', 'LabController@kalibrasi_tambah');
+Route::post('/kalibrasi/aksi_tambah', 'LabController@ka_internal_aksi_tambah');
+Route::get('/kalibrasi/cetak', 'LabController@ka_internal_form');
+Route::get('/kalibrasi/cetak2', 'LabController@ka_permintaan_form');
+Route::get('/kalibrasi/lup_steril', 'LabController@lup_steril');
+Route::get('/kalibrasi/detail/seri_kalibrasi/{kalibrasi_internal_id}', 'LabController@detail_seri_kalibrasi');
 
 //Karyawan
 Route::group(['prefix' => '/karyawan', 'middleware' => 'auth'], function () {
@@ -184,8 +191,6 @@ Route::group(['prefix' => '/nama_alamat', 'middleware' => 'auth'], function () {
     Route::post('/aksi_tambah', 'CommonController@nama_alamat_aksi_tambah');    /* Action */
     Route::put('/aksi_ubah/{id}', 'CommonController@nama_alamat_aksi_ubah');
 });
-
-
 
 //PENJUALAN PRODUK
 Route::group(['prefix' => '/penjualan_produk', 'middleware' => 'auth'], function () {
