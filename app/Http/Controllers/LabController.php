@@ -9,9 +9,6 @@ use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use PDF;
 
-
-
-
 class LabController extends Controller
 {
     public function ka_internal_tambah()

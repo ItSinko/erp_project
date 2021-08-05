@@ -59,9 +59,9 @@
                     <h4>Daftar Kalibrasi</h4><br>
                     <div class="form-horizontal">
                         <div class="form-group row">
-                            <label for="kalibrasi_id" class="col-sm-4 col-form-label" style="text-align:right;">List Kalibrasi</label>
-                            <div class="col-sm-8">
-                                <select class="form-control select2 select2-info @error('kalibrasi_id') is-invalid @enderror" data-dropdown-css-class="select2-info" style="width: 40%;" data-placeholder="Pilih Kalibrasi Internal" name="kalibrasi_id" id="kalibrasi_id">
+                            <label for="kalibrasi_id" class="col-sm-5 col-form-label" style="text-align:right;">List Kalibrasi</label>
+                            <div class="col-sm-7">
+                                <select class="form-control select2 select2-info @error('kalibrasi_id') is-invalid @enderror" data-dropdown-css-class="select2-info" style="width: 40%;" data-placeholder="Pilih Laporan Kalibrasi" name="kalibrasi_id" id="kalibrasi_id">
                                     <option value=""></option>
                                     @foreach($k as $i)
                                     <option value="{{$i->id}}">{{$i->tanggal_daftar}} - @if(!empty($i->no_pendaftaran)) {{$i->no_pendaftaran}} @else <span class="text-muted">No Pendaftaran Belum Tersedia</span> @endif</option>
@@ -74,18 +74,22 @@
                         <div class="col-12">
                             <div class="form-horizontal">
                                 <div class="form-group row">
-                                    <label for="tanggal_daftar" class="col-sm-4 col-form-label" style="text-align:right;">Tanggal Pendaftaran : </label>
-                                    <label class="col-sm-8 col-form-label" style="text-align:left;" id="tanggal_daftar"></label>
+                                    <label for="tanggal_daftar" class="col-sm-5 col-form-label" style="text-align:right;">Tanggal Pendaftaran : </label>
+                                    <label class="col-sm-7 col-form-label" style="text-align:left;" id="tanggal_daftar">-</label>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="tanggal_permintaan_selesai" class="col-sm-4 col-form-label" style="text-align:right;">Tanggal Permintaan Selesai : </label>
-                                    <label class="col-sm-8 col-form-label" style="text-align:left;" id="tanggal_permintaan_selesai"></label>
+                                    <label for="tanggal_permintaan_selesai" class="col-sm-5 col-form-label" style="text-align:right;">Tanggal Permintaan Selesai : </label>
+                                    <label class="col-sm-7 col-form-label" style="text-align:left;" id="tanggal_permintaan_selesai">-</label>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="jenis_kalibrasi" class="col-sm-5 col-form-label" style="text-align:right;">Jenis Kalibrasi : </label>
+                                    <label class="col-sm-7 col-form-label" style="text-align:left;" id="jenis_kalibrasi">-</label>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="table-responsive">
-                        <table id="example1" class="table table-hover styled-table">
+                        <table id="example1" class="table table-hover table-striped">
                             <thead style="text-align: center;">
                                 <tr>
                                     <th>No</th>
@@ -142,6 +146,7 @@
                     success: function(data) {
                         $("#tanggal_daftar").text(data['tanggal_daftar']);
                         $("#tanggal_permintaan_selesai").text(data['tanggal_permintaan_selesai']);
+                        $("#jenis_kalibrasi").text(data['jenis_kalibrasi'].toUpperCase());
                         console.log(data)
                     }
                 });
@@ -149,6 +154,7 @@
                 id = "0";
                 $("#tanggal_daftar").text("-");
                 $("#tanggal_permintaan_selesai").text("-");
+                $("#jenis_kalibrasi").text("-");
             }
             $('#example1').DataTable({
                 destroy: true,

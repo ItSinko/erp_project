@@ -757,7 +757,7 @@ class QCController extends Controller
                 }
                 $btn .= '<a class="dropdown-item monitoringprosesmodal" data-toggle="modal" data-target="#monitoringprosesmodal" data-attr="/pengujian/monitoring_proses/show/' . $s->id . '" data-id="' . $s->id . '"><span style="color: black;"><i class="fas fa-eye" aria-hidden="true"></i>&nbsp;Monitoring Proses</span></a>';
                 $btn .= '<a class="dropdown-item" href="/pengujian/pemeriksaan_proses/hasil/' . $s->id . '"><span style="color: black;"><i class="fas fa-eye" aria-hidden="true"></i>&nbsp;Pemeriksaan Proses</span></a>';
-                $btn .= '<a class="dropdown-item luplkpmodal" data-toggle="modal" data-target="#luplkpmodal" data-attr="/produk/detail/show/' . $s->id . '" data-id="' . $s->id . '"><span style="color: black;"><i class="fas fa-eye" aria-hidden="true"></i>&nbsp;LUP dan LKP</span></a>';
+                $btn .= '<a class="dropdown-item" href="/pengujian/lkp_lup/' . $s->id . '"><span style="color: black;"><i class="fas fa-eye" aria-hidden="true"></i>&nbsp;LUP dan LKP</span></a>';
                 return $btn;
             })
             ->addColumn('data', function ($s) {
@@ -984,6 +984,103 @@ class QCController extends Controller
                 return $str;
             })
             ->rawColumns(['checkbox', 'no_seri', 'operator_qc', 'operator_prd', 'aksi'])
+            ->make(true);
+    }
+
+    public function pengujian_lkp_lup($bppb_id)
+    {
+        $b = Bppb::find($bppb_id);
+        return view('page.qc.pengujian_lkp_lup_show', ['b' => $b]);
+    }
+
+    public function pengujian_lkp_lup_show($id, $status)
+    {
+        $s = "";
+        if ($status == "all") {
+            $s = HasilPerakitan::whereHas('Perakitan', function ($q) use ($id) {
+                $q->where('bppb_id', $id);
+            })->where('tindak_lanjut_tertutup', 'aging')
+                ->orderBy('updated_at', 'desc')
+                ->get();
+        } else if ($status == "selesai") {
+            $s = HasilPerakitan::whereHas('Perakitan', function ($q) use ($id) {
+                $q->where('bppb_id', $id);
+            })->whereHas('LkpLupPengujian')
+                ->get();
+        } else if ($status == "belum") {
+            $s = HasilPerakitan::whereHas('Perakitan', function ($q) use ($id) {
+                $q->where('bppb_id', $id);
+            })->whereDoesntHave('LkpLupPengujian')->where('tindak_lanjut_tertutup', 'aging')
+                ->orderBy('updated_at', 'desc')
+                ->get();
+        }
+
+        return DataTables::of($s)
+            ->addIndexColumn()
+            ->editColumn('hasil_perakitan_id', function ($s) {
+                return $s->Perakitan->alias_tim . $s->no_seri;
+            })
+            ->addColumn('barcode', function ($s) {
+
+                if (!isset($s->LkpLupPengujian)) {
+                    return "-";
+                } else if (isset($s->LkpLupPengujian)) {
+                    if (count($s->LkpLupPengujian) > 0) {
+                        return $s->LkpLupPengujian->no_barcode;
+                    } else {
+                        return "-";
+                    }
+                }
+            })
+            ->addColumn('teknisi', function ($s) {
+
+                if (!isset($s->LkpLupPengujian)) {
+                    return "-";
+                } else if (isset($s->LkpLupPengujian)) {
+                    if (count($s->LkpLupPengujian) > 0) {
+                        return $s->LkpLupPengujian->Karyawan->nama;
+                    } else {
+                        return "-";
+                    }
+                }
+            })
+            ->addColumn('tanggal_pengujian', function ($s) {
+                if (isset($s->LkpLupPengujian)) {
+                    if (count($s->LkpLupPengujian) > 0) {
+                        return $s->LkpLupPengujian->tanggal_pengujian;
+                    } else {
+                        return "-";
+                    }
+                } else if (!isset($s->LkpLupPengujian->tanggal_pengujian)) {
+                    return "-";
+                }
+            })
+            ->addColumn('tanggal_expired', function ($s) {
+                if (isset($s->LkpLupPengujian)) {
+                    if (count($s->LkpLupPengujian) > 0) {
+                        return $s->LkpLupPengujian->tanggal_expired;
+                    } else {
+                        return "-";
+                    }
+                } else if (!isset($s->LkpLupPengujian->tanggal_expired)) {
+                    return "-";
+                }
+            })
+            ->addColumn('status', function ($s) {
+                if (isset($s->LkpLupPengujian)) {
+                    if (count($s->LkpLupPengujian) > 0) {
+                        if ($s->LkpLupPengujian->status == "req_lkp") {
+                        } else if ($s->LkpLupPengujian->status == "acc_lkp") {
+                        } else if ($s->LkpLupPengujian->status == "rej_lkp") {
+                        }
+                    } else {
+                        return '<a href = ""><button class="btn btn-success btn-sm m-1" style="border-radius:50%;"><i class="fas fa-plus"></i></button></a>';
+                    }
+                } else if (!isset($s->LkpLupPengujian->status)) {
+                    return '<a href = ""><button class="btn btn-success btn-sm m-1" style="border-radius:50%;"><i class="fas fa-plus"></i></button></a>';
+                }
+            })
+            ->rawColumns(['status'])
             ->make(true);
     }
 

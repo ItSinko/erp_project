@@ -57,4 +57,9 @@ class HasilPerakitan extends Model
     {
         return $this->hasMany(ListKalibrasi::class);
     }
+
+    public function LkpLupPengujian()
+    {
+        return $this->hasMany(LkpLupPengujian::class);
+    }
 }
