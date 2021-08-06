@@ -22,6 +22,7 @@ use App\Http\Controllers\UserLogController;
 use App\PerbaikanProduksi;
 use App\HasilPengemasan;
 use App\CekPengemasan;
+use App\FormatLkpLup;
 use App\Kalibrasi;
 use App\ListKalibrasi;
 use App\PeriksaBarangMasuk;
@@ -1074,14 +1075,31 @@ class QCController extends Controller
                         } else if ($s->LkpLupPengujian->status == "rej_lkp") {
                         }
                     } else {
-                        return '<a href = ""><button class="btn btn-success btn-sm m-1" style="border-radius:50%;"><i class="fas fa-plus"></i></button></a>';
+                        return '<a href = "/pengujian/lkp_lup/create/' . $s->id . '"><button class="btn btn-success btn-sm m-1" style="border-radius:50%;"><i class="fas fa-plus"></i></button></a>';
                     }
                 } else if (!isset($s->LkpLupPengujian->status)) {
-                    return '<a href = ""><button class="btn btn-success btn-sm m-1" style="border-radius:50%;"><i class="fas fa-plus"></i></button></a>';
+                    return '<a href = "/pengujian/lkp_lup/create/' . $s->id . '"><button class="btn btn-success btn-sm m-1" style="border-radius:50%;"><i class="fas fa-plus"></i></button></a>';
                 }
             })
             ->rawColumns(['status'])
             ->make(true);
+    }
+
+    public function pengujian_lkp_lup_create($id)
+    {
+        $b = Bppb::whereHas('Perakitan.HasilPerakitan', function ($q) use ($id) {
+            $q->where('id', $id);
+        })->first();
+
+        $prdid = $b->DetailProduk->Produk->id;
+
+        $f = FormatLkpLup::where('produk_id', $prdid)->get();
+
+        return view('page.qc.pengujian_lkp_lup_create', ['id' => $id, 'b' => $b, 'f' => $f]);
+    }
+
+    public function pengujian_lkp_lup_store(Request $request)
+    {
     }
 
     public function pengujian_monitoring_proses()

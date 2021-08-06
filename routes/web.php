@@ -542,8 +542,8 @@ Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {
         Route::get('/{bppb_id}', 'QCController@pengujian_lkp_lup')->name('pengujian.lkp_lup');
         Route::get('/show/{bppb_id}/{status}', 'QCController@pengujian_lkp_lup_show')->name('pengujian.lkp_lup.show');
         Route::get('/detail/{id}', 'QCController@pengujian_lkp_lup_detail');
-        Route::get('/create/{bppb_id}', 'QCController@pengujian_lkp_lup_create')->name('pengujian.lkp_lup.create');
-        Route::put('/store/{bppb_id}', 'QCController@pengujian_lkp_lup_store')->name('pengujian.lkp_lup.store');
+        Route::get('/create/{id}', 'QCController@pengujian_lkp_lup_create')->name('pengujian.lkp_lup.create');
+        Route::put('/store/{id}', 'QCController@pengujian_lkp_lup_store')->name('pengujian.lkp_lup.store');
         Route::get('/edit/{bppb_id}', 'QCController@pengujian_lkp_lup_edit')->name('pengujian.lkp_lup.edit');
         Route::put('/update/{bppb_id}', 'QCController@pengujian_lkp_lup_update')->name('pengujian.lkp_lup.update');
     });

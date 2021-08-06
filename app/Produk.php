@@ -44,4 +44,9 @@ class Produk extends Model
     {
         return $this->belongsTo(User::class, 'ppic_id');
     }
+
+    public function FormatLkpLup()
+    {
+        return $this->hasMany(FormatLkpLup::class);
+    }
 }
