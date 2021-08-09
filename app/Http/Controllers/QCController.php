@@ -755,10 +755,12 @@ class QCController extends Controller
                 $btn .= '<div class="dropdown-menu" aria-labelledby="dropdownMenuLink1">';
                 if ($s->DetailProduk->Produk->kalibrasi == "ya") {
                     $btn .= '<a class="dropdown-item" href="/kalibrasi/' . $s->id . '"><span style="color: black;"><i class="fas fa-eye" aria-hidden="true"></i>&nbsp;Kalibrasi</span></a>';
+                } else if ($s->DetailProduk->Produk->kalibrasi == "tidak") {
+                    $btn .= '<a class="dropdown-item" href="/pengujian/lkp_lup/' . $s->id . '"><span style="color: black;"><i class="fas fa-eye" aria-hidden="true"></i>&nbsp;LUP dan LKP</span></a>';
                 }
                 $btn .= '<a class="dropdown-item monitoringprosesmodal" data-toggle="modal" data-target="#monitoringprosesmodal" data-attr="/pengujian/monitoring_proses/show/' . $s->id . '" data-id="' . $s->id . '"><span style="color: black;"><i class="fas fa-eye" aria-hidden="true"></i>&nbsp;Monitoring Proses</span></a>';
                 $btn .= '<a class="dropdown-item" href="/pengujian/pemeriksaan_proses/hasil/' . $s->id . '"><span style="color: black;"><i class="fas fa-eye" aria-hidden="true"></i>&nbsp;Pemeriksaan Proses</span></a>';
-                $btn .= '<a class="dropdown-item" href="/pengujian/lkp_lup/' . $s->id . '"><span style="color: black;"><i class="fas fa-eye" aria-hidden="true"></i>&nbsp;LUP dan LKP</span></a>';
+
                 return $btn;
             })
             ->addColumn('data', function ($s) {
@@ -774,7 +776,6 @@ class QCController extends Controller
                     $btn .= '<a class="dropdown-item" href="/kalibrasi/create/' . $s->id . '"><span style="color: black;"><i class="fas fa-plus" aria-hidden="true"></i>&nbsp;Kalibrasi</span></a>';
                 }
                 $btn .= '<a class="dropdown-item" href="/pengujian/monitoring_proses/create/' . $s->id . '"><span style="color: black;"><i class="fas fa-plus" aria-hidden="true"></i>&nbsp;Monitoring Proses</span></a>';
-                $btn .= '<a class="dropdown-item luplkpmodal" data-toggle="modal" data-target="#luplkpmodal" data-attr="/produk/detail/show/' . $s->id . '" data-id="' . $s->id . '"><span style="color: black;"><i class="fas fa-plus" aria-hidden="true"></i>&nbsp;LUP dan LKP</span></a>';
                 return $btn;
             })
             ->rawColumns(['gambar', 'produk', 'jumlah', 'laporan', 'aksi', 'data'])
@@ -2016,7 +2017,6 @@ class QCController extends Controller
         $b = Bppb::find($bppb_id);
         $k = Kalibrasi::where('bppb_id', $bppb_id)->get();
 
-
         return view('page.qc.kalibrasi_show', ['bppb_id' => $bppb_id, 'b' => $b, 'k' => $k]);
     }
 
@@ -2099,7 +2099,9 @@ class QCController extends Controller
 
         $lki = ListKalibrasi::whereHas('Kalibrasi', function ($q) use ($bppb_id) {
             $q->where('bppb_id', $bppb_id);
-        })->whereNotNull('no_barcode')->count();
+        })->max('no_barcode');
+
+        $c = (int)$lki;
 
         // $hpg =  HasilPengemasan::whereHas('Pengemasan', function ($q) use ($bppb_id) {
         //     $q->where('bppb_id', $bppb_id);
@@ -2107,7 +2109,7 @@ class QCController extends Controller
 
         // $c = $lki + $hpg;
 
-        return view('page.qc.kalibrasi_create', ['s' => $s, 'k' => $k, 'hp' => $hp, 'c' => $lki]);
+        return view('page.qc.kalibrasi_create', ['s' => $s, 'k' => $k, 'hp' => $hp, 'c' => $c]);
     }
 
     public function kalibrasi_store(Request $request, $bppb_id)

@@ -270,7 +270,7 @@
       });
     }
 
-    $('#jumlah').on('keyup', function() {
+    $('#jumlah').on('keyup change', function() {
       var jumlah = $('#jumlah').val();
       var alias_tim = "{{$sh->alias_tim}}";
       var jum_rakit = "{{$sh->Bppb->countHasilPerakitan()}}";
@@ -294,6 +294,7 @@
               dataType: "json",
               success: function(data) {
                 $("#tambahdata").removeAttr('disabled');
+                $('#tableitem tbody').empty();
                 datatables = "";
                 for (var i = 0; i < jumlah; i++) {
                   datatables += `<tr>

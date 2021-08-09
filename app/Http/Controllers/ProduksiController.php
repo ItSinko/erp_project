@@ -1451,11 +1451,21 @@ class ProduksiController extends Controller
 
         $hmp = HasilMonitoringProses::whereHas('MonitoringProses', function ($q) use ($id) {
             $q->where('bppb_id', $id);
-        })->whereNotNull('no_barcode')->count();
+        })->max('no_barcode');
+
+        $chmp = (int) $hmp;
 
         $hp =  HasilPengemasan::whereHas('Pengemasan', function ($q) use ($id) {
             $q->where('bppb_id', $id);
-        })->whereNotNull('no_barcode')->count();
+        })->max('no_barcode');
+
+        $chp = (int) $hp;
+
+        if ($chmp > $chp) {
+            $cbrc = $chmp;
+        } else if ($chp > $chmp) {
+            $cbrc = $chp;
+        }
 
         $cbrc = $hmp + $hp;
 
