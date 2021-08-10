@@ -15,10 +15,10 @@ class CreatePackingListsTable extends Migration
     {
         Schema::create('packing_lists', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('supplier_id')->nullable()->unsigned();
-            $table->foreign('supplier_id')->references('id')->on('suppliers')->onDelete('set null');
+            $table->integer('po_id')->unsigned();
+            $table->foreign('po_id')->references('id')->on('po_pembelians')->onDelete('cascade');
             $table->date('tanggal');
-            $table->string('nomor', '50');
+            $table->string('nomor', '100');
             $table->enum('status', ['dibuat', 'menunggu', 'selesai']);
             $table->timestamps();
         });

@@ -48,7 +48,6 @@
                                 {{date("d-m-Y", strtotime($b->tanggal_bppb))}}
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>

@@ -25,6 +25,7 @@ use App\CekPengemasan;
 use App\FormatLkpLup;
 use App\Kalibrasi;
 use App\ListKalibrasi;
+use App\PackingList;
 use App\PeriksaBarangMasuk;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -47,18 +48,28 @@ class QCController extends Controller
 
     public function kedatangan_packing_list()
     {
-        return view('page.qc.kedatangan_packing_list_show');
+        $pl = PackingList::all();
+        return view('page.qc.kedatangan_packing_list_show', ['pl' => $pl]);
     }
 
-    public function kedatangan_packing_list_show()
+    public function kedatangan_packing_list_detail($id)
     {
-        $s = PeriksaBarangMasuk::all();
+        $pl = PackingList::find($id);
+        return $pl;
+    }
+
+    public function kedatangan_packing_list_show($id)
+    {
+        $s = DetailPackingList::where('packing_list_id', $id)->get();
         return DataTables::of($s)
             ->addIndexColumn()
-            ->editColumn('part_id', function ($s) {
+            ->addColumn('kode_barang', function ($s) {
+                return "-";
+            })
+            ->addColumn('nama_barang', function ($s) {
                 return $s->Part->nama;
             })
-            ->editColumn('karyawan_id', function ($s) {
+            ->editColumn('jumlah', function ($s) {
                 return $s->Karyawan->nama;
             })
             ->make(true);

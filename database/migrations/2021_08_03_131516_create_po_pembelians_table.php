@@ -14,7 +14,11 @@ class CreatePoPembeliansTable extends Migration
     public function up()
     {
         Schema::create('po_pembelians', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
+            $table->integer('supplier_id')->nullable()->unsigned();
+            $table->foreign('supplier_id')->references('id')->on('suppliers')->onDelete('set null');
+            $table->string('nomor', '50');
+            $table->date('tanggal');
             $table->timestamps();
         });
     }
