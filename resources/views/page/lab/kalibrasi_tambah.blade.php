@@ -1,14 +1,12 @@
 @extends('adminlte.page')
 @section('title', 'Beta Version')
 @section('content_header')
-<h1 class="m-0 text-dark">Dashboard</h1>
 @stop
 @section('content')
 <section class="content-header">
     <div class="container-fluid">
     </div>
 </section>
-
 <section class="content">
     <div class="row">
         <div class="col-lg-12">
@@ -30,6 +28,7 @@
             <div class="col-lg-12">
                 <form action="/kalibrasi/aksi_tambah" method="post" enctype="multipart/form-data">
                     {{ csrf_field() }}
+                    {{ method_field('PUT') }}
                     <div class="card">
                         <div class="card-header bg-success">
                             <div class="card-title"><i class="fas fa-plus-circle"></i>&nbsp;Tambah</div>
@@ -46,10 +45,7 @@
                                                         <div class="input-group-append">
                                                             <span class="input-group-text">LAB-</span>
                                                         </div>
-                                                        @foreach($kalibrasi as $k)
-                                                        <input type="text" class="form-control" value="{{$k->no_pendaftaran + 1}}" name="no_pendaftaran">
-                                                        @endforeach
-
+                                                        <input type="text" class="form-control" value="{{$no }}" name="no_pendaftaran">
                                                     </div>
                                                 </div>
                                             </div>
@@ -89,7 +85,7 @@
                                             <div class=" form-group row">
                                                 <label for="keterangan" class="col-sm-4 col-form-label" style="text-align:right;">Tgl Kalibrasi</label>
                                                 <div class="col-sm-2">
-                                                    <input type="date" class="form-control @error('tanggal_kalibrasi') is-invalid @enderror" name="tanggal_kalibrasi">
+                                                    <input type="date" class="form-control @error('tanggal_kalibrasi') is-invalid @enderror" name="tanggal_kalibrasi" id="date_master">
                                                 </div>
                                             </div>
                                             <div class=" form-group row">
@@ -104,27 +100,29 @@
                                                     <input type="date" class="form-control @error('tanggal_penyerahan') is-invalid @enderror" name="tanggal_penyerahan">
                                                 </div>
                                             </div>
-                                            <table class=" table table-bordered table-striped" style="width:100%" id="user_table">
+
+                                            <table class=" table table-bordered table-striped" style="width:100%" id="noseri_list">
                                                 <thead>
                                                     <tr>
+                                                        <th colspan="2" style="vertical-align: middle; text-align: right">No Seri</th>
+                                                        <th colspan="4">
+                                                            <select type="text" class="form-control select2" multiple="multiple" id="noseri">
+                                                                @foreach($listkalibrasi as $l)
+                                                                <option value="{{$l->id}}">{{$l->id}}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th width="1%">No</th>
+                                                        <th width="10%">Tgl Kalibrasi</th>
                                                         <th width="10%">No Seri</th>
                                                         <th width="10%">Type</th>
                                                         <th width="15%">Nama</th>
                                                         <th width="15%">Distributor</th>
-                                                        <th width="1%"></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    @foreach($listkalibrasi as $k)
-                                                    <tr>
-                                                        <td>
-                                                            {{str_replace("/", "", $k->Kalibrasi->alias_barcode) . $k->no_barcode}}
-                                                        </td>
-                                                        <td>{{$k->Kalibrasi->bppb->detailproduk->nama}}</td>
-                                                        <td>{{$k->Kalibrasi->bppb->detailproduk->produk->nama}}</td>
-                                                        <td>-</textarea></td>
-                                                    </tr>
-                                                    @endforeach
                                                 </tbody>
                                             </table>
                                         </div>
@@ -138,12 +136,49 @@
                         </div>
                     </div>
                 </form>
+
             </div>
         </div>
     </div>
 </section>
 @endsection
 @section('adminlte_js')
+<script>
+    $('#date_master').change(function() {
+        $('#date').val($(this).val());
+    });
+    $('#customCheckbox1').click(function() {
+        var dates = $("#date_master").val();
+        if ($(this).is(":checked")) {
+            $('#date').prop('readonly', false);
 
-
+        } else {
+            $('#date').prop('readonly', true);
+            $('#date').val(dates);
+        }
+    });
+    $(document).ready(function() {
+        var selected = [];
+        $('select[id="noseri"]').on('select2:select', function(e) {
+            $.ajax({
+                success: function(data) {
+                    alert('ok');
+                    selected[$(this).val()] = $(this).val();
+                    console.log(selected);
+                    // $("#noseri_list").append(`<tr>
+                    //                         <td>` + id + `</td>
+                    //                         <td>s</td>
+                    //                         <td>s</td>
+                    //                         <td>s</td>
+                    //                         <td>s</td>
+                    //                         <td>s</td>
+                    //                         </tr>`);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        });
+    });
+</script>
 @stop

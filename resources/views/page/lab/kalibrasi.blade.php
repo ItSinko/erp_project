@@ -32,8 +32,6 @@
     </div>
   </div>
 </div>
-
-
 @stop
 @section('adminlte_js')
 <script>
@@ -51,7 +49,7 @@
           searchable: false
         },
         {
-          data: 'bppb.no_bppb',
+          data: 'no_bppb',
         },
         {
           data: 'gambar',
@@ -59,10 +57,10 @@
           searchable: false
         },
         {
-          data: 'bppb.detailproduk.nama',
+          data: 'detailproduk.nama',
         },
         {
-          data: 'bppb.jumlah',
+          data: 'jumlah_kalibrasi',
           orderable: false,
           searchable: false
         },

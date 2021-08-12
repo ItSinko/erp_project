@@ -34,8 +34,8 @@
   </div>
 </div>
 <!-- Modal Detail -->
-<div class="modal fade  bd-example-modal-lg" id="detail_mod" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog modal-lg" role="document">
+<div class="modal fade  bd-example-modal-xl" id="detail_mod" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-xl" role="document">
     <div class="card-body">
       <form method="post" action="/kesehatan_harian_mingguan_tensi/aksi_ubah">
         {{ csrf_field() }}
@@ -43,7 +43,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h4 class="modal-title" id="myModalLabel">
-              <div class="data_detail_head"></div>
+              <div class="data_detail_head">FOX - BABY </div>
             </h4>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           </div>
@@ -58,7 +58,7 @@
                   <th>Tgl Penyerahan</th>
                   <th>Sertifikat</th>
                   <th>SJ</th>
-                  <th>Jumlah</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
@@ -138,7 +138,7 @@
             data: 'tanggal_selesai'
           },
           {
-            data: 'id'
+            data: 'tanggal_penyerahan'
           },
           {
             data: 'id'
@@ -147,7 +147,7 @@
             data: 'id'
           },
           {
-            data: 'id'
+            data: 'cetak'
           }
         ],
       });
