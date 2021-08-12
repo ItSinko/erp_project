@@ -671,7 +671,7 @@ Route::group(['prefix' => '/perbaikan', 'middleware' => 'auth'], function () {
 Route::group(['prefix' => '/kedatangan', 'middleware' => 'auth'], function () {
     Route::get('/packing_list', 'QCController@kedatangan_packing_list')->name('kedatangan.packing_list');
     Route::get('/packing_list/detail/{id}', 'QCController@kedatangan_packing_list_detail')->name('kedatangan.packing_list.detail');
-    Route::get('/packing_list/show', 'QCController@kedatangan_packing_list_show')->name('kedatangan.packing_list.show');
+    Route::get('/packing_list/show/{id}', 'QCController@kedatangan_packing_list_show')->name('kedatangan.packing_list.show');
     Route::get('/sampling', 'QCController@kedatangan_sampling')->name('kedatangan.sampling');
     Route::get('/sampling/show', 'QCController@kedatangan_sampling_show')->name('kedatangan.sampling.show');
     Route::get('/analisa', 'QCController@kedatangan_analisa')->name('kedatangan.analisa');

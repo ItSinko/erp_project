@@ -12,4 +12,9 @@ class PoPembelian extends Model
     {
         return $this->hasMany(PackingList::class);
     }
+
+    public function Supplier()
+    {
+        return $this->belongsTo(Supplier::class);
+    }
 }

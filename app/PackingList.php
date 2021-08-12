@@ -17,4 +17,9 @@ class PackingList extends Model
     {
         return $this->hasMany(DetailPackingList::class);
     }
+
+    public function PengecekanImportPart()
+    {
+        return $this->hasMany(PengecekanIncomingPart::class);
+    }
 }

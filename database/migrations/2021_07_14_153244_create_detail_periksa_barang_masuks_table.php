@@ -17,6 +17,8 @@ class CreateDetailPeriksaBarangMasuksTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('periksa_id')->unsigned();
             $table->foreign('periksa_id')->references('id')->on('periksa_barang_masuks')->onDelete('cascade');
+            $table->bigInteger('detail_packing_list_id')->unsigned();
+            $table->foreign('detail_packing_list_id')->references('id')->on('detail_packing_list')->onDelete('cascade');
             $table->bigInteger('detail_analisa_id')->unsigned();
             $table->foreign('detail_analisa_id')->references('id')->on('detail_analisa_barang_masuk_ps')->onDelete('cascade');
             $table->integer('jumlah_total');

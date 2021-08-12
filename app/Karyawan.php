@@ -81,10 +81,13 @@ class Karyawan extends Model
     {
         return $this->hasMany('App\berat_karyawan');
     }
-
     public function LkpLupPengujian()
     {
         return $this->hasMany(LkpLupPengujian::class);
+    }
+    public function PengecekanImportPart()
+    {
+        return $this->hasMany(PengecekanImportPart::class);
     }
 
     // public function DetailPeminjamanKaryawan()

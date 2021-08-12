@@ -26,6 +26,7 @@ use App\FormatLkpLup;
 use App\Kalibrasi;
 use App\ListKalibrasi;
 use App\PackingList;
+use App\DetailPackingList;
 use App\PeriksaBarangMasuk;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -54,7 +55,7 @@ class QCController extends Controller
 
     public function kedatangan_packing_list_detail($id)
     {
-        $pl = PackingList::find($id);
+        $pl = PackingList::where('id', $id)->with('PoPembelian')->with('PoPembelian.Supplier')->first();
         return $pl;
     }
 
@@ -67,17 +68,30 @@ class QCController extends Controller
                 return "-";
             })
             ->addColumn('nama_barang', function ($s) {
-                return $s->Part->nama;
+                return $s->nama_barang;
             })
             ->editColumn('jumlah', function ($s) {
-                return $s->Karyawan->nama;
+                return $s->jumlah;
+            })
+            ->addColumn('status', function ($s) {
+                if ($s->status == "dibuat") {
+                    $btn = '<a href="/perakitan/pemeriksaan/bppb/' . $s->id . '">';
+                    $btn .= '<div><button type="button" class="btn btn-primary btn-sm m-1" style="border-radius:50%;"><i class="fas fa-eye"></i></button></div>';
+                    $btn .= '<div><small>Lihat Semua Data</small></div></a>';
+                    return $btn;
+                }
             })
             ->make(true);
     }
 
-    public function kedatangan_sampling()
+    public function kedatangan_analisa_sampling()
     {
-        return view('page.qc.kedatangan_sampling_show');
+        return view('page.qc.kedatangan_analisa_sampling_show');
+    }
+
+    public function kedatangan_analisa_sampling_show()
+    {
+        $a = "";
     }
 
     public function perakitan_pemeriksaan()
