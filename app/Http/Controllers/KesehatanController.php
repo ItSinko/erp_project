@@ -40,7 +40,7 @@ class KesehatanController extends Controller
     {
         $data = Kesehatan_awal::with('karyawan')
             ->where('karyawan_id', $karyawan_id)->get();
-            echo json_encode($data);
+        echo json_encode($data);
     }
     public function kesehatan_detail()
     {
@@ -79,9 +79,9 @@ class KesehatanController extends Controller
             ->addColumn('umur', function ($data) {
                 $tgl  = $data->karyawan->tgllahir;
                 $age = Carbon::parse($tgl)->diff(Carbon::now())->y;
-               
-                
-                return $age." Thn"; 
+
+
+                return $age . " Thn";
             })
             ->addColumn('button', function ($data) {
                 $btn = '<div class="inline-flex"><a href="/kesehatan/ubah/' . $data->id . '"><button type="button" class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-edit"></i></button></a>';
