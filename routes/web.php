@@ -753,6 +753,12 @@ Route::get('/stok', function () {
     return "notif send";
 });
 
+//PPIC
+Route::group(['prefix' => '/kartu_stock_gbj', 'middleware' => 'auth'], function () {
+    Route::get('/', 'GbjController@kartu_stock');
+    Route::post('/show', 'GbjController@kartu_stock_show');
+});
+
 Route::get('/welcome', function () {
     return view('welcome');
 });

@@ -875,6 +875,22 @@ return [
             'url'  => '/acc_kalibrasi/',
             'auth' => [22],
         ],
+        [
+            'header' => 'Stok',
+            'auth' => [13]
+        ],
+        [
+            'text' => 'Produk',
+            'url' => '/produk',
+            'icon' => 'fas fa-circle',
+            'auth' => [13],
+        ],
+        [
+            'text' => 'Kartu Stok',
+            'url' => '/kartu_stock_gbj',
+            'icon' => 'fas fa-circle',
+            'auth' => [13],
+        ],
         ['header' => 'LOGOUT'],
         [
             'text' => 'Logout',

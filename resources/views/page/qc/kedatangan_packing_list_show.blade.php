@@ -31,7 +31,7 @@
                             <label for="detail_produk_id" class="col-sm-5 col-form-label" style="text-align:right;">Cari Packing List</label>
                             <div class="col-sm-4">
                                 <div class="select2-info">
-                                    <select class="select2 custom-select form-control @error('packing_list_id') is-invalid @enderror packing_list_id" data-placeholder="Pilih Packing List" data-dropdown-css-class="select2-info" style="width: 80%;" name="packing_list_id" id="detail_produk_id">
+                                    <select class="select2 custom-select form-control @error('packing_list_id') is-invalid @enderror packing_list_id" data-placeholder="Pilih Packing List" data-dropdown-css-class="select2-info" style="width: 80%;" name="packing_list_id" id="packing_list_id">
                                         <option value=""></option>
                                         @foreach($pl as $pl)
                                         <option value="{{$pl->id}}">{{$pl->PoPembelian->nomor}} - {{$pl->nomor}}</option>
