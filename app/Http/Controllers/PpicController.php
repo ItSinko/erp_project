@@ -37,6 +37,22 @@ use PhpParser\Node\Expr\AssignOp\Div;
 
 class PPICController extends Controller
 {
+    public function manager_dashboard()
+    {
+        if (Auth::user()->divisi_id != 3) return;
+
+        $month = date('m');
+        $year = date('Y');
+        $event = Event::orderBy('tanggal_mulai', 'asc')
+            ->join('detail_produks', 'jadwal_produksi.detail_produk_id', '=', 'detail_produks.id')
+            ->select('jadwal_produksi.id', 'detail_produks.nama', 'jumlah_produksi', 'tanggal_mulai', 'tanggal_selesai', 'jadwal_produksi.status', 'warna', 'versi_bom');
+
+        $month += 1;
+        $event = $event->where('tanggal_mulai', '>=', "$year-$month-01")->where("jadwal_produksi.status", "=", "penyusunan")->get();
+
+        return view("home", compact("event"));
+    }
+
     public function schedule_show(Request $request)
     {
 

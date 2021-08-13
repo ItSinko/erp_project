@@ -100,7 +100,7 @@
             </div>
             @if (Auth::user()->divisi_id == 3)
             @if ($status == "penyusunan")
-            <button class="btn btn-danger btn-block" id="acc-button" style="display: none;">Kofirmasi jadwal</button>
+            <button class="btn btn-danger btn-block" id="acc-button" style="display: none;">Konfirmasi jadwal</button>
             @endif
             @endif
             @if (Auth::user()->divisi_id == 24)
@@ -830,6 +830,9 @@
                                         status: "Ditolak",
                                         message: result,
                                         user: user,
+                                    },
+                                    error: function() {
+                                        alert("ajax calling error");
                                     }
                                 })
                             }
@@ -901,6 +904,7 @@
             //         alert("error");
             //     }
             // })
+            console.log(this);
         })
     });
 </script>

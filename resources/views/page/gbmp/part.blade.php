@@ -49,7 +49,7 @@
       language: {
         processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
       },
-      ajax: '/daftar_part/data',
+      ajax: 'gbmp/daftar_part/data',
       columns: [{
           data: 'DT_RowIndex',
           orderable: false,

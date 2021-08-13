@@ -27,7 +27,10 @@ Route::get('/', function () {
     return redirect('/home');
 });
 Route::get('/home', function () {
-    return view('home');
+    if (Auth::user()->divisi_id == 3)
+        return redirect('/ppic/manager_dashboard');
+    else
+        return view('home');
 })->name('home')->middleware('auth');
 
 Route::post('/logout', function () {
@@ -145,9 +148,11 @@ Route::get('/laporan_bulanan/data/{filter_bulanan}/{filter}/{id}/{start}/{end}',
 Route::get('/laporan_tahunan/data/{filter}/{id}/{start}/{end}', 'KesehatanController@laporan_tahunan_data');
 
 //Gudang Material
-Route::get('/daftar_part', 'GudangMaterialController@daftar_part');
-Route::get('/daftar_part/data', 'GudangMaterialController@daftar_part_data');
-Route::get('/pengeluaran/tambah', 'GudangMaterialController@pengeluaran_tambah');
+Route::group(['prefix' => 'gbmp'], function () {
+    Route::get('/daftar_part', 'GudangMaterialController@daftar_part');
+    Route::get('/daftar_part/data', 'GudangMaterialController@daftar_part_data');
+    Route::get('/pengeluaran/tambah', 'GudangMaterialController@pengeluaran_tambah');
+});
 
 //Lab
 Route::get('/kalibrasi', 'LabController@kalibrasi');
@@ -703,25 +708,17 @@ Route::group(['prefix' => 'dc', 'middleware' => 'auth'], function () {
     Route::delete('documentsDeleteMulti', 'DocumentsController@deleteMulti');
 });
 
-// ARI Controller Temporary
-
-Route::get('/doc/test', function (Request $request) {
-    $query = parse_url($request->fullUrl())['query'];
-    $result = [];
-    parse_str($query, $result);
-    dd($result);
+//GBMP
+Route::group(['prefix' => 'gbmp'], function () {
+    Route::get('/dashboard', function () {
+        return view('page.gbmp.gudang');
+    });
 });
-
-//GUDANG
-Route::get('gudang_view', function () {
-    return view('page.gudang.gudang');
-});
-Route::get('/gudang', 'GudangController@index')->name('gudang');
-Route::get('/gudang/data', 'GudangController@get_data')->name('gudang.data');
 
 
 //PPIC
 Route::group(['prefix' => 'ppic'], function () {
+    Route::get('/manager_dashboard', 'PpicController@manager_dashboard');
     Route::get('/schedule', 'PpicController@schedule_show');
     Route::post('/schedule/create', 'PpicController@schedule_create');
     Route::post('/schedule/delete', 'PpicController@schedule_delete');

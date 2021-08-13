@@ -237,14 +237,6 @@ return [
             'auth' => [14, 17, 26, 23, 24, 1, 11]
         ],
         [
-            'text' => 'Daftar Part',
-            'url'  => '/daftar_part',
-            'icon' => 'fas fa-table',
-
-            'auth' => [11],
-            'auth' => [14, 17, 26, 23, 24, 3, 1]
-        ],
-        [
             'text' => 'Penjualan Produk',
             'url'  => '/penjualan_produk',
             'icon' => 'fas fa-table',
@@ -473,7 +465,7 @@ return [
                 [
                     'text'  =>  'Gudang',
                     'icon'  =>  'far fa-circle',
-                    'url'   =>  '#'
+                    'url'   =>  '/gbmp/daftar_part'
                 ],
                 [
                     'text'  =>  'RND',
