@@ -545,6 +545,16 @@ Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {
     Route::get('/perbaikan/bppb/show/{id}', 'ProduksiController@pengujian_perbaikan_bppb_show')->name('pengujian.perbaikan.bppb.show');
     Route::get('/perbaikan/status/{id}/{status}', 'ProduksiController@pengujian_perbaikan_status')->name('pengujian.perbaikan.status');
 
+    Route::group(['prefix' => '/lkp_lup', 'middleware' => 'auth'], function () {
+        Route::get('/{bppb_id}', 'QCController@pengujian_lkp_lup')->name('pengujian.lkp_lup');
+        Route::get('/show/{bppb_id}/{status}', 'QCController@pengujian_lkp_lup_show')->name('pengujian.lkp_lup.show');
+        Route::get('/detail/{id}', 'QCController@pengujian_lkp_lup_detail');
+        Route::get('/create/{id}', 'QCController@pengujian_lkp_lup_create')->name('pengujian.lkp_lup.create');
+        Route::put('/store/{id}', 'QCController@pengujian_lkp_lup_store')->name('pengujian.lkp_lup.store');
+        Route::get('/edit/{bppb_id}', 'QCController@pengujian_lkp_lup_edit')->name('pengujian.lkp_lup.edit');
+        Route::put('/update/{bppb_id}', 'QCController@pengujian_lkp_lup_update')->name('pengujian.lkp_lup.update');
+    });
+
     Route::group(['prefix' => '/monitoring_proses'], function () {
         Route::get('/', 'QCController@pengujian_monitoring_proses')->name('pengujian.monitoring_proses');
         Route::get('/show/{bppb_id}', 'QCController@pengujian_monitoring_proses_show')->name('pengujian.monitoring_proses.show');
@@ -667,7 +677,8 @@ Route::group(['prefix' => '/perbaikan', 'middleware' => 'auth'], function () {
 //INCOMING (KEDATANGAN)
 Route::group(['prefix' => '/kedatangan', 'middleware' => 'auth'], function () {
     Route::get('/packing_list', 'QCController@kedatangan_packing_list')->name('kedatangan.packing_list');
-    Route::get('/packing_list/show', 'QCController@kedatangan_packing_list_show')->name('kedatangan.packing_list.show');
+    Route::get('/packing_list/detail/{id}', 'QCController@kedatangan_packing_list_detail')->name('kedatangan.packing_list.detail');
+    Route::get('/packing_list/show/{id}', 'QCController@kedatangan_packing_list_show')->name('kedatangan.packing_list.show');
     Route::get('/sampling', 'QCController@kedatangan_sampling')->name('kedatangan.sampling');
     Route::get('/sampling/show', 'QCController@kedatangan_sampling_show')->name('kedatangan.sampling.show');
     Route::get('/analisa', 'QCController@kedatangan_analisa')->name('kedatangan.analisa');

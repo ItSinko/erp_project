@@ -300,7 +300,7 @@
 
         $('#urutan_bb').on('keyup change', function() {
             var t = $(this).val();
-            var arr = JSON.parse('{{json_encode($hp)}}');
+            var arr = @json($hp);
             if (t != "") {
                 if (arr.length > 0) {
                     $('#tambahlaporan').removeAttr('disabled');

@@ -22,8 +22,11 @@ use App\Http\Controllers\UserLogController;
 use App\PerbaikanProduksi;
 use App\HasilPengemasan;
 use App\CekPengemasan;
+use App\FormatLkpLup;
 use App\Kalibrasi;
 use App\ListKalibrasi;
+use App\PackingList;
+use App\DetailPackingList;
 use App\PeriksaBarangMasuk;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -46,26 +49,49 @@ class QCController extends Controller
 
     public function kedatangan_packing_list()
     {
-        return view('page.qc.kedatangan_packing_list_show');
+        $pl = PackingList::all();
+        return view('page.qc.kedatangan_packing_list_show', ['pl' => $pl]);
     }
 
-    public function kedatangan_packing_list_show()
+    public function kedatangan_packing_list_detail($id)
     {
-        $s = PeriksaBarangMasuk::all();
+        $pl = PackingList::where('id', $id)->with('PoPembelian')->with('PoPembelian.Supplier')->first();
+        return $pl;
+    }
+
+    public function kedatangan_packing_list_show($id)
+    {
+        $s = DetailPackingList::where('packing_list_id', $id)->get();
         return DataTables::of($s)
             ->addIndexColumn()
-            ->editColumn('part_id', function ($s) {
-                return $s->Part->nama;
+            ->addColumn('kode_barang', function ($s) {
+                return "-";
             })
-            ->editColumn('karyawan_id', function ($s) {
-                return $s->Karyawan->nama;
+            ->addColumn('nama_barang', function ($s) {
+                return $s->nama_barang;
+            })
+            ->editColumn('jumlah', function ($s) {
+                return $s->jumlah;
+            })
+            ->addColumn('status', function ($s) {
+                if ($s->status == "dibuat") {
+                    $btn = '<a href="/perakitan/pemeriksaan/bppb/' . $s->id . '">';
+                    $btn .= '<div><button type="button" class="btn btn-primary btn-sm m-1" style="border-radius:50%;"><i class="fas fa-eye"></i></button></div>';
+                    $btn .= '<div><small>Lihat Semua Data</small></div></a>';
+                    return $btn;
+                }
             })
             ->make(true);
     }
 
-    public function kedatangan_sampling()
+    public function kedatangan_analisa_sampling()
     {
-        return view('page.qc.kedatangan_sampling_show');
+        return view('page.qc.kedatangan_analisa_sampling_show');
+    }
+
+    public function kedatangan_analisa_sampling_show()
+    {
+        $a = "";
     }
 
     public function perakitan_pemeriksaan()
@@ -754,10 +780,12 @@ class QCController extends Controller
                 $btn .= '<div class="dropdown-menu" aria-labelledby="dropdownMenuLink1">';
                 if ($s->DetailProduk->Produk->kalibrasi == "ya") {
                     $btn .= '<a class="dropdown-item" href="/kalibrasi/' . $s->id . '"><span style="color: black;"><i class="fas fa-eye" aria-hidden="true"></i>&nbsp;Kalibrasi</span></a>';
+                } else if ($s->DetailProduk->Produk->kalibrasi == "tidak") {
+                    $btn .= '<a class="dropdown-item" href="/pengujian/lkp_lup/' . $s->id . '"><span style="color: black;"><i class="fas fa-eye" aria-hidden="true"></i>&nbsp;LUP dan LKP</span></a>';
                 }
                 $btn .= '<a class="dropdown-item monitoringprosesmodal" data-toggle="modal" data-target="#monitoringprosesmodal" data-attr="/pengujian/monitoring_proses/show/' . $s->id . '" data-id="' . $s->id . '"><span style="color: black;"><i class="fas fa-eye" aria-hidden="true"></i>&nbsp;Monitoring Proses</span></a>';
                 $btn .= '<a class="dropdown-item" href="/pengujian/pemeriksaan_proses/hasil/' . $s->id . '"><span style="color: black;"><i class="fas fa-eye" aria-hidden="true"></i>&nbsp;Pemeriksaan Proses</span></a>';
-                $btn .= '<a class="dropdown-item luplkpmodal" data-toggle="modal" data-target="#luplkpmodal" data-attr="/produk/detail/show/' . $s->id . '" data-id="' . $s->id . '"><span style="color: black;"><i class="fas fa-eye" aria-hidden="true"></i>&nbsp;LUP dan LKP</span></a>';
+
                 return $btn;
             })
             ->addColumn('data', function ($s) {
@@ -773,7 +801,6 @@ class QCController extends Controller
                     $btn .= '<a class="dropdown-item" href="/kalibrasi/create/' . $s->id . '"><span style="color: black;"><i class="fas fa-plus" aria-hidden="true"></i>&nbsp;Kalibrasi</span></a>';
                 }
                 $btn .= '<a class="dropdown-item" href="/pengujian/monitoring_proses/create/' . $s->id . '"><span style="color: black;"><i class="fas fa-plus" aria-hidden="true"></i>&nbsp;Monitoring Proses</span></a>';
-                $btn .= '<a class="dropdown-item luplkpmodal" data-toggle="modal" data-target="#luplkpmodal" data-attr="/produk/detail/show/' . $s->id . '" data-id="' . $s->id . '"><span style="color: black;"><i class="fas fa-plus" aria-hidden="true"></i>&nbsp;LUP dan LKP</span></a>';
                 return $btn;
             })
             ->rawColumns(['gambar', 'produk', 'jumlah', 'laporan', 'aksi', 'data'])
@@ -985,6 +1012,120 @@ class QCController extends Controller
             })
             ->rawColumns(['checkbox', 'no_seri', 'operator_qc', 'operator_prd', 'aksi'])
             ->make(true);
+    }
+
+    public function pengujian_lkp_lup($bppb_id)
+    {
+        $b = Bppb::find($bppb_id);
+        return view('page.qc.pengujian_lkp_lup_show', ['b' => $b]);
+    }
+
+    public function pengujian_lkp_lup_show($id, $status)
+    {
+        $s = "";
+        if ($status == "all") {
+            $s = HasilPerakitan::whereHas('Perakitan', function ($q) use ($id) {
+                $q->where('bppb_id', $id);
+            })->where('tindak_lanjut_tertutup', 'aging')
+                ->orderBy('updated_at', 'desc')
+                ->get();
+        } else if ($status == "selesai") {
+            $s = HasilPerakitan::whereHas('Perakitan', function ($q) use ($id) {
+                $q->where('bppb_id', $id);
+            })->whereHas('LkpLupPengujian')
+                ->get();
+        } else if ($status == "belum") {
+            $s = HasilPerakitan::whereHas('Perakitan', function ($q) use ($id) {
+                $q->where('bppb_id', $id);
+            })->whereDoesntHave('LkpLupPengujian')->where('tindak_lanjut_tertutup', 'aging')
+                ->orderBy('updated_at', 'desc')
+                ->get();
+        }
+
+        return DataTables::of($s)
+            ->addIndexColumn()
+            ->editColumn('hasil_perakitan_id', function ($s) {
+                return $s->Perakitan->alias_tim . $s->no_seri;
+            })
+            ->addColumn('barcode', function ($s) {
+
+                if (!isset($s->LkpLupPengujian)) {
+                    return "-";
+                } else if (isset($s->LkpLupPengujian)) {
+                    if (count($s->LkpLupPengujian) > 0) {
+                        return $s->LkpLupPengujian->no_barcode;
+                    } else {
+                        return "-";
+                    }
+                }
+            })
+            ->addColumn('teknisi', function ($s) {
+
+                if (!isset($s->LkpLupPengujian)) {
+                    return "-";
+                } else if (isset($s->LkpLupPengujian)) {
+                    if (count($s->LkpLupPengujian) > 0) {
+                        return $s->LkpLupPengujian->Karyawan->nama;
+                    } else {
+                        return "-";
+                    }
+                }
+            })
+            ->addColumn('tanggal_pengujian', function ($s) {
+                if (isset($s->LkpLupPengujian)) {
+                    if (count($s->LkpLupPengujian) > 0) {
+                        return $s->LkpLupPengujian->tanggal_pengujian;
+                    } else {
+                        return "-";
+                    }
+                } else if (!isset($s->LkpLupPengujian->tanggal_pengujian)) {
+                    return "-";
+                }
+            })
+            ->addColumn('tanggal_expired', function ($s) {
+                if (isset($s->LkpLupPengujian)) {
+                    if (count($s->LkpLupPengujian) > 0) {
+                        return $s->LkpLupPengujian->tanggal_expired;
+                    } else {
+                        return "-";
+                    }
+                } else if (!isset($s->LkpLupPengujian->tanggal_expired)) {
+                    return "-";
+                }
+            })
+            ->addColumn('status', function ($s) {
+                if (isset($s->LkpLupPengujian)) {
+                    if (count($s->LkpLupPengujian) > 0) {
+                        if ($s->LkpLupPengujian->status == "req_lkp") {
+                        } else if ($s->LkpLupPengujian->status == "acc_lkp") {
+                        } else if ($s->LkpLupPengujian->status == "rej_lkp") {
+                        }
+                    } else {
+                        return '<a href = "/pengujian/lkp_lup/create/' . $s->id . '"><button class="btn btn-success btn-sm m-1" style="border-radius:50%;"><i class="fas fa-plus"></i></button></a>';
+                    }
+                } else if (!isset($s->LkpLupPengujian->status)) {
+                    return '<a href = "/pengujian/lkp_lup/create/' . $s->id . '"><button class="btn btn-success btn-sm m-1" style="border-radius:50%;"><i class="fas fa-plus"></i></button></a>';
+                }
+            })
+            ->rawColumns(['status'])
+            ->make(true);
+    }
+
+    public function pengujian_lkp_lup_create($id)
+    {
+        $b = Bppb::whereHas('Perakitan.HasilPerakitan', function ($q) use ($id) {
+            $q->where('id', $id);
+        })->first();
+
+        $prdid = $b->DetailProduk->Produk->id;
+
+        $f = FormatLkpLup::where('produk_id', $prdid)->get();
+
+        return view('page.qc.pengujian_lkp_lup_create', ['id' => $id, 'b' => $b, 'f' => $f]);
+    }
+
+    public function pengujian_lkp_lup_store(Request $request)
+    {
     }
 
     public function pengujian_monitoring_proses()
@@ -1901,7 +2042,6 @@ class QCController extends Controller
         $b = Bppb::find($bppb_id);
         $k = Kalibrasi::where('bppb_id', $bppb_id)->get();
 
-
         return view('page.qc.kalibrasi_show', ['bppb_id' => $bppb_id, 'b' => $b, 'k' => $k]);
     }
 
@@ -1984,7 +2124,9 @@ class QCController extends Controller
 
         $lki = ListKalibrasi::whereHas('Kalibrasi', function ($q) use ($bppb_id) {
             $q->where('bppb_id', $bppb_id);
-        })->whereNotNull('no_barcode')->count();
+        })->max('no_barcode');
+
+        $c = (int)$lki;
 
         // $hpg =  HasilPengemasan::whereHas('Pengemasan', function ($q) use ($bppb_id) {
         //     $q->where('bppb_id', $bppb_id);
@@ -1992,7 +2134,7 @@ class QCController extends Controller
 
         // $c = $lki + $hpg;
 
-        return view('page.qc.kalibrasi_create', ['s' => $s, 'k' => $k, 'hp' => $hp, 'c' => $lki]);
+        return view('page.qc.kalibrasi_create', ['s' => $s, 'k' => $k, 'hp' => $hp, 'c' => $c]);
     }
 
     public function kalibrasi_store(Request $request, $bppb_id)
