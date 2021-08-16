@@ -45,7 +45,7 @@
                                                         <div class="input-group-append">
                                                             <span class="input-group-text">LAB-</span>
                                                         </div>
-                                                        <input type="text" class="form-control" value="{{$no }}" name="no_pendaftaran">
+                                                        <input type="text" class="form-control" value="{{$no }}" name="no_pendaftaran" id="no_pendaftaran">
                                                     </div>
                                                 </div>
                                             </div>
@@ -100,19 +100,8 @@
                                                     <input type="date" class="form-control @error('tanggal_penyerahan') is-invalid @enderror" name="tanggal_penyerahan">
                                                 </div>
                                             </div>
-
                                             <table class=" table table-bordered table-striped" style="width:100%" id="noseri_list">
                                                 <thead>
-                                                    <tr>
-                                                        <th colspan="2" style="vertical-align: middle; text-align: right">No Seri</th>
-                                                        <th colspan="4">
-                                                            <select type="text" class="form-control select2" multiple="multiple" id="noseri">
-                                                                @foreach($listkalibrasi as $l)
-                                                                <option value="{{$l->id}}">{{$l->id}}</option>
-                                                                @endforeach
-                                                            </select>
-                                                        </th>
-                                                    </tr>
                                                     <tr>
                                                         <th width="1%">No</th>
                                                         <th width="10%">Tgl Kalibrasi</th>
@@ -144,40 +133,75 @@
 @endsection
 @section('adminlte_js')
 <script>
-    $('#date_master').change(function() {
-        $('#date').val($(this).val());
-    });
-    $('#customCheckbox1').click(function() {
-        var dates = $("#date_master").val();
-        if ($(this).is(":checked")) {
-            $('#date').prop('readonly', false);
+    // $('#date_master').change(function() {
+    //     $('#date').val($(this).val());
+    // });
 
-        } else {
-            $('#date').prop('readonly', true);
-            $('#date').val(dates);
-        }
-    });
-    $(document).ready(function() {
-        var selected = [];
-        $('select[id="noseri"]').on('select2:select', function(e) {
-            $.ajax({
-                success: function(data) {
-                    alert('ok');
-                    selected[$(this).val()] = $(this).val();
-                    console.log(selected);
-                    // $("#noseri_list").append(`<tr>
-                    //                         <td>` + id + `</td>
-                    //                         <td>s</td>
-                    //                         <td>s</td>
-                    //                         <td>s</td>
-                    //                         <td>s</td>
-                    //                         <td>s</td>
-                    //                         </tr>`);
-                },
-                error: function(error) {
-                    console.log(error);
+    // $("#user_table ").append(`<tr>
+    //                             <td></td>
+    //                             </tr>`);
+    var draw = function() {
+        $('#check_row1').click(function() {
+            //var dates = $("#date_master").val();
+            // if ($(this).is(":checked")) {
+            //     $('#date1').prop('readonly', false);
+
+            // } else {
+            //     $('#date1').prop('readonly', true);
+            //     //  $('#date').val(dates);
+            // }
+            alert('tes');
+        });
+    }
+    $(function() {
+        var noseri_list = $('#noseri_list').DataTable({
+            drawCallback: draw,
+            processing: true,
+            serverSide: false,
+            language: {
+                processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
+            },
+            ajax: '/kalibrasi/data',
+            columns: [{
+                data: 'DT_RowIndex',
+                orderable: false,
+                searchable: false
+            }, {
+                data: 'DT_RowIndex',
+                orderable: false,
+                searchable: false,
+                render: function(data) {
+                    return `<div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="check_row1">
+                    <label class="form-check-label" for="flexCheckDefault">
+                    <input type="date" class="form-control" id="date ` + data + `">
+                    </label>
+                    </div>`;
                 }
-            });
+            }, {
+                data: 'DT_RowIndex',
+                orderable: false,
+                searchable: false
+            }, {
+                data: 'DT_RowIndex',
+                orderable: false,
+                searchable: false
+            }, {
+                data: 'DT_RowIndex',
+                orderable: false,
+                searchable: false
+            }, {
+                data: 'DT_RowIndex',
+                orderable: false,
+                searchable: false
+            }]
+        });
+
+        $('#button_tambah').click(function() {
+            var noseri_list = noseri_list.$('input').serialize();
+            var no_pendaftaran = $('#no_pendaftaran').val();
+
+            alert(noseri_list);
         });
     });
 </script>

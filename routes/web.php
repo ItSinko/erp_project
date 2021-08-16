@@ -151,6 +151,7 @@ Route::get('/pengeluaran/tambah', 'GudangMaterialController@pengeluaran_tambah')
 
 //Lab
 Route::get('/kalibrasi', 'LabController@kalibrasi');
+Route::get('/kalibrasi/{id}', 'LabController@kalibrasi_id');
 Route::get('/acc_kalibrasi', 'LabController@acc_kalibrasi');
 Route::get('/acc_kalibrasi/data', 'LabController@acc_kalibrasi_data');
 Route::get('/acc_list_kalibrasi/data', 'LabController@acc_list_kalibrasi_data');

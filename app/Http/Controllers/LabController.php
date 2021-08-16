@@ -24,6 +24,13 @@ class LabController extends Controller
     {
         return view('page.lab.acc_kalibrasi');
     }
+    public function kalibrasi_data_id($id)
+    {
+        $data = Bppb::whereHas('kalibrasi')->with('detailproduk')->where('id')->get();
+        return datatables::of($data)
+            ->addIndexColumn()
+            ->make(true);
+    }
     public function kalibrasi_data()
     {
         $data = Bppb::whereHas('kalibrasi')->with('detailproduk')->get();
