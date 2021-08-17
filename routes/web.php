@@ -147,13 +147,6 @@ Route::get('/laporan_mingguan/data/{filter_mingguan}/{filter}/{id}/{start}/{end}
 Route::get('/laporan_bulanan/data/{filter_bulanan}/{filter}/{id}/{start}/{end}', 'KesehatanController@laporan_bulanan_data');
 Route::get('/laporan_tahunan/data/{filter}/{id}/{start}/{end}', 'KesehatanController@laporan_tahunan_data');
 
-//Gudang Material
-Route::group(['prefix' => 'gbmp'], function () {
-    Route::get('/daftar_part', 'GudangMaterialController@daftar_part');
-    Route::get('/daftar_part/data', 'GudangMaterialController@daftar_part_data');
-    Route::get('/pengeluaran/tambah', 'GudangMaterialController@pengeluaran_tambah');
-});
-
 //Lab
 Route::get('/kalibrasi', 'LabController@kalibrasi');
 Route::get('/acc_kalibrasi', 'LabController@acc_kalibrasi');
@@ -710,20 +703,22 @@ Route::group(['prefix' => 'dc', 'middleware' => 'auth'], function () {
 
 //GBMP
 Route::group(['prefix' => 'gbmp'], function () {
-    Route::get('/dashboard', function () {
-        return view('page.gbmp.gudang');
-    });
+    Route::get('/part', 'GudangController@part');
+    Route::get('/data-part', 'GudangController@data_part');
+    Route::get('/input-form', 'GudangController@input_form');
 });
 
 
 //PPIC
 Route::group(['prefix' => 'ppic'], function () {
-    Route::get('/manager_dashboard', 'PpicController@manager_dashboard');
-    Route::get('/schedule', 'PpicController@schedule_show');
+    Route::get('/schedule', 'PpicController@schedule');
     Route::post('/schedule/create', 'PpicController@schedule_create');
     Route::post('/schedule/delete', 'PpicController@schedule_delete');
+    Route::get('/get-version-bom/{id}', 'PpicController@getVersionBomProduct');
+    Route::get('/get-max-product/{id}', 'PpicController@getMaxProduct');
+
+
     Route::get('/get_item_bom', 'PpicController@get_item_bom');
-    Route::get('/get_versi_bom', 'PpicController@get_versi_bom');
     Route::get('/add_part_order/{id}/{quantity}', 'PpicController@add_part_order');
     Route::get('/delete_part_order/{id}/{quantity}', 'PpicController@delete_part_order');
     Route::post('/notif', 'PpicController@schedule_notif');

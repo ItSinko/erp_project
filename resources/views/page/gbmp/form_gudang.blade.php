@@ -1,126 +1,85 @@
-@extends('layouts.base')
+@extends('adminlte.page')
+
+@section('title', 'Beta Version')
+
+@section('content_header')
+<h1 class="m-0 text-dark">Input Data Stok GBMP</h1>
+@stop
 
 @section('content')
-<div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <div class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1 class="m-0 text-dark">Gudang Input From</h1>
-                </div>
-            </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
-    </div>
-    <!-- /.content-header -->
-
-    <!-- Main content -->
-    <section class="content">
-
-        <!-- Default box -->
-        <div class="card card-primary">
-            <form id="form_gudang">
-                <div class="card-header">
-                    <h3 class="card-title">Input Data</h3>
-                </div>
-                <!-- /.card-header -->
-                <div class="card-body">
-                    <div class="form-row">
-                        <div class="form-group col-4">
-                            <label for="">Kode Barang</label>
-                            <input type="text" id="kode" name="kode" class="form-control" placeholder="kode">
-                            <span class="text-danger" id="kode-error"></span>
-                        </div>
-                        <div class="form-group col-4">
-                            <label for="">Klasifikasi Barang</label>
-                            <input type="text" id="klasifikasi" name="klasifikasi" class="form-control" placeholder="klasifikasi">
-                            <span class="text-danger" id="klasifikasi-error"></span>
-                        </div>
-                        <div class="form-group col-4">
-                            <label for="">Nama Barang</label>
-                            <input type="text" id="nama" name="nama" class="form-control" placeholder="nama">
-                            <span class="text-danger" id="nama-error"></span>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-4">
-                            <label for="">Stok Barang</label>
-                            <input type="text" id="jumlah" name="jumlah" class="form-control" placeholder="jumlah">
-                            <span class="text-danger" id="jumlah-error"></span>
-                        </div>
-                        <div class="form-group col-4">
-                            <label for="">Satuan</label>
-                            <input type="text" id="satuan" name="satuan" class="form-control" placeholder="satuan">
-                            <span class="text-danger" id="satuan-error"></span>
-                        </div>
-                        <div class="form-group col-4">
-                            <label for="">Harga Barang</label>
-                            <input type="text" id="harga" name="harga" class="form-control" placeholder="layout">
-                            <span class="text-danger" id="harga-error"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-footer">
-                    <input type="submit" value="submit" class="btn btn-primary" id="button">
-                </div>
-            </form>
-        </div>
-    </section>
+<div hidden>
+    <div id="data-product">{{ $data_product }}</div>
 </div>
-@endsection
-@push('script')
+
+<div class="card-secondary">
+    <div class='card-header text-center'>
+        <div class="custom-control custom-radio custom-control-inline">
+            <input type="radio" id="old-data" name="type-data" class="custom-control-input" checked>
+            <label class="custom-control-label" for="old-data">Data Lama</label>
+        </div>
+        <div class="custom-control custom-radio custom-control-inline">
+            <input type="radio" id="new-data" name="type-data" class="custom-control-input">
+            <label class="custom-control-label" for="new-data">Data Baru</label>
+        </div>
+    </div>
+    <div class="card-body text-center">
+        <div id="form-old-data">
+            <div class="row form-group">
+                <label for="product-name" class="col-sm-4 text-right col-form-label mr-2">Produk</label>
+                <select name="product-name" id="product-name" class="select2 col-sm-5" data-placeholder="Nama produk" data-value="name2">
+                    <option value=""></option>
+                    @foreach ($data_product as $d)
+                    <option value="{{ $d->kode }}">{{ $d->nama }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="row form-group">
+                <label for="product-code" class="col-sm-4 text-right col-form-label mr-2">Kode</label>
+                <select name="product-code" id="product-code" class="select2 col-sm-5" data-placeholder="Kode produk">
+                    <option value=""></option>
+                    @foreach ($data_product as $d)
+                    <option value="{{ $d->kode }}">{{ $d->kode }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="row form-group">
+                <label for="product-quantity" class="col-sm-4 text-right col-form-label mr-2">Jumlah</label>
+                <input type="number" id="product-quantity" name="product-quantity" disabled>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+        test3
+    </div>
+</div>
+@stop
+@section('adminlte_js')
 <script>
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    let data = JSON.parse($("#data-product").html());
+    console.log(data);
+    $('input[type=radio][name=type-data]').change(function() {
+        alert("data change");
+    });
+
+
+
+    $('#product-name, #product-code').val(null).trigger('change');
+    let prev_val = null
+    $('#product-name').change(function() {
+        if (prev_val != this.value) {
+            prev_val = this.value;
+            $('#product-code').val(this.value).trigger('change');
+        }
+        if (this.value != null) {
+            console.log('test');
+            $('#product-quantity').prop('disabled', false);
         }
     });
-    $(document).ready(function(){
-        $("#form_gudang").on("submit", function(){
-            bootbox.alert();
-            alert("test");
-            $("#kode-error").text("");
-            $("#klasifikasi-error").text("");
-            $("#nama-error").text("");
-            $("#jumlah-error").text("");
-            $("#satuan-error").text("");
-            $("#harga-error").text("");
-
-            kode = $("#kode").val();
-            klasifikasi = $("#klasifikasi").val();
-            nama = $("#nama").val();
-            jumlah = $("#jumlah").val();
-            satuan = $("#satuan").val();
-            harga = $("#harga").val();
-
-            $.ajax({
-                url: "/submit_gudang_form",
-                type: "POST",
-                data: {
-                    kode: kode,
-                    klasifikasi: klasifikasi,
-                    nama: nama,
-                    jumlah: jumlah,
-                    satuan: satuan,
-                    harga: harga
-                },
-                success:  function(response){
-                    bootbox.alert({
-                        message: response.success,
-                        centerVertical: true
-                    });
-                    $("#form_gudang")[0].reset();
-                },
-                error: function(response){
-                    $('#kode-error').text(response.responseJSON.errors.kode);
-                    $('#klasifikasi-error').text(response.responseJSON.errors.klasifikasi);
-                    $('#nama-error').text(response.responseJSON.errors.nama);
-                    $('#jumlah-error').text(response.responseJSON.errors.jumlah);
-                    $('#satuan-error').text(response.responseJSON.errors.satuan);
-                    $('#harga-error').text(response.responseJSON.errors.harga);
-                }
-            })
-        });
+    $('#product-code').change(function(event) {
+        if (prev_val != this.value) {
+            prev_val = this.value;
+            $('#product-name').val(this.value).trigger('change');
+        }
     });
 </script>
-@endpush
+@endsection

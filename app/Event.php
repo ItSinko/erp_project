@@ -9,8 +9,8 @@ class Event extends Model
     protected $table = 'jadwal_produksi';
     protected $fillable = ['detail_produk_id', 'jumlah_produksi', 'tanggal_mulai', 'tanggal_selesai', 'status', 'warna', 'versi_bom'];
 
-    public function detail_produk()
+    public function DetailProduk()
     {
-        return $this->hasOne('App\DetailProduk', 'id', 'detail_produk_id');
+        return $this->hasOne(DetailProduk::class, 'id', 'detail_produk_id');
     }
 }
