@@ -706,19 +706,19 @@ Route::group(['prefix' => 'gbmp'], function () {
     Route::get('/part', 'GudangController@part');
     Route::get('/data-part', 'GudangController@data_part');
     Route::get('/input-form', 'GudangController@input_form');
+    Route::get('/part_order', 'GudangController@part_order');
+    Route::get('/data-part-order', 'GudangController@data_part_order');
 });
 
 
 //PPIC
 Route::group(['prefix' => 'ppic'], function () {
-    Route::get('/schedule', 'PpicController@schedule');
+    Route::get('/manager_dashboard', 'PpicController@manager_dashboard');
+    Route::get('/schedule', 'PpicController@schedule_show');
     Route::post('/schedule/create', 'PpicController@schedule_create');
     Route::post('/schedule/delete', 'PpicController@schedule_delete');
-    Route::get('/get-version-bom/{id}', 'PpicController@getVersionBomProduct');
-    Route::get('/get-max-product/{id}', 'PpicController@getMaxProduct');
-
-
     Route::get('/get_item_bom', 'PpicController@get_item_bom');
+    Route::get('/get_versi_bom', 'PpicController@get_versi_bom');
     Route::get('/add_part_order/{id}/{quantity}', 'PpicController@add_part_order');
     Route::get('/delete_part_order/{id}/{quantity}', 'PpicController@delete_part_order');
     Route::post('/notif', 'PpicController@schedule_notif');

@@ -712,6 +712,7 @@
                 bom: $('#product-bom-version').val(),
                 color: color,
             }
+            console.log
             $.ajax({
                 url: "/ppic/schedule/create",
                 method: "POST",
@@ -737,7 +738,7 @@
                     reset_form();
                 },
                 error: function(xhr, status, err) {
-                    alert("Form belum lengkap");
+                    console.log(err);
                 }
             });
         });
