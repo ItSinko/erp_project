@@ -756,7 +756,11 @@ Route::get('/stok', function () {
 //PPIC
 Route::group(['prefix' => '/kartu_stock_gbj', 'middleware' => 'auth'], function () {
     Route::get('/', 'GbjController@kartu_stock');
-    Route::post('/show', 'GbjController@kartu_stock_show');
+    Route::get('/produk/{id}', 'GbjController@kartu_stock_produk');
+    Route::get('/produk/show/{id}', 'GbjController@kartu_stock_produk_show');
+    Route::get('/tanggal/show/{tanggal}', 'GbjController@kartu_stock_tanggal_show');
+    Route::get('/create', 'GbjController@kartu_stock_create')->name('kartu_stock_gbj.create');
+    Route::post('/store', 'GbjController@kartu_stock_store')->name('kartu_stock_gbj.store');
 });
 
 Route::get('/welcome', function () {
