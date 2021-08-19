@@ -76,9 +76,9 @@ class GbjController extends Controller
             ->make(true);
     }
 
-    public function kartu_stock_create()
+    public function kartu_stock_create($id)
     {
-        $p = DetailProduk::doesntHave('KartuStockGbj')->get();
+        $p = DetailProduk::find($id);
         return view('page.gbj.kartu_stock_create', ['p' => $p]);
     }
 

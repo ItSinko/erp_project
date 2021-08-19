@@ -71,12 +71,16 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="form-group row">
-                            <label for="tanggal_daftar" class="col-sm-5 col-form-label" style="text-align:left;">Nomor Kartu : </label>
-                            <label class="col-sm-7 col-form-label" style="text-align:right;" id="no_kartu">-</label>
+                            <label for="tanggal_daftar" class="col-sm-5 col-form-label" style="text-align:left;">Nomor Kartu</label>
+                            <span class="col-sm-7 col-form-label" style="text-align:right;" id="no_kartu">-</span>
                         </div>
                         <div class="form-group row">
-                            <label for="tanggal_permintaan_selesai" class="col-sm-5 col-form-label" style="text-align:left;">Nama Produk : </label>
-                            <label class="col-sm-7 col-form-label" style="text-align:right;" id="nama_produk">-</label>
+                            <label for="tanggal_permintaan_selesai" class="col-sm-5 col-form-label" style="text-align:left;">Nama Produk</label>
+                            <span class="col-sm-7 col-form-label" style="text-align:right;" id="nama_produk">-</span>
+                        </div>
+                        <div class="form-group row" id="kartu_stock_tambah" hidden>
+                            <label for="tambah" class="col-sm-5 col-form-label" style="text-align:left;">Tambahkan </label>
+                            <span class="col-sm-7"><a class="tambahurl" href="/kartu_stock_gbj/create/"><button class="btn btn-success btn-sm btn-rounded col-form-label float-right" id="tambah" name="tambah">Tambah Kartu Stok</button></a></span>
                         </div>
                     </div>
                 </div>
@@ -203,10 +207,27 @@
                     type: "GET",
                     dataType: "json",
                     success: function(data) {
-                        $("#no_kartu").text(data['kartu_stock_gbj']['no_kartu']);
-                        $("#nama_produk").text(data['kartu_stock_gbj']['detail_produk']['nama']);
+                        console.log(data);
+                        if (data != null) {
+                            $("#no_kartu").text(data['nomor']);
+                            $("#nama_produk").text(data['detail_produk']['nama']);
+                            $("#kartu_stock_tambah").attr('hidden', true);
+                        } else {
+                            var newurl = '/kartu_stock_gbj/create/' + k;
+                            $(".tambahurl").setAttribute('href', newurl)
+                            $("#no_kartu").text("-");
+                            $("#nama_produk").text("-");
+                            $("#kartu_stock_tambah").removeAttr('hidden');
+
+                        }
+                    },
+                    error: function(data) {
+                        $("#no_kartu").text("-");
+                        $("#nama_produk").text("-");
+                        $("#kartu_stock_tambah").removeAttr('hidden');
                     }
                 });
+
                 $('#example2').DataTable({
                     destroy: true,
                     processing: true,
