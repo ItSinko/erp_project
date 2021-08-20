@@ -37,18 +37,45 @@ use PhpParser\Node\Expr\AssignOp\Div;
 
 class PPICController extends Controller
 {
-    public function schedule(Request $request)
+    public function manager_dashboard()
     {
+        if (Auth::user()->divisi_id != 3) return;
+
         $month = date('m');
         $year = date('Y');
+        $event = Event::orderBy('tanggal_mulai', 'asc')
+            ->join('detail_produks', 'jadwal_produksi.detail_produk_id', '=', 'detail_produks.id')
+            ->select('jadwal_produksi.id', 'detail_produks.nama', 'jumlah_produksi', 'tanggal_mulai', 'tanggal_selesai', 'jadwal_produksi.status', 'warna', 'versi_bom');
 
+<<<<<<< HEAD
         $event = Event::with('DetailProduk')->orderBy('tanggal_mulai', 'asc');
         $detail_produk = DetailProduk::select('nama', 'id')->get();
+=======
+        $month += 1;
+        $event = $event->where('tanggal_mulai', '>=', "$year-$month-01")->where("jadwal_produksi.status", "=", "penyusunan")->get();
+
+        return view("home", compact("event"));
+    }
+
+    public function schedule_show(Request $request)
+    {
+
+        $month = date('m');
+        $year = date('Y');
+        $event = Event::orderBy('tanggal_mulai', 'asc')
+            ->join('detail_produks', 'jadwal_produksi.detail_produk_id', '=', 'detail_produks.id')
+            ->select('jadwal_produksi.id', 'detail_produks.nama', 'jumlah_produksi', 'tanggal_mulai', 'tanggal_selesai', 'jadwal_produksi.status', 'warna', 'versi_bom');
+>>>>>>> 031db91a212a9c4b6a5da9f02ecd56715093a0f7
         $status = null;
 
         if ($request->pelaksanaan == true) {
             $event = $event->whereYear('tanggal_mulai', $year)->whereMonth('tanggal_mulai', $month)->get();
             $status = 'pelaksanaan';
+            foreach ($event as $data) {
+                $item = Event::find($data['id']);
+                $item->status = "pelaksanaan";
+                $item->save();
+            }
         } else if ($request->penyusunan == true) {
             $month += 1;
             $event = $event->where('tanggal_mulai', '>=', "$year-$month-01")->get();
@@ -56,22 +83,36 @@ class PPICController extends Controller
         } else if ($request->selesai == true) {
             $event = $event->where('tanggal_mulai', '<', "$year-$month-01")->get();
             $status = 'selesai';
+            foreach ($event as $data) {
+                $item = Event::find($data['id']);
+                $item->status = "selesai";
+                $item->save();
+            }
         }
 
+        $detail_produk = DetailProduk::select('nama', 'id')->get();
         return view('page.ppic.jadwal_produksi', compact('event', 'detail_produk', 'status'));
-    }
-
-    public function getVersionBomProduct($id)
-    {
-        return DetailProduk::with('ProdukBillOfMaterial')->find($id);
-    }
-
-    public function getMaxProduct($id)
-    {
     }
 
     public function schedule_create(Request $request)
     {
+        // Update status column
+        if (isset($request->status_update) && $request->status_update == true) {
+            $event = Event::find((int)$request->id);
+            $event->status = $request->status;
+            $event->save();
+
+            event(new RealTimeMessage(Auth::user(), (string)$event->detail_produk->nama, (string)$event->jumlah_produksi));
+
+            return $event;
+        }
+
+<<<<<<< HEAD
+    public function schedule_create(Request $request)
+    {
+=======
+        // Create new row
+>>>>>>> 031db91a212a9c4b6a5da9f02ecd56715093a0f7
         $request->validate([
             'id_produk' => 'required',
             'bom' => 'required',
@@ -90,7 +131,18 @@ class PPICController extends Controller
         ];
 
         Event::create($data);
+<<<<<<< HEAD
         return Event::with("DetailProduk")->latest()->first();
+=======
+        $new_event = Event::latest()->first();
+        $data['nama'] = $new_event->DetailProduk->nama;
+        $data['id'] = $new_event->id;
+        $bom_id = ProdukBillOfMaterial::where('detail_produk_id', $new_event->detail_produk_id)->where('versi', $new_event->versi_bom)->first()->id;
+
+        $this->add_part_order($bom_id, $new_event->jumlah_produksi);
+
+        return $data;
+>>>>>>> 031db91a212a9c4b6a5da9f02ecd56715093a0f7
     }
 
     public function schedule_delete(Request $request)
@@ -192,7 +244,16 @@ class PPICController extends Controller
             ->make(true);
     }
 
+    public function get_versi_bom(Request $request)
+    {
+        if ($request->id != NULL) $detail_produk_id = Event::find($request->id)->detail_produk_id;
+        else if ($request->detail_produk_id != NULL) $detail_produk_id = $request->detail_produk_id;
 
+        return DetailProduk::where('detail_produks.id', $detail_produk_id)
+            ->join('produk_bill_of_materials', 'detail_produk_id', 'detail_produks.id')
+            ->select('versi', 'detail_produk_id')
+            ->get();
+    }
 
     public function bom()
     {

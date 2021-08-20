@@ -70,4 +70,17 @@ class GudangController extends Controller
             return response()->json(['success' => 'Form is successfully submitted!']);
         }
     }
+
+    public function part_order()
+    {
+        return view('page.gbmp.part_order');
+    }
+
+    public function data_part_order()
+    {
+        $data = Part::all();
+        return datatables::of($data)
+            ->addIndexColumn()
+            ->make(true);
+    }
 }

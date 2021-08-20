@@ -541,6 +541,12 @@ return [
             'icon' =>  'fas fa-boxes',
             'url' => '/gbmp/part'
         ],
+        [
+            'text' => 'Pesanan PPIC',
+            'auth' => [11],
+            'icon' =>  'fas fa-boxes',
+            'url' => '/gbmp/part_order'
+        ],
         // PPIC (24)
         [
             'text'  =>  'Stok',
