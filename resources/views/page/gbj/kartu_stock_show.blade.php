@@ -214,6 +214,7 @@
                             $("#kartu_stock_tambah").attr('hidden', true);
                         } else {
                             var newurl = '/kartu_stock_gbj/create/' + k;
+                            v
                             $(".tambahurl").setAttribute('href', newurl)
                             $("#no_kartu").text("-");
                             $("#nama_produk").text("-");
