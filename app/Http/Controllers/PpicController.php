@@ -42,7 +42,7 @@ class PPICController extends Controller
         $month = date('m');
         $year = date('Y');
 
-        $event = Event::orderBy('tanggal_mulai', 'asc')->with('DetailProduk');
+        $event = Event::with('DetailProduk')->orderBy('tanggal_mulai', 'asc');
         $detail_produk = DetailProduk::select('nama', 'id')->get();
         $status = null;
 
@@ -72,7 +72,6 @@ class PPICController extends Controller
 
     public function schedule_create(Request $request)
     {
-        // Create new row
         $request->validate([
             'id_produk' => 'required',
             'bom' => 'required',
@@ -87,19 +86,25 @@ class PPICController extends Controller
             'jumlah_produksi' => $request->jumlah,
             'warna' => $request->color,
             'versi_bom' => $request->bom,
+            'konfirmasi' => 0,
         ];
 
         Event::create($data);
-        return Event::latest()->first();
+        return Event::with("DetailProduk")->latest()->first();
     }
 
     public function schedule_delete(Request $request)
     {
-        $event = Event::find($request->id);
-        $bom_id = ProdukBillOfMaterial::where('detail_produk_id', $event->detail_produk_id)->where('versi', $event->versi_bom)->first()->id;
-        $quantity = $event->jumlah_produksi;
-        $this->delete_part_order($bom_id, $quantity);
-        if ($request->id != "") Event::destroy($request->id);
+        Event::destroy($request->id);
+    }
+
+    public function schedule_update(Request $request)
+    {
+        if (isset($request->confirmation)) {
+            Event::where('status', $request->status)->update(['konfirmasi' => $request->confirmation]);
+        }
+
+        return $request;
     }
 
     public function add_part_order($bom_id, $quantity)

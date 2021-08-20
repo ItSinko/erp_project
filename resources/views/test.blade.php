@@ -7,7 +7,7 @@
 </head>
 
 <body>
-    {{ var_dump($part)}}
+    {{ $part }}
 </body>
 
 </html>

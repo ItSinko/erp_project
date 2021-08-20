@@ -5,6 +5,7 @@ use App\Events\cek_stok;
 use App\Http\Controllers\CommonController;
 use App\Http\Controllers\GetController;
 use App\Http\Controllers\QCController;
+use App\Part;
 use GuzzleHttp\Middleware;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -27,10 +28,7 @@ Route::get('/', function () {
     return redirect('/home');
 });
 Route::get('/home', function () {
-    if (Auth::user()->divisi_id == 3)
-        return redirect('/ppic/manager_dashboard');
-    else
-        return view('home');
+    return view('home');
 })->name('home')->middleware('auth');
 
 Route::post('/logout', function () {
@@ -714,6 +712,7 @@ Route::group(['prefix' => 'ppic'], function () {
     Route::get('/schedule', 'PpicController@schedule');
     Route::post('/schedule/create', 'PpicController@schedule_create');
     Route::post('/schedule/delete', 'PpicController@schedule_delete');
+    Route::post('/schedule/update', 'PpicController@schedule_update');
     Route::get('/get-version-bom/{id}', 'PpicController@getVersionBomProduct');
     Route::get('/get-max-product/{id}', 'PpicController@getMaxProduct');
 
@@ -745,6 +744,7 @@ Route::get('/stok', function () {
     return "notif send";
 });
 
-Route::get('/welcome', function () {
-    return view('welcome');
+Route::get('/test', function () {
+    $part = Part::all();
+    return view('test', compact('part'));
 });

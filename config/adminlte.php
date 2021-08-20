@@ -545,7 +545,7 @@ return [
         [
             'text'  =>  'Stok',
             'icon'  =>  'fas fa-boxes',
-            'auth'  => [24, 1],
+            'auth'  => [24],
             'submenu'   =>  [
                 [
                     'text'  =>  'Gudang',
@@ -562,7 +562,7 @@ return [
         [
             'text'  =>  'Laporan',
             'icon'  =>  'fas fa-file',
-            'auth'  => [24, 3, 1],
+            'auth'  => [24],
             'submenu'   =>  [
                 [
                     'text'  =>  'Pembelian',
@@ -602,12 +602,12 @@ return [
         // PPIC (24)
         [
             'header' => 'PPIC',
-            'auth' => [24, 3, 1]
+            'auth' => [24]
         ],
         [
             'text' => 'Jadwal Produksi',
             'icon' => 'fas fa-calendar-alt',
-            'auth' => [24, 3, 1],
+            'auth' => [24],
             'submenu'   =>  [
                 [
                     'text'  =>  'Penyusunan',
@@ -630,13 +630,13 @@ return [
             'text' => 'BOM',
             'url'  => '/ppic/bom',
             'icon' => 'fas fa-list-alt',
-            'auth' => [24, 3, 1]
+            'auth' => [24]
         ],
         [
             'text'    => 'BPPB',
             'icon'    => 'fas fa-project-diagram',
             'url' => '/bppb',
-            'auth' => [24, 3, 1],
+            'auth' => [24],
             'submenu'   =>  [
                 [
                     'text'  =>  'Penyusunan',
@@ -654,6 +654,13 @@ return [
                     'url'   =>  '/ppic/bppb/?selesai=true'
                 ],
             ]
+        ],
+        // Manager Teknik (3)
+        [
+            'text' => 'Jadwal Produksi',
+            'icon' => 'fas fa-calendar-alt',
+            'auth' => [3],
+            'url'   =>  '/ppic/schedule?penyusunan=true',
         ],
         // Produksi (17)
         [
