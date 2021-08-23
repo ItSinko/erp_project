@@ -450,55 +450,12 @@
                 }
             });
         });
-<<<<<<< HEAD
 
         $('#btn-color > button').click(function() {
             var currColor = $(this).css('background-color');
             $('#product-modal .modal-footer button').css({
                 'background-color': currColor,
                 'border-color': currColor
-=======
-        // submit product form
-        $('#product-submit').click(function() {
-            let color = $(this).css('background-color');
-            let data_saved = {
-                id_produk: $('#product-name').val(),
-                start: $('#date_start').val(),
-                end: $('#date_end').val(),
-                status: "penyusunan",
-                jumlah: $('#product-quantity').val(),
-                bom: $('#product-bom-version').val(),
-                color: color,
-            }
-            console.log
-            $.ajax({
-                url: "/ppic/schedule/create",
-                method: "POST",
-                data: data_saved,
-                success: function(result) {
-                    calendar.addEvent({
-                        id: result.id,
-                        title: result.nama,
-                        start: result.tanggal_mulai,
-                        end: result.tanggal_selesai,
-                        backgroundColor: color,
-                        borderColor: color,
-                    });
-                    $('#modal-input-product').modal('hide');
-                    $('#table-product').append(
-                        `<tr data-id="${result.id}">
-                            <td>${result.nama}</td>
-                            <td>${result.jumlah_produksi}</td>
-                        </tr>`
-                    );
-                    date_mark(result);
-                    list_view_table_update(result);
-                    reset_form();
-                },
-                error: function(xhr, status, err) {
-                    console.log(err);
-                }
->>>>>>> 031db91a212a9c4b6a5da9f02ecd56715093a0f7
             });
 
         });
