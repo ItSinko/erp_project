@@ -374,6 +374,7 @@
 
         $('#product-name').change((event) => {
             let flag = event.target.value;
+            console.log(flag);
             if (flag) {
                 $.ajax({
                     url: "/ppic/get-version-bom/" + flag,

@@ -5,7 +5,9 @@ use App\Events\cek_stok;
 use App\Http\Controllers\CommonController;
 use App\Http\Controllers\GetController;
 use App\Http\Controllers\QCController;
+use App\Notifications\InvoicePaid;
 use App\Part;
+use App\User;
 use GuzzleHttp\Middleware;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -711,18 +713,14 @@ Route::group(['prefix' => 'gbmp'], function () {
 
 //PPIC
 Route::group(['prefix' => 'ppic'], function () {
-    Route::get('/manager_dashboard', 'PpicController@manager_dashboard');
     Route::get('/schedule', 'PpicController@schedule_show');
     Route::post('/schedule/create', 'PpicController@schedule_create');
     Route::post('/schedule/delete', 'PpicController@schedule_delete');
-<<<<<<< HEAD
     Route::post('/schedule/update', 'PpicController@schedule_update');
     Route::get('/get-version-bom/{id}', 'PpicController@getVersionBomProduct');
     Route::get('/get-max-product/{id}', 'PpicController@getMaxProduct');
 
 
-=======
->>>>>>> 031db91a212a9c4b6a5da9f02ecd56715093a0f7
     Route::get('/get_item_bom', 'PpicController@get_item_bom');
     Route::get('/get_versi_bom', 'PpicController@get_versi_bom');
     Route::get('/add_part_order/{id}/{quantity}', 'PpicController@add_part_order');
@@ -754,4 +752,9 @@ Route::get('/stok', function () {
 Route::get('/test', function () {
     $part = Part::all();
     return view('test', compact('part'));
+});
+
+Route::get('notify', function () {
+    $user = new User();
+    return $user->notify(new InvoicePaid());
 });
