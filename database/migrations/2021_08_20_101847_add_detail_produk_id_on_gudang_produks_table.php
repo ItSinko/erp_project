@@ -27,7 +27,8 @@ class AddDetailProdukIdOnGudangProduksTable extends Migration
     public function down()
     {
         Schema::table('gudang_produks', function (Blueprint $table) {
-            //
+            $table->dropForeign(['detail_produk_id']);
+            $table->dropColumn('detail_produk_id');
         });
     }
 }

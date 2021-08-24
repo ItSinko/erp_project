@@ -832,27 +832,31 @@ class PPICController extends Controller
 
     public function bppb_penyerahan_barang_jadi_status($id, $status)
     {
-        $s = PenyerahanBarangJadi::find($id);
-        $s->status = $status;
-        $u = $s->save();
+        if (Auth::user()->divisi->nama == "Gudang Barang Jadi") {
+            $s = PenyerahanBarangJadi::find($id);
+            $s->status = $status;
+            $u = $s->save();
 
-        $pbj = DetailPenyerahanBarangJadi::where('penyerahan_barang_jadi_id', $s->id)->get();
-        $bool = true;
-        foreach ($pbj as $i) {
-            $hp = HasilPengemasan::where('hasil_perakitan_id', $i->hasil_perakitan_id)
-                ->orderBy('updated_at', 'desc')
-                ->first();
-            $hps = HasilPengemasan::find($hp->id);
-            $hps->status = "penyerahan";
-            $us = $hps->save();
-            if (!$us) {
-                $bool = false;
+            $pbj = DetailPenyerahanBarangJadi::where('penyerahan_barang_jadi_id', $s->id)->get();
+            $bool = true;
+            foreach ($pbj as $i) {
+                $hp = HasilPengemasan::where('hasil_perakitan_id', $i->hasil_perakitan_id)
+                    ->orderBy('updated_at', 'desc')
+                    ->first();
+                $hps = HasilPengemasan::find($hp->id);
+                $hps->status = "penyerahan";
+                $us = $hps->save();
+                if (!$us) {
+                    $bool = false;
+                }
             }
-        }
-        if ($bool == true) {
-            return redirect()->back()->with('success', "Berhasil merubah status Penyerahan");
-        } else {
-            return redirect()->back()->with('error', "Gagal merubah status Penyerahan");
+
+            DetailPenyerahanBarangJadi::where()->get();
+            if ($bool == true) {
+                return redirect()->back()->with('success', "Berhasil merubah status Penyerahan");
+            } else {
+                return redirect()->back()->with('error', "Gagal merubah status Penyerahan");
+            }
         }
     }
 }

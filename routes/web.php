@@ -754,13 +754,13 @@ Route::get('/stok', function () {
 });
 
 //PPIC
-Route::group(['prefix' => '/kartu_stock_gbj', 'middleware' => 'auth'], function () {
-    Route::get('/', 'GbjController@kartu_stock');
-    Route::get('/produk/{id}', 'GbjController@kartu_stock_produk');
-    Route::get('/produk/show/{id}', 'GbjController@kartu_stock_produk_show');
-    Route::get('/tanggal/show/{tanggal}', 'GbjController@kartu_stock_tanggal_show');
-    Route::get('/create/{id}', 'GbjController@kartu_stock_create')->name('kartu_stock_gbj.create');
-    Route::post('/store', 'GbjController@kartu_stock_store')->name('kartu_stock_gbj.store');
+Route::group(['prefix' => '/gudang_produk_gbj', 'middleware' => 'auth'], function () {
+    Route::get('/', 'GbjController@gudang_produk');
+    Route::get('/produk/{id}', 'GbjController@gudang_produk_produk');
+    Route::get('/produk/show/{id}', 'GbjController@gudang_produk_produk_show');
+    Route::get('/tanggal/show/{tanggal}', 'GbjController@gudang_produk_tanggal_show');
+    Route::get('/create/{id}', 'GbjController@gudang_produk_create')->name('gudang_produk_gbj.create');
+    Route::post('/store', 'GbjController@gudang_produk_store')->name('gudang_produk_gbj.store');
 });
 
 Route::get('/welcome', function () {

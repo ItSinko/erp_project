@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\KartuStockGbj;
-use App\DetailKartuStockGbj;
+use App\GudangProduk;
+use App\MutasiGudangProduk;
 use App\HasilPerakitan;
 use App\DetailProduk;
+use App\Divisi;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,15 +17,15 @@ use Yajra\DataTables\Contracts\DataTable;
 
 class GbjController extends Controller
 {
-    public function kartu_stock()
+    public function gudang_produk()
     {
         $p = DetailProduk::all();
-        return view('page.gbj.kartu_stock_show', ['p' => $p]);
+        return view('page.gbj.gudang_produk_show', ['p' => $p]);
     }
 
-    public function kartu_stock_show()
+    public function gudang_produk_show()
     {
-        $s = KartuStockGbj::all();
+        $s = GudangProduk::all();
         return DataTables::of($s)
             ->addIndexColumn()
             ->editColumn('tanggal', function ($s) {
@@ -43,16 +44,19 @@ class GbjController extends Controller
             ->make(true);
     }
 
-    public function kartu_stock_produk($id)
+    public function gudang_produk_produk($id)
     {
-        $k = KartuStockGbj::where('detail_produk_id', $id)->with('DetailProduk')->first();
+        $k = GudangProduk::where('detail_produk_id', $id)->with('DetailProduk')->first();
         return $k;
     }
 
-    public function kartu_stock_produk_show($id)
+    public function gudang_produk_produk_show($id)
     {
-        $s = DetailKartuStockGbj::whereHas('KartuStockGbj', function ($q) use ($id) {
-            $q->where('detail_produk_id', $id);
+        $s = MutasiGudangProduk::whereHas('GudangProduk', function ($q) use ($id) {
+            $q->where([
+                ['detail_produk_id', '=', $id],
+                ['divisi_id', '=', '13']
+            ]);
         })->get();
         return DataTables::of($s)
             ->addIndexColumn()
@@ -62,27 +66,30 @@ class GbjController extends Controller
             ->make(true);
     }
 
-    public function kartu_stock_tanggal_show($tanggal)
+    public function gudang_produk_tanggal_show($tanggal)
     {
-        $s = DetailKartuStockGbj::where('tanggal', $tanggal)->get();
+        $s = MutasiGudangProduk::where('tanggal', $tanggal)->whereHas('GudangProduk', function ($q) {
+            $q->where('divisi_id', '13');
+        })->get();
         return DataTables::of($s)
             ->addIndexColumn()
             ->addColumn('nomor', function ($s) {
-                return $s->KartuStockGbj->nomor;
+                return $s->GudangProduk->nomor;
             })
             ->addColumn('produk', function ($s) {
-                return $s->KartuStockGbj->DetailProduk->nama;
+                return $s->GudangProduk->DetailProduk->nama;
             })
             ->make(true);
     }
 
-    public function kartu_stock_create($id)
+    public function gudang_produk_create($id)
     {
         $p = DetailProduk::find($id);
-        return view('page.gbj.kartu_stock_create', ['p' => $p]);
+        $d = Divisi::all();
+        return view('page.gbj.gudang_produk_create', ['p' => $p, 'd' => $d]);
     }
 
-    public function kartu_stock_store(Request $request)
+    public function gudang_produk_store(Request $request)
     {
         $v = Validator::make(
             $request->all(),
@@ -101,14 +108,16 @@ class GbjController extends Controller
         if ($v->fails()) {
             return redirect()->back()->withErrors($v);
         } else {
-            $s = KartuStockGbj::create([
+            $s = GudangProduk::create([
                 'nomor' => $request->nomor,
-                'detail_produk_id' => $request->detail_produk_id
+                'detail_produk_id' => $request->detail_produk_id,
+                'divisi_id' => $request->divisi_id
             ]);
             $bool = true;
             for ($i = 0; $i < count($request->tanggal); $i++) {
-                $d = DetailKartuStockGbj::create([
-                    'kartu_stock_id' => $s->id,
+                $d = MutasiGudangProduk::create([
+                    'gudang_produk_id' => $s->id,
+                    'divisi_id' => $request->divisi_id[$i],
                     'tanggal' => $request->tanggal[$i],
                     'jumlah_masuk' => $request->jumlah_masuk[$i],
                     'jumlah_keluar' => $request->jumlah_keluar[$i],

@@ -15,7 +15,6 @@ class CreateHistoriStockGbjsTable extends Migration
     {
         Schema::create('histori_stock_gbjs', function (Blueprint $table) {
             $table->bigIncrements('id');
-
             $table->timestamps();
         });
     }

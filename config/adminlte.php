@@ -876,6 +876,16 @@ return [
             'auth' => [22],
         ],
         [
+            'header' => 'Produksi',
+            'auth' => [13]
+        ],
+        [
+            'text' => 'BPPB',
+            'url' => '/bppb',
+            'icon' => 'fas fa-circle',
+            'auth' => [13],
+        ],
+        [
             'header' => 'Stok',
             'auth' => [13]
         ],
@@ -886,8 +896,8 @@ return [
             'auth' => [13],
         ],
         [
-            'text' => 'Kartu Stok',
-            'url' => '/kartu_stock_gbj',
+            'text' => 'Mutasi Stok',
+            'url' => '/gudang_produk_gbj',
             'icon' => 'fas fa-circle',
             'auth' => [13],
         ],

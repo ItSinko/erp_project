@@ -60,6 +60,7 @@
                                                 <tr>
                                                     <th>No</th>
                                                     <th>Tanggal</th>
+                                                    <th>Divisi</th>
                                                     <th>Keterangan</th>
                                                     <th>Jumlah Masuk</th>
                                                     <th>Jumlah Keluar</th>
@@ -71,6 +72,13 @@
                                                 <tr>
                                                     <td>1</td>
                                                     <td><input type="date" class="form-control" name="tanggal[]" id="tanggal"></td>
+                                                    <td><select class="select2 select-info form-control divisi_id" name="divisi_id[]" id="divisi_id[]">
+                                                            <option value=""></option>
+                                                            @foreach($d as $i)
+                                                            <option value="{{$i->id}}">{{$i->nama}}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </td>
                                                     <td><textarea name="keterangan[]" id="keterangan" class="form-control"></textarea></td>
                                                     <td><input type="number" class="form-control" name="jumlah_masuk[]"></td>
                                                     <td><input type="number" class="form-control" name="jumlah_keluar[]"></td>
@@ -105,6 +113,13 @@
             $('#tableitem tr:last').after(`<tr>
                 <td></td>
                 <td><input type="date" class="form-control" name="tanggal[]" id="tanggal"></td>
+                <td><select class="select2 select-info form-control divisi_id" name="divisi_id[]" id="divisi_id[]">
+                        <option value=""></option>
+                        @foreach($d as $i)
+                        <option value="{{$i->id}}">{{$i->nama}}</option>
+                        @endforeach
+                    </select>
+                </td>
                 <td><textarea name="keterangan[]" id="keterangan" class="form-control"></textarea></td>
                 <td><input type="number" class="form-control" name="jumlah_masuk[]"></td>
                 <td><input type="number" class="form-control" name="jumlah_keluar[]"></td>
