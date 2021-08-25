@@ -33,4 +33,14 @@ class Divisi extends Model
     {
         return $this->hasMany(PermintaanBahanBaku::class);
     }
+
+    public function GudangProduk()
+    {
+        return $this->hasMany(GudangProduk::class);
+    }
+
+    public function MutasiGudangProduk()
+    {
+        return $this->hasMany(MutasiGudangProduk::class);
+    }
 }

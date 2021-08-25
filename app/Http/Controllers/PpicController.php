@@ -31,6 +31,8 @@ use App\HasilPengemasan;
 use App\PermintaanBahanBaku;
 use App\DetailPermintaanBahanBaku;
 use App\Bom_Version;
+use App\GudangProduk;
+use App\MutasiGudangProduk;
 use App\PengembalianBarangGudang;
 use App\ProdukBillOfMaterial;
 use PhpParser\Node\Expr\AssignOp\Div;
@@ -835,8 +837,9 @@ class PPICController extends Controller
         $s = PenyerahanBarangJadi::find($id);
         $s->status = $status;
         $u = $s->save();
-
+        $dp = $s->Bppb->detail_produk_id;
         $pbj = DetailPenyerahanBarangJadi::where('penyerahan_barang_jadi_id', $s->id)->get();
+        $pbjc = $pbj->count();
         $bool = true;
         foreach ($pbj as $i) {
             $hp = HasilPengemasan::where('hasil_perakitan_id', $i->hasil_perakitan_id)
@@ -847,6 +850,43 @@ class PPICController extends Controller
             $us = $hps->save();
             if (!$us) {
                 $bool = false;
+            }
+        }
+
+        if (Auth::user()->divisi->nama == "Gudang Barang Jadi") {
+            $gp = GudangProduk::where([
+                ['detail_produk_id', '=', $dp],
+                ['divisi_id', '=', Auth::user()->divisi_id]
+            ])->first();
+            if ($gp) {
+                $m = MutasiGudangProduk::where('gudang_produk_id', $gp->id)->orderBy('id', 'desc')->first();
+
+                $gpc = MutasiGudangProduk::create([
+                    'gudang_produk_id' => $gp->id,
+                    'divisi_id' => $s->Bppb->divisi_id,
+                    'tanggal' => Carbon::now()->toDateString(),
+                    'keterangan' => 'Barang Penyerahan ref Bppb ' . $s->Bppb->no_bppb,
+                    'jumlah_masuk' => $pbjc,
+                    'jumlah_keluar' => '0',
+                    'jumlah_saldo' => $pbjc + $m->jumlah_saldo
+                ]);
+            } else if (!$gp) {
+                $gpi = GudangProduk::create([
+                    'detail_produk_id' => $dp,
+                    'divisi_id' => Auth::user()->divisi_id
+                ]);
+
+                if ($gpi) {
+                    $gpc = MutasiGudangProduk::create([
+                        'gudang_produk_id' => $gpi->id,
+                        'divisi_id' => $s->Bppb->divisi_id,
+                        'tanggal' => Carbon::now()->toDateString(),
+                        'keterangan' => 'Barang Penyerahan ref Bppb ' . $s->Bppb->no_bppb,
+                        'jumlah_masuk' => $pbjc,
+                        'jumlah_keluar' => '0',
+                        'jumlah_saldo' => $pbjc
+                    ]);
+                }
             }
         }
         if ($bool == true) {

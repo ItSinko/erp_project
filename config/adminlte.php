@@ -875,6 +875,32 @@ return [
             'url'  => '/acc_kalibrasi/',
             'auth' => [22],
         ],
+        [
+            'header' => 'Produksi',
+            'auth' => [13]
+        ],
+        [
+            'text' => 'BPPB',
+            'url' => '/bppb',
+            'icon' => 'fas fa-circle',
+            'auth' => [13],
+        ],
+        [
+            'header' => 'Stok',
+            'auth' => [13]
+        ],
+        [
+            'text' => 'Produk',
+            'url' => '/produk',
+            'icon' => 'fas fa-circle',
+            'auth' => [13],
+        ],
+        [
+            'text' => 'Mutasi Stok',
+            'url' => '/gudang_produk_gbj',
+            'icon' => 'fas fa-circle',
+            'auth' => [13],
+        ],
         ['header' => 'LOGOUT'],
         [
             'text' => 'Logout',

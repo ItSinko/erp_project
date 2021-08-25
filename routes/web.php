@@ -761,6 +761,16 @@ Route::get('/stok', function () {
     return "notif send";
 });
 
+//PPIC
+Route::group(['prefix' => '/gudang_produk_gbj', 'middleware' => 'auth'], function () {
+    Route::get('/', 'GbjController@gudang_produk');
+    Route::get('/produk/{id}', 'GbjController@gudang_produk_produk');
+    Route::get('/produk/show/{id}', 'GbjController@gudang_produk_produk_show');
+    Route::get('/tanggal/show/{tanggal}', 'GbjController@gudang_produk_tanggal_show');
+    Route::get('/create/{id}', 'GbjController@gudang_produk_create')->name('gudang_produk_gbj.create');
+    Route::put('/store/{id}', 'GbjController@gudang_produk_store')->name('gudang_produk_gbj.store');
+});
+
 Route::get('/welcome', function () {
     return view('welcome');
 });

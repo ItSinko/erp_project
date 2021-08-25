@@ -33,4 +33,9 @@ class DetailProduk extends Model
     {
         return $this->hasMany(CekPengemasan::class);
     }
+
+    public function KartuStockGbj()
+    {
+        return $this->hasOne(KartuStockGbj::class);
+    }
 }
