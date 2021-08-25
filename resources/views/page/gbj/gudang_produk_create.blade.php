@@ -31,8 +31,9 @@
                         <div class="card-title"><i class="fas fa-plus-circle"></i> Tambah Kartu Stock</div>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('kartu_stock_gbj.store') }}" method="post">
-                            {{ csrf_field() }}
+                        <form action="{{ route('gudang_produk_gbj.store', ['detail_produk_id' => $id]) }}" method="post">
+                            {{ csrf_field() }
+                            {{ method('PUT')}}
                             <div class="form-horizontal">
                                 <div class="form-group row">
                                     <label for="produk" class="col-sm-5 col-form-label" style="text-align:right;">Pilih Produk</label>

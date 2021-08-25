@@ -80,7 +80,7 @@
                         </div>
                         <div class="form-group row" id="kartu_stock_tambah" hidden>
                             <label for="tambah" class="col-sm-5 col-form-label" style="text-align:left;">Tambahkan </label>
-                            <span class="col-sm-7"><a class="tambahurl" href="/kartu_stock_gbj/create/"><button class="btn btn-success btn-sm btn-rounded col-form-label float-right" id="tambah" name="tambah">Tambah Kartu Stok</button></a></span>
+                            <span class="col-sm-7"><a class="tambahurl" href="/gudang_produk_gbj/create/"><button class="btn btn-success btn-sm btn-rounded col-form-label float-right" id="tambah" name="tambah">Tambah Kartu Stok</button></a></span>
                         </div>
                     </div>
                 </div>
@@ -160,7 +160,7 @@
                     destroy: true,
                     processing: true,
                     serverSide: false,
-                    ajax: "/kartu_stock_gbj/tanggal/show/" + today,
+                    ajax: "/gudang_produk_gbj/tanggal/show/" + today,
                     columns: [{
                             data: 'DT_RowIndex',
                             name: 'DT_RowIndex',
@@ -202,8 +202,9 @@
         $('select[name="produk"]').on('change', function() {
             var k = $(this).val();
             if (k) {
+                $(".tambahurl").attr('href', '/gudang_produk_gbj/create/' + k);
                 $.ajax({
-                    url: '/kartu_stock_gbj/produk/' + k,
+                    url: '/gudang_produk_gbj/produk/' + k,
                     type: "GET",
                     dataType: "json",
                     success: function(data) {
@@ -213,8 +214,6 @@
                             $("#nama_produk").text(data['detail_produk']['nama']);
                             $("#kartu_stock_tambah").attr('hidden', true);
                         } else {
-                            var newurl = '/kartu_stock_gbj/create/' + k;
-                            $(".tambahurl").setAttribute('href', newurl)
                             $("#no_kartu").text("-");
                             $("#nama_produk").text("-");
                             $("#kartu_stock_tambah").removeAttr('hidden');
@@ -231,7 +230,7 @@
                     destroy: true,
                     processing: true,
                     serverSide: true,
-                    ajax: "/kartu_stock_gbj/produk/show/" + k,
+                    ajax: "/gudang_produk_gbj/produk/show/" + k,
                     columns: [{
                             data: 'DT_RowIndex',
                             name: 'DT_RowIndex',
