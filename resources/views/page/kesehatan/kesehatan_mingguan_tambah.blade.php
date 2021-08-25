@@ -184,6 +184,7 @@
                                                     <th>Nama</th>
                                                     <th>Hasil</th>
                                                     <th>Catatan</th>
+                                                    <th>File</th>
                                                 </tr>
                                             </thead>
                                             <tbody style="text-align: center;">
@@ -198,6 +199,7 @@
                         <div class="card-footer">
                             <span class="float-left"><a class="btn btn-danger rounded-pill" href="/kesehatan_mingguan"><i class="fas fa-times"></i>&nbsp;Batal</a></span>
                             <span class="float-right"><button class="btn btn-success rounded-pill" id="button_tambah"><i class="fas fa-plus"></i>&nbsp;Tambah Data</button></span>
+                            <span class="float-right"><a class="btn btn-danger rounded-pill" id="button_hapus"><i class="fas fa-plus"></i>&nbsp;Hapus</a></span>
                         </div>
                     </div>
                 </form>
@@ -307,7 +309,11 @@
                             $.each(data, function(key, value) {
                                 no++;
                                 b++;
-                                $('#tabel_rapid').append(`<tr> <td>` + no + `</td>
+                                $('#tabel_rapid').append(`<tr> <td><div class="form-check">
+                                                                    <input class="form-check-input" type="checkbox"  id="hapus` + no + `">
+                                                                    <label class="form-check-label" for="flexCheckDefault"> ` + no + `</label>
+                                                                    </div>
+                                                                    </td>
                                                      <td>   
                                                      <input type="number" class="form-control d-none" name="karyawan_id[` + x + `]" value="` + value[`id`] + `"> 
                                                      <select type="text" class="form-control @error('jenis_tes[` + x + `]') is-invalid @enderror" name="jenis_tes[` + x + `]" style="width:100%;" id="jenis_tes` + no + `">
@@ -371,10 +377,17 @@
                                                         <td>    
                                                          <textarea type="text" class="form-control" name="keterangan[` + x + `]"  ></textarea>
                                                         </td>
+                                                        <td>    
+                                                         <input type="file" class="form-control" name="file[` + x + `]"  >
+                                                        </td>
                                                         </tr>`);
+
                                 x++;
                                 var n = no;
                                 console.log(n);
+                                $('#button_hapus').click(function() {
+                                    $("input[ id='hapus" + no + "']:checked").closest('tr').remove();
+                                });
                                 $('#jenis_tes' + no + '').on('change', function() {
                                     var tes = jQuery(this).val();
                                     if (tes == "Antigen") {
@@ -385,7 +398,6 @@
                                         $('#rapids' + n + '').removeAttr('hidden');
                                         $('#antigens' + n + '').attr('hidden', 'hidden');
                                         $('#hasil_cov' + n + '').prop("required", true);
-
                                     }
                                     console.log(tes)
                                 });

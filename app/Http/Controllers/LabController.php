@@ -20,17 +20,6 @@ class LabController extends Controller
     {
         return view('page.lab.kalibrasi');
     }
-    public function acc_kalibrasi()
-    {
-        return view('page.lab.acc_kalibrasi');
-    }
-    public function kalibrasi_data_id($id)
-    {
-        $data = Bppb::whereHas('kalibrasi')->with('detailproduk')->where('id')->get();
-        return datatables::of($data)
-            ->addIndexColumn()
-            ->make(true);
-    }
     public function kalibrasi_data()
     {
         $data = Bppb::whereHas('kalibrasi')->with('detailproduk')->get();
@@ -54,10 +43,104 @@ class LabController extends Controller
                 return $btn;
             })
             ->addColumn('button', function ($data) {
-                $btn = '<div class="inline-flex"><a href="/kalibrasi/tambah/' . $data->id . '"><button type="button" class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-balance-scale"></i></button></a>';
+                $btn = '<div class="inline-flex"><button type="button" class="btn btn-block btn-primary karyawan-img-small" style="border-radius:50%;" id="detail" ><i class="fas fa-plus-circle"></i></button>';
                 return $btn;
             })
             ->rawColumns(['button', 'gambar', 'jumlah_kalibrasi'])
+            ->make(true);
+    }
+    public function kalibrasi_data_detail($id)
+    {
+        $data = Kalibrasi::where('bppb_id', $id)->get();
+        return datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('button', function ($data) {
+                $btn = '<div class="inline-flex"><a href="/kalibrasi/tambah/' . $data->id . '"><button type="button" class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-balance-scale-right"></i></button></a>';
+                return $btn;
+            })
+            ->addColumn('barcode_list', function ($data) {
+                $data_detail = ListKalibrasi::where('kalibrasi_id', $data->id)->get();
+                $y = str_replace('/', '', $data->alias_barcode);
+                foreach ($data_detail as $d) {
+                    $y .=  $d->no_barcode . ',';
+                }
+                return $y;
+            })
+            ->rawColumns(['button'])
+            ->make(true);
+    }
+
+    public function kalibrasi_tambah($id)
+    {
+        $kalibrasi = Kalibrasi::find($id);
+        $no = str_pad(1, 4, '0', STR_PAD_LEFT);
+
+        // $listkalibrasi = ListKalibrasi::has('Kalibrasi')->whereHas('kalibrasi', function ($q) use ($id) {
+        //     $q->where('bppb_id', $id);
+        // })->get();
+
+        $karyawan = Karyawan::where('divisi_id', '22')->get();
+
+        return view('page.lab.kalibrasi_tambah',  ['karyawan' => $karyawan, 'kalibrasi' => $kalibrasi, 'no' => $no]);
+    }
+
+    public function kalibrasi_data_list($id)
+    {
+
+        $data = ListKalibrasi::has('Kalibrasi')->whereHas('kalibrasi', function ($q) use ($id) {
+            $q->where('kalibrasi_id', $id);
+        })->get();
+
+        return datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('barcode', function ($data) {
+                $y = str_replace('/', '', $data->kalibrasi->alias_barcode) . $data->no_barcode;
+                return $y;
+            })
+            ->addColumn('type', function ($data) {
+                $y = $data->hasilperakitan->perakitan->bppb->detailproduk->nama;
+                return $y;
+            })
+            ->addColumn('nama', function ($data) {
+                $y = $data->hasilperakitan->perakitan->bppb->detailproduk->produk->nama;
+                return $y;
+            })
+            ->addColumn('dsb', function ($data) {
+                return '-';
+            })
+            ->make(true);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public function acc_kalibrasi()
+    {
+        return view('page.lab.acc_kalibrasi');
+    }
+    public function kalibrasi_data_id($id)
+    {
+        $data = Bppb::whereHas('kalibrasi')->with('detailproduk')->where('id')->get();
+        return datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('button', function ($data) {
+                $btn = '<div class="inline-flex"><button type="button" id="detail"  class="btn btn-block btn-primary karyawan-img-small" style="border-radius:50%;" ><i class="fa fa-eye" aria-hidden="true"></i></button></div>';
+                return $btn;
+            })
+            ->rawColumns(['button'])
             ->make(true);
     }
     public function acc_kalibrasi_data()
@@ -97,19 +180,9 @@ class LabController extends Controller
             ->rawColumns(['cetak'])
             ->make(true);
     }
-    public function kalibrasi_tambah($id)
-    {
-        $kalibrasi = Kalibrasi::find($id);
-        $no = str_pad(1, 4, '0', STR_PAD_LEFT);
 
-        $listkalibrasi = ListKalibrasi::has('Kalibrasi')->whereHas('kalibrasi', function ($q) use ($id) {
-            $q->where('bppb_id', $id);
-        })->get();
 
-        $karyawan = Karyawan::where('divisi_id', '22')->get();
 
-        return view('page.lab.kalibrasi_tambah',  ['listkalibrasi' => $listkalibrasi, 'karyawan' => $karyawan, 'kalibrasi' => $kalibrasi, 'no' => $no]);
-    }
     public function ka_internal_aksi_tambah(Request $request)
     {
         $this->validate(
@@ -131,7 +204,7 @@ class LabController extends Controller
         );
         //Kalibrasi
         $id = 8;
-        $kalibrasi = Kalibrasi::find($id);
+        $kalibrasi = Kalibrasi::all();
         $kalibrasi->no_pendaftaran = $request->no_pendaftaran;
         $kalibrasi->save();
 
