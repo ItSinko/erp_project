@@ -738,23 +738,3 @@ Route::get('/eng/index', 'EngController@test');
 Route::get('/show_list/{produk?}/{document?}', 'EngController@show_list');
 Route::post('/eng/fileupload', 'EngController@fileupload')->name('eng.fileupload');
 Route::get('test_spa', 'EngController@index');
-
-
-Route::get('/chat', 'ChatController@index');
-Route::get('/message', 'ChatController@fetchMessages');
-Route::post('/message', 'ChatController@sendMessage');
-
-Route::get('/stok', function () {
-    event(new cek_stok('pesan'));
-    return "notif send";
-});
-
-Route::get('/test', function () {
-    $part = Part::all();
-    return view('test', compact('part'));
-});
-
-Route::get('/notify', function () {
-    notify()->success('Laraavel is awesome');
-    return view('test');
-});
