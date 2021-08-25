@@ -754,7 +754,7 @@ Route::get('/test', function () {
     return view('test', compact('part'));
 });
 
-Route::get('notify', function () {
-    $user = new User();
-    return $user->notify(new InvoicePaid());
+Route::get('/notify', function () {
+    notify()->success('Laraavel is awesome');
+    return view('test');
 });

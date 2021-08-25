@@ -1,13 +1,28 @@
-<!DOCTYPE html>
-<html>
+@extends('adminlte.page')
 
-<head>
-    <meta charset="utf-8">
-    <title>Test Page</title>
-</head>
+@section('title', 'Beta Version')
 
-<body>
-    {{ $part }}
-</body>
+@section('content_header')
+<h1 class="m-0 text-dark">Dashboard</h1>
+@stop
 
-</html>
+@section('adminlte_css')
+@notifyCss
+@stop
+
+@section('content')
+<x:notify-messages />
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <p class="mb-0">You are logged in!</p>
+            </div>
+        </div>
+    </div>
+</div>
+@stop
+
+@section('adminlte_js')
+@notifyJs
+@stop

@@ -161,14 +161,14 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
+        /*
+         * Package Service Providers...
+         */
         Yajra\DataTables\DataTablesServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
         Jenssegers\Date\DateServiceProvider::class,
         ConsoleTVs\Charts\ChartsServiceProvider::class,
-        /*
-         * Package Service Providers...
-         */
-
+        Mckenziearts\Notify\LaravelNotifyServiceProvider::class,
         /*
          * Application Service Providers...
          */
