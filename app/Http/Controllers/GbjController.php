@@ -73,9 +73,6 @@ class GbjController extends Controller
         })->get();
         return DataTables::of($s)
             ->addIndexColumn()
-            ->addColumn('nomor', function ($s) {
-                return $s->GudangProduk->nomor;
-            })
             ->addColumn('produk', function ($s) {
                 return $s->GudangProduk->DetailProduk->nama;
             })
@@ -86,7 +83,7 @@ class GbjController extends Controller
     {
         $p = DetailProduk::find($id);
         $d = Divisi::all();
-        return view('page.gbj.gudang_produk_create', ['p' => $p, 'd' => $d]);
+        return view('page.gbj.gudang_produk_create', ['id' => $id, 'p' => $p, 'd' => $d]);
     }
 
     public function gudang_produk_store(Request $request)
@@ -109,7 +106,6 @@ class GbjController extends Controller
             return redirect()->back()->withErrors($v);
         } else {
             $s = GudangProduk::create([
-                'nomor' => $request->nomor,
                 'detail_produk_id' => $request->detail_produk_id,
                 'divisi_id' => $request->divisi_id
             ]);

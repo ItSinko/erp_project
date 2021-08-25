@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class GudangProduk extends Model
 {
-    protected $fillable = ['divisi_id', 'detail_produk_id', 'nomor'];
+    protected $fillable = ['divisi_id', 'detail_produk_id'];
 
     public function DetailProduk()
     {

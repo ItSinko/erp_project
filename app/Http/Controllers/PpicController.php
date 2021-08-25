@@ -31,6 +31,8 @@ use App\HasilPengemasan;
 use App\PermintaanBahanBaku;
 use App\DetailPermintaanBahanBaku;
 use App\Bom_Version;
+use App\GudangProduk;
+use App\MutasiGudangProduk;
 use App\PengembalianBarangGudang;
 use App\ProdukBillOfMaterial;
 use PhpParser\Node\Expr\AssignOp\Div;
@@ -832,31 +834,65 @@ class PPICController extends Controller
 
     public function bppb_penyerahan_barang_jadi_status($id, $status)
     {
-        if (Auth::user()->divisi->nama == "Gudang Barang Jadi") {
-            $s = PenyerahanBarangJadi::find($id);
-            $s->status = $status;
-            $u = $s->save();
+        $s = PenyerahanBarangJadi::find($id);
+        $s->status = $status;
+        $u = $s->save();
+        $dp = $s->Bppb->detail_produk_id;
+        $pbj = DetailPenyerahanBarangJadi::where('penyerahan_barang_jadi_id', $s->id)->get();
+        $pbjc = $pbj->count();
+        $bool = true;
+        foreach ($pbj as $i) {
+            $hp = HasilPengemasan::where('hasil_perakitan_id', $i->hasil_perakitan_id)
+                ->orderBy('updated_at', 'desc')
+                ->first();
+            $hps = HasilPengemasan::find($hp->id);
+            $hps->status = "penyerahan";
+            $us = $hps->save();
+            if (!$us) {
+                $bool = false;
+            }
+        }
 
-            $pbj = DetailPenyerahanBarangJadi::where('penyerahan_barang_jadi_id', $s->id)->get();
-            $bool = true;
-            foreach ($pbj as $i) {
-                $hp = HasilPengemasan::where('hasil_perakitan_id', $i->hasil_perakitan_id)
-                    ->orderBy('updated_at', 'desc')
-                    ->first();
-                $hps = HasilPengemasan::find($hp->id);
-                $hps->status = "penyerahan";
-                $us = $hps->save();
-                if (!$us) {
-                    $bool = false;
+        if (Auth::user()->divisi->nama == "Gudang Barang Jadi") {
+            $gp = GudangProduk::where([
+                ['detail_produk_id', '=', $dp],
+                ['divisi_id', '=', Auth::user()->divisi_id]
+            ])->first();
+            if ($gp) {
+                $m = MutasiGudangProduk::where('gudang_produk_id', $gp->id)->orderBy('id', 'desc')->first();
+
+                $gpc = MutasiGudangProduk::create([
+                    'gudang_produk_id' => $gp->id,
+                    'divisi_id' => $s->Bppb->divisi_id,
+                    'tanggal' => Carbon::now()->toDateString(),
+                    'keterangan' => 'Barang Penyerahan ref Bppb ' . $s->Bppb->no_bppb,
+                    'jumlah_masuk' => $pbjc,
+                    'jumlah_keluar' => '0',
+                    'jumlah_saldo' => $pbjc + $m->jumlah_saldo
+                ]);
+            } else if (!$gp) {
+                $gpi = GudangProduk::create([
+                    'detail_produk_id' => $dp,
+                    'divisi_id' => Auth::user()->divisi_id
+                ]);
+
+                if ($gpi) {
+                    $gpc = MutasiGudangProduk::create([
+                        'gudang_produk_id' => $gpi->id,
+                        'divisi_id' => $s->Bppb->divisi_id,
+                        'tanggal' => Carbon::now()->toDateString(),
+                        'keterangan' => 'Barang Penyerahan ref Bppb ' . $s->Bppb->no_bppb,
+                        'jumlah_masuk' => $pbjc,
+                        'jumlah_keluar' => '0',
+                        'jumlah_saldo' => $pbjc
+                    ]);
                 }
             }
-
-            DetailPenyerahanBarangJadi::where()->get();
-            if ($bool == true) {
-                return redirect()->back()->with('success', "Berhasil merubah status Penyerahan");
-            } else {
-                return redirect()->back()->with('error', "Gagal merubah status Penyerahan");
-            }
+        }
+        if ($bool == true) {
+            return redirect()->back()->with('success', "Berhasil merubah status Penyerahan");
+        } else {
+            return redirect()->back()->with('error', "Gagal merubah status Penyerahan");
         }
     }
 }

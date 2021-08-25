@@ -30,28 +30,21 @@
                     <div class="card-header bg-info">
                         <div class="card-title"><i class="fas fa-plus-circle"></i> Tambah Kartu Stock</div>
                     </div>
-                    <div class="card-body">
-                        <form action="{{ route('gudang_produk_gbj.store', ['detail_produk_id' => $id]) }}" method="post">
-                            {{ csrf_field() }
-                            {{ method('PUT')}}
+                    <form action="{{ route('gudang_produk_gbj.store', ['id' => $id]) }}" method="post">
+                        {{ csrf_field() }}
+                        {{ method_field('PUT') }}
+                        <div class="card-body">
                             <div class="form-horizontal">
                                 <div class="form-group row">
-                                    <label for="produk" class="col-sm-5 col-form-label" style="text-align:right;">Pilih Produk</label>
-                                    <div class="col-sm-4">
-                                        <div class="select2-info">
-                                            <select class="select2 custom-select form-control @error('detail_produk_id') is-invalid @enderror detail_produk_id" data-placeholder="Pilih Produk" data-dropdown-css-class="select2-info" style="width: 80%;" name="detail_produk_id" id="detail_produk_id">
-                                                <option value=""></option>
-                                                @foreach($p as $i)
-                                                <option value="{{$i->id}}">{{$i->nama}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
+                                    <label for="" class="col-sm-5 col-form-label" style="text-align:right;">Nama</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control col-form-label @error('produk') is-invalid @enderror" id="nomor" name="nomor" style="width:50%;" readonly value="{{$p->Produk->nama}}">
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="" class="col-sm-5 col-form-label" style="text-align:right;">No Kartu Stock</label>
+                                    <label for="" class="col-sm-5 col-form-label" style="text-align:right;">Tipe</label>
                                     <div class="col-sm-7">
-                                        <input type="text" class="form-control col-form-label @error('produk') is-invalid @enderror" id="nomor" name="nomor" style="width:50%;" readonly>
+                                        <input type="text" class="form-control col-form-label @error('produk') is-invalid @enderror" id="nomor" name="nomor" style="width:50%;" readonly value="{{$p->nama}}">
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -61,11 +54,10 @@
                                                 <tr>
                                                     <th>No</th>
                                                     <th>Tanggal</th>
-                                                    <th>Divisi</th>
+                                                    <th>Dari / Ke</th>
                                                     <th>Keterangan</th>
                                                     <th>Jumlah Masuk</th>
                                                     <th>Jumlah Keluar</th>
-                                                    <th>Jumlah Saldo</th>
                                                     <th>Aksi</th>
                                                 </tr>
                                             </thead>
@@ -73,26 +65,33 @@
                                                 <tr>
                                                     <td>1</td>
                                                     <td><input type="date" class="form-control" name="tanggal[]" id="tanggal"></td>
-                                                    <td><select class="select2 select-info form-control divisi_id" name="divisi_id[]" id="divisi_id[]">
+                                                    <td><select class="select2 select-info form-control divisi_id" name="divisi_id[]" id="divisi_id" disabled>
                                                             <option value=""></option>
                                                             @foreach($d as $i)
                                                             <option value="{{$i->id}}">{{$i->nama}}</option>
                                                             @endforeach
                                                         </select>
                                                     </td>
-                                                    <td><textarea name="keterangan[]" id="keterangan" class="form-control"></textarea></td>
-                                                    <td><input type="number" class="form-control" name="jumlah_masuk[]"></td>
-                                                    <td><input type="number" class="form-control" name="jumlah_keluar[]"></td>
-                                                    <td><input type="number" class="form-control" name="jumlah_saldo[]"></td>
-                                                    <td><button type="button" class="btn btn-success" style="border-radius: 50%;" id="tambahitem"><i class="fas fa-plus-circle"></i></button></td>
+                                                    <td><textarea name="keterangan[]" id="keterangan" class="form-control" readonly></textarea></td>
+                                                    <td><input type="number" class="form-control" id="jumlah_masuk" name="jumlah_masuk[]" readonly></td>
+                                                    <td><input type="number" class="form-control" id="jumlah_keluar" name="jumlah_keluar[]" readonly></td>
+                                                    <td><button type="button" class="btn btn-success" style="border-radius: 50%;" id="tambahitem" disabled><i class="fas fa-plus-circle"></i></button></td>
                                                 </tr>
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
                             </div>
-                        </form>
-                    </div>
+                        </div>
+                        <div class="card-footer">
+                            <span>
+                                <button type="button" class="btn btn-block btn-danger rounded-pill" style="width:200px;float:left;"><i class="fas fa-times"></i>&nbsp;Batal</button>
+                            </span>
+                            <span>
+                                <button type="submit" id="tambahdata" class="btn btn-block btn-success rounded-pill" style="width:200px;float:right;" disabled><i class="fas fa-plus"></i>&nbsp;Tambah Data</button>
+                            </span>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -103,18 +102,158 @@
 @section('adminlte_js')
 <script>
     $(function() {
+        $('#tableitem').on("keyup change", "input[id='tanggal']", function() {
+            var tanggal = $(this).closest('tr').find('input[id="tanggal"]').val();
+            var divisi_id = $(this).closest('tr').find('.divisi_id');
+            var keterangan = $(this).closest('tr').find('textarea[id="keterangan"]');
+            var jumlah_masuk = $(this).closest('tr').find('input[id="jumlah_masuk"]');
+            var jumlah_keluar = $(this).closest('tr').find('input[id="jumlah_keluar"]');
+
+            if (tanggal) {
+                if (divisi_id.val() != "" && keterangan.val() != "" && jumlah_masuk.val() != "" && jumlah_keluar.val() != "") {
+                    $('#tambahdata').removeAttr('disabled');
+                    $('#tambahitem').removeAttr('disabled');
+                } else {
+                    divisi_id.removeAttr('disabled');
+                    $('#tambahitem').attr('disabled', true);
+                    $('#tambahdata').attr('disabled', true);
+                }
+            } else {
+                divisi_id.attr('disabled', true);
+                $('#tambahitem').attr('disabled', true);
+                $('#tambahdata').attr('disabled', true);
+                message.removeClass("invalid-feedback");
+                alias.removeClass("is-invalid");
+                message.empty();
+            }
+        });
+
+        $('#tableitem').on("keyup change", ".divisi_id", function() {
+            var divisi_id = $(this).closest('tr').find('.divisi_id').val();
+            var tanggal = $(this).closest('tr').find('input[id="tanggal"]');
+            var keterangan = $(this).closest('tr').find('textarea[id="keterangan"]');
+            var jumlah_masuk = $(this).closest('tr').find('input[id="jumlah_masuk"]');
+            var jumlah_keluar = $(this).closest('tr').find('input[id="jumlah_keluar"]');
+
+            if (divisi_id) {
+                if (tanggal.val() != "" && keterangan.val() != "" && jumlah_masuk.val() != "" && jumlah_keluar.val() != "") {
+                    $('#tambahdata').removeAttr('disabled');
+                    $('#tambahitem').removeAttr('disabled');
+                } else {
+                    keterangan.removeAttr('readonly');
+                    $('#tambahitem').attr('disabled', true);
+                    $('#tambahdata').attr('disabled', true);
+                }
+            } else {
+                keterangan.attr('readonly', true);
+                $('#tambahitem').attr('disabled', true);
+                $('#tambahdata').attr('disabled', true);
+                message.removeClass("invalid-feedback");
+                alias.removeClass("is-invalid");
+                message.empty();
+            }
+        });
+
+        $('#tableitem').on("keyup change", 'textarea[id="keterangan"]', function() {
+            var keterangan = $(this).closest('tr').find('textarea[id="keterangan"]').val();
+            var tanggal = $(this).closest('tr').find('input[id="tanggal"]');
+            var divisi_id = $(this).closest('tr').find('.divisi_id');
+            var jumlah_masuk = $(this).closest('tr').find('input[id="jumlah_masuk"]');
+            var jumlah_keluar = $(this).closest('tr').find('input[id="jumlah_keluar"]');
+
+            if (keterangan) {
+
+                if (tanggal.val() != "" && divisi_id.val() != "" && jumlah_saldo.val() != "" && jumlah_keluar.val() != "" && jumlah_masuk.val() != "") {
+                    $('#tambahdata').removeAttr('disabled');
+                    $('#tambahitem').removeAttr('disabled');
+                } else {
+                    jumlah_masuk.removeAttr('readonly');
+                    jumlah_keluar.removeAttr('readonly');
+                    $('#tambahitem').attr('disabled', true);
+                    $('#tambahdata').attr('disabled', true);
+                }
+            } else {
+                jumlah_masuk.attr('readonly', true);
+                jumlah_keluar.attr('readonly', true);
+                $('#tambahitem').attr('disabled', true);
+                $('#tambahdata').attr('disabled', true);
+            }
+        });
+
+        $('#tableitem').on("keyup change", 'input[id="jumlah_masuk"]', function() {
+            var jumlah_masuk = $(this).closest('tr').find('input[id="jumlah_masuk"]').val();
+            var keterangan = $(this).closest('tr').find('textarea[id="keterangan"]');
+            var tanggal = $(this).closest('tr').find('input[id="tanggal"]');
+            var divisi_id = $(this).closest('tr').find('.divisi_id');
+            var jumlah_keluar = $(this).closest('tr').find('input[id="jumlah_keluar"]');
+
+            if (jumlah_masuk) {
+                if (tanggal.val() != "" && divisi_id.val() != "" && keterangan.val() != "") {
+                    jumlah_keluar.val("0");
+                    jumlah_keluar.attr("readonly", true);
+                    $('#tambahdata').removeAttr('disabled');
+                    $('#tambahitem').removeAttr('disabled');
+                } else {
+                    jumlah_keluar.val("0");
+                    jumlah_keluar.attr("readonly", true);
+                    $('#tambahitem').attr('disabled', true);
+                    $('#tambahdata').attr('disabled', true);
+                }
+            } else {
+                jumlah_masuk.removeAttr('readonly');
+                jumlah_keluar.removeAttr('readonly');
+                $('#tambahitem').attr('disabled', true);
+                $('#tambahdata').attr('disabled', true);
+            }
+        });
+
+        $('#tableitem').on("keyup change", 'input[id="jumlah_keluar"]', function() {
+            var jumlah_keluar = $(this).closest('tr').find('input[id="jumlah_keluar"]').val();
+            var keterangan = $(this).closest('tr').find('textarea[id="keterangan"]');
+            var tanggal = $(this).closest('tr').find('input[id="tanggal"]');
+            var divisi_id = $(this).closest('tr').find('.divisi_id');
+            var jumlah_masuk = $(this).closest('tr').find('input[id="jumlah_masuk"]');
+
+            if (jumlah_keluar) {
+                if (tanggal.val() != "" && divisi_id.val() != "" && keterangan.val() != "") {
+                    jumlah_masuk.val("0");
+                    jumlah_masuk.attr("readonly", true);
+                    $('#tambahdata').removeAttr('disabled');
+                    $('#tambahitem').removeAttr('disabled');
+                } else {
+                    jumlah_masuk.val("0");
+                    jumlah_masuk.attr("readonly", true);
+                    $('#tambahitem').attr('disabled', true);
+                    $('#tambahdata').attr('disabled', true);
+                }
+            } else {
+                jumlah_masuk.removeAttr('readonly');
+                jumlah_keluar.removeAttr('readonly');
+                $('#tambahitem').attr('disabled', true);
+                $('#tambahdata').attr('disabled', true);
+            }
+        });
+
         function numberRows($t) {
             var c = 0 - 1;
             $t.find("tr").each(function(ind, el) {
                 $(el).find("td:eq(0)").html(++c);
+                var j = c - 1;
+                $(el).find('input[id="tanggal"]').attr('name', 'tanggal[' + j + ']');
+                $(el).find('textarea[id="keterangan"]').attr('name', 'keterangan[' + j + ']');
+                $(el).find('input[id="jumlah_masuk"]').attr('name', 'jumlah_masuk[' + j + ']');
+                $(el).find('input[id="jumlah_keluar"]').attr('name', 'jumlah_keluar[' + j + ']');
+                $(el).find('.divisi_id').attr('name', 'divisi_id[' + j + ']');
+                $(el).find('.divisi_id').attr('id', 'divisi_id' + j);
+                $('.divisi_id').select2();
             });
         }
 
-        $("#tableitem").on('#tambahitem', 'click', function() {
+        $('#tambahitem').click(function(e) {
             $('#tableitem tr:last').after(`<tr>
                 <td></td>
                 <td><input type="date" class="form-control" name="tanggal[]" id="tanggal"></td>
-                <td><select class="select2 select-info form-control divisi_id" name="divisi_id[]" id="divisi_id[]">
+                <td><select class="select2 select-info form-control divisi_id" name="divisi_id[]" id="divisi_id" placeholder="Pilih Divisi Terkait">
                         <option value=""></option>
                         @foreach($d as $i)
                         <option value="{{$i->id}}">{{$i->nama}}</option>
@@ -122,12 +261,17 @@
                     </select>
                 </td>
                 <td><textarea name="keterangan[]" id="keterangan" class="form-control"></textarea></td>
-                <td><input type="number" class="form-control" name="jumlah_masuk[]"></td>
-                <td><input type="number" class="form-control" name="jumlah_keluar[]"></td>
-                <td><input type="number" class="form-control" name="jumlah_saldo[]"></td>
-                <td><button type="button" class="btn btn-danger" style="border-radius: 50%;"><i class="fas fa-times-circle"></i></button></td>
+                <td><input type="number" class="form-control" id="jumlah_masuk" name="jumlah_masuk[]"></td>
+                <td><input type="number" class="form-control" id="jumlah_keluar" name="jumlah_keluar[]"></td>
+                <td><button type="button" class="btn btn-danger" style="border-radius: 50%;" id="closetable"><i class="fas fa-times-circle"></i></button></td>
             </tr>`);
-        })
+            numberRows($("#tableitem"));
+        });
+
+        $('#tableitem').on('click', '#closetable', function(e) {
+            $(this).closest('tr').remove();
+            numberRows($("#tableitem"));
+        });
     });
 </script>
 @stop

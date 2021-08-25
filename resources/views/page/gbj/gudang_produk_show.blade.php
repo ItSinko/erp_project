@@ -119,7 +119,6 @@
                                 <thead style="text-align: center;">
                                     <tr>
                                         <th>No</th>
-                                        <th>No Kartu</th>
                                         <th>Produk</th>
                                         <th>Keterangan</th>
                                         <th>Jumlah Masuk</th>
@@ -166,9 +165,6 @@
                             name: 'DT_RowIndex',
                             orderable: false,
                             searchable: false
-                        }, {
-                            data: 'nomor',
-                            name: 'nomor'
                         },
                         {
                             data: 'produk',
