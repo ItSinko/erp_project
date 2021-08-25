@@ -1,14 +1,10 @@
 <?php
 
-use App\Event;
-use App\Events\cek_stok;
-use App\Http\Controllers\CommonController;
-use App\Http\Controllers\GetController;
-use App\Http\Controllers\QCController;
-use GuzzleHttp\Middleware;
+use App\Events\SimpleNotifEvent;
+use App\Notifications\RealTimeNotification;
+use App\User;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -143,11 +139,6 @@ Route::get('/laporan_harian/data/{filter}/{id}/{start}/{end}', 'KesehatanControl
 Route::get('/laporan_mingguan/data/{filter_mingguan}/{filter}/{id}/{start}/{end}', 'KesehatanController@laporan_mingguan_data');
 Route::get('/laporan_bulanan/data/{filter_bulanan}/{filter}/{id}/{start}/{end}', 'KesehatanController@laporan_bulanan_data');
 Route::get('/laporan_tahunan/data/{filter}/{id}/{start}/{end}', 'KesehatanController@laporan_tahunan_data');
-
-//Gudang Material
-Route::get('/daftar_part', 'GudangMaterialController@daftar_part');
-Route::get('/daftar_part/data', 'GudangMaterialController@daftar_part_data');
-Route::get('/pengeluaran/tambah', 'GudangMaterialController@pengeluaran_tambah');
 
 //Lab
 Route::get('/kalibrasi', 'LabController@kalibrasi');
@@ -711,21 +702,14 @@ Route::group(['prefix' => 'dc', 'middleware' => 'auth'], function () {
     Route::delete('documentsDeleteMulti', 'DocumentsController@deleteMulti');
 });
 
-// ARI Controller Temporary
-
-Route::get('/doc/test', function (Request $request) {
-    $query = parse_url($request->fullUrl())['query'];
-    $result = [];
-    parse_str($query, $result);
-    dd($result);
+//GBMP
+Route::group(['prefix' => 'gbmp'], function () {
+    Route::get('/part', 'GudangController@part');
+    Route::get('/data-part', 'GudangController@data_part');
+    Route::get('/input-form', 'GudangController@input_form');
+    Route::get('/part_order', 'GudangController@part_order');
+    Route::get('/data-part-order', 'GudangController@data_part_order');
 });
-
-//GUDANG
-Route::get('gudang_view', function () {
-    return view('page.gudang.gudang');
-});
-Route::get('/gudang', 'GudangController@index')->name('gudang');
-Route::get('/gudang/data', 'GudangController@get_data')->name('gudang.data');
 
 
 //PPIC
@@ -733,6 +717,11 @@ Route::group(['prefix' => 'ppic'], function () {
     Route::get('/schedule', 'PpicController@schedule_show');
     Route::post('/schedule/create', 'PpicController@schedule_create');
     Route::post('/schedule/delete', 'PpicController@schedule_delete');
+    Route::post('/schedule/update', 'PpicController@schedule_update');
+    Route::get('/get-version-bom/{id}', 'PpicController@getVersionBomProduct');
+    Route::get('/get-max-product/{id}', 'PpicController@getMaxProduct');
+
+
     Route::get('/get_item_bom', 'PpicController@get_item_bom');
     Route::get('/get_versi_bom', 'PpicController@get_versi_bom');
     Route::get('/add_part_order/{id}/{quantity}', 'PpicController@add_part_order');
@@ -752,25 +741,11 @@ Route::post('/eng/fileupload', 'EngController@fileupload')->name('eng.fileupload
 Route::get('test_spa', 'EngController@index');
 
 
-Route::get('/chat', 'ChatController@index');
-Route::get('/message', 'ChatController@fetchMessages');
-Route::post('/message', 'ChatController@sendMessage');
-
-Route::get('/stok', function () {
-    event(new cek_stok('pesan'));
-    return "notif send";
+Route::get('/notif', function(){
+    event(new SimpleNotifEvent('ari', 'hello there'));
+    // $user = User::first();
+    // $user->notify(new RealTimeNotification("Hello World"));
 });
-
-//PPIC
-Route::group(['prefix' => '/gudang_produk_gbj', 'middleware' => 'auth'], function () {
-    Route::get('/', 'GbjController@gudang_produk');
-    Route::get('/produk/{id}', 'GbjController@gudang_produk_produk');
-    Route::get('/produk/show/{id}', 'GbjController@gudang_produk_produk_show');
-    Route::get('/tanggal/show/{tanggal}', 'GbjController@gudang_produk_tanggal_show');
-    Route::get('/create/{id}', 'GbjController@gudang_produk_create')->name('gudang_produk_gbj.create');
-    Route::put('/store/{id}', 'GbjController@gudang_produk_store')->name('gudang_produk_gbj.store');
-});
-
-Route::get('/welcome', function () {
-    return view('welcome');
+Route::get('/test', function(){
+    return view('test');
 });

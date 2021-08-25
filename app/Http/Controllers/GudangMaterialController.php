@@ -25,5 +25,4 @@ class GudangMaterialController extends Controller
     {
         return view('page.gbmp.pengeluaran_tambah');
     }
-
 }

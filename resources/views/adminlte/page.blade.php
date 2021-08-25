@@ -1,8 +1,6 @@
 @extends('adminlte.master')
 
-@inject('layoutHelper', 'JeroenNoten\LaravelAdminLte\Helpers\LayoutHelper')
-
-@if($layoutHelper->isLayoutTopnavEnabled())
+@if(LayoutHelper::isLayoutTopnavEnabled())
 @php( $def_container_class = 'container' )
 @else
 @php( $def_container_class = 'container-fluid' )
@@ -13,22 +11,22 @@
 @yield('css')
 @stop
 
-@section('classes_body', $layoutHelper->makeBodyClasses())
+@section('classes_body', LayoutHelper::makeBodyClasses())
 
-@section('body_data', $layoutHelper->makeBodyData())
+@section('body_data', LayoutHelper::makeBodyData())
 
 @section('body')
 <div class="wrapper">
 
     {{-- Top Navbar --}}
-    @if($layoutHelper->isLayoutTopnavEnabled())
+    @if(LayoutHelper::isLayoutTopnavEnabled())
     @include('adminlte.partials.navbar.navbar-layout-topnav')
     @else
     @include('adminlte.partials.navbar.navbar')
     @endif
 
     {{-- Left Main Sidebar --}}
-    @if(!$layoutHelper->isLayoutTopnavEnabled())
+    @if(!LayoutHelper::isLayoutTopnavEnabled())
     @include('adminlte.partials.sidebar.left-sidebar')
     @endif
 

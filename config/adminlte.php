@@ -225,7 +225,7 @@ return [
     */
     'menu' => [
         [
-            'header' => '',
+            'header' => ''
         ],
         [
             'text'        => 'Beranda',
@@ -233,17 +233,10 @@ return [
             'icon'        => 'nav-icon fa fa-home',
         ],
         [
-            'header' => 'MASTER DATA',
-            'auth' => [14, 17, 26, 23, 24, 1, 11]
+            'header' => 'DATA',
+            'auth' => [14, 17, 26, 23, 24]
         ],
-        [
-            'text' => 'Daftar Part',
-            'url'  => '/daftar_part',
-            'icon' => 'fas fa-table',
-
-            'auth' => [11],
-            'auth' => [14, 17, 26, 23, 24, 3, 1]
-        ],
+        // penjualan (26)
         [
             'text' => 'Penjualan Produk',
             'url'  => '/penjualan_produk',
@@ -262,6 +255,131 @@ return [
             'icon' => 'fas fa-table',
             'auth' => [26]
         ],
+        [
+            'header' => 'TRANSAKSI',
+            'auth'   => [26]
+        ],
+        [
+            'text'    => 'Daftar Pesanan',
+            'icon'    => 'fas fa-table',
+            'auth' => [26],
+            'submenu' => [
+                [
+                    'text' => 'E-Katalog',
+                    'url'  => '/penjualan_online',
+                ],
+                [
+                    'text' => 'E-Commerce',
+                    'url'  => '/penjualan_online_ecom',
+                ],
+                [
+                    'text' => 'Offline',
+                    'url'  => '/penjualan_offline',
+                ]
+            ],
+        ],
+        [
+            'text'    => 'Surat Penawaran',
+            'icon'    => 'fas fa-table',
+            'auth' => [26],
+            'submenu' => [
+                [
+                    'text' => 'E-Commerce',
+                    'url'  => '/penawaran_ecom',
+                ],
+                [
+                    'text' => 'Offline',
+                    'url'  => '/penawaran_offline',
+                ]
+            ],
+        ],
+        [
+            'text'    => 'PO / DO',
+            'icon'    => 'fas fa-table',
+            'auth' => [26],
+            'submenu' => [
+                [
+                    'text' => 'E-Katalog',
+                    'url'  => '/podo_online',
+                ],
+                [
+                    'text' => 'Offline',
+                    'url'  => '/podo_offline',
+                ]
+            ],
+        ],
+        // penjualan (26) & produksi (17)
+        [
+            'text' => 'Produk',
+            'url'  => '/produk',
+            'icon' => 'fas fa-table',
+            'auth' => [14, 17, 26]
+        ],
+        // produksi (17) & QC(23)
+        [
+            'text' => 'Data Karyawan',
+            'icon' => 'fas fa-users',
+            'auth' => [14, 17, 23],
+            'submenu' => [
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Jadwal Kerja Operator',
+                    'url'  => '/karyawan',
+                ],
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Daftar Staff',
+                    'url'  => '/karyawan',
+                ],
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Permohonan Penugasan',
+                    'url'  => '/karyawan/peminjaman',
+                ],
+            ],
+        ],
+        [
+            'text'    => 'Inventory',
+            'icon'    => 'fas fa-boxes',
+            'auth' => [14, 17],
+            'submenu' => [
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Master Inventory',
+                    'auth' => [14],
+                    'url'  => '/inventory/divisi',
+                ],
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Inventory',
+                    'url'  => '/inventory',
+                ],
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Permintaan Peminjaman',
+                    'url'  => '/inventory/peminjaman',
+                ],
+            ],
+        ],
+        [
+            'text'    => 'Peminjaman',
+            'icon'    => 'fas fa-boxes',
+            'auth' => [14],
+            'submenu' => [
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Alat',
+                    'url'  => '/peminjaman/alat',
+                ],
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Karyawan',
+                    'url'  => '/peminjaman/karyawan',
+                ],
+
+            ],
+        ],
+        // kesehatan (28)
         [
             'text' => 'Kesehatan',
             'icon' => 'fas fa-book-medical',
@@ -412,68 +530,33 @@ return [
                 ]
             ],
         ],
+        // GBMP (11)
         [
-            'header' => 'TRANSAKSI',
-            'auth'   => [26]
+            'header' => 'GBMP',
+            'auth' => [11],
         ],
         [
-            'text'    => 'Daftar Pesanan',
-            'icon'    => 'fas fa-table',
-            'auth' => [26],
-            'submenu' => [
-                [
-                    'text' => 'E-Katalog',
-                    'url'  => '/penjualan_online',
-                ],
-                [
-                    'text' => 'E-Commerce',
-                    'url'  => '/penjualan_online_ecom',
-                ],
-                [
-                    'text' => 'Offline',
-                    'url'  => '/penjualan_offline',
-                ]
-            ],
+            'text' => 'Stok',
+            'auth' => [11],
+            'icon' =>  'fas fa-boxes',
+            'url' => '/gbmp/part'
         ],
         [
-            'text'    => 'Surat Penawaran',
-            'icon'    => 'fas fa-table',
-            'auth' => [26],
-            'submenu' => [
-                [
-                    'text' => 'E-Commerce',
-                    'url'  => '/penawaran_ecom',
-                ],
-                [
-                    'text' => 'Offline',
-                    'url'  => '/penawaran_offline',
-                ]
-            ],
+            'text' => 'Pesanan PPIC',
+            'auth' => [11],
+            'icon' =>  'fas fa-boxes',
+            'url' => '/gbmp/part_order'
         ],
-        [
-            'text'    => 'PO / DO',
-            'icon'    => 'fas fa-table',
-            'auth' => [26],
-            'submenu' => [
-                [
-                    'text' => 'E-Katalog',
-                    'url'  => '/podo_online',
-                ],
-                [
-                    'text' => 'Offline',
-                    'url'  => '/podo_offline',
-                ]
-            ],
-        ],
+        // PPIC (24)
         [
             'text'  =>  'Stok',
             'icon'  =>  'fas fa-boxes',
-            'auth'  => [24, 3, 1],
+            'auth'  => [24],
             'submenu'   =>  [
                 [
                     'text'  =>  'Gudang',
                     'icon'  =>  'far fa-circle',
-                    'url'   =>  '#'
+                    'url'   =>  '/gbmp/part'
                 ],
                 [
                     'text'  =>  'RND',
@@ -485,7 +568,7 @@ return [
         [
             'text'  =>  'Laporan',
             'icon'  =>  'fas fa-file',
-            'auth'  => [24, 3, 1],
+            'auth'  => [24],
             'submenu'   =>  [
                 [
                     'text'  =>  'Pembelian',
@@ -522,83 +605,15 @@ return [
                 ],
             ]
         ],
-        [
-            'text' => 'Produk',
-            'url'  => '/produk',
-            'icon' => 'fas fa-table',
-            'auth' => [14, 17, 26]
-        ],
-        [
-            'text' => 'Data Karyawan',
-            'icon' => 'fas fa-users',
-            'auth' => [14, 17, 23],
-            'submenu' => [
-                [
-                    'icon' => 'far fa-circle',
-                    'text' => 'Jadwal Kerja Operator',
-                    'url'  => '/karyawan',
-                ],
-                [
-                    'icon' => 'far fa-circle',
-                    'text' => 'Daftar Staff',
-                    'url'  => '/karyawan',
-                ],
-                [
-                    'icon' => 'far fa-circle',
-                    'text' => 'Permohonan Penugasan',
-                    'url'  => '/karyawan/peminjaman',
-                ],
-            ],
-        ],
-        [
-            'text'    => 'Inventory',
-            'icon'    => 'fas fa-boxes',
-            'auth' => [14, 17],
-            'submenu' => [
-                [
-                    'icon' => 'far fa-circle',
-                    'text' => 'Master Inventory',
-                    'auth' => [14],
-                    'url'  => '/inventory/divisi',
-                ],
-                [
-                    'icon' => 'far fa-circle',
-                    'text' => 'Inventory',
-                    'url'  => '/inventory',
-                ],
-                [
-                    'icon' => 'far fa-circle',
-                    'text' => 'Permintaan Peminjaman',
-                    'url'  => '/inventory/peminjaman',
-                ],
-            ],
-        ],
-        [
-            'text'    => 'Peminjaman',
-            'icon'    => 'fas fa-boxes',
-            'auth' => [14],
-            'submenu' => [
-                [
-                    'icon' => 'far fa-circle',
-                    'text' => 'Alat',
-                    'url'  => '/peminjaman/alat',
-                ],
-                [
-                    'icon' => 'far fa-circle',
-                    'text' => 'Karyawan',
-                    'url'  => '/peminjaman/karyawan',
-                ],
-
-            ],
-        ],
+        // PPIC (24)
         [
             'header' => 'PPIC',
-            'auth' => [24, 3, 1]
+            'auth' => [24]
         ],
         [
             'text' => 'Jadwal Produksi',
             'icon' => 'fas fa-calendar-alt',
-            'auth' => [24, 3, 1],
+            'auth' => [24],
             'submenu'   =>  [
                 [
                     'text'  =>  'Penyusunan',
@@ -621,13 +636,13 @@ return [
             'text' => 'BOM',
             'url'  => '/ppic/bom',
             'icon' => 'fas fa-list-alt',
-            'auth' => [24, 3, 1]
+            'auth' => [24]
         ],
         [
             'text'    => 'BPPB',
             'icon'    => 'fas fa-project-diagram',
             'url' => '/bppb',
-            'auth' => [24, 3, 1],
+            'auth' => [24],
             'submenu'   =>  [
                 [
                     'text'  =>  'Penyusunan',
@@ -646,6 +661,14 @@ return [
                 ],
             ]
         ],
+        // Manager Teknik (3)
+        [
+            'text' => 'Jadwal Produksi',
+            'icon' => 'fas fa-calendar-alt',
+            'auth' => [3],
+            'url'   =>  '/ppic/schedule?penyusunan=true',
+        ],
+        // Produksi (17)
         [
             'header' => 'PERSIAPAN',
             'auth' => [17]
@@ -656,6 +679,7 @@ return [
             'url'  => '/persiapan_packing_produk',
             'auth' => [17],
         ],
+        // Produksi (17) & Engineering (10) & Maintenence (16)
         [
             'header' => 'PRODUKSI',
             'auth' => [17, 10, 16]
@@ -759,6 +783,7 @@ return [
             'url' => '/perbaikan/produksi',
             'auth' => [17],
         ],
+        // QC (23) & Lab (22)
         [
             'header' => 'TRANSAKSI',
             'auth' => [22],
@@ -872,7 +897,7 @@ return [
         [
             'text'    => 'Sudah Kalibrasi',
             'icon'    => 'fas fa-box-open',
-            'url'  => '/acc_kalibrasi/',
+            'url'  => '/acc_kalibrasi',
             'auth' => [22],
         ],
         [
@@ -929,13 +954,13 @@ return [
     */
 
     'filters' => [
-        JeroenNoten\LaravelAdminLte\Menu\Filters\GateFilter::class,
-        JeroenNoten\LaravelAdminLte\Menu\Filters\HrefFilter::class,
-        JeroenNoten\LaravelAdminLte\Menu\Filters\SearchFilter::class,
-        JeroenNoten\LaravelAdminLte\Menu\Filters\ActiveFilter::class,
-        JeroenNoten\LaravelAdminLte\Menu\Filters\ClassesFilter::class,
-        JeroenNoten\LaravelAdminLte\Menu\Filters\LangFilter::class,
-        JeroenNoten\LaravelAdminLte\Menu\Filters\DataFilter::class,
+        App\Menu\Filters\GateFilter::class,
+        App\Menu\Filters\HrefFilter::class,
+        App\Menu\Filters\SearchFilter::class,
+        App\Menu\Filters\ActiveFilter::class,
+        App\Menu\Filters\ClassesFilter::class,
+        App\Menu\Filters\LangFilter::class,
+        App\Menu\Filters\DataFilter::class,
     ],
     /*
     |--------------------------------------------------------------------------
