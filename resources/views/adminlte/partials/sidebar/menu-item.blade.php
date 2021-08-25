@@ -1,4 +1,4 @@
-@inject('menuItemHelper', 'JeroenNoten\LaravelAdminLte\Helpers\MenuItemHelper')
+@inject('menuItemHelper', 'App\Helpers\MenuItemHelper')
 
 @if (isset($item['auth']))
 @foreach($item['auth'] as $user)

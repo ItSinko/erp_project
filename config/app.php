@@ -169,6 +169,7 @@ return [
         Jenssegers\Date\DateServiceProvider::class,
         ConsoleTVs\Charts\ChartsServiceProvider::class,
         Mckenziearts\Notify\LaravelNotifyServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
         /*
          * Application Service Providers...
          */
@@ -177,8 +178,8 @@ return [
         App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        Maatwebsite\Excel\ExcelServiceProvider::class,
 
+        App\Providers\AdminlteServiceProvider::class,
     ],
 
     /*
@@ -234,6 +235,7 @@ return [
         'PDF' => Barryvdh\DomPDF\Facade::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'Date' => Jenssegers\Date\Date::class,
+        'LayoutHelper' => App\Helpers\LayoutHelper::class,
     ],
 
 ];

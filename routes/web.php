@@ -1,17 +1,10 @@
 <?php
 
-use App\Event;
-use App\Events\cek_stok;
-use App\Http\Controllers\CommonController;
-use App\Http\Controllers\GetController;
-use App\Http\Controllers\QCController;
-use App\Notifications\InvoicePaid;
-use App\Part;
+use App\Events\SimpleNotifEvent;
+use App\Notifications\RealTimeNotification;
 use App\User;
-use GuzzleHttp\Middleware;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -738,3 +731,13 @@ Route::get('/eng/index', 'EngController@test');
 Route::get('/show_list/{produk?}/{document?}', 'EngController@show_list');
 Route::post('/eng/fileupload', 'EngController@fileupload')->name('eng.fileupload');
 Route::get('test_spa', 'EngController@index');
+
+
+Route::get('/notif', function(){
+    event(new SimpleNotifEvent('ari', 'hello there'));
+    // $user = User::first();
+    // $user->notify(new RealTimeNotification("Hello World"));
+});
+Route::get('/test', function(){
+    return view('test');
+});

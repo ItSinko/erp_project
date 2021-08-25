@@ -23,8 +23,8 @@
                     </div>
                     <div class="col-md-8">
                         <div class="card-body">
-                            <h5 class="card-title font-weight-bold">{{isset(Auth::user()->nama) && Auth::user()->nama}}</h5>
-                            <p class="card-text">{{ isset(Auth::user()->nama) && Auth::user()->divisi->nama }}</p>
+                            <h5 class="card-title font-weight-bold">@if(isset(Auth::user()->nama)){{ Auth::user()->nama}}@endif</h5>
+                            <p class="card-text">{{ Auth::user()->divisi->nama }}</p>
                         </div>
                     </div>
                 </div>

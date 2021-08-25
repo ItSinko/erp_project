@@ -928,13 +928,13 @@ return [
     */
 
     'filters' => [
-        JeroenNoten\LaravelAdminLte\Menu\Filters\GateFilter::class,
-        JeroenNoten\LaravelAdminLte\Menu\Filters\HrefFilter::class,
-        JeroenNoten\LaravelAdminLte\Menu\Filters\SearchFilter::class,
-        JeroenNoten\LaravelAdminLte\Menu\Filters\ActiveFilter::class,
-        JeroenNoten\LaravelAdminLte\Menu\Filters\ClassesFilter::class,
-        JeroenNoten\LaravelAdminLte\Menu\Filters\LangFilter::class,
-        JeroenNoten\LaravelAdminLte\Menu\Filters\DataFilter::class,
+        App\Menu\Filters\GateFilter::class,
+        App\Menu\Filters\HrefFilter::class,
+        App\Menu\Filters\SearchFilter::class,
+        App\Menu\Filters\ActiveFilter::class,
+        App\Menu\Filters\ClassesFilter::class,
+        App\Menu\Filters\LangFilter::class,
+        App\Menu\Filters\DataFilter::class,
     ],
     /*
     |--------------------------------------------------------------------------
