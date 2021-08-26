@@ -745,6 +745,7 @@ Route::get('/notif', function(){
     event(new SimpleNotifEvent('ari', 'hello there'));
     // $user = User::first();
     // $user->notify(new RealTimeNotification("Hello World"));
+    return "success";
 });
 Route::get('/test', function(){
     return view('test');
