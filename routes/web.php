@@ -705,6 +705,7 @@ Route::group(['prefix' => 'dc', 'middleware' => 'auth'], function () {
 //GBMP
 Route::group(['prefix' => 'gbmp'], function () {
     // TODO: make controller for gbmp
+    // TODO: make UI gbmp with react typescript
 });
 
 
