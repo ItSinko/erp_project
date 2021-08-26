@@ -704,11 +704,7 @@ Route::group(['prefix' => 'dc', 'middleware' => 'auth'], function () {
 
 //GBMP
 Route::group(['prefix' => 'gbmp'], function () {
-    Route::get('/part', 'GudangController@part');
-    Route::get('/data-part', 'GudangController@data_part');
-    Route::get('/input-form', 'GudangController@input_form');
-    Route::get('/part_order', 'GudangController@part_order');
-    Route::get('/data-part-order', 'GudangController@data_part_order');
+    // TODO: make controller for gbmp
 });
 
 
@@ -741,12 +737,12 @@ Route::post('/eng/fileupload', 'EngController@fileupload')->name('eng.fileupload
 Route::get('test_spa', 'EngController@index');
 
 
-Route::get('/notif', function(){
+Route::get('/notif', function () {
     event(new SimpleNotifEvent('ari', 'hello there'));
     // $user = User::first();
     // $user->notify(new RealTimeNotification("Hello World"));
     return "success";
 });
-Route::get('/test', function(){
+Route::get('/test', function () {
     return view('test');
 });

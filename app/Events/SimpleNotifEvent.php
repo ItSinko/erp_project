@@ -19,12 +19,12 @@ class SimpleNotifEvent implements ShouldBroadcast
      *
      * @return void
      */
-    public $name;
-    public $message;
-    public function __construct($name, $message)
+    public $user;
+    public $data;
+    public function __construct($user, $data)
     {
-        $this->name = $name;
-        $this->message = $message;
+        $this->user = $user;
+        $this->data = $data;
     }
 
     /**

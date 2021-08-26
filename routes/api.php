@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\SimpleNotifEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 

@@ -31,6 +31,7 @@ use App\HasilPengemasan;
 use App\PermintaanBahanBaku;
 use App\DetailPermintaanBahanBaku;
 use App\Bom_Version;
+use App\Events\SimpleNotifEvent;
 use App\GudangProduk;
 use App\MutasiGudangProduk;
 use App\PengembalianBarangGudang;
@@ -84,17 +85,6 @@ class PpicController extends Controller
 
     public function schedule_create(Request $request)
     {
-        // Update status column
-        if (isset($request->status_update) && $request->status_update == true) {
-            $event = Event::find((int)$request->id);
-            $event->status = $request->status;
-            $event->save();
-
-            event(new RealTimeMessage(Auth::user(), (string)$event->detail_produk->nama, (string)$event->jumlah_produksi));
-
-            return $event;
-        }
-
         // Create new row
         $request->validate([
             'id_produk' => 'required',
@@ -125,7 +115,15 @@ class PpicController extends Controller
     public function schedule_update(Request $request)
     {
         if (isset($request->confirmation)) {
-            Event::where('status', $request->status)->update(['konfirmasi' => $request->confirmation]);
+            if (isset($request->id)) {
+                Event::find($request->id)->update(['konfirmasi' => $request->confirmation]);
+            } else {
+                Event::where('status', $request->status)->update(['konfirmasi' => $request->confirmation]);
+            }
+            if ($request->confirmation < 3) {
+                $data = ["confirmation" => $request->confirmation, "message" => $request->message];
+                event(new SimpleNotifEvent(Auth::user(), $data));
+            }
         }
 
         return $request;
@@ -176,11 +174,6 @@ class PpicController extends Controller
             }
         }
         return "done";
-    }
-
-    public function schedule_notif(Request $request)
-    {
-        event(new RealTimeMessage(Auth::user(), $request->message, $request->status));
     }
 
     public function get_item_bom(Request $request)
