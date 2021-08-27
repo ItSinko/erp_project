@@ -23,7 +23,7 @@
         "laravel/ui": "^2",
         "laravelcollective/html": "^6.2",
         "maatwebsite/excel": "^3.1",
-        "mckenziearts/laravel-notify": "^2.2",
+        "mckenziearts/laravel-notify": "^2.1",
         "pusher/pusher-php-server": "^4",
         "wandersonwhcr/romans": "^1.2",
         "yajra/laravel-datatables-buttons": "^4.13",

@@ -508,6 +508,15 @@ Route::group(['prefix' => '/perakitan', 'middleware' => 'auth'], function () {
         Route::get('/bppb/{id}', 'QCController@perakitan_pemeriksaan_bppb')->name('perakitan.pemeriksaan.bppb');
         Route::get('/bppb/show/{id}', 'QCController@perakitan_pemeriksaan_bppb_show')->name('perakitan.pemeriksaan.bppb.show');
     });
+
+    Route::group(['prefix' => 'gudang_produk_gbj'], function () {
+        Route::get('', 'GbjController@gudang_produk')->name('gudang_produk_gbj');
+        Route::get('/show', 'GbjController@gudang_produk_show')->name('gudang_produk_gbj.show');
+        Route::get('/produk/show/{id}', 'GbjController@gudang_produk_produk_show')->name('gudang_produk_gbj.produk.show');
+        Route::get('/tanggal/show/{tanggal}', 'GbjController@gudang_produk_tanggal_show')->name('gudang_produk_gbj.tanggal.show');
+        Route::get('/create/{id}', 'GbjController@gudang_produk_create')->name('gudang_produk_gbj.create');
+        Route::put('/store/{id}', 'GbjController@gudang_produk_store')->name('gudang_produk_gbj.store');
+    });
     Route::get('/analisa_ps/show/{id}', 'EngController@perakitan_analisa_ps_show')->name('perakitan.analisa_ps.show');
     Route::get('/analisa_ps/create/{id}', 'EngController@perakitan_analisa_ps_create')->name('perakitan.analisa_ps.create');
     Route::put('/analisa_ps/store/{id}', 'EngController@perakitan_analisa_ps_store')->name('perakitan.analisa_ps.store');
@@ -740,11 +749,11 @@ Route::post('/eng/fileupload', 'EngController@fileupload')->name('eng.fileupload
 Route::get('test_spa', 'EngController@index');
 
 
-Route::get('/notif', function(){
+Route::get('/notif', function () {
     event(new SimpleNotifEvent('ari', 'hello there'));
     // $user = User::first();
     // $user->notify(new RealTimeNotification("Hello World"));
 });
-Route::get('/test', function(){
+Route::get('/test', function () {
     return view('test');
 });
