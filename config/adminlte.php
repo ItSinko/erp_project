@@ -901,6 +901,16 @@ return [
             'icon' => 'fas fa-circle',
             'auth' => [13],
         ],
+        [
+            'header' => 'Peminjaman',
+            'auth' => [13]
+        ],
+        [
+            'text' => 'Produk',
+            'url' => '/produk',
+            'icon' => 'fas fa-circle',
+            'auth' => [13],
+        ],
         ['header' => 'LOGOUT'],
         [
             'text' => 'Logout',

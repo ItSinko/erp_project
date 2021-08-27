@@ -7,12 +7,12 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>Kartu Stok</h1>
+                <h1>Gudang Produk</h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item active">Kartu Stok</li>
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item active">Gudang Produk</li>
                 </ol>
             </div>
         </div>
@@ -71,12 +71,16 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="form-group row">
-                            <label for="tanggal_daftar" class="col-sm-5 col-form-label" style="text-align:left;">Nomor Kartu</label>
-                            <span class="col-sm-7 col-form-label" style="text-align:right;" id="no_kartu">-</span>
+                            <label for="tanggal_daftar" class="col-sm-4 col-form-label" style="text-align:left;">Tipe Produk</label>
+                            <span class="col-sm-8 col-form-label" style="text-align:right;" id="tipe_produk">-</span>
                         </div>
                         <div class="form-group row">
-                            <label for="tanggal_permintaan_selesai" class="col-sm-5 col-form-label" style="text-align:left;">Nama Produk</label>
-                            <span class="col-sm-7 col-form-label" style="text-align:right;" id="nama_produk">-</span>
+                            <label for="tanggal_permintaan_selesai" class="col-sm-4 col-form-label" style="text-align:left;">Nama Produk</label>
+                            <span class="col-sm-8 col-form-label" style="text-align:right;" id="nama_produk">-</span>
+                        </div>
+                        <div class="form-group row">
+                            <label for="tanggal_permintaan_selesai" class="col-sm-5 col-form-label" style="text-align:left;">Stok Terakhir</label>
+                            <span class="col-sm-7 col-form-label" style="text-align:right;" id="jumlah_stok">-</span>
                         </div>
                         <div class="form-group row" id="kartu_stock_tambah" hidden>
                             <label for="tambah" class="col-sm-5 col-form-label" style="text-align:left;">Tambahkan </label>
@@ -89,11 +93,12 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table id="example2" class="table table-hover table-striped">
+                            <table id="example2" class="table table-hover table-striped" width="100%">
                                 <thead style="text-align: center;">
                                     <tr>
                                         <th>No</th>
                                         <th>Tanggal</th>
+                                        <th>Asal / Tujuan</th>
                                         <th>Keterangan</th>
                                         <th>Jumlah Masuk</th>
                                         <th>Jumlah Keluar</th>
@@ -115,11 +120,12 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table id="example1" class="table table-hover table-striped">
+                            <table id="example1" class="table table-hover table-striped" width="100%">
                                 <thead style="text-align: center;">
                                     <tr>
                                         <th>No</th>
                                         <th>Produk</th>
+                                        <th>Asal / Tujuan</th>
                                         <th>Keterangan</th>
                                         <th>Jumlah Masuk</th>
                                         <th>Jumlah Keluar</th>
@@ -171,6 +177,10 @@
                             name: 'produk'
                         },
                         {
+                            data: 'divisi_id',
+                            name: 'divisi_id'
+                        },
+                        {
                             data: 'keterangan',
                             name: 'keterangan'
                         },
@@ -206,18 +216,21 @@
                     success: function(data) {
                         console.log(data);
                         if (data != null) {
-                            $("#no_kartu").text(data['nomor']);
-                            $("#nama_produk").text(data['detail_produk']['nama']);
+                            $("#tipe_produk").text(data['gudang_produk']['detail_produk']['produk']['nama']);
+                            $("#nama_produk").text(data['gudang_produk']['detail_produk']['nama']);
+                            $("#jumlah_stok").text(data['jumlah_saldo'] + " pcs");
                             $("#kartu_stock_tambah").attr('hidden', true);
                         } else {
-                            $("#no_kartu").text("-");
+                            $("#tipe_produk").text("-");
                             $("#nama_produk").text("-");
+                            $("#jumlah_stok").text("-");
                             $("#kartu_stock_tambah").removeAttr('hidden');
                         }
                     },
                     error: function(data) {
-                        $("#no_kartu").text("-");
+                        $("#tipe_produk").text("-");
                         $("#nama_produk").text("-");
+                        $("#jumlah_stok").text("-");
                         $("#kartu_stock_tambah").removeAttr('hidden');
                     }
                 });
@@ -235,6 +248,10 @@
                         }, {
                             data: 'tanggal',
                             name: 'tanggal'
+                        },
+                        {
+                            data: 'divisi_id',
+                            name: 'divisi_id'
                         },
                         {
                             data: 'keterangan',
