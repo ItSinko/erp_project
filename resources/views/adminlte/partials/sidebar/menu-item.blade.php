@@ -1,8 +1,8 @@
-@inject('menuItemHelper', 'JeroenNoten\LaravelAdminLte\Helpers\MenuItemHelper')
+@inject('menuItemHelper', 'App\Helpers\MenuItemHelper')
 
 @if (isset($item['auth']))
 @foreach($item['auth'] as $user)
-@if ($user == Auth::user()->divisi_id)
+@if (isset(Auth::user()->divisi_id) && $user == Auth::user()->divisi_id)
 
 @if ($menuItemHelper->isHeader($item))
 

@@ -410,17 +410,47 @@ class KesehatanController extends Controller
                 'tgl_cek.required' => 'Tanggal pengecekan harus dipilih',
             ]
         );
-
         for ($i = 0; $i < count($request->karyawan_id); $i++) {
-            $kesehatan_mingguan_rapid = kesehatan_mingguan_rapid::create([
-                'karyawan_id' => $request->karyawan_id[$i],
-                'pemeriksa_id' => $request->pemeriksa_id[$i],
-                'tgl_cek' => $request->tgl_cek,
-                'hasil' => $request->hasil_covid[$i],
-                'jenis' => $request->jenis_tes[$i],
-                'keterangan' => $request->keterangan[$i]
-            ]);
+            if ($request->hasFile('file')) {
+                $kesehatan_mingguan_rapid = kesehatan_mingguan_rapid::create([
+                    'karyawan_id' => $request->karyawan_id[$i],
+                    'pemeriksa_id' => $request->pemeriksa_id[$i],
+                    'tgl_cek' => $request->tgl_cek,
+                    'hasil' => $request->hasil_covid[$i],
+                    'jenis' => $request->jenis_tes[$i],
+                    'keterangan' => $request->keterangan[$i],
+                    'file' => 'tes'
+                ]);
+            } else {
+                $kesehatan_mingguan_rapid = kesehatan_mingguan_rapid::create([
+                    'karyawan_id' => $request->karyawan_id[$i],
+                    'pemeriksa_id' => $request->pemeriksa_id[$i],
+                    'tgl_cek' => $request->tgl_cek,
+                    'hasil' => $request->hasil_covid[$i],
+                    'jenis' => $request->jenis_tes[$i],
+                    'keterangan' => $request->keterangan[$i],
+                    'file' => 'x',
+                ]);
+            }
         }
+
+        // if ($request->hasfile('filename')) {
+        //     $files = [];
+        //     foreach ($request->file('filename') as $file) {
+        //         if ($file->isValid()) {
+        //             $filename = round(microtime(true) * 1000) . '-' . str_replace(' ', '-', $file->getClientOriginalName());
+        //             $file->move(public_path('images'), $filename);
+        //             $files[] = [
+        //                 'filename' => $filename,
+        //             ];
+        //         }
+        //     }
+        //     Multipleuploads::insert($files);
+        //     echo 'Success';
+        // } else {
+        //     echo 'Gagal';
+        // }
+
 
         if ($kesehatan_mingguan_rapid) {
             return redirect()->back()->with('success', 'Berhasil menambahkan data');

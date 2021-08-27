@@ -200,7 +200,6 @@
       theme: 'bootstrap4',
     })
 
-
     $(document).ready(function() {
       $('select[id="tipe' + i + '"]').on('change', function() {
         var id = jQuery(this).val();

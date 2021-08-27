@@ -15,7 +15,7 @@
             <div class="card mb-3 user-panel-bg" id="user-panel-profil" style="max-width: 540px; margin-top:20px;">
                 <div class="row no-gutters" id="user-image">
                     <div class="col-md-4" style="margin:auto; text-align:center; padding-left:10px;">
-                        @if(Auth::user()->foto != NULL)
+                        @if(isset(Auth::user()->foto) && Auth::user()->foto != NULL)
                         <img src="{{url('assets/image/user')}}/{{Auth::user()->foto}}" class="karyawan-img-sm-md circle-button">
                         @else
                         <img src="{{url('assets/image/user')}}/unknown.png" class="karyawan-img-sm-md circle-button">
@@ -23,7 +23,7 @@
                     </div>
                     <div class="col-md-8">
                         <div class="card-body">
-                            <h5 class="card-title font-weight-bold">{{Auth::user()->nama}}</h5>
+                            <h5 class="card-title font-weight-bold">@if(isset(Auth::user()->nama)){{ Auth::user()->nama}}@endif</h5>
                             <p class="card-text">{{ Auth::user()->divisi->nama }}</p>
                         </div>
                     </div>
