@@ -32,6 +32,7 @@ use App\PermintaanBahanBaku;
 use App\DetailPermintaanBahanBaku;
 use App\Bom_Version;
 use App\GudangProduk;
+use App\HistoriMutasiGudangProduk;
 use App\MutasiGudangProduk;
 use App\PengembalianBarangGudang;
 use App\ProdukBillOfMaterial;
@@ -847,10 +848,13 @@ class PpicController extends Controller
         $pbj = DetailPenyerahanBarangJadi::where('penyerahan_barang_jadi_id', $s->id)->get();
         $pbjc = $pbj->count();
         $bool = true;
+        $arr = array();
         foreach ($pbj as $i) {
             $hp = HasilPengemasan::where('hasil_perakitan_id', $i->hasil_perakitan_id)
                 ->orderBy('updated_at', 'desc')
                 ->first();
+
+            array_push($arr, $i->hasil_perakitan_id);
             $hps = HasilPengemasan::find($hp->id);
             $hps->status = "penyerahan";
             $us = $hps->save();
@@ -864,6 +868,7 @@ class PpicController extends Controller
                 ['detail_produk_id', '=', $dp],
                 ['divisi_id', '=', Auth::user()->divisi_id]
             ])->first();
+            $gpid = "";
             if ($gp) {
                 $m = MutasiGudangProduk::where('gudang_produk_id', $gp->id)->orderBy('id', 'desc')->first();
 
@@ -876,6 +881,7 @@ class PpicController extends Controller
                     'jumlah_keluar' => '0',
                     'jumlah_saldo' => $pbjc + $m->jumlah_saldo
                 ]);
+                $gpid = $gpc->id;
             } else if (!$gp) {
                 $gpi = GudangProduk::create([
                     'detail_produk_id' => $dp,
@@ -891,6 +897,17 @@ class PpicController extends Controller
                         'jumlah_masuk' => $pbjc,
                         'jumlah_keluar' => '0',
                         'jumlah_saldo' => $pbjc
+                    ]);
+                    $gpid = $gpc->id;
+                }
+            }
+            if ($gpc != "") {
+                echo json_encode($arr);
+                for ($z = 0; $z < count($arr); $z++) {
+                    HistoriMutasiGudangProduk::create([
+                        'mutasi_gudang_produk_id' => $gpid,
+                        'hasil_perakitan_id' => $arr[$z],
+                        'status' => 'T'
                     ]);
                 }
             }

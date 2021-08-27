@@ -62,4 +62,9 @@ class HasilPerakitan extends Model
     {
         return $this->hasMany(LkpLupPengujian::class);
     }
+
+    public function HistoriMutasiGudangProduk()
+    {
+        return $this->hasMany(HistoriMutasiGudangProduk::class);
+    }
 }
