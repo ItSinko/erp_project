@@ -364,8 +364,9 @@ class KesehatanController extends Controller
         $pengecek = Karyawan::where('divisi_id', '28')
             ->orWhere('divisi_id', '22')
             ->get();
+        $karyawan = Karyawan::all();
         $divisi = Divisi::all();
-        return view('page.kesehatan.kesehatan_mingguan_tambah', ['divisi' => $divisi, 'pengecek' => $pengecek]);
+        return view('page.kesehatan.kesehatan_mingguan_tambah', ['divisi' => $divisi, 'pengecek' => $pengecek, 'karyawan' => $karyawan]);
     }
     public function kesehatan_mingguan_tensi_aksi_tambah(Request $request)
     {
@@ -433,7 +434,6 @@ class KesehatanController extends Controller
                 ]);
             }
         }
-
         // if ($request->hasfile('filename')) {
         //     $files = [];
         //     foreach ($request->file('filename') as $file) {
@@ -450,7 +450,6 @@ class KesehatanController extends Controller
         // } else {
         //     echo 'Gagal';
         // }
-
 
         if ($kesehatan_mingguan_rapid) {
             return redirect()->back()->with('success', 'Berhasil menambahkan data');
