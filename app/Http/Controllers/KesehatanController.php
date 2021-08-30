@@ -368,6 +368,15 @@ class KesehatanController extends Controller
         $divisi = Divisi::all();
         return view('page.kesehatan.kesehatan_mingguan_tambah', ['divisi' => $divisi, 'pengecek' => $pengecek, 'karyawan' => $karyawan]);
     }
+    public function kesehatan_mingguan_rapid_tambah()
+    {
+        $pengecek = Karyawan::where('divisi_id', '28')
+            ->orWhere('divisi_id', '22')
+            ->get();
+        $karyawan = Karyawan::all();
+        $divisi = Divisi::all();
+        return view('page.kesehatan.kesehatan_mingguan_rapid_tambah', ['divisi' => $divisi, 'pengecek' => $pengecek, 'karyawan' => $karyawan]);
+    }
     public function kesehatan_mingguan_tensi_aksi_tambah(Request $request)
     {
         $x = $this->validate(
@@ -399,58 +408,25 @@ class KesehatanController extends Controller
     }
     public function kesehatan_mingguan_rapid_aksi_tambah(Request $request)
     {
-        $this->validate(
-            $request,
-            [
-                'divisi' => 'required',
-                'tgl_cek' => 'required',
-                'pemeriksa_id.*' => 'required',
-            ],
-            [
-                'divisi.required' => 'Divisi harus di pilih',
-                'tgl_cek.required' => 'Tanggal pengecekan harus dipilih',
-            ]
-        );
         for ($i = 0; $i < count($request->karyawan_id); $i++) {
-            if ($request->hasFile('file')) {
-                $kesehatan_mingguan_rapid = kesehatan_mingguan_rapid::create([
-                    'karyawan_id' => $request->karyawan_id[$i],
-                    'pemeriksa_id' => $request->pemeriksa_id[$i],
-                    'tgl_cek' => $request->tgl_cek,
-                    'hasil' => $request->hasil_covid[$i],
-                    'jenis' => $request->jenis_tes[$i],
-                    'keterangan' => $request->keterangan[$i],
-                    'file' => 'tes'
-                ]);
-            } else {
-                $kesehatan_mingguan_rapid = kesehatan_mingguan_rapid::create([
-                    'karyawan_id' => $request->karyawan_id[$i],
-                    'pemeriksa_id' => $request->pemeriksa_id[$i],
-                    'tgl_cek' => $request->tgl_cek,
-                    'hasil' => $request->hasil_covid[$i],
-                    'jenis' => $request->jenis_tes[$i],
-                    'keterangan' => $request->keterangan[$i],
-                    'file' => 'x',
-                ]);
-            }
-        }
-        // if ($request->hasfile('filename')) {
-        //     $files = [];
-        //     foreach ($request->file('filename') as $file) {
-        //         if ($file->isValid()) {
-        //             $filename = round(microtime(true) * 1000) . '-' . str_replace(' ', '-', $file->getClientOriginalName());
-        //             $file->move(public_path('images'), $filename);
-        //             $files[] = [
-        //                 'filename' => $filename,
-        //             ];
-        //         }
-        //     }
-        //     Multipleuploads::insert($files);
-        //     echo 'Success';
-        // } else {
-        //     echo 'Gagal';
-        // }
 
+            if (!empty($request->file[$i])) {
+                $file_name = $request->file('file')[$i]->getClientOriginalName();
+                $x = $request->file('file')[$i]->move(base_path('\public\file\kesehatan_rapid'), $request->date[$i] . '-' . $file_name);
+            } else {
+                $file_name = NULL;
+            }
+
+            $kesehatan_mingguan_rapid = kesehatan_mingguan_rapid::create([
+                'karyawan_id' => $request->karyawan_id[$i],
+                'pemeriksa_id' => $request->pemeriksa_id[$i],
+                'tgl_cek' => $request->date[$i],
+                'hasil' => $request->hasil_covid[$i],
+                'jenis' => $request->jenis_tes[$i],
+                'keterangan' => $request->keterangan[$i],
+                'file' => $file_name
+            ]);
+        }
         if ($kesehatan_mingguan_rapid) {
             return redirect()->back()->with('success', 'Berhasil menambahkan data');
         } else {
@@ -517,7 +493,15 @@ class KesehatanController extends Controller
                 $btn = '<div class="inline-flex"><button type="button" id="edit_rapid"  class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-edit"></i></button></div>';
                 return $btn;
             })
-            ->rawColumns(['button'])
+            ->addColumn('cetak', function ($data) {
+                if ($data->file == NULL) {
+                    $btn = '<a  class="disabled"  aria-disabled="true"><button type="button" class="btn btn-block btn-warning karyawan-img-small disabled" style="border-radius:50%;" ><i class="fas fa-file"></i></button></a>';
+                } else {
+                    $btn = '<a href="public/file/kesehatan_rapid/' . $data->file . '" target="_break"><button type="button" class="btn btn-block btn-warning karyawan-img-small " style="border-radius:50%;" ><i class="fas fa-file"></i></button></a>';
+                }
+                return $btn;
+            })
+            ->rawColumns(['button', 'cetak'])
             ->make(true);
     }
     public function kesehatan_mingguan_detail()
@@ -526,7 +510,6 @@ class KesehatanController extends Controller
         $karyawan = Karyawan::orderBy('nama', 'ASC')
             ->has('Kesehatan_awal')
             ->get();
-
         return view('page.kesehatan.kesehatan_mingguan_detail', ['karyawan' => $karyawan]);
     }
     public function kesehatan_mingguan_tensi_detail_data($karyawan_id)
@@ -545,7 +528,6 @@ class KesehatanController extends Controller
     public function kesehatan_mingguan_rapid_detail_data($karyawan_id)
     {
         $data = kesehatan_mingguan_rapid::where('karyawan_id', $karyawan_id);
-
         return datatables::of($data)
             ->addIndexColumn()
             ->addColumn('z', function ($data) {
@@ -565,7 +547,6 @@ class KesehatanController extends Controller
         $labels3 = $data->pluck('diastolik');
         return response()->json(compact('tgl', 'labels2', 'labels3', 'data2', 'data3', 'data4', 'data5'));
     }
-
     public function kesehatan_bulanan_tambah()
     {
         $divisi = Divisi::all();

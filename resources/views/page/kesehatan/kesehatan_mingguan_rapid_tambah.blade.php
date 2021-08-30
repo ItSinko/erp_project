@@ -25,116 +25,8 @@
                 Data gagal ditambahkan
             </div>
             @endif
-
-            <div class="col-lg-12">
-                <form action="/kesehatan_harian/aksi_tambah" method="post">
-                    {{ csrf_field() }}
-                    <div class="card">
-                        <div class="card-header bg-success">
-                            <div class="card-title"><i class="fas fa-plus-circle"></i>&nbsp;Tambah</div>
-                        </div>
-                        <div class="card-body">
-                            <div class="col-lg-12">
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <div class="form-horizontal">
-                                            <div class="form-group row">
-                                                <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Pilih Form</label>
-                                                <div class="col-sm-8">
-                                                    <select type="text" class="form-control @error('form') is-invalid @enderror select2" name="form" style="width:45%;" id="form">
-                                                        <option value="0">Pilih Data</option>
-                                                        <option value="tensi">Pengukuran Tensi</option>
-                                                        <option value="rapid">Pemeriksaan Covid</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-
-            </div>
         </div>
-        <div class="col-lg-12" id="tensi" style="display:none">
-            <div class="col-lg-12">
-                <form action="/kesehatan_mingguan_tensi/aksi_tambah" method="post">
-                    {{ csrf_field() }}
-                    <div class="card">
-                        <div class="card-header bg-success">
-                            <div class="card-title"><i class="fas fa-plus-circle"></i>&nbsp;Pengukuran Tensi</div>
-                        </div>
-                        <div class="card-body">
-                            <div class="col-lg-12">
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <div class="form-horizontal">
-                                            <div class="form-group row">
-                                                <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Divisi</label>
-                                                <div class="col-sm-8">
-                                                    <select type="text" class="form-control @error('divisi') is-invalid @enderror select2" name="divisi" style="width:45%;">
-                                                        <option value=""></option>
-                                                        @foreach ($divisi as $d)
-                                                        <option value="{{$d->id}}">{{$d->nama}}</option>
-                                                        @endforeach
-                                                    </select>
-                                                    @if($errors->has('divisi'))
-                                                    <div class="text-danger">
-                                                        {{ $errors->first('divisi')}}
-                                                    </div>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Tanggal</label>
-                                                <div class="col-sm-8">
-                                                    <input type="date" class="form-control @error('tgl') is-invalid @enderror " name="tgl_cek" style="width:45%;" id="tgl">
-                                                    @if($errors->has('tgl_cek'))
-                                                    <div class="text-danger">
-                                                        {{ $errors->first('tgl_cek')}}
-                                                    </div>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <table id="tabel_tensi" class="table table-hover styled-table table-striped">
-                                            <thead style="text-align: center;">
-                                                <tr>
-                                                    <th></th>
-                                                    <th></th>
-                                                    <th></th>
-                                                    <th colspan="2">Tekanan Darah</th>
-                                                    <th></th>
-                                                </tr>
-                                                <tr>
-                                                    <th>No</th>
-                                                    <th>Tanggal</th>
-                                                    <th>Nama</th>
-                                                    <th>Systol (mmHg)</th>
-                                                    <th>Dyastol (mmHg)</th>
-                                                    <th>Catatan</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody style="text-align: center;">
-                                                <tr>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-footer">
-                            <span class="float-left"><a class="btn btn-danger rounded-pill" href="/kesehatan_mingguan"><i class="fas fa-times"></i>&nbsp;Batal</a></span>
-                            <span class="float-right"><button class="btn btn-success rounded-pill" id="button_tambah"><i class="fas fa-plus"></i>&nbsp;Tambah Data</button></span>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <div class="col-lg-12" id="rapid" style="display:none">
+        <div class="col-lg-12" id="rapid">
             <div class="col-lg-12">
                 <form action="/kesehatan_mingguan_rapid/aksi_tambah" method="post" enctype="multipart/form-data">
                     {{ csrf_field() }}
@@ -259,24 +151,6 @@
 </section>
 @endsection
 @section('adminlte_js')
-<script>
-    $('#form').change(function() {
-        var form = $(this).val();
-        if (form == 'tensi') {
-            $("#rapid").hide('1000');
-            $("#detail_gagal").hide('1000');
-            $("#tensi").show('1000');
-        } else if (form == 'rapid') {
-            $("#detail_gagal").hide('1000');
-            $("#tensi").hide('1000');
-            $("#rapid").show('1000');
-        } else {
-            $("#tensi").hide('1000');
-            $("#detail_gagal").show('1000');
-            $("#rapid").hide('1000');
-        }
-    });
-</script>
 <script>
     $(function() {
         function numberRows($t) {

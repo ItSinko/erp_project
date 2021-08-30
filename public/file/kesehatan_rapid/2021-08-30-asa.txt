@@ -1,0 +1,39 @@
+23 Juli
+Ijin :6
+Cuti :-
+C khusus : 1 
+Vaksin :2 
+Terpapar : 1
+Isoman : 44 
+Hadir : 149
+
+26 Juli
+Ijin : 7
+Cuti : 1
+C khsus : 1
+Vaksin : 2
+Terpapar : -
+Isoman : 41
+Hadir : 151
+
+27 Juli
+Ijin : 1,
+Cuti : 1 
+Vaksin 1 
+Terpapar : 1
+Isoman : 42
+Hadir : 157
+
+28 Juli
+Ijin : -,
+Cuti : -,
+Vaksin : 1 ,
+Terpapar : -, 
+Isoman : 43
+Hadir : 159
+
+
+Total Karyawan : 203
+Vaksin 1:40
+Vaksin 2 : 20 
+

@@ -70,6 +70,7 @@ Route::get('/kesehatan_harian/detail/{id}', 'KesehatanController@kesehatan_haria
 Route::get('/kesehatan_mingguan', 'KesehatanController@kesehatan_mingguan');
 /* Tambah */
 Route::get('/kesehatan_mingguan/tambah', 'KesehatanController@kesehatan_mingguan_tambah');
+Route::get('/kesehatan_mingguan_rapid/tambah', 'KesehatanController@kesehatan_mingguan_rapid_tambah');
 Route::post('/kesehatan_mingguan_tensi/aksi_tambah', 'KesehatanController@kesehatan_mingguan_tensi_aksi_tambah');
 Route::put('/kesehatan_mingguan_tensi/aksi_ubah', 'KesehatanController@kesehatan_mingguan_tensi_aksi_ubah');
 Route::put('/kesehatan_mingguan_rapid/aksi_ubah', 'KesehatanController@kesehatan_mingguan_rapid_aksi_ubah');
@@ -741,11 +742,11 @@ Route::post('/eng/fileupload', 'EngController@fileupload')->name('eng.fileupload
 Route::get('test_spa', 'EngController@index');
 
 
-Route::get('/notif', function(){
+Route::get('/notif', function () {
     event(new SimpleNotifEvent('ari', 'hello there'));
     // $user = User::first();
     // $user->notify(new RealTimeNotification("Hello World"));
 });
-Route::get('/test', function(){
+Route::get('/test', function () {
     return view('test');
 });
