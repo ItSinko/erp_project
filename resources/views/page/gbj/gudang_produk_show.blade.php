@@ -103,6 +103,7 @@
                                         <th>Jumlah Masuk</th>
                                         <th>Jumlah Keluar</th>
                                         <th>Jumlah Saldo</th>
+                                        <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody style="text-align:center;" id="tbodies">
@@ -130,6 +131,7 @@
                                         <th>Jumlah Masuk</th>
                                         <th>Jumlah Keluar</th>
                                         <th>Jumlah Saldo</th>
+                                        <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody style="text-align:center;" id="tbodies">
@@ -142,6 +144,19 @@
             </div>
         </div>
 
+        <div class="modal fade" id="historimutasimodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color:	#006400;">
+                        <h4 class="modal-title" id="myModalLabel" style="color:white;">Histori Mutasi</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body" id="historimutasi">
+
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 @stop
@@ -149,6 +164,47 @@
 @section('adminlte_js')
 <script>
     $(function() {
+        $(document).on('click', '.historimutasimodal', function(event) {
+            event.preventDefault();
+            var href = $(this).attr('data-attr');
+            var dataid = $(this).attr('data-id');
+            $.ajax({
+                url: "{{route('gudang_produk_gbj.mutasi')}}",
+                beforeSend: function() {
+                    $('#loader').show();
+                },
+                // return the result
+                success: function(result) {
+                    $('#historimutasimodal').modal("show");
+                    $('#historimutasi').html(result).show();
+                    console.log(result);
+                    $('#detaildata').DataTable({
+                        processing: true,
+                        serverSide: true,
+                        ajax: href,
+                        columns: [{
+                            data: 'DT_RowIndex',
+                            name: 'DT_RowIndex',
+                            orderable: false,
+                            searchable: false
+                        }, {
+                            data: 'barcode',
+                            name: 'barcode'
+                        }]
+                    });
+                },
+                complete: function() {
+                    $('#loader').hide();
+                },
+                error: function(jqXHR, testStatus, error) {
+                    console.log(error);
+                    alert("Page " + href + " cannot open. Error:" + error);
+                    $('#loader').hide();
+                },
+                timeout: 8000
+            })
+        });
+
         $('input[type="radio"][name="tampilan"]').on('change', function() {
             console.log($(this).val());
             if ($(this).val() == "hari_ini") {
@@ -195,6 +251,10 @@
                         {
                             data: 'jumlah_saldo',
                             name: 'jumlah_saldo'
+                        },
+                        {
+                            data: 'aksi',
+                            name: 'aksi'
                         },
                     ]
                 });
@@ -268,6 +328,10 @@
                         {
                             data: 'jumlah_saldo',
                             name: 'jumlah_saldo'
+                        },
+                        {
+                            data: 'aksi',
+                            name: 'aksi'
                         },
                     ]
                 });

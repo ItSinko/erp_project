@@ -522,13 +522,18 @@ Route::group(['prefix' => 'gudang_produk_gbj', 'middleware' => 'auth'], function
     Route::get('/tanggal/show/{tanggal}', 'GbjController@gudang_produk_tanggal_show')->name('gudang_produk_gbj.tanggal.show');
     Route::get('/create/{id}', 'GbjController@gudang_produk_create')->name('gudang_produk_gbj.create');
     Route::put('/store/{id}', 'GbjController@gudang_produk_store')->name('gudang_produk_gbj.store');
+    Route::get('/mutasi', 'GbjController@mutasi_gudang_produk')->name('gudang_produk_gbj.mutasi');
+    Route::get('/mutasi/show/{id}', 'GbjController@mutasi_gudang_produk_show')->name('gudang_produk_gbj.mutasi.show');
+});
+
+Route::group(['prefix' => 'surat_jalan', 'middleware' => 'auth'], function () {
+    Route::get('', 'GbjController@surat_jalan')->name('surat_jalan');
 });
 
 // PENGUJIAN
 Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {
     Route::get('/', 'QCController@pengujian')->name('pengujian');
     Route::get('/pdf_lkp/{produk}', 'QCController@pdf_lkp')->name('pdf_lkp');
-
 
     Route::get('/bppb/{id}', 'QCController@pengujian_bppb')->name('pengujian.bppb');
     Route::get('/bppb/show/{id}', 'QCController@pengujian_bppb_show')->name('pengujian.bppb.show');
@@ -670,7 +675,6 @@ Route::group(['prefix' => '/pengemasan', 'middleware' => 'auth'], function () {
     Route::put('/analisa_ps/store/{id}', 'EngController@pengemasan_analisa_ps_store')->name('pengemasan.analisa_ps.store');
 });
 
-
 // PERBAIKAN
 Route::group(['prefix' => '/perbaikan', 'middleware' => 'auth'], function () {
     Route::get('/produksi', 'ProduksiController@perbaikan_produksi')->name('perbaikan.produksi');
@@ -730,7 +734,6 @@ Route::group(['prefix' => 'ppic'], function () {
     Route::post('/schedule/update', 'PpicController@schedule_update');
     Route::get('/get-version-bom/{id}', 'PpicController@getVersionBomProduct');
     Route::get('/get-max-product/{id}', 'PpicController@getMaxProduct');
-
 
     Route::get('/get_item_bom', 'PpicController@get_item_bom');
     Route::get('/get_versi_bom', 'PpicController@get_versi_bom');

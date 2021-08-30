@@ -7,6 +7,7 @@ use App\MutasiGudangProduk;
 use App\HasilPerakitan;
 use App\DetailProduk;
 use App\Divisi;
+use App\HistoriMutasiGudangProduk;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,6 +22,27 @@ class GbjController extends Controller
     {
         $p = DetailProduk::all();
         return view('page.gbj.gudang_produk_show', ['p' => $p]);
+    }
+
+    public function mutasi_gudang_produk()
+    {
+        return view('page.gbj.mutasi_gudang_produk_show');
+    }
+
+    public function mutasi_gudang_produk_show($id)
+    {
+        $s = HistoriMutasiGudangProduk::where('mutasi_gudang_produk_id', $id)->get();
+        return DataTables::of($s)
+            ->addIndexColumn()
+            ->addColumn('barcode', function ($s) {
+                if ($s->HasilPerakitan->HasilPengemasan->first()->no_barcode != "") {
+                    return str_replace("/", "", $s->HasilPerakitan->HasilPengemasan->first()->Pengemasan->alias_barcode) . $s->HasilPerakitan->HasilPengemasan->first()->no_barcode;
+                } else {
+                    return str_replace("/", "", $s->HasilPerakitan->HasilMonitoringProses->first()->MonitoringProses->alias_barcode) . $s->HasilPerakitan->HasilMonitoringProses->first()->no_barcode;
+                }
+            })
+            ->rawColumns(['barcode'])
+            ->make(true);
     }
 
     public function gudang_produk_show()
@@ -67,6 +89,13 @@ class GbjController extends Controller
             ->editColumn('divisi_id', function ($s) {
                 return $s->Divisi->nama;
             })
+            ->addColumn('aksi', function ($s) {
+                $btn = '<a class="historimutasimodal" data-toggle="modal" data-target="#historimutasimodal" data-attr="/gudang_produk_gbj/mutasi/show/' . $s->id . '" data-id="' . $s->id . '">';
+                $btn .= '<div><button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fa fa-search"></i></button></div>';
+                $btn .= '<div><small>Lihat No Seri</small></div></a>';
+                return $btn;
+            })
+            ->rawColumns(['aksi'])
             ->make(true);
     }
 
@@ -83,6 +112,13 @@ class GbjController extends Controller
             ->editColumn('divisi_id', function ($s) {
                 return $s->Divisi->nama;
             })
+            ->addColumn('aksi', function ($s) {
+                $btn = '<a class="historimutasimodal" data-toggle="modal" data-target="#historimutasimodal" data-attr="/gudang_produk_gbj/mutasi/" data-id="' . $s->id . '">';
+                $btn .= '<div><button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fa fa-search"></i></button></div>';
+                $btn .= '<div><small>Lihat No Seri</small></div></a>';
+                return $btn;
+            })
+            ->rawColumns(['aksi'])
             ->make(true);
     }
 
@@ -152,5 +188,10 @@ class GbjController extends Controller
                 return redirect()->back()->with('error', 'Gagal membuat Kartu Stock');
             }
         }
+    }
+
+    public function surat_jalan()
+    {
+        return view('page.gbj.surat_jalan_show');
     }
 }
