@@ -71,6 +71,7 @@ Route::get('/kesehatan_mingguan', 'KesehatanController@kesehatan_mingguan');
 /* Tambah */
 Route::get('/kesehatan_mingguan/tambah', 'KesehatanController@kesehatan_mingguan_tambah');
 Route::get('/kesehatan_mingguan_rapid/tambah', 'KesehatanController@kesehatan_mingguan_rapid_tambah');
+Route::get('/kesehatan_mingguan_tensi/tambah', 'KesehatanController@kesehatan_mingguan_tensi_tambah');
 Route::post('/kesehatan_mingguan_tensi/aksi_tambah', 'KesehatanController@kesehatan_mingguan_tensi_aksi_tambah');
 Route::put('/kesehatan_mingguan_tensi/aksi_ubah', 'KesehatanController@kesehatan_mingguan_tensi_aksi_ubah');
 Route::put('/kesehatan_mingguan_rapid/aksi_ubah', 'KesehatanController@kesehatan_mingguan_rapid_aksi_ubah');

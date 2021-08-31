@@ -404,31 +404,31 @@ return [
                         ]
                     ],
                 ],
-                [
-                    'icon' => 'fas fa-heartbeat',
-                    'text' => 'Harian',
-                    'auth' => [28],
-                    'submenu' => [
-                        [
-                            'icon' => 'fas fa-table',
-                            'text' => 'Data',
-                            'auth' => [28],
-                            'url'  => '/kesehatan_harian',
-                        ],
-                        [
-                            'icon' => 'fas fa-info-circle',
-                            'text' => 'Detail',
-                            'auth' => [28],
-                            'url'  => '/kesehatan_harian/detail',
-                        ],
-                        [
-                            'icon' => 'fas fa-file-medical',
-                            'text' => 'Laporan',
-                            'auth' => [28],
-                            'url'  => '/laporan_harian',
-                        ]
-                    ],
-                ],
+                // [
+                //     'icon' => 'fas fa-heartbeat',
+                //     'text' => 'Harian',
+                //     'auth' => [28],
+                //     'submenu' => [
+                //         [
+                //             'icon' => 'fas fa-table',
+                //             'text' => 'Data',
+                //             'auth' => [28],
+                //             'url'  => '/kesehatan_harian',
+                //         ],
+                //         [
+                //             'icon' => 'fas fa-info-circle',
+                //             'text' => 'Detail',
+                //             'auth' => [28],
+                //             'url'  => '/kesehatan_harian/detail',
+                //         ],
+                //         [
+                //             'icon' => 'fas fa-file-medical',
+                //             'text' => 'Laporan',
+                //             'auth' => [28],
+                //             'url'  => '/laporan_harian',
+                //         ]
+                //     ],
+                // ],
                 [
                     'icon' => 'fas fa-vial',
                     'text' => 'Mingguan',

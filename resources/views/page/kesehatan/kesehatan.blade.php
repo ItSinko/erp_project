@@ -16,7 +16,7 @@
           <table id="tabel" class="table table-hover styled-table table-striped">
             <thead style="text-align: center;">
               <tr>
-                <th colspan="12">
+                <th colspan="14">
                   <a href="/kesehatan/tambah" style="color: white;"><button type="button" class="btn btn-block btn-success btn-sm" style="width: 200px;"><i class="fas fa-plus"></i> &nbsp; Tambah</i></button></a>
                 </th>
               </tr>
@@ -33,6 +33,7 @@
                 <th>Suhu</th>
                 <th>SPO2</th>
                 <th>Pr</th>
+                <th>Keterangan</th>
                 <th></th>
               </tr>
             </thead>
@@ -181,6 +182,9 @@
         },
         {
           data: 'pr'
+        },
+        {
+          data: 'ket_vaksin'
         },
         {
           data: 'button'

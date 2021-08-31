@@ -28,7 +28,7 @@
         </div>
         <div class="col-lg-12" id="rapid">
             <div class="col-lg-12">
-                <form action="/kesehatan_mingguan_rapid/aksi_tambah" method="post" enctype="multipart/form-data">
+                <form action="/kesehatan_mingguan_rapid/aksi_tambah" method="post" enctype="multipart/form-data" id="form">
                     {{ csrf_field() }}
                     <div class="card">
                         <div class="card-header bg-success">
@@ -152,6 +152,18 @@
 @endsection
 @section('adminlte_js')
 <script>
+    $(document).ready(function() {
+        $('#form').validate({
+            rules: {
+                "jenis_tes[]": "required"
+            },
+            messages: {
+                "jenis_tes[]": "Please Insert"
+            }
+        });
+    });
+</script>
+<script>
     $(function() {
         function numberRows($t) {
             var c = 0 - 1;
@@ -179,7 +191,6 @@
         }
 
         $('#tabel_rapid').on("change", ".jenis_tes", function() {
-
             var x = $(this).closest('tr').find('.jenis_tes').val();
             var y = this.id;
 

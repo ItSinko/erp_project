@@ -182,10 +182,10 @@ class KesehatanController extends Controller
     public function kesehatan_harian_tambah()
     {
 
-        $data = Karyawan::with('divisi')
+        $karyawan = Karyawan::with('divisi')
             ->get();
         $divisi = Divisi::all();
-        return view('page.kesehatan.kesehatan_harian_tambah', ['data' => $data, 'divisi' => $divisi]);
+        return view('page.kesehatan.kesehatan_harian_tambah', ['karyawan' => $karyawan, 'divisi' => $divisi]);
     }
 
     public function kesehatan_harian_tambah_data($id)
@@ -368,6 +368,15 @@ class KesehatanController extends Controller
         $divisi = Divisi::all();
         return view('page.kesehatan.kesehatan_mingguan_tambah', ['divisi' => $divisi, 'pengecek' => $pengecek, 'karyawan' => $karyawan]);
     }
+    public function kesehatan_mingguan_tensi_tambah()
+    {
+        $pengecek = Karyawan::where('divisi_id', '28')
+            ->orWhere('divisi_id', '22')
+            ->get();
+        $karyawan = Karyawan::all();
+        $divisi = Divisi::all();
+        return view('page.kesehatan.kesehatan_mingguan_tensi_tambah', ['divisi' => $divisi, 'pengecek' => $pengecek, 'karyawan' => $karyawan]);
+    }
     public function kesehatan_mingguan_rapid_tambah()
     {
         $pengecek = Karyawan::where('divisi_id', '28')
@@ -382,19 +391,23 @@ class KesehatanController extends Controller
         $x = $this->validate(
             $request,
             [
-                'tgl_cek' => 'required ',
-                'divisi' => ['required', Rule::unique('divisis')
-                    ->where('id', $request->divisi)],
+                'karyawan_id.*' => 'required ',
+                'date.*' => 'required ',
+                'sistolik.*' => 'required ',
+                'diastolik.*' => 'required ',
+
             ],
             [
-                'divisi.required' => 'Divisi harus di pilih',
-                'tgl_cek.required' => 'Tanggal pengecekan harus dipilih',
+                'karyawan_id.required' => 'Karyawan harus di pilih',
+                'date.required' => 'Tanggal harus di pilih',
+                'diastolik.required' => 'Hasil Diastolik harus di isi',
+                'sistolik.required' => 'Hasil Sistolik harus di isi',
             ]
         );
         for ($i = 0; $i < count($request->karyawan_id); $i++) {
             $kesehatan_mingguan_tensi = kesehatan_mingguan_tensi::create([
                 'karyawan_id' => $request->karyawan_id[$i],
-                'tgl_cek' => $request->tgl_cek,
+                'tgl_cek' => $request->date[$i],
                 'sistolik' => $request->sistolik[$i],
                 'diastolik' => $request->diastolik[$i],
                 'keterangan' => $request->keterangan[$i]
@@ -408,6 +421,23 @@ class KesehatanController extends Controller
     }
     public function kesehatan_mingguan_rapid_aksi_tambah(Request $request)
     {
+        $x = $this->validate(
+            $request,
+            [
+                'jenis_tes.*' => 'required ',
+                'pemeriksa_id.*' => 'required ',
+                'date.*' => 'required ',
+                'hasil_covid.*' => 'required ',
+                'file.*' => 'mimes:pdf|max:50000 ',
+
+            ],
+            [
+                'jenis_tes.required' => 'Jenis Tes harus di pilih',
+                'pemeriksa_id.required' => 'Pemeriksa harus di pilih',
+                'date.required' => 'Tanggal harus di pilih',
+                'hasil_covid.required' => 'Hasil Covid harus di pilih',
+            ]
+        );
         for ($i = 0; $i < count($request->karyawan_id); $i++) {
 
             if (!empty($request->file[$i])) {
@@ -497,7 +527,7 @@ class KesehatanController extends Controller
                 if ($data->file == NULL) {
                     $btn = '<a  class="disabled"  aria-disabled="true"><button type="button" class="btn btn-block btn-warning karyawan-img-small disabled" style="border-radius:50%;" ><i class="fas fa-file"></i></button></a>';
                 } else {
-                    $btn = '<a href="public/file/kesehatan_rapid/' . $data->file . '" target="_break"><button type="button" class="btn btn-block btn-warning karyawan-img-small " style="border-radius:50%;" ><i class="fas fa-file"></i></button></a>';
+                    $btn = '<a href="url(assets/public/file/kesehatan_rapid/a.pdf)"  target="_break"><button type="button" class="btn btn-block btn-warning karyawan-img-small " style="border-radius:50%;" ><i class="fas fa-file"></i></button></a>';
                 }
                 return $btn;
             })
@@ -709,8 +739,7 @@ class KesehatanController extends Controller
     }
     public function kesehatan_bulanan_berat_data()
     {
-        $data = berat_karyawan::with('karyawan')
-            ->orderBy('tgl_cek', 'DESC');
+        $data = berat_karyawan::orderBy('tgl_cek', 'DESC');
 
         return datatables::of($data)
             ->addIndexColumn()
@@ -759,13 +788,13 @@ class KesehatanController extends Controller
                 }
             })
             ->addColumn('ti', function ($data) {
-                return $data->karyawan->kesehatan_awal->tinggi . ' Cm';
+                $y = $data->id;
+                $x = Kesehatan_awal::where('karyawan_id', $y)->first();
+                return $x['tinggi'] . ' Cm';
             })
-
             ->addColumn('bmi', function ($data) {
-                return  $data->berat / (($data->karyawan->kesehatan_awal->tinggi / 100) * ($data->karyawan->kesehatan_awal->tinggi / 100));
+                return  $data->berat / ((150 / 100) * (150 / 100));
             })
-
             ->addColumn('button', function ($data) {
                 $btn = '<div class="inline-flex"><button type="button" id="edit_berat"  class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-edit"></i></button></div>';
                 return $btn;
