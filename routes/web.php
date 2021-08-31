@@ -301,6 +301,17 @@ Route::group(['prefix' => '/podo_offline', 'middleware' => 'auth'], function () 
 });
 
 
+//PURCHASE ORDER
+Route::group(['prefix' => '/purchase_order', 'middleware' => 'auth'], function () {
+    Route::get('/', 'GbjController@purchase_order')->name('purchase_order');
+    Route::get('/show', 'GbjController@purchase_order_show')->name('purchase_order.show');
+    Route::get('/create', 'GbjController@purchase_order_create')->name('purchase_order.create');
+    Route::post('/store', 'GbjController@purchase_order_store')->name('purchase_order.store');
+    Route::get('/edit/{id}', 'GbjController@purchase_order_edit')->name('purchase_order.edit');
+    Route::put('/update/{id}', 'GbjController@purchase_order_update')->name('purchase_order.update');
+});
+
+
 //GET DATA SELECT
 Route::group(['prefix' => '/produk', 'middleware' => 'auth'], function () {
     Route::get('/get_select/{id}', 'CommonController@produk_get_select');    /* Get Data */
@@ -527,7 +538,12 @@ Route::group(['prefix' => 'gudang_produk_gbj', 'middleware' => 'auth'], function
 });
 
 Route::group(['prefix' => 'surat_jalan', 'middleware' => 'auth'], function () {
-    Route::get('', 'GbjController@surat_jalan')->name('surat_jalan');
+    Route::get('/', 'GbjController@surat_jalan')->name('surat_jalan');
+    Route::get('/show', 'GbjController@surat_jalan_show')->name('surat_jalan.show');
+    Route::get('/create', 'GbjController@surat_jalan_create')->name('surat_jalan.create');
+    Route::post('/store', 'GbjController@surat_jalan_store')->name('surat_jalan.store');
+    Route::get('/edit/{id}', 'GbjController@surat_jalan_edit')->name('surat_jalan.edit');
+    Route::put('/update/{id}', 'GbjController@surat_jalan_update')->name('surat_jalan.update');
 });
 
 // PENGUJIAN

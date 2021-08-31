@@ -891,7 +891,7 @@ return [
         [
             'text'    => 'Permintaan',
             'icon'    => 'fas fa-box-open',
-            'url'  => '/kalibrasi/',
+            'url'  => '/kalibrasi',
             'auth' => [22],
         ],
         [
@@ -927,12 +927,12 @@ return [
             'auth' => [13],
         ],
         [
-            'header' => 'Peminjaman',
+            'header' => 'Permintaan',
             'auth' => [13]
         ],
         [
-            'text' => 'Produk',
-            'url' => '/produk',
+            'text' => 'PO Penjualan',
+            'url' => '/purchase_order',
             'icon' => 'fas fa-circle',
             'auth' => [13],
         ],

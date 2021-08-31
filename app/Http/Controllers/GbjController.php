@@ -8,6 +8,8 @@ use App\HasilPerakitan;
 use App\DetailProduk;
 use App\Divisi;
 use App\HistoriMutasiGudangProduk;
+use App\Podo_offline;
+use App\Podo_online;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -193,5 +195,51 @@ class GbjController extends Controller
     public function surat_jalan()
     {
         return view('page.gbj.surat_jalan_show');
+    }
+
+    public function purchase_order()
+    {
+        $po_on = Podo_online::with('Ekatjual.Distriburtors')->select('podo_onlines.po as no_po', 'podo_onlines.tglpo as tgl_po', 'podo_onlines.keterangan as keterangan', 'distributors.nama as customer');
+        $po_off = Podo_offline::with('Offline.Distributors')->select('podo_offlines.po as no_po', 'podo_offlines.tglpo as tgl_po', 'podo_offlines.keterangan as keterangan', 'distributors.nama as customer');
+
+        // $po_on = Podo_online::all();
+        // $po_off = Podo_offline::all();
+        $po = $po_on->union($po_off);
+
+        return view('page.gbj.purchase_order_show', ['po' => $po]);
+    }
+
+    public function purchase_order_show($status)
+    {
+        $po = "";
+        if ($status == "online") {
+            $po = Podo_online::all();
+        } else if ($status == "offline") {
+            $po = Podo_offline::all();
+        } else if ($status == "semua") {
+            $po_on = Podo_online::whereHas('Ekatjual.Distriburtors')->select('podo_onlines.id as id', 'podo_onlines.po as no_po', 'podo_onlines.tglpo as tgl_po', 'podo_onlines.keterangan as keterangan', 'distributors.nama as customer');
+            $po_off = Podo_offline::with('Offline.Distributors')->select('podo_offlines.id as id', 'podo_offlines.po as no_po', 'podo_offlines.tglpo as tgl_po', 'podo_offlines.keterangan as keterangan', 'distributors.nama as customer');
+
+            $po = $po_on->union($po_off)->get();
+        }
+
+        return DataTables::of($po)
+            ->addIndexColumn()
+            ->addColumn('checkbox', function ($s) {
+                return '<input type="checkbox" class="form-check" value="' . $s->id . '">';
+            })
+            ->addColumn('no_po', function ($s) {
+                return $s->po;
+            })
+            ->addColumn('tgl_po', function ($s) {
+                return Carbon::createFromFormat('Y-m-d', $s->tglpo)->format('d-m-Y');
+            })
+            ->addColumn('no_do', function ($s) {
+                return $s->do;
+            })
+            ->addColumn('tgl_do', function ($s) {
+                return Carbon::createFromFormat('Y-m-d', $s->tgldo)->format('d-m-Y');
+            })
+            ->make(true);
     }
 }
