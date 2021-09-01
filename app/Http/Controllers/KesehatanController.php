@@ -15,6 +15,7 @@ use App\kesehatan_mingguan_rapid;
 use App\kesehatan_mingguan_tensi;
 use App\kesehatan_tahunan;
 use App\obat;
+use App\vaksin_karyawan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -92,8 +93,11 @@ class KesehatanController extends Controller
     }
     public function kesehatan_tambah()
     {
-        $karyawan = Karyawan::orderBy('nama', 'ASC')->get();;
-        return view('page.kesehatan.kesehatan_tambah', ['karyawan' => $karyawan]);
+        $karyawan = Karyawan::orderBy('nama', 'ASC')->get();
+        $pengecek = Karyawan::where('divisi_id', '28')
+            ->orWhere('divisi_id', '22')
+            ->get();
+        return view('page.kesehatan.kesehatan_tambah', ['karyawan' => $karyawan, 'pengecek' => $pengecek]);
     }
     public function kesehatan_ubah($id)
     {
@@ -113,7 +117,7 @@ class KesehatanController extends Controller
                 'status_mata' => 'required',
                 'suhu' => 'required',
                 'spo2' => 'required',
-                'pr' => 'required'
+                'pr' => 'required',
             ],
             [
                 'karyawan_id.required' => 'Karyawan harus di pilih',
@@ -125,7 +129,7 @@ class KesehatanController extends Controller
                 'suhu.required' => 'Suhu harus di isi',
                 'spo2.required' => 'Spo2 buta warna harus di isi',
                 'pr.required' => 'Pulse Oximeter buta warna harus di isi',
-                'status_mata.required' => 'Kategori buta warna harus di isi',
+                'status_mata.required' => 'Kategori buta warna harus di isi'
             ]
         );
 
@@ -145,6 +149,30 @@ class KesehatanController extends Controller
             $file_covid = $karyawan->nama . '_COVID_' . $file;
         } else {
             $file_covid = NULL;
+        }
+
+        if ($request->status_vaksin == 'Sudah') {
+            $this->validate(
+                $request,
+                [
+                    'tgl.*' => 'required',
+                    'dosis.*' => 'required',
+                    'tahap.*' => 'required',
+                ],
+                [
+                    'tgl.required' => 'Tanggal harus di isi',
+                    'dosis.required' => 'Dosis pengecekan harus di isi',
+                    'tahap.required' => 'Tahap pengecekan harus di isi',
+                ]
+            );
+            for ($i = 0; $i < count($request->date); $i++) {
+                $vaksin_karyawan = vaksin_karyawan::create([
+                    'karyawan_id' => $request->karyawan_id,
+                    'tgl' => $request->date[$i],
+                    'dosis' => $request->dosis[$i],
+                    'tahap' => $request->ket[$i],
+                ]);
+            }
         }
 
         $kesehatan_awal = Kesehatan_awal::create([
