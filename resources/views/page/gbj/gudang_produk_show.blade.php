@@ -2,6 +2,25 @@
 
 @section('title', 'Beta Version')
 
+@section('adminlte_css')
+<style>
+    .hasTooltip span {
+        display: none;
+        color: #000;
+        text-decoration: none;
+        padding: 3px;
+    }
+
+    .hasTooltip:hover span {
+        display: block;
+        top: 5%;
+        right: 105%;
+        background-color: #FFF;
+        border: 1px solid #CCC;
+        margin: 2px 10px;
+    }
+</style>
+@stop
 @section('content_header')
 <section class="content-header">
     <div class="container-fluid">
@@ -164,6 +183,7 @@
 @section('adminlte_js')
 <script>
     $(function() {
+        $(".tooltip").tooltip();
         $(document).on('click', '.historimutasimodal', function(event) {
             event.preventDefault();
             var href = $(this).attr('data-attr');
@@ -209,12 +229,13 @@
             console.log($(this).val());
             if ($(this).val() == "hari_ini") {
                 $('#produk').attr('disabled', true);
+                $('#produk').val(null).trigger('change');
                 var today = new Date();
                 var dd = String(today.getDate()).padStart(2, '0');
                 var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
                 var yyyy = today.getFullYear();
                 today = yyyy + '-' + mm + '-' + dd;
-                $('select[name="produk"]').select2('val', '');
+
                 $('#hariinitable').removeAttr('hidden');
                 $('#produktable').attr('hidden', true);
                 $('#example1').DataTable({

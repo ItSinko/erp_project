@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Exists;
 use Yajra\DataTables\Facades\DataTables;
 use PDF;
 use Yajra\DataTables\Contracts\DataTable;
@@ -92,9 +93,21 @@ class GbjController extends Controller
                 return $s->Divisi->nama;
             })
             ->addColumn('aksi', function ($s) {
-                $btn = '<a class="historimutasimodal" data-toggle="modal" data-target="#historimutasimodal" data-attr="/gudang_produk_gbj/mutasi/show/' . $s->id . '" data-id="' . $s->id . '">';
-                $btn .= '<div><button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fa fa-search"></i></button></div>';
-                $btn .= '<div><small>Lihat No Seri</small></div></a>';
+                // $btn = '<a class="historimutasimodal" data-toggle="modal" data-target="#historimutasimodal" data-attr="/gudang_produk_gbj/mutasi/show/' . $s->id . '" data-id="' . $s->id . '">';
+                // $btn .= '<div><button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fa fa-search"></i></button></div>';
+                // $btn .= '<div><small>Lihat No Seri</small></div></a>';
+                $q = HistoriMutasiGudangProduk::where('mutasi_gudang_produk_id', $s->id)->get();
+                $btn = '<a href="#" class="hasTooltip"><i class="fas fa-ellipsis-h"></i><span>';
+                foreach ($q as $i) {
+                    $btn .= '<p>';
+                    if ($i->HasilPerakitan->HasilPengemasan->first()->no_barcode != "") {
+                        $btn .= str_replace("/", "", $i->HasilPerakitan->HasilPengemasan->first()->Pengemasan->alias_barcode) . $i->HasilPerakitan->HasilPengemasan->first()->no_barcode;
+                    } else {
+                        $btn .= str_replace("/", "", $i->HasilPerakitan->HasilMonitoringProses->first()->MonitoringProses->alias_barcode) . $i->HasilPerakitan->HasilMonitoringProses->first()->no_barcode;
+                    }
+                    $btn .= '</p>';
+                }
+                $btn .= '</span></a>';
                 return $btn;
             })
             ->rawColumns(['aksi'])
@@ -199,13 +212,29 @@ class GbjController extends Controller
 
     public function purchase_order()
     {
-        $po_on = Podo_online::with('Ekatjual.Distriburtors')->select('podo_onlines.po as no_po', 'podo_onlines.tglpo as tgl_po', 'podo_onlines.keterangan as keterangan', 'distributors.nama as customer');
-        $po_off = Podo_offline::with('Offline.Distributors')->select('podo_offlines.po as no_po', 'podo_offlines.tglpo as tgl_po', 'podo_offlines.keterangan as keterangan', 'distributors.nama as customer');
+        // $po_on = Podo_online::with('Ekatjual.Distriburtors')->select('podo_onlines.po as no_po', 'podo_onlines.tglpo as tgl_po', 'podo_onlines.keterangan as keterangan', 'distributors.nama as customer');
+        // $po_off = Podo_offline::with('Offline.Distributors')->select('podo_offlines.po as no_po', 'podo_offlines.tglpo as tgl_po', 'podo_offlines.keterangan as keterangan', 'distributors.nama as customer');
 
         // $po_on = Podo_online::all();
         // $po_off = Podo_offline::all();
-        $po = $po_on->union($po_off);
+        $po_on = Podo_online::leftJoin('ekatjuals', 'podo_onlines.ekatjual_id', '=', 'ekatjuals.id')
+            ->leftJoin('distributors', 'ekatjuals.distributor_id', '=', 'distributors.id')->select(
+                'podo_onlines.id as id',
+                'podo_onlines.po as no_po',
+                'podo_onlines.tglpo as tgl_po',
+                'podo_onlines.keterangan as keterangan',
+                'distributors.nama as customer'
+            )->get();
 
+        $po_off = Podo_offline::leftJoin('offlines', 'podo_offlines.offline_id', '=', 'offlines.id')
+            ->leftJoin('distributors', 'offlines.customer_id', '=', 'distributors.id')->select(
+                'podo_offlines.id as id',
+                'podo_offlines.po as no_po',
+                'podo_offlines.tglpo as tgl_po',
+                'podo_offlines.keterangan as keterangan',
+                'distributors.nama as distributor'
+            )->get();
+        $po = $po_on->merge($po_off);
         return view('page.gbj.purchase_order_show', ['po' => $po]);
     }
 
@@ -216,18 +245,34 @@ class GbjController extends Controller
             $po = Podo_online::all();
         } else if ($status == "offline") {
             $po = Podo_offline::all();
-        } else if ($status == "semua") {
-            $po_on = Podo_online::whereHas('Ekatjual.Distriburtors')->select('podo_onlines.id as id', 'podo_onlines.po as no_po', 'podo_onlines.tglpo as tgl_po', 'podo_onlines.keterangan as keterangan', 'distributors.nama as customer');
-            $po_off = Podo_offline::with('Offline.Distributors')->select('podo_offlines.id as id', 'podo_offlines.po as no_po', 'podo_offlines.tglpo as tgl_po', 'podo_offlines.keterangan as keterangan', 'distributors.nama as customer');
+        } else if ($status == "semua" || $status == "") {
+            $po_on = Podo_online::leftJoin('ekatjuals', 'podo_onlines.ekatjual_id', '=', 'ekatjuals.id')
+                ->leftJoin('distributors', 'ekatjuals.distributor_id', '=', 'distributors.id')->select(
+                    'podo_onlines.id as id',
+                    'podo_onlines.po as no_po',
+                    'podo_onlines.tglpo as tgl_po',
+                    'podo_onlines.keterangan as keterangan',
+                    'distributors.nama as customer'
+                );
 
+            $po_off = Podo_offline::leftJoin('offlines', 'podo_offlines.offline_id', '=', 'offlines.id')
+                ->leftJoin('distributors', 'offlines.customer_id', '=', 'distributors.id')->select(
+                    'podo_offlines.id as id',
+                    'podo_offlines.po as no_po',
+                    'podo_offlines.tglpo as tgl_po',
+                    'podo_offlines.keterangan as keterangan',
+                    'distributors.nama as distributor'
+                );
             $po = $po_on->union($po_off)->get();
         }
 
         return DataTables::of($po)
             ->addIndexColumn()
             ->addColumn('checkbox', function ($s) {
+
                 return '<input type="checkbox" class="form-check" value="' . $s->id . '">';
             })
+
             ->addColumn('no_po', function ($s) {
                 return $s->po;
             })
