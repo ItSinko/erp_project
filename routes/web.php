@@ -533,7 +533,7 @@ Route::group(['prefix' => 'gudang_produk_gbj', 'middleware' => 'auth'], function
     Route::get('/tanggal/show/{tanggal}', 'GbjController@gudang_produk_tanggal_show')->name('gudang_produk_gbj.tanggal.show');
     Route::get('/create/{id}', 'GbjController@gudang_produk_create')->name('gudang_produk_gbj.create');
     Route::put('/store/{id}', 'GbjController@gudang_produk_store')->name('gudang_produk_gbj.store');
-    Route::get('/mutasi', 'GbjController@mutasi_gudang_produk')->name('gudang_produk_gbj.mutasi');
+    Route::get('/mutasi/{id}', 'GbjController@mutasi_gudang_produk')->name('gudang_produk_gbj.mutasi');
     Route::get('/mutasi/show/{id}', 'GbjController@mutasi_gudang_produk_show')->name('gudang_produk_gbj.mutasi.show');
 });
 

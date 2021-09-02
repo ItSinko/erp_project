@@ -331,11 +331,14 @@ class PpicController extends Controller
                 $btn = '<a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="Klik untuk melihat detail BPPB">';
                 $btn .= '<i class="fas fa-eye" aria-hidden="true"></i> </a>';
                 $btn .= '<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">';
-                if (Auth::user()->Divisi->nama == "Gudang Barang Masuk" || Auth::user()->Divisi->nama == "Gudang Karantina" || Auth::user()->Divisi->nama == "Produksi") {
-
+                if (Auth::user()->Divisi->nama == "Gudang Barang Masuk") {
                     $btn .= '<a class="dropdown-item" href="/bppb/permintaan_bahan_baku/' . $s->id . '"><span style="color: black;"><i class="fas fa-box-open" aria-hidden="true"></i>&nbsp;Permintaan Bahan Baku</span></a>';
                     $btn .= '<a class="dropdown-item" href="/bppb/pengembalian_barang_gudang/' . $s->id . '"><span style="color: black;"><i class="fas fa-dolly" aria-hidden="true"></i>&nbsp;Pengembalian Barang Gudang</span></a>';
-                } else if (Auth::user()->Divisi->nama == "Gudang Barang Jadi" || Auth::user()->Divisi->nama == "Gudang Karantina" || Auth::user()->Divisi->nama == "Produksi") {
+                } else if (Auth::user()->Divisi->nama == "Gudang Barang Jadi") {
+                    $btn .= '<a class="dropdown-item" href="/bppb/penyerahan_barang_jadi/' . $s->id . '"><span style="color: black;"><i class="fas fa-pallet" aria-hidden="true"></i>&nbsp;Penyerahan Barang Jadi</span></a>';
+                } else if (Auth::user()->Divisi->nama == "Gudang Karantina" ||  Auth::user()->Divisi->nama == "Produksi") {
+                    $btn .= '<a class="dropdown-item" href="/bppb/permintaan_bahan_baku/' . $s->id . '"><span style="color: black;"><i class="fas fa-box-open" aria-hidden="true"></i>&nbsp;Permintaan Bahan Baku</span></a>';
+                    $btn .= '<a class="dropdown-item" href="/bppb/pengembalian_barang_gudang/' . $s->id . '"><span style="color: black;"><i class="fas fa-dolly" aria-hidden="true"></i>&nbsp;Pengembalian Barang Gudang</span></a>';
                     $btn .= '<a class="dropdown-item" href="/bppb/penyerahan_barang_jadi/' . $s->id . '"><span style="color: black;"><i class="fas fa-pallet" aria-hidden="true"></i>&nbsp;Penyerahan Barang Jadi</span></a>';
                 }
                 return $btn;

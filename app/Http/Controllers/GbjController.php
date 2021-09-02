@@ -27,9 +27,10 @@ class GbjController extends Controller
         return view('page.gbj.gudang_produk_show', ['p' => $p]);
     }
 
-    public function mutasi_gudang_produk()
+    public function mutasi_gudang_produk($id)
     {
-        return view('page.gbj.mutasi_gudang_produk_show');
+        $gp = MutasiGudangProduk::find($id);
+        return view('page.gbj.mutasi_gudang_produk_show', ['gp' => $gp, 'id' => $id]);
     }
 
     public function mutasi_gudang_produk_show($id)
@@ -90,27 +91,33 @@ class GbjController extends Controller
                 return Carbon::createFromFormat('Y-m-d', $s->tanggal)->format('d-m-Y');
             })
             ->editColumn('divisi_id', function ($s) {
-                return $s->Divisi->nama;
+                $btn = "";
+                if ($s->jumlah_masuk != "0") {
+                    $btn = '<i class="fas fa-arrow-circle-down" style="color:green;"></i>';
+                } else if ($s->jumlah_keluar != "0") {
+                    $btn = '<i class="fas fa-arrow-circle-up" style="color:red;"></i>';
+                }
+                return $btn . " " . $s->Divisi->nama;
             })
             ->addColumn('aksi', function ($s) {
-                // $btn = '<a class="historimutasimodal" data-toggle="modal" data-target="#historimutasimodal" data-attr="/gudang_produk_gbj/mutasi/show/' . $s->id . '" data-id="' . $s->id . '">';
-                // $btn .= '<div><button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fa fa-search"></i></button></div>';
-                // $btn .= '<div><small>Lihat No Seri</small></div></a>';
-                $q = HistoriMutasiGudangProduk::where('mutasi_gudang_produk_id', $s->id)->get();
-                $btn = '<a href="#" class="hasTooltip"><i class="fas fa-ellipsis-h"></i><span>';
-                foreach ($q as $i) {
-                    $btn .= '<p>';
-                    if ($i->HasilPerakitan->HasilPengemasan->first()->no_barcode != "") {
-                        $btn .= str_replace("/", "", $i->HasilPerakitan->HasilPengemasan->first()->Pengemasan->alias_barcode) . $i->HasilPerakitan->HasilPengemasan->first()->no_barcode;
-                    } else {
-                        $btn .= str_replace("/", "", $i->HasilPerakitan->HasilMonitoringProses->first()->MonitoringProses->alias_barcode) . $i->HasilPerakitan->HasilMonitoringProses->first()->no_barcode;
-                    }
-                    $btn .= '</p>';
-                }
-                $btn .= '</span></a>';
+                $btn = '<a class="historimutasimodal" data-toggle="modal" data-target="#historimutasimodal" data-attr="/gudang_produk_gbj/mutasi/show/' . $s->id . '" data-id="' . $s->id . '">';
+                $btn .= '<div><button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fa fa-search"></i></button></div>';
+                $btn .= '<div><small>Lihat No Seri</small></div></a>';
+                // $q = HistoriMutasiGudangProduk::where('mutasi_gudang_produk_id', $s->id)->get();
+                // $btn = '<a href="#" class="hasTooltip"><i class="fas fa-ellipsis-h"></i><span>';
+                // foreach ($q as $i) {
+                //     $btn .= '<p>';
+                //     if ($i->HasilPerakitan->HasilPengemasan->first()->no_barcode != "") {
+                //         $btn .= str_replace("/", "", $i->HasilPerakitan->HasilPengemasan->first()->Pengemasan->alias_barcode) . $i->HasilPerakitan->HasilPengemasan->first()->no_barcode;
+                //     } else {
+                //         $btn .= str_replace("/", "", $i->HasilPerakitan->HasilMonitoringProses->first()->MonitoringProses->alias_barcode) . $i->HasilPerakitan->HasilMonitoringProses->first()->no_barcode;
+                //     }
+                //     $btn .= '</p>';
+                // }
+                // $btn .= '</span></a>';
                 return $btn;
             })
-            ->rawColumns(['aksi'])
+            ->rawColumns(['aksi', 'divisi_id'])
             ->make(true);
     }
 
@@ -125,15 +132,21 @@ class GbjController extends Controller
                 return $s->GudangProduk->DetailProduk->nama;
             })
             ->editColumn('divisi_id', function ($s) {
-                return $s->Divisi->nama;
+                $btn = "";
+                if ($s->jumlah_masuk != "0") {
+                    $btn = '<i class="fas fa-arrow-circle-down" style="color:green;"></i>';
+                } else if ($s->jumlah_keluar != "0") {
+                    $btn = '<i class="fas fa-arrow-circle-up" style="color:red;"></i>';
+                }
+                return $btn . " " . $s->Divisi->nama;
             })
             ->addColumn('aksi', function ($s) {
-                $btn = '<a class="historimutasimodal" data-toggle="modal" data-target="#historimutasimodal" data-attr="/gudang_produk_gbj/mutasi/" data-id="' . $s->id . '">';
+                $btn = '<a class="historimutasimodal" data-toggle="modal" data-target="#historimutasimodal" data-attr="/gudang_produk_gbj/mutasi/show/' . $s->id . '" data-id="' . $s->id . '">';
                 $btn .= '<div><button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fa fa-search"></i></button></div>';
                 $btn .= '<div><small>Lihat No Seri</small></div></a>';
                 return $btn;
             })
-            ->rawColumns(['aksi'])
+            ->rawColumns(['aksi', 'divisi_id'])
             ->make(true);
     }
 
