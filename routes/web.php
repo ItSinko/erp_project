@@ -51,6 +51,8 @@ Route::get('/kesehatan/ubah/{id}', 'KesehatanController@kesehatan_ubah');
 Route::get('/kesehatan/data', 'KesehatanController@kesehatan_data');
 Route::get('/kesehatan/data/{karyawan_id}', 'KesehatanController@kesehatan_data_detail');
 Route::get('/kesehatan/detail/', 'KesehatanController@kesehatan_detail');
+Route::get('/kesehatan/vaksin/{karyawan_id}', 'KesehatanController@kesehatan_vaksin');
+Route::post('/kesehatan/vaksin/aksi_tambah', 'KesehatanController@kesehatan_vaksin_aksi_tambah');
 
 //Kesehatan Harian
 /* Tabel */
@@ -131,6 +133,7 @@ Route::get('/obat/data/{id}', 'KesehatanController@obat_data_id');
 Route::get('/obat/detail/data/{id}', 'KesehatanController@obat_detail_data');
 Route::get('/obat/tambah', 'KesehatanController@obat_tambah');
 Route::post('/obat/aksi_tambah', 'KesehatanController@obat_aksi_tambah');
+Route::put('/obat/aksi_ubah', 'KesehatanController@obat_aksi_ubah');
 
 //Laporan
 Route::get('/laporan_harian', 'KesehatanController@laporan_harian');

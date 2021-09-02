@@ -305,6 +305,38 @@
                                                 </div>
                                             </div>
                                             <div class="form-group row">
+                                                <label for="keterangan" class="col-sm-4 col-form-label" style="text-align:right;">Systol</label>
+                                                <div class="col-sm-2">
+                                                    <div class="input-group mb-3">
+                                                        <input type="text" class="form-control" name="sistolik" id="sistolik" value="{{ old('sistolik') }}">
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text">mmHg</span>
+                                                        </div>
+                                                    </div>
+                                                    @if($errors->has('sistolik'))
+                                                    <div class="text-danger">
+                                                        {{ $errors->first('sistolik')}}
+                                                    </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="keterangan" class="col-sm-4 col-form-label" style="text-align:right;">Dyastol</label>
+                                                <div class="col-sm-2">
+                                                    <div class="input-group mb-3">
+                                                        <input type="text" class="form-control" name="diastolik" id="diastolik" value="{{ old('diastolik') }}">
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text">mmHg</span>
+                                                        </div>
+                                                    </div>
+                                                    @if($errors->has('diastolik'))
+                                                    <div class="text-danger">
+                                                        {{ $errors->first('diastolik')}}
+                                                    </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
                                                 <label class="col-sm-4 col-form-label" style="text-align:right;">Rabun Mata</label>
                                                 <div class="col-sm-8 ">
                                                     <div class="col-sm-4  d-inline">
@@ -382,25 +414,25 @@
                                                             <td>
                                                                 <div id="rapids0" class="row rapids" hidden>
                                                                     <div class="icheck-success d-inline col-sm-6">
-                                                                        <input type="radio" name="hasil_covid[]" value="Non reaktif">
+                                                                        <input type="radio" name="hasil_covid[]" value="Non reaktif" class="hasil_covid">
                                                                         <label for="no">
                                                                             Non reaktif
                                                                         </label>
                                                                     </div>
                                                                     <div class="icheck-success d-inline col-sm-6">
-                                                                        <input type="radio" name="hasil_covid[]" value="IgG">
+                                                                        <input type="radio" name="hasil_covid[]" value="IgG" class="hasil_covid">
                                                                         <label for="no">
                                                                             IgG
                                                                         </label>
                                                                     </div>
                                                                     <div class="icheck-warning d-inline col-sm-6">
-                                                                        <input type="radio" name="hasil_covid[]" value="IgM">
+                                                                        <input type="radio" name="hasil_covid[]" value="IgM" class="hasil_covid">
                                                                         <label for="sample">
                                                                             IgM
                                                                         </label>
                                                                     </div>
                                                                     <div class="icheck-warning d-inline col-sm-6">
-                                                                        <input type="radio" name="hasil_covid[]" value="IgG-IgM">
+                                                                        <input type="radio" name="hasil_covid[]" value="IgG-IgM" class="hasil_covid">
                                                                         <label for="sample">
                                                                             IgG-IgM
                                                                         </label>
@@ -408,13 +440,13 @@
                                                                 </div>
                                                                 <div id="antigens0" class="row antigens" hidden>
                                                                     <div class="icheck-success d-inline col-sm-12">
-                                                                        <input type="radio" name="hasil_covid[]" value="C">
+                                                                        <input type="radio" name="hasil_covid[]" value="C" class="hasil_covid">
                                                                         <label for="no">
                                                                             C
                                                                         </label>
                                                                     </div>
                                                                     <div class="icheck-warning d-inline col-sm-12">
-                                                                        <input type="radio" name="hasil_covid[]" value="C/T">
+                                                                        <input type="radio" name="hasil_covid[]" value="C/T" class="hasil_covid">
                                                                         <label for="sample">
                                                                             C/T
                                                                         </label>
@@ -422,7 +454,7 @@
                                                                 </div>
                                                             </td>
                                                             <td>
-                                                                <textarea class="form-control" name="keterangan[]"></textarea>
+                                                                <textarea class="form-control keterangan" name="keterangan[]"></textarea>
                                                             </td>
                                                             <td style="text-align: right;">
                                                                 <button name="add" type="button" id="tambahitem_tes" class="btn btn-success"><i class="nav-icon fas fa-plus-circle"></i></button>
@@ -476,7 +508,7 @@
                 $(el).find('.jenis_tes').attr('name', 'jenis_tes[' + j + ']');
                 $(el).find('.pemeriksa_id').attr('name', 'pemeriksa_id[' + j + ']');
                 $(el).find('.tgl_cek').attr('name', 'tgl_cek[' + j + ']');
-                $(el).find('input[type="radio"]').attr('name', 'hasil_covid[' + j + ']');
+                $(el).find('.hasil_covid').attr('name', 'hasil_covid[' + j + ']');
                 $(el).find('.keterangan').attr('name', 'keterangan[' + j + ']');
                 $('.jenis_tes').select2();
                 $('.pemeriksa_id').select2();
@@ -489,7 +521,6 @@
                 $('#vaksin_ket').attr('hidden', 'hidden');
             }
         });
-
         $('input[type=radio][name=status_tes]').on('change', function() {
             if (this.value == 'Iya') {
                 $('#tes_ket').removeAttr('hidden');
@@ -497,7 +528,6 @@
                 $('#tes_ket').attr('hidden', 'hidden');
             }
         });
-
         $('#tambahitem_vaksin').click(function(e) {
             var data = `  <tr>  
             <td>1</td>
@@ -531,7 +561,6 @@
             $(this).closest('tr').remove();
             numberRow_vaksin($("#tabel_vaksin"));
         });
-
         $('#tambahitem_tes').click(function(e) {
             var data = `  <tr>  
             <td>1</td>
@@ -554,25 +583,25 @@
                                                             <td>
                                                             <div id="rapids" class="row rapids" hidden>
                                                             <div class="icheck-success d-inline col-sm-6">
-                                                                <input type="radio" name="hasil_covid[]" value="Non reaktif" >
+                                                                <input type="radio" name="hasil_covid[]" value="Non reaktif" class="hasil_covid">
                                                                 <label for="no">
                                                                     Non reaktif
                                                                 </label>
                                                             </div>
                                                             <div class="icheck-success d-inline col-sm-6">
-                                                                <input type="radio" name="hasil_covid[]" value="IgG" >
+                                                                <input type="radio" name="hasil_covid[]" value="IgG" class="hasil_covid">
                                                                 <label for="no">
                                                                     IgG
                                                                 </label>
                                                             </div>
                                                             <div class="icheck-warning d-inline col-sm-6">
-                                                                <input type="radio" name="hasil_covid[]" value="IgM" >
+                                                                <input type="radio" name="hasil_covid[]" value="IgM" class="hasil_covid">
                                                                 <label for="sample">
                                                                     IgM
                                                                 </label>
                                                             </div>
                                                             <div class="icheck-warning d-inline col-sm-6">
-                                                                <input type="radio" name="hasil_covid[]" value="IgG-IgM" >
+                                                                <input type="radio" name="hasil_covid[]" value="IgG-IgM" class="hasil_covid">
                                                                 <label for="sample">
                                                                     IgG-IgM
                                                                 </label>
@@ -580,13 +609,13 @@
                                                         </div>
                                                         <div id="antigens" class="row antigens" hidden>
                                                             <div class="icheck-success d-inline col-sm-12">
-                                                                <input type="radio" name="hasil_covid[]" value="C" >
+                                                                <input type="radio" name="hasil_covid[]" value="C" class="hasil_covid">
                                                                 <label for="no">
                                                                     C
                                                                 </label>
                                                             </div>
                                                             <div class="icheck-warning d-inline col-sm-12">
-                                                                <input type="radio" name="hasil_covid[]" value="C/T" >
+                                                                <input type="radio" name="hasil_covid[]" value="C/T" class="hasil_covid" >
                                                                 <label for="sample">
                                                                     C/T
                                                                 </label>
