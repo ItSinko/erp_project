@@ -7,12 +7,12 @@
 @endif
 
 @section('master_css')
-<link rel="stylesheet" href="{{asset('css/table.css')}}">
-<link rel="stylesheet" href="{{asset('css/text.css')}}">
-<link rel="stylesheet" href="{{asset('css/image.css')}}">
-<link rel="stylesheet" href="{{asset('css/calendar.css')}}">
-<link rel="stylesheet" href="{{asset('css/background.css')}}">
-<link rel="stylesheet" href="{{asset('css/button.css')}}">
+<link rel="stylesheet" href="{{asset('costum/css/table.css')}}">
+<link rel="stylesheet" href="{{asset('costum/css/text.css')}}">
+<link rel="stylesheet" href="{{asset('costum/css/image.css')}}">
+<link rel="stylesheet" href="{{asset('costum/css/calendar.css')}}">
+<link rel="stylesheet" href="{{asset('costum/css/background.css')}}">
+<link rel="stylesheet" href="{{asset('costum/css/button.css')}}">
 <style>
     #loader {
         position: fixed;

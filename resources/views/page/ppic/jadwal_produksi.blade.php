@@ -219,7 +219,7 @@
 <script src="{{ asset('vendor/fullcalendar/main.js') }}"></script>
 <script src="{{ asset('vendor/fullcalendar/locales-all.js') }}"></script>
 <script src="{{ asset('vendor/bootbox/bootbox.js') }}"></script>
-<script src="{{ asset('js/app.js') }}"></script>
+<!-- <script src="{{ asset('js/app.js') }}"></script> -->
 
 <script>
     function create_notif(user, data) {
@@ -240,27 +240,27 @@
     `)
     }
 
-    echo_obj.channel('event')
-        .listen('SimpleNotifEvent', (e) => {
-            console.log(e);
-            create_notif(e.user, e.data);
-            $(".toast").toast('show');
-            switch (e.data.confirmation) {
-                case "0":
-                    $('#view-table .card-footer button').hide();
-                    break;
-                case "1":
-                    $('#view-table .card-footer button').show();
-                    break;
-                case "2":
-                    choose_button(2);
-                    break;
-            }
-            $(".toast").on("hidden.bs.toast", function() {
-                console.log(this);
-                $(this).remove();
-            });
-        });
+    // echo_obj.channel('event')
+    //     .listen('SimpleNotifEvent', (e) => {
+    //         console.log(e);
+    //         create_notif(e.user, e.data);
+    //         $(".toast").toast('show');
+    //         switch (e.data.confirmation) {
+    //             case "0":
+    //                 $('#view-table .card-footer button').hide();
+    //                 break;
+    //             case "1":
+    //                 $('#view-table .card-footer button').show();
+    //                 break;
+    //             case "2":
+    //                 choose_button(2);
+    //                 break;
+    //         }
+    //         $(".toast").on("hidden.bs.toast", function() {
+    //             console.log(this);
+    //             $(this).remove();
+    //         });
+    //     });
 
     function reset_input() {
         $('#product-name').val(null).trigger('change');
