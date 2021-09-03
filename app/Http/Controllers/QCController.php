@@ -179,12 +179,30 @@ class QCController extends Controller
             })
             ->editColumn('hasil_terbuka', function ($s) {
                 $btn = "";
-                if ($s->hasil_terbuka == "ok") {
-                    $btn = '<small><i style="color:green;" class="fas fa-check-circle"></i></small>';
-                } else if ($s->hasil_terbuka == "nok") {
-                    $btn = '<small><i style="color:red;" class="fas fa-times-circle"></i></small>';
+                if ($s->hasil_terbuka != "") {
+                    $btn = '<a href="#" class="btn pop" data-container="body" data-placement="bottom" data-html="true" data-toggle="popover" data-original-title="Pemeriksaan Terbuka"
+                    data-content="<p>';
+
+                    if ($s->kondisi_fisik_bahan_baku == "ok") {
+                        $btn .= '<small><i style=&quot;color:green;&quot; class=&quot;fas fa-check-circle&quot;></i></small>';
+                    } else if ($s->kondisi_fisik_bahan_baku == "nok") {
+                        $btn .= '<small><i style=&quot;color:red;&quot; class=&quot;fas fa-times-circle&quot;></i></small>';
+                    }
+                    $btn .= '&nbsp;Kondisi Setelah Proses</p><p>';
+                    if ($s->kondisi_setelah_proses == "ok") {
+                        $btn .= '<small><i style=&quot;color:green;&quot; class=&quot;fas fa-check-circle&quot;></i></small>';
+                    } else if ($s->kondisi_setelah_proses == "nok") {
+                        $btn .= '<small><i style=&quot;color:red;&quot; class=&quot;fas fa-times-circle&quot;></i></small>';
+                    }
+                    $btn .= '&nbsp;Hasil Pemeriksaan</p>"';
+
+                    if ($s->hasil_terbuka == "ok") {
+                        $btn .= '<small><i style="color:green;" class="fas fa-check-circle"></i></small>';
+                    } else if ($s->hasil_terbuka == "nok") {
+                        $btn .= '<small><i style="color:red;" class="fas fa-times-circle"></i></small>';
+                    }
+                    $btn .= '</a>';
                 }
-                return $btn;
             })
             ->editColumn('tindak_lanjut_terbuka', function ($s) {
                 $btn = "";
@@ -212,10 +230,29 @@ class QCController extends Controller
             })
             ->editColumn('hasil_tertutup', function ($s) {
                 $btn = "";
-                if ($s->hasil_tertutup == "ok") {
-                    $btn = '<small><i style="color:green;" class="fas fa-check-circle"></i></small>';
-                } else if ($s->hasil_tertutup == "nok") {
-                    $btn = '<small><i style="color:red;" class="fas fa-times-circle"></i></small>';
+                if ($s->hasil_tertutup != "") {
+                    $btn = '<a href="#" class="btn pop" data-container="body" data-placement="bottom" data-html="true" data-toggle="popover" data-original-title="Pemeriksaan Tertutup"
+                    data-content="<p>';
+
+                    if ($s->kondisi_setelah_proses == "ok") {
+                        $btn .= '<small><i style=&quot;color:green;&quot; class=&quot;fas fa-check-circle&quot;></i></small>';
+                    } else if ($s->kondisi_setelah_proses == "nok") {
+                        $btn .= '<small><i style=&quot;color:red;&quot; class=&quot;fas fa-times-circle&quot;></i></small>';
+                    }
+                    $btn .= '&nbsp;Kondisi Setelah Proses</p><p>';
+                    if ($s->kondisi_setelah_proses == "ok") {
+                        $btn .= '<small><i style=&quot;color:green;&quot; class=&quot;fas fa-check-circle&quot;></i></small>';
+                    } else if ($s->kondisi_setelah_proses == "nok") {
+                        $btn .= '<small><i style=&quot;color:red;&quot; class=&quot;fas fa-times-circle&quot;></i></small>';
+                    }
+                    $btn .= '&nbsp;Hasil Pemeriksaan</p>"';
+
+                    if ($s->hasil_tertutup == "ok") {
+                        $btn .= '<small><i style="color:green;" class="fas fa-check-circle"></i></small>';
+                    } else if ($s->hasil_tertutup == "nok") {
+                        $btn .= '<small><i style="color:red;" class="fas fa-times-circle"></i></small>';
+                    }
+                    $btn .= '</a>';
                 }
                 return $btn;
             })
@@ -287,7 +324,6 @@ class QCController extends Controller
                         <button class="btn btn-sm btn-info"><small><i class="fas fa-cog"></i>&nbsp;Hasil Perbaikan</small></button></a>';
                     }
                 }
-
                 return $btn;
             })
             // ->editColumn('status', function ($s) {
