@@ -309,14 +309,11 @@
       });
       $('#vaksin_mod').modal('show');
     })
-
-
     $('#tabel > tbody').on('click', '#berat', function() {
       var rows = tabel.rows($(this).parents('tr')).data();
       $('.data_detail_head').html(
         rows[0]['karyawan']['nama']
       );
-
       var y = $('#tabel_berat').DataTable({
         processing: true,
         destroy: true,

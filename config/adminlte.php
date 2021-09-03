@@ -319,22 +319,25 @@ return [
         [
             'text' => 'Data Karyawan',
             'icon' => 'fas fa-users',
-            'auth' => [14, 17, 23],
+            'auth' => [14, 17, 23, 28],
             'submenu' => [
                 [
                     'icon' => 'far fa-circle',
                     'text' => 'Jadwal Kerja Operator',
                     'url'  => '/karyawan',
+                    'auth' => [],
                 ],
                 [
                     'icon' => 'far fa-circle',
                     'text' => 'Daftar Staff',
                     'url'  => '/karyawan',
+                    'auth' => [28],
                 ],
                 [
                     'icon' => 'far fa-circle',
                     'text' => 'Permohonan Penugasan',
                     'url'  => '/karyawan/peminjaman',
+                    'auth' => [],
                 ],
             ],
         ],

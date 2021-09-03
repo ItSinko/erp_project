@@ -268,7 +268,6 @@ class KesehatanController extends Controller
         $divisi = Divisi::all();
         return view('page.kesehatan.kesehatan_harian_tambah', ['karyawan' => $karyawan, 'divisi' => $divisi]);
     }
-
     public function kesehatan_harian_tambah_data($id)
     {
         $data = Karyawan::with('divisi', 'kesehatan_awal')
@@ -277,7 +276,6 @@ class KesehatanController extends Controller
             ->where('divisi_id', $id)->get();
         echo json_encode($data);
     }
-
     public function kesehatan_harian_aksi_tambah(Request $request)
     {
         $this->validate(
@@ -370,7 +368,6 @@ class KesehatanController extends Controller
             ->get();
         return view('page.kesehatan.kesehatan_harian_detail', ['karyawan' => $karyawan]);
     }
-
     public function kesehatan_harian_detail_data($id)
     {
         $data = Kesehatan_harian::with('karyawan')
