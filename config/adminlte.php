@@ -129,7 +129,7 @@ return [
     'classes_sidebar' => 'sidebar-dark-primary elevation-4',
     'classes_sidebar2' => 'sidebar-dark-primary royal-bg  elevation-4',
     'classes_sidebar_nav' => '',
-    'classes_topnav' => 'navbar-white navbar-light',
+    'classes_topnav' => 'navbar-dark',
     'classes_topnav_nav' => 'navbar-expand',
     'classes_topnav_container' => 'container',
 
@@ -926,13 +926,6 @@ return [
             'icon' => 'fas fa-circle',
             'auth' => [13],
         ],
-        ['header' => 'LOGOUT'],
-        [
-            'text' => 'Logout',
-            'url' => '/logout',
-            'icon' => 'fas fa-sign-out-alt',
-            'form' => true,
-        ],
         [
             'text' => 'test',
             'isNavbarRightItem' => true,
@@ -1031,6 +1024,12 @@ return [
                 'vendor/charts/chart.js',
             ],
         ],
+        'Pusher' => [
+            'js' => [
+                'vendor/pusher/pusher.min.js',
+                // 'vendor/pusher/echo.min.js',
+            ],
+        ]
     ],
 
     /*
