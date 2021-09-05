@@ -153,6 +153,19 @@ class QCController extends Controller
 
         return DataTables::of($s)
             ->addIndexColumn()
+            ->editColumn('checkbox', function($s){
+                $btn = "";
+                if($s->status == 'req_pemeriksaan_terbuka' || $s->status == 'req_pemeriksaan_tertutup'){
+                    $btn = '<div class="form-check">
+                    <input class="form-check-input '.$s->status.'" type="checkbox" value="'.$s->id.'" id="checkbox" name="checkbox[]">
+                  </div>';
+                }
+                else{
+                    $btn = '<div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="'.$s->id.'" id="checkbox" name="checkbox[]" disabled>
+                  </div>';
+                }
+            })
             ->editColumn('tanggal', function ($s) {
                 return Carbon::createFromFormat('Y-m-d', $s->tanggal)->format('d-m-Y');
             })
@@ -179,12 +192,69 @@ class QCController extends Controller
             })
             ->editColumn('hasil_terbuka', function ($s) {
                 $btn = "";
-                if ($s->hasil_terbuka == "ok") {
-                    $btn = '<small><i style="color:green;" class="fas fa-check-circle"></i></small>';
-                } else if ($s->hasil_terbuka == "nok") {
-                    $btn = '<small><i style="color:red;" class="fas fa-times-circle"></i></small>';
+                if ($s->hasil_terbuka != "") {
+                    $btn = '<a href="#" class="btn pop" data-container="body" data-placement="bottom" data-html="true" data-title="Pemeriksaan Terbuka" data-toggle="popover" 
+                    data-content="
+                    <div class=&quot;form-horizontal&quot;>
+                    <div class=&quot;row&quot;>
+                    <div class=&quot;col-sm-10 col-form-label&quot;>Kondisi Fisik Bahan Baku</div>
+                    <div class=&quot;col-sm-2 col-form-label&quot; style=&quot;text-align:right;&quot;>';
+
+                    if ($s->kondisi_fisik_bahan_baku == "ok") {
+                        $btn .= '<small><i class=&quot;fas fa-check-circle popiconsc&quot;></i></small>';
+                    } else if ($s->kondisi_fisik_bahan_baku == "nok") {
+                        $btn .= '<small><i class=&quot;fas fa-times-circle popiconer&quot;></i></small>';
+                    }
+
+                    $btn .= '</div>
+                    </div>
+                    
+                    <div class=&quot;row&quot;>
+                    <div class=&quot;col-sm-10 col-form-label&quot;>Kondisi Saat Proses Perakitan</div>
+                    <div class=&quot;col-sm-2 col-form-label&quot; style=&quot;text-align:right;&quot;>';
+
+                    if ($s->kondisi_saat_proses_perakitan == "ok") {
+                        $btn .= '<small><i class=&quot;fas fa-check-circle popiconsc&quot;></i></small>';
+                    } else if ($s->kondisi_saat_proses_perakitan == "nok") {
+                        $btn .= '<small><i class=&quot;fas fa-times-circle popiconer&quot;></i></small>';
+                    }
+                    
+                    $btn .= '</div>
+                    </div>
+
+                    <div class=&quot;row&quot;>
+                    <div class=&quot;col-sm-10 col-form-label&quot;>Hasil</div>
+                    <div class=&quot;col-sm-2 col-form-label&quot; style=&quot;text-align:right;&quot;>';
+
+                    if ($s->hasil_terbuka == "ok") {
+                        $btn .= '<small><i class=&quot;fas fa-check-circle popiconsc&quot;></i></small>';
+                    } else if ($s->hasil_terbuka == "nok") {
+                        $btn .= '<small><i class=&quot;fas fa-times-circle popiconer&quot;></i></small>';
+                    }
+                    $btn .= '</div>
+                    </div>
+                    </div>
+                    
+                    <div class=&quot;row&quot;>
+                        <div class=&quot;col-lg-6&quot;>
+                            <hgroup>
+                                <h6 class=&quot;card-subheading text-muted&quot;>Keterangan</h6>
+                                <h5 class=&quot;card-heading&quot;>'.$s->keterangan_terbuka.'</h5>
+                            </hgroup>
+                        </div>
+                    </div>"
+                    ';
+
+                    if ($s->hasil_terbuka == "ok") {
+                        $btn .= '<small><i style="color:green;" class="fas fa-check-circle"></i></small>';
+                    } else if ($s->hasil_terbuka == "nok") {
+                        $btn .= '<small><i style="color:red;" class="fas fa-times-circle"></i></small>';
+                    }
+
+                    $btn .= '</a>';
                 }
                 return $btn;
+                            
             })
             ->editColumn('tindak_lanjut_terbuka', function ($s) {
                 $btn = "";
@@ -212,10 +282,53 @@ class QCController extends Controller
             })
             ->editColumn('hasil_tertutup', function ($s) {
                 $btn = "";
-                if ($s->hasil_tertutup == "ok") {
-                    $btn = '<small><i style="color:green;" class="fas fa-check-circle"></i></small>';
-                } else if ($s->hasil_tertutup == "nok") {
-                    $btn = '<small><i style="color:red;" class="fas fa-times-circle"></i></small>';
+                if ($s->hasil_tertutup != "") {
+                    $btn = '<a href="#" class="btn pop" data-container="body" data-placement="bottom" data-html="true" data-title="Pemeriksaan Tertutup" data-toggle="popover" 
+                    data-content="
+                    <div class=&quot;form-horizontal&quot;>
+                    <div class=&quot;row&quot;>
+                    <div class=&quot;col-sm-10 col-form-label&quot;>Kondisi Setelah Perakitan</div>
+                    <div class=&quot;col-sm-2 col-form-label&quot; style=&quot;text-align:right;&quot;>';
+
+                    if ($s->kondisi_setelah_proses == "ok") {
+                        $btn .= '<small><i class=&quot;fas fa-check-circle popiconsc&quot;></i></small>';
+                    } else if ($s->kondisi_setelah_proses == "nok") {
+                        $btn .= '<small><i class=&quot;fas fa-times-circle popiconer&quot;></i></small>';
+                    }
+                    
+                    $btn .= '</div>
+                    </div>
+
+                    <div class=&quot;row&quot;>
+                    <div class=&quot;col-sm-10 col-form-label&quot;>Hasil</div>
+                    <div class=&quot;col-sm-2 col-form-label&quot; style=&quot;text-align:right;&quot;>';
+
+                    if ($s->hasil_tertutup == "ok") {
+                        $btn .= '<small><i class=&quot;fas fa-check-circle popiconsc&quot;></i></small>';
+                    } else if ($s->hasil_tertutup == "nok") {
+                        $btn .= '<small><i class=&quot;fas fa-times-circle popiconer&quot;></i></small>';
+                    }
+                    $btn .= '</div>
+                    </div>
+                    </div>
+                    
+                    <div class=&quot;row&quot;>
+                        <div class=&quot;col-lg-6&quot;>
+                            <hgroup>
+                                <h6 class=&quot;card-subheading text-muted&quot;>Keterangan</h6>
+                                <h5 class=&quot;card-heading&quot;>'.$s->keterangan_tertutup.'</h5>
+                            </hgroup>
+                        </div>
+                    </div>"
+                    ';
+
+                    if ($s->hasil_tertutup == "ok") {
+                        $btn .= '<small><i style="color:green;" class="fas fa-check-circle"></i></small>';
+                    } else if ($s->hasil_tertutup == "nok") {
+                        $btn .= '<small><i style="color:red;" class="fas fa-times-circle"></i></small>';
+                    }
+
+                    $btn .= '</a>';
                 }
                 return $btn;
             })
@@ -287,7 +400,6 @@ class QCController extends Controller
                         <button class="btn btn-sm btn-info"><small><i class="fas fa-cog"></i>&nbsp;Hasil Perbaikan</small></button></a>';
                     }
                 }
-
                 return $btn;
             })
             // ->editColumn('status', function ($s) {

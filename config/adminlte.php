@@ -891,7 +891,7 @@ return [
         [
             'text'    => 'Permintaan',
             'icon'    => 'fas fa-box-open',
-            'url'  => '/kalibrasi/',
+            'url'  => '/kalibrasi',
             'auth' => [22],
         ],
         [
@@ -923,6 +923,16 @@ return [
         [
             'text' => 'Mutasi Stok',
             'url' => '/gudang_produk_gbj',
+            'icon' => 'fas fa-circle',
+            'auth' => [13],
+        ],
+        [
+            'header' => 'Permintaan',
+            'auth' => [13]
+        ],
+        [
+            'text' => 'PO Penjualan',
+            'url' => '/purchase_order',
             'icon' => 'fas fa-circle',
             'auth' => [13],
         ],

@@ -2,6 +2,35 @@
 
 @section('title', 'Beta Version')
 
+@section('adminlte_css')
+<style>
+    .box {
+        display: block;
+        width: auto;
+        height: auto;
+        background-color: #DDD;
+    }
+
+    #pop {
+        padding: 0px 0px;
+    }
+
+    .popiconsc{
+        color:green;
+        text-align:right;
+    }
+    
+    .popiconer{
+        color:red;
+        text-align:right;
+    }
+
+    #example {
+        position: relative;
+    }
+</style>
+@stop
+
 @section('content_header')
 <section class="content-header">
     <div class="container-fluid">
@@ -99,30 +128,28 @@
                         <strong>{{ $success }}</strong>
                     </div>
                     @endif
+                    <div class="table-responsive">
+                        <table id="examples" class="table table-hover table-striped styled-table" style="width:100%;">
+                            <thead style="text-align: center;">
+                                <tr>
+                                    <th rowspan="2">#</th>
+                                    <th rowspan="2">Tanggal</th>
+                                    <th rowspan="2">No Seri</th>
+                                    <th rowspan="2">Operator</th>
+                                    <th colspan="2">Pemeriksaan</th>
+                                    <th rowspan="2">Keterangan</th>
+                                    <th rowspan="2">Aksi</th>
+                                </tr>
+                                <tr>
+                                    <th>Terbuka</th>
+                                    <th>Tertutup</th>
+                                </tr>
+                            </thead>
+                            <tbody style="text-align:center;">
 
-                    <table id="examples" class="table table-hover table-bordered styled-table" style="width:100%;">
-                        <thead style="text-align: center;">
-                            <tr>
-                                <th rowspan="2">No</th>
-                                <th rowspan="2">Tanggal</th>
-                                <th rowspan="2">No Seri</th>
-                                <th rowspan="2">Operator</th>
-                                <th colspan="2">Pemeriksaan Terbuka</th>
-                                <th colspan="2">Pemeriksaan Tertutup</th>
-                                <th rowspan="2">Keterangan</th>
-                                <th rowspan="2">Aksi</th>
-                            </tr>
-                            <tr>
-                                <th>Hasil</th>
-                                <th>Tindak Lanjut</th>
-                                <th>Hasil</th>
-                                <th>Tindak Lanjut</th>
-                            </tr>
-                        </thead>
-                        <tbody style="text-align:center;">
-
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <!-- /.card-body -->
             </div>
@@ -132,6 +159,7 @@
             <!-- /.card -->
         </div>
 
+        <!-- MODAL -->
         <div class="modal fade" id="deletenoserimodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
             <div class="modal-dialog modal-md" role="document">
                 <div class="modal-content">
@@ -169,16 +197,37 @@
 @section('adminlte_js')
 <script>
     $(function() {
+        $("#examples").popover({
+                trigger: "manual",
+                html: true,
+                animation: false,
+                content: function() {
+                    return $(this).next('.pop').html();
+                }
+            })
+            .on("mouseenter", '.pop', function() {
+                var _this = this;
+                $(this).popover("show");
+                $(".pop").on("mouseleave", function() {
+                    $(_this).popover('hide');
+                });
+            }).on("mouseleave", '.pop', function() {
+                var _this = this;
+                setTimeout(function() {
+                    if (!$(".pop:hover").length) {
+                        $(_this).popover("hide");
+                    }
+                }, 300);
+            });
+
         $('#examples').DataTable({
             scrollX: true,
             processing: true,
             serverSide: true,
             ajax: "{{ route('perakitan.pemeriksaan.bppb.show', ['id' => $id]) }}",
             columns: [{
-                    data: 'DT_RowIndex',
-                    name: 'DT_RowIndex',
-                    orderable: false,
-                    searchable: false
+                    data: 'checkbox',
+                    name: 'checkbox'
                 },
                 {
                     data: 'tanggal',
@@ -197,16 +246,8 @@
                     name: 'hasil_terbuka'
                 },
                 {
-                    data: 'tindak_lanjut_terbuka',
-                    name: 'tindak_lanjut_terbuka'
-                },
-                {
                     data: 'hasil_tertutup',
                     name: 'hasil_tertutup'
-                },
-                {
-                    data: 'tindak_lanjut_tertutup',
-                    name: 'tindak_lanjut_tertutup'
                 },
                 {
                     data: 'keterangan',
