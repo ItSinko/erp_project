@@ -196,7 +196,8 @@
             }]
         });
         $('#button_tambah').click(function() {
-            //var data = noseri_list.rows(0).data();
+            var data = noseri_list.rows().data();
+
             var no_pendaftaran = $("#no_pendaftaran").val();
             var jenis = $("#no_pendaftaran").val();
             var pic = $("#date_master").val();
@@ -204,8 +205,12 @@
             var tanggal_kalibrasi = $("#tanggal_kalibrasi").val();
             var tanggal_penyerahan = $("#tanggal_penyerahan").val();
 
-            console.log(no_pendaftaran);
-            alert('ok');
+            console.log(data);
+            console.log(noseri_list.cell(0, 1).nodes().to$().find('.date').val())
+
+            for (var i = 0; i < data.count(); ++i) {
+                console.log(noseri_list.cell(0, 1).nodes().to$().find('.date').val())
+            };
             return false;
         });
     });

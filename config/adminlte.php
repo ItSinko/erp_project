@@ -319,22 +319,25 @@ return [
         [
             'text' => 'Data Karyawan',
             'icon' => 'fas fa-users',
-            'auth' => [14, 17, 23],
+            'auth' => [14, 17, 23, 28],
             'submenu' => [
                 [
                     'icon' => 'far fa-circle',
                     'text' => 'Jadwal Kerja Operator',
                     'url'  => '/karyawan',
+                    'auth' => [],
                 ],
                 [
                     'icon' => 'far fa-circle',
                     'text' => 'Daftar Staff',
                     'url'  => '/karyawan',
+                    'auth' => [28],
                 ],
                 [
                     'icon' => 'far fa-circle',
                     'text' => 'Permohonan Penugasan',
                     'url'  => '/karyawan/peminjaman',
+                    'auth' => [],
                 ],
             ],
         ],
@@ -404,31 +407,31 @@ return [
                         ]
                     ],
                 ],
-                [
-                    'icon' => 'fas fa-heartbeat',
-                    'text' => 'Harian',
-                    'auth' => [28],
-                    'submenu' => [
-                        [
-                            'icon' => 'fas fa-table',
-                            'text' => 'Data',
-                            'auth' => [28],
-                            'url'  => '/kesehatan_harian',
-                        ],
-                        [
-                            'icon' => 'fas fa-info-circle',
-                            'text' => 'Detail',
-                            'auth' => [28],
-                            'url'  => '/kesehatan_harian/detail',
-                        ],
-                        [
-                            'icon' => 'fas fa-file-medical',
-                            'text' => 'Laporan',
-                            'auth' => [28],
-                            'url'  => '/laporan_harian',
-                        ]
-                    ],
-                ],
+                // [
+                //     'icon' => 'fas fa-heartbeat',
+                //     'text' => 'Harian',
+                //     'auth' => [28],
+                //     'submenu' => [
+                //         [
+                //             'icon' => 'fas fa-table',
+                //             'text' => 'Data',
+                //             'auth' => [28],
+                //             'url'  => '/kesehatan_harian',
+                //         ],
+                //         [
+                //             'icon' => 'fas fa-info-circle',
+                //             'text' => 'Detail',
+                //             'auth' => [28],
+                //             'url'  => '/kesehatan_harian/detail',
+                //         ],
+                //         [
+                //             'icon' => 'fas fa-file-medical',
+                //             'text' => 'Laporan',
+                //             'auth' => [28],
+                //             'url'  => '/laporan_harian',
+                //         ]
+                //     ],
+                // ],
                 [
                     'icon' => 'fas fa-vial',
                     'text' => 'Mingguan',
