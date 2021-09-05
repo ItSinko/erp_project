@@ -6,13 +6,23 @@
 <style>
     .box {
         display: block;
-        width: 200px;
-        height: 100px;
+        width: auto;
+        height: auto;
         background-color: #DDD;
     }
 
     #pop {
         padding: 0px 0px;
+    }
+
+    .popiconsc{
+        color:green;
+        text-align:right;
+    }
+    
+    .popiconer{
+        color:red;
+        text-align:right;
     }
 
     #example {
@@ -122,7 +132,7 @@
                         <table id="examples" class="table table-hover table-striped styled-table" style="width:100%;">
                             <thead style="text-align: center;">
                                 <tr>
-                                    <th rowspan="2">No</th>
+                                    <th rowspan="2">#</th>
                                     <th rowspan="2">Tanggal</th>
                                     <th rowspan="2">No Seri</th>
                                     <th rowspan="2">Operator</th>
@@ -216,10 +226,8 @@
             serverSide: true,
             ajax: "{{ route('perakitan.pemeriksaan.bppb.show', ['id' => $id]) }}",
             columns: [{
-                    data: 'DT_RowIndex',
-                    name: 'DT_RowIndex',
-                    orderable: false,
-                    searchable: false
+                    data: 'checkbox',
+                    name: 'checkbox'
                 },
                 {
                     data: 'tanggal',
