@@ -739,8 +739,9 @@ Route::group(['prefix' => 'dc', 'middleware' => 'auth'], function () {
 
 //GBMP
 Route::group(['prefix' => 'gbmp'], function () {
-    // TODO: make controller for gbmp
-    // TODO: make UI gbmp with react typescript
+    Route::get('data/', 'GudangMaterialController@getData');
+    Route::get('data_view/', 'GudangMaterialController@showData');
+    Route::get('bppb_view', 'GudangMaterialController@showOrder');
 });
 
 
