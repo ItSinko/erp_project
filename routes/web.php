@@ -470,8 +470,9 @@ Route::group(['prefix' => '/perakitan', 'middleware' => 'auth'], function () {
     Route::get('/create/get_bppb/{bppb_id}', 'GetController@get_bppb');
     Route::get('/create/get_kode_perakitan_exist_not_in/{bppb}/{no_seri}', 'GetController@get_kode_perakitan_exist_not_in');
     Route::post('/store', 'ProduksiController@perakitan_store')->name('perakitan.store');
+    Route::get('/multiple/status/{id}/{status}', 'QCController@perakitan_multiple_status')->name('perakitan.multiple.status');
 
-    // LAPORAN
+    // LAPORAN1
     Route::group(['prefix' => '/laporan'], function () {
         Route::get('/{id}', 'ProduksiController@perakitan_laporan')->name('perakitan.laporan');
         Route::get('/show/{id}', 'ProduksiController@perakitan_laporan_show')->name('perakitan.laporan.show');
@@ -522,7 +523,7 @@ Route::group(['prefix' => '/perakitan', 'middleware' => 'auth'], function () {
         Route::get('/hasil/detail/{id}', 'QCController@perakitan_pemeriksaan_hasil_detail')->name('perakitan.pemeriksaan.hasil.detail');
         /* BPPB */
         Route::get('/bppb/{id}', 'QCController@perakitan_pemeriksaan_bppb')->name('perakitan.pemeriksaan.bppb');
-        Route::get('/bppb/show/{id}', 'QCController@perakitan_pemeriksaan_bppb_show')->name('perakitan.pemeriksaan.bppb.show');
+        Route::get('/bppb/show/{id}/{status}', 'QCController@perakitan_pemeriksaan_bppb_show')->name('perakitan.pemeriksaan.bppb.show');
     });
 
     Route::get('/analisa_ps/show/{id}', 'EngController@perakitan_analisa_ps_show')->name('perakitan.analisa_ps.show');
