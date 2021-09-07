@@ -996,14 +996,6 @@ return [
                 'vendor/bootstrap/js/bootstrap.bundle.min.js',
             ],
         ],
-        'AdminLte' => [
-            'js' => [
-                'vendor/adminlte/dist/js/adminlte.min.js',
-            ],
-            'css' => [
-                'vendor/adminlte/dist/css/adminlte.min.css',
-            ],
-        ],
         // dependecies plugins
         'DataTables' => [
             'js' => [
@@ -1028,8 +1020,8 @@ return [
                 'vendor/select2/js/select2.full.min.js',
             ],
             'css' => [
-                'vendor/select2/css/select2-bootstrap4.min.css',
                 'vendor/select2/css/select2.min.css',
+                'vendor/select2/css/select2-bootstrap4.min.css',
             ],
         ],
         'Chartjs' => [
@@ -1042,7 +1034,15 @@ return [
                 'vendor/pusher/pusher.min.js',
                 // 'vendor/pusher/echo.min.js',
             ],
-        ]
+        ],
+        'AdminLte' => [
+            'js' => [
+                'vendor/adminlte/dist/js/adminlte.min.js',
+            ],
+            'css' => [
+                'vendor/adminlte/dist/css/adminlte.min.css',
+            ],
+        ],
     ],
 
     /*

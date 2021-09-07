@@ -10,6 +10,7 @@ use App\Part;
 use App\ProdukBillOfMaterial;
 use App\User;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\DB;
 
 class GudangMaterialController extends Controller
 {
@@ -60,5 +61,13 @@ class GudangMaterialController extends Controller
         return DataTables::of($bom)
             ->addIndexColumn()
             ->make(true);
+    }
+
+    public function getExampleData()
+    {
+        $data = DB::table('tws')->get();
+        return $data;
+        // return DataTables::of($data)
+        //     ->make(true);
     }
 }

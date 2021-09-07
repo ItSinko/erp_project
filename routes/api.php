@@ -23,3 +23,5 @@ Route::get('data', 'GudangMaterialController@getData');
 Route::get('bppb', 'GudangMaterialController@getBppb');
 Route::get('bom/{id}', 'GudangMaterialController@getBom');
 Route::get('bom-table/{id}', 'GudangMaterialController@getBomTable');
+
+Route::get("example-data", "GudangMaterialController@getExampleData");

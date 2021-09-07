@@ -1,18 +1,41 @@
 @extends('adminlte.master')
 
 @section('body')
-<h1>Test</h1>
+<table id="gudang_table" class="table table-hover styled-table table-striped">
+    <thead style="text-align: center;">
+        <tr>
+            <th>No</th>
+            <th>Kode</th>
+            <th>Nama</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
 @stop
 
 @section('master_js')
 <script>
-    var pusher = new Pusher(12345, {
-        cluster: "mt1",
-    });
-
-    var channel = pusher.subscribe("my-channel");
-    channel.bind("my-event", (data) => {
-        alert(data);
-    });
+    $.ajax({
+        type: "GET",
+        url: "/api/example-data",
+        dataType: 'json',
+        success: function(obj) {
+            $("#gudang_table").DataTable({
+                pageLength: 100,
+                data: obj,
+                columns: [{
+                        data: 'id'
+                    },
+                    {
+                        data: 'a'
+                    },
+                    {
+                        data: 'b'
+                    },
+                ]
+            })
+        }
+    })
 </script>
 @stop
