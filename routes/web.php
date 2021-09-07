@@ -309,7 +309,8 @@ Route::group(['prefix' => '/podo_offline', 'middleware' => 'auth'], function () 
 //PURCHASE ORDER
 Route::group(['prefix' => '/purchase_order', 'middleware' => 'auth'], function () {
     Route::get('/', 'GbjController@purchase_order')->name('purchase_order');
-    Route::get('/show/{id}', 'GbjController@purchase_order_show')->name('purchase_order.show');
+    Route::get('/grid/show/{status}', 'GbjController@purchase_order_grid_show')->name('purchase_order.grid.show');
+    Route::get('/table/show/{status}', 'GbjController@purchase_order_table_show')->name('purchase_order.table.show');
     Route::get('/create', 'GbjController@purchase_order_create')->name('purchase_order.create');
     Route::post('/store', 'GbjController@purchase_order_store')->name('purchase_order.store');
     Route::get('/edit/{id}', 'GbjController@purchase_order_edit')->name('purchase_order.edit');

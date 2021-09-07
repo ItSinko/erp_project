@@ -79,6 +79,8 @@ class GbjController extends Controller
 
     public function gudang_produk_produk_show($id)
     {
+        $jumlah = 0;
+        $bool = true;
         $s = MutasiGudangProduk::whereHas('GudangProduk', function ($q) use ($id) {
             $q->where([
                 ['detail_produk_id', '=', $id],
@@ -93,11 +95,36 @@ class GbjController extends Controller
             ->editColumn('divisi_id', function ($s) {
                 $btn = "";
                 if ($s->jumlah_masuk != "0") {
-                    $btn = '<i class="fas fa-arrow-circle-down" style="color:green;"></i>';
+                    $btn .= '<i class="fas fa-arrow-circle-down" style="color:green;"></i>';
                 } else if ($s->jumlah_keluar != "0") {
-                    $btn = '<i class="fas fa-arrow-circle-up" style="color:red;"></i>';
+                    $btn .= '<i class="fas fa-arrow-circle-up" style="color:red;"></i>';
                 }
                 return $btn . " " . $s->Divisi->nama;
+            })
+            ->editColumn('keterangan', function ($s) {
+                $btn = '<a href="#" class="btn pop limitchar larget" data-container="body" data-placement="bottom" data-html="true" data-toggle="popover" 
+                    data-content="' . $s->keterangan . '">' . $s->keterangan . '</a>';
+                return $btn;
+            })
+            ->editColumn('jumlah_saldo', function ($s) {
+                global $bool;
+                global $jumlah;
+                if ($bool == true) {
+                    $bool = false;
+                    if ($s->jumlah_masuk != "0") {
+                        $jumlah = (int)$s->jumlah_masuk;
+                    } else if ($s->jumlah_keluar != "0") {
+                        $jumlah = (int)$s->jumlah_keluar * -1;
+                    }
+                    return $jumlah;
+                } else if ($bool == false) {
+                    if ($s->jumlah_masuk != "0") {
+                        $jumlah = $jumlah + (int)$s->jumlah_masuk;
+                    } else if ($s->jumlah_keluar != "0") {
+                        $jumlah = $jumlah - (int)$s->jumlah_keluar;
+                    }
+                    return $jumlah;
+                }
             })
             ->addColumn('aksi', function ($s) {
                 $btn = '<a class="historimutasimodal" data-toggle="modal" data-target="#historimutasimodal" data-attr="/gudang_produk_gbj/mutasi/show/' . $s->id . '" data-id="' . $s->id . '">';
@@ -117,7 +144,7 @@ class GbjController extends Controller
                 // $btn .= '</span></a>';
                 return $btn;
             })
-            ->rawColumns(['aksi', 'divisi_id'])
+            ->rawColumns(['aksi', 'divisi_id', 'keterangan'])
             ->make(true);
     }
 
@@ -140,13 +167,19 @@ class GbjController extends Controller
                 }
                 return $btn . " " . $s->Divisi->nama;
             })
+            ->editColumn('keterangan', function ($s) {
+                $btn = '<div class="limitchar">' . $s->keterangan . '</div>';
+                $btn = '<a href="#" class="btn pop limitchar medt" data-container="body" data-placement="bottom" data-html="true" data-toggle="popover" 
+                    data-content="' . $s->keterangan . '">' . $s->keterangan . '</a>';
+                return $btn;
+            })
             ->addColumn('aksi', function ($s) {
                 $btn = '<a class="historimutasimodal" data-toggle="modal" data-target="#historimutasimodal" data-attr="/gudang_produk_gbj/mutasi/show/' . $s->id . '" data-id="' . $s->id . '">';
                 $btn .= '<div><button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fa fa-search"></i></button></div>';
                 $btn .= '<div><small>Lihat No Seri</small></div></a>';
                 return $btn;
             })
-            ->rawColumns(['aksi', 'divisi_id'])
+            ->rawColumns(['aksi', 'divisi_id', 'keterangan'])
             ->make(true);
     }
 
@@ -225,39 +258,30 @@ class GbjController extends Controller
 
     public function purchase_order()
     {
-        // $po_on = Podo_online::with('Ekatjual.Distriburtors')->select('podo_onlines.po as no_po', 'podo_onlines.tglpo as tgl_po', 'podo_onlines.keterangan as keterangan', 'distributors.nama as customer');
-        // $po_off = Podo_offline::with('Offline.Distributors')->select('podo_offlines.po as no_po', 'podo_offlines.tglpo as tgl_po', 'podo_offlines.keterangan as keterangan', 'distributors.nama as customer');
-
-        // $po_on = Podo_online::all();
-        // $po_off = Podo_offline::all();
-        $po_on = Podo_online::leftJoin('ekatjuals', 'podo_onlines.ekatjual_id', '=', 'ekatjuals.id')
-            ->leftJoin('distributors', 'ekatjuals.distributor_id', '=', 'distributors.id')->select(
-                'podo_onlines.id as id',
-                'podo_onlines.po as no_po',
-                'podo_onlines.tglpo as tgl_po',
-                'podo_onlines.keterangan as keterangan',
-                'distributors.nama as customer'
-            )->get();
-
-        $po_off = Podo_offline::leftJoin('offlines', 'podo_offlines.offline_id', '=', 'offlines.id')
-            ->leftJoin('distributors', 'offlines.customer_id', '=', 'distributors.id')->select(
-                'podo_offlines.id as id',
-                'podo_offlines.po as no_po',
-                'podo_offlines.tglpo as tgl_po',
-                'podo_offlines.keterangan as keterangan',
-                'distributors.nama as distributor'
-            )->get();
-        $po = $po_on->merge($po_off);
-        return view('page.gbj.purchase_order_show', ['po' => $po]);
+        return view('page.gbj.purchase_order_show');
     }
 
-    public function purchase_order_show($status)
+    public function purchase_order_grid_show($status)
     {
         $po = "";
         if ($status == "online") {
-            $po = Podo_online::all();
+            $po = Podo_online::leftJoin('ekatjuals', 'podo_onlines.ekatjual_id', '=', 'ekatjuals.id')
+                ->leftJoin('distributors', 'ekatjuals.distributor_id', '=', 'distributors.id')->select(
+                    'podo_onlines.id as id',
+                    'podo_onlines.po as no_po',
+                    'podo_onlines.tglpo as tgl_po',
+                    'podo_onlines.keterangan as keterangan',
+                    'distributors.nama as customer'
+                )->get();
         } else if ($status == "offline") {
-            $po = Podo_offline::all();
+            $po = Podo_offline::leftJoin('offlines', 'podo_offlines.offline_id', '=', 'offlines.id')
+                ->leftJoin('distributors', 'offlines.customer_id', '=', 'distributors.id')->select(
+                    'podo_offlines.id as id',
+                    'podo_offlines.po as no_po',
+                    'podo_offlines.tglpo as tgl_po',
+                    'podo_offlines.keterangan as keterangan',
+                    'distributors.nama as distributor'
+                )->get();
         } else if ($status == "semua" || $status == "") {
             $po_on = Podo_online::leftJoin('ekatjuals', 'podo_onlines.ekatjual_id', '=', 'ekatjuals.id')
                 ->leftJoin('distributors', 'ekatjuals.distributor_id', '=', 'distributors.id')->select(
@@ -266,7 +290,7 @@ class GbjController extends Controller
                     'podo_onlines.tglpo as tgl_po',
                     'podo_onlines.keterangan as keterangan',
                     'distributors.nama as customer'
-                );
+                )->get();
 
             $po_off = Podo_offline::leftJoin('offlines', 'podo_offlines.offline_id', '=', 'offlines.id')
                 ->leftJoin('distributors', 'offlines.customer_id', '=', 'distributors.id')->select(
@@ -275,29 +299,82 @@ class GbjController extends Controller
                     'podo_offlines.tglpo as tgl_po',
                     'podo_offlines.keterangan as keterangan',
                     'distributors.nama as distributor'
-                );
-            $po = $po_on->union($po_off)->get();
+                )->get();
+            $po = $po_on->merge($po_off);
+        }
+        return $po;
+    }
+
+    public function purchase_order_table_show($status)
+    {
+        $po = "";
+        if ($status == "online") {
+            $po = Podo_online::leftJoin('ekatjuals', 'podo_onlines.ekatjual_id', '=', 'ekatjuals.id')
+                ->leftJoin('distributors', 'ekatjuals.distributor_id', '=', 'distributors.id')->select(
+                    'podo_onlines.id as id',
+                    'podo_onlines.po as no_po',
+                    'podo_onlines.tglpo as tgl_po',
+                    'podo_onlines.keterangan as keterangan',
+                    'distributors.nama as customer'
+                )->get();
+        } else if ($status == "offline") {
+            $po = Podo_offline::leftJoin('offlines', 'podo_offlines.offline_id', '=', 'offlines.id')
+                ->leftJoin('distributors', 'offlines.customer_id', '=', 'distributors.id')->select(
+                    'podo_offlines.id as id',
+                    'podo_offlines.po as no_po',
+                    'podo_offlines.tglpo as tgl_po',
+                    'podo_offlines.keterangan as keterangan',
+                    'distributors.nama as distributor'
+                )->get();
+        } else if ($status == "semua" || $status == "") {
+            $po_on = Podo_online::leftJoin('ekatjuals', 'podo_onlines.ekatjual_id', '=', 'ekatjuals.id')
+                ->leftJoin('distributors', 'ekatjuals.distributor_id', '=', 'distributors.id')->select(
+                    'podo_onlines.id as id',
+                    'podo_onlines.po as no_po',
+                    'podo_onlines.tglpo as tgl_po',
+                    'podo_onlines.keterangan as keterangan',
+                    'distributors.nama as customer'
+                )->get();
+
+            $po_off = Podo_offline::leftJoin('offlines', 'podo_offlines.offline_id', '=', 'offlines.id')
+                ->leftJoin('distributors', 'offlines.customer_id', '=', 'distributors.id')->select(
+                    'podo_offlines.id as id',
+                    'podo_offlines.po as no_po',
+                    'podo_offlines.tglpo as tgl_po',
+                    'podo_offlines.keterangan as keterangan',
+                    'distributors.nama as distributor'
+                )->get();
+            $po = $po_on->merge($po_off);
         }
 
-        return DataTables::of($po)
-            ->addIndexColumn()
-            ->addColumn('checkbox', function ($s) {
 
+        return DataTables::of($po)
+            ->addColumn('checkbox', function ($s) {
                 return '<input type="checkbox" class="form-check" value="' . $s->id . '">';
             })
-
+            ->addColumn('cust', function ($s) {
+                if (isset($s->customer)) {
+                    return $s->customer;
+                } else if (isset($s->distributor)) {
+                    return $s->distributor;
+                }
+            })
             ->addColumn('no_po', function ($s) {
-                return $s->po;
+                return $s->no_po;
             })
             ->addColumn('tgl_po', function ($s) {
-                return Carbon::createFromFormat('Y-m-d', $s->tglpo)->format('d-m-Y');
+                return Carbon::createFromFormat('Y-m-d', $s->tgl_po)->format('d-m-Y');
             })
-            ->addColumn('no_do', function ($s) {
-                return $s->do;
+            ->addColumn('jenis_po', function ($s) {
+                if (isset($s->customer)) {
+                    return '<small class="light-green-text">Online</small>';
+                } else if (isset($s->distributor)) {
+                    return '<small class="purple-text">Offline</small>';
+                }
             })
-            ->addColumn('tgl_do', function ($s) {
-                return Carbon::createFromFormat('Y-m-d', $s->tgldo)->format('d-m-Y');
+            ->addColumn('aksi', function ($s) {
             })
+            ->rawColumns(['checkbox', 'jenis_po'])
             ->make(true);
     }
 }
