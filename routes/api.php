@@ -25,3 +25,9 @@ Route::get('bom/{id}', 'GudangMaterialController@getBom');
 Route::get('bom-table/{id}', 'GudangMaterialController@getBomTable');
 
 Route::get("example-data", "GudangMaterialController@getExampleData");
+
+
+//PPIC
+Route::group(['prefix' => 'ppic'], function () {
+    Route::get('/event/{status}', 'PpicController@getEvent');
+});

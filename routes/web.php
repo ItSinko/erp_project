@@ -6,6 +6,7 @@ use App\Notifications\RealTimeNotification;
 use App\User;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -758,7 +759,7 @@ Route::group(['prefix' => 'gbmp'], function () {
 
 //PPIC
 Route::group(['prefix' => 'ppic'], function () {
-    Route::get('/schedule', 'PpicController@schedule_show');
+    Route::get('/schedule/{status}', 'PpicController@schedule_show');
     Route::post('/schedule/create', 'PpicController@schedule_create');
     Route::post('/schedule/delete', 'PpicController@schedule_delete');
     Route::post('/schedule/update', 'PpicController@schedule_update');
@@ -789,7 +790,7 @@ Route::get('/notif', function () {
     // $user->notify(new RealTimeNotification("Hello World"));
     return "success";
 });
-Route::get('/test', function () {
+Route::get('/test', function (Request $request) {
     return view('test');
 });
 

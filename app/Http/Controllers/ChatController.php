@@ -29,11 +29,11 @@ class ChatController extends Controller
     {
         $user = Auth::user();
 
-        $message = $user->Messages()->create([
-            'message' => $request->input('message')
-        ]);
+        // $message = $user->Messages()->create([
+        //     'message' => $request->input('message')
+        // ]);
 
-        broadcast(new MessageEvent($user, $message))->toOthers();
+        // broadcast(new MessageEvent($user, $message))->toOthers();
 
         return ['status' => 'Message Sent!'];
     }

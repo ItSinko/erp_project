@@ -41,19 +41,23 @@ use PhpParser\Node\Expr\AssignOp\Div;
 
 class PpicController extends Controller
 {
-    public function __construct()
+    // Query function
+    public function getEvent($status)
     {
-        $this->middleware('auth');
+        // $month = date('m');
+        // $year = date('Y');
+        $event = Event::with('DetailProduk')->orderBy('tanggal_mulai', 'asc');
+        return $event->get();
     }
 
-    public function schedule_show(Request $request)
+    public function schedule_show(Request $request, $status_url)
     {
         $month = date('m');
         $year = date('Y');
         $event = Event::with('DetailProduk')->orderBy('tanggal_mulai', 'asc');
         $status = null;
 
-        if ($request->pelaksanaan == true) {
+        if ($status_url == "pelaksanaan") {
             $event = $event->whereYear('tanggal_mulai', $year)->whereMonth('tanggal_mulai', $month)->get();
             $status = 'pelaksanaan';
             foreach ($event as $data) {
@@ -61,11 +65,11 @@ class PpicController extends Controller
                 $item->status = "pelaksanaan";
                 $item->save();
             }
-        } else if ($request->penyusunan == true) {
+        } else if ($status_url == "penyusunan") {
             $month += 1;
             $event = $event->where('tanggal_mulai', '>=', "$year-$month-01")->get();
             $status = "penyusunan";
-        } else if ($request->selesai == true) {
+        } else if ($status_url == "selesai") {
             $event = $event->where('tanggal_mulai', '<', "$year-$month-01")->get();
             $status = 'selesai';
             foreach ($event as $data) {

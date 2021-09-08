@@ -141,7 +141,6 @@ class ActiveChecker
         if (isset(parse_url($pattern)['query'])) {
             $request = $this->request->fullUrl();
         }
-
-        return Str::is(trim($pattern), trim($request));
+        return Str::is(trim($pattern), trim($request, "/tambah"));
     }
 }

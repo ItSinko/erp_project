@@ -621,17 +621,17 @@ return [
                 [
                     'text'  =>  'Penyusunan',
                     'icon'  =>  'far fa-circle',
-                    'url'   =>  '/ppic/schedule?penyusunan=true'
+                    'url'   =>  '/ppic/schedule/penyusunan'
                 ],
                 [
                     'text'  =>  'Pelaksanaan',
                     'icon'  =>  'far fa-circle',
-                    'url'   =>  '/ppic/schedule?pelaksanaan=true',
+                    'url'   =>  '/ppic/schedule/pelaksanaan',
                 ],
                 [
                     'text'  =>  'Selesai',
                     'icon'  =>  'far fa-circle',
-                    'url'   =>  '/ppic/schedule?selesai=true'
+                    'url'   =>  '/ppic/schedule/selesai'
                 ],
             ]
         ],
