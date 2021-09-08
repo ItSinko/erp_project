@@ -102,7 +102,6 @@ class QCController extends Controller
     public function perakitan_pemeriksaan_show()
     {
         $p = Bppb::with('Perakitan')->get();
-
         return DataTables::of($p)
             ->addIndexColumn()
             ->addColumn('gambar', function ($s) {
@@ -145,26 +144,36 @@ class QCController extends Controller
         return view('page.qc.perakitan_pemeriksaan_bppb_show', ['id' => $id, 's' => $s]);
     }
 
-    public function perakitan_pemeriksaan_bppb_show($id)
+    public function perakitan_pemeriksaan_bppb_show($id, $status)
     {
-        $s = HasilPerakitan::whereHas('Perakitan', function ($q) use ($id) {
-            $q->where('bppb_id', '=', $id);
-        })->whereNotIn('status', ['dibuat'])->get();
+        if ($status == "semua") {
+            $s = HasilPerakitan::whereHas('Perakitan', function ($q) use ($id) {
+                $q->where('bppb_id', '=', $id);
+            })->whereNotIn('status', ['dibuat'])->get();
+        } else if ($status == "req_pemeriksaan_terbuka") {
+            $s = HasilPerakitan::whereHas('Perakitan', function ($q) use ($id) {
+                $q->where('bppb_id', '=', $id);
+            })->whereIn('status', ['req_pemeriksaan_terbuka'])->get();
+        } else if ($status == "req_pemeriksaan_tertutup") {
+            $s = HasilPerakitan::whereHas('Perakitan', function ($q) use ($id) {
+                $q->where('bppb_id', '=', $id);
+            })->whereIn('status', ['req_pemeriksaan_tertutup'])->get();
+        } else if ($status == "acc_pemeriksaan_tertutup") {
+            $s = HasilPerakitan::whereHas('Perakitan', function ($q) use ($id) {
+                $q->where('bppb_id', '=', $id);
+            })->whereIn('status', ['acc_pemeriksaan_tertutup'])->get();
+        }
 
         return DataTables::of($s)
             ->addIndexColumn()
-            ->editColumn('checkbox', function($s){
+            ->editColumn('checkbox', function ($s) {
                 $btn = "";
-                if($s->status == 'req_pemeriksaan_terbuka' || $s->status == 'req_pemeriksaan_tertutup'){
-                    $btn = '<div class="form-check">
-                    <input class="form-check-input '.$s->status.'" type="checkbox" value="'.$s->id.'" id="checkbox" name="checkbox[]">
-                  </div>';
+                if ($s->status == 'req_pemeriksaan_terbuka' || $s->status == 'req_pemeriksaan_tertutup') {
+                    $btn = '<input class="form-check-input ' . $s->status . '" type="checkbox" value="' . $s->id . '" id="checkbox" name="checkbox[]">';
+                } else {
+                    $btn = '<input class="form-check-input" type="checkbox" value="' . $s->id . '" id="checkbox" name="checkbox[]" disabled>';
                 }
-                else{
-                    $btn = '<div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="'.$s->id.'" id="checkbox" name="checkbox[]" disabled>
-                  </div>';
-                }
+                return $btn;
             })
             ->editColumn('tanggal', function ($s) {
                 return Carbon::createFromFormat('Y-m-d', $s->tanggal)->format('d-m-Y');
@@ -218,7 +227,7 @@ class QCController extends Controller
                     } else if ($s->kondisi_saat_proses_perakitan == "nok") {
                         $btn .= '<small><i class=&quot;fas fa-times-circle popiconer&quot;></i></small>';
                     }
-                    
+
                     $btn .= '</div>
                     </div>
 
@@ -237,10 +246,15 @@ class QCController extends Controller
                     
                     <div class=&quot;row&quot;>
                         <div class=&quot;col-lg-6&quot;>
-                            <hgroup>
-                                <h6 class=&quot;card-subheading text-muted&quot;>Keterangan</h6>
-                                <h5 class=&quot;card-heading&quot;>'.$s->keterangan_terbuka.'</h5>
-                            </hgroup>
+                            <h6 class=&quot;card-subheading text-muted&quot;><small>Keterangan</small></h6>
+                            <h6 class=&quot;card-heading&quot;>';
+                    if ($s->keterangan_terbuka != "") {
+                        $btn .= $s->keterangan_terbuka;
+                    } else {
+                        $btn .= '-';
+                    }
+
+                    $btn .= '</h6>
                         </div>
                     </div>"
                     ';
@@ -254,7 +268,6 @@ class QCController extends Controller
                     $btn .= '</a>';
                 }
                 return $btn;
-                            
             })
             ->editColumn('tindak_lanjut_terbuka', function ($s) {
                 $btn = "";
@@ -295,7 +308,7 @@ class QCController extends Controller
                     } else if ($s->kondisi_setelah_proses == "nok") {
                         $btn .= '<small><i class=&quot;fas fa-times-circle popiconer&quot;></i></small>';
                     }
-                    
+
                     $btn .= '</div>
                     </div>
 
@@ -314,10 +327,15 @@ class QCController extends Controller
                     
                     <div class=&quot;row&quot;>
                         <div class=&quot;col-lg-6&quot;>
-                            <hgroup>
-                                <h6 class=&quot;card-subheading text-muted&quot;>Keterangan</h6>
-                                <h5 class=&quot;card-heading&quot;>'.$s->keterangan_tertutup.'</h5>
-                            </hgroup>
+                            <h6 class=&quot;card-subheading text-muted&quot;><small>Keterangan</small></h6>
+                            <h6 class=&quot;card-heading&quot;>';
+                    if ($s->keterangan_tertutup != "") {
+                        $btn .= $s->keterangan_tertutup;
+                    } else {
+                        $btn .= '-';
+                    }
+
+                    $btn .= '</h6>
                         </div>
                     </div>"
                     ';
@@ -358,8 +376,14 @@ class QCController extends Controller
             })
             ->addColumn('operator', function ($s) {
                 $arr = [];
+                $c = 0;
                 foreach ($s->Perakitan->Karyawan as $i) {
-                    array_push($arr, "<small>" . $i->nama . "</small>");
+                    if ($c < 2) {
+                        array_push($arr, "<small>" . $i->nama . "</small>");
+                    } else {
+                        break;
+                    }
+                    $c++;
                 }
                 return implode("<br>", $arr);
             })
@@ -419,7 +443,7 @@ class QCController extends Controller
             //     }
             //     return $btn;
             // })
-            ->rawColumns(['operator', 'aksi', 'kondisi_fisik_bahan_baku', 'kondisi_saat_proses_perakitan', 'tindak_lanjut_terbuka', 'kondisi_setelah_proses', 'hasil_terbuka', 'hasil_tertutup', 'fungsi', 'tindak_lanjut_tertutup'])
+            ->rawColumns(['checkbox', 'operator', 'aksi', 'kondisi_fisik_bahan_baku', 'kondisi_saat_proses_perakitan', 'tindak_lanjut_terbuka', 'kondisi_setelah_proses', 'hasil_terbuka', 'hasil_tertutup', 'fungsi', 'tindak_lanjut_tertutup'])
             ->make(true);
     }
 
@@ -477,6 +501,73 @@ class QCController extends Controller
             ->make(true);
     }
 
+    public function perakitan_multiple_status($id, $status)
+    {
+        $bool = true;
+        $arr = explode(",", $id);
+        if ($status == "acc_pemeriksaan_terbuka") {
+            foreach ($arr as $i) {
+                $s = HasilPerakitan::find($i);
+                $s->kondisi_fisik_bahan_baku = "ok";
+                $s->kondisi_saat_proses_perakitan = "ok";
+                $s->tindak_lanjut_terbuka = "ok";
+                $s->keterangan = "";
+                $s->hasil_terbuka = "ok";
+                $s->status = "req_pemeriksaan_tertutup";
+                $u = $s->save();
+
+                if ($u) {
+                    $c = HistoriHasilPerakitan::create([
+                        'hasil_perakitan_id' => $i,
+                        'kegiatan' => 'pemeriksaan_terbuka',
+                        'tanggal' => Carbon::now()->toDateString(),
+                        'hasil' => "ok",
+                        'keterangan' => "",
+                        'tindak_lanjut' => "ok"
+                    ]);
+                    if (!$c) {
+                        $bool = false;
+                    }
+                } else {
+                    $bool = false;
+                }
+            }
+        } else if ($status == "acc_pemeriksaan_tertutup") {
+            foreach ($arr as $i) {
+                $s = HasilPerakitan::find($i);
+                $s->fungsi = "ok";
+                $s->kondisi_setelah_proses = "ok";
+                $s->hasil_tertutup = "ok";
+                $s->tindak_lanjut_tertutup = "ok";
+                $s->keterangan_tindak_lanjut_tertutup = "ok";
+                $s->status = $status;
+                $u = $s->save();
+
+                if ($u) {
+                    $c = HistoriHasilPerakitan::create([
+                        'hasil_perakitan_id' => $i,
+                        'kegiatan' => 'pemeriksaan_tertutup',
+                        'tanggal' => Carbon::now()->toDateString(),
+                        'hasil' => "ok",
+                        'keterangan' => "",
+                        'tindak_lanjut' => "ok"
+                    ]);
+                    if (!$c) {
+                        $bool = false;
+                    }
+                } else {
+                    $bool = false;
+                }
+            }
+        }
+
+        if ($bool == true) {
+            return redirect()->back()->with('success', "Berhasil mengubah Data");
+        } else {
+            return redirect()->back()->with('error', "Gagal mengubah Data");
+        }
+    }
+
     public function perakitan_pemeriksaan_terbuka_edit($id)
     {
         $s = HasilPerakitan::find($id);
@@ -514,7 +605,7 @@ class QCController extends Controller
         } else {
             $status = "";
             if ($request->hasil_terbuka == "ok") {
-                $status = "acc_pemeriksaan_terbuka";
+                $status = "req_pemeriksaan_tertutup";
             } else {
                 $status = "rej_pemeriksaan_terbuka";
             }
