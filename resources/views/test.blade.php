@@ -42,3 +42,7 @@
     </div>
 </div>
 @stop
+
+@section('adminlte_js')
+
+@stop
