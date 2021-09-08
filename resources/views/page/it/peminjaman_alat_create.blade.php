@@ -144,7 +144,6 @@
             $t.find("tr").each(function(ind, el) {
                 $(el).find("td:eq(0)").html(++c);
                 var j = c - 1;
-
                 // $(el).find('select[id="inventory_id"]').attr('name', 'inventory_id[' + j + ']');
                 $(el).find('select[id="divisi_inventory_id"]').attr('id', 'divisi_inventory_id' + j);
                 $(el).find('select[id="inventory_id"]').attr('id', 'inventory_id' + j);
@@ -154,22 +153,6 @@
                 $(el).find('textarea[id="keteranganinv"]').attr('name', 'keteranganinv[' + j + ']');
             });
         }
-
-        function numberRows($t) {
-            var c = 0 - 2;
-            $t.find("tr").each(function(ind, el) {
-                $(el).find("td:eq(0)").html(++c);
-                var j = c - 1;
-                $(el).find('input[id="tanggals"]').attr('name', 'tanggals[' + j + ']');
-                $(el).find('select[id="karyawan_id"]').attr('name', 'karyawan_id[' + j + '][]');
-                $(el).find('select[id="karyawan_id"]').attr('id', 'karyawan_id' + j);
-                $(el).find('input[id="no_seri"]').attr('name', 'no_seri[' + j + ']');
-                $(el).find('input[id="warna"]').attr('name', 'warna[' + j + ']');
-                $('select[name="karyawan_id[' + j + '][]"]').select2();
-            });
-        }
-
-
 
         $('#tambahitem').click(function(e) {
             $('#tableitem tr:last').after(`<tr>

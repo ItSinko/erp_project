@@ -26,12 +26,12 @@
         overflow: hidden;
     }
 
-    .larget {
+    .medt {
         width: 250px;
     }
 
-    .medt {
-        width: 250px;
+    .larget {
+        width: 350px;
     }
 </style>
 @stop
@@ -206,13 +206,12 @@
                                                 <th rowspan="2">Produk</th>
                                                 <th rowspan="2">Asal / Tujuan</th>
                                                 <th rowspan="2">Keterangan</th>
-                                                <th colspan="3">Jumlah</th>
+                                                <th colspan="2">Jumlah</th>
                                                 <th rowspan="2">Aksi</th>
                                             </tr>
                                             <tr>
                                                 <th>Masuk</th>
                                                 <th>Keluar</th>
-                                                <th>Saldo</th>
                                             </tr>
                                         </thead>
                                         <tbody id="tbodies">
@@ -501,13 +500,6 @@
                             orderable: false,
                             searchable: false
 
-                        },
-                        {
-                            data: 'jumlah_saldo',
-                            name: 'jumlah_saldo',
-                            className: 'text-right',
-                            orderable: false,
-                            searchable: false
                         },
                         {
                             data: 'aksi',

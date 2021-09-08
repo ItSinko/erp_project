@@ -13,7 +13,7 @@ class Produk extends Model
 
     public function KelompokProduk()
     {
-        return $this->belongsTo(KelompokProduk::class);
+        return $this->belongsTo(KelompokProduk::class, 'kelompok_produk_id');
     }
     public function KategoriProduk()
     {

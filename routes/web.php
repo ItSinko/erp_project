@@ -322,7 +322,8 @@ Route::group(['prefix' => '/purchase_order', 'middleware' => 'auth'], function (
 Route::group(['prefix' => '/produk', 'middleware' => 'auth'], function () {
     Route::get('/get_select/{id}', 'CommonController@produk_get_select');    /* Get Data */
     Route::get('/', 'ItController@produk')->name('produk');
-    Route::get('/show', 'ItController@produk_show')->name('produk.show');
+    Route::get('/show/{kelompok}', 'ItController@produk_show')->name('produk.show');
+    Route::get('/grid/show/{kelompok}', 'ItController@produk_grid_show')->name('produk.grid.show');
     Route::get('/create', 'ItController@produk_create')->name('produk.create');  /* Create */
     Route::get('/create/get_kategori_produk_by_kelompok_produk/{kelompok_produk_id}', 'GetController@get_kategori_produk_by_kelompok_produk');
     Route::get('/create/get_tipe_produk_exist/{kelompok_produk_id}', 'GetController@get_tipe_produk_exist');

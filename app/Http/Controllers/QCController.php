@@ -219,7 +219,7 @@ class QCController extends Controller
                     </div>
                     
                     <div class=&quot;row&quot;>
-                    <div class=&quot;col-sm-10 col-form-label&quot;>Kondisi Saat Proses Perakitan</div>
+                    <div class=&quot;col-sm-10 col-form-label&quot;>Kondisi Saat Perakitan</div>
                     <div class=&quot;col-sm-2 col-form-label&quot; style=&quot;text-align:right;&quot;>';
 
                     if ($s->kondisi_saat_proses_perakitan == "ok") {
@@ -299,6 +299,19 @@ class QCController extends Controller
                     $btn = '<a href="#" class="btn pop" data-container="body" data-placement="bottom" data-html="true" data-title="Pemeriksaan Tertutup" data-toggle="popover" 
                     data-content="
                     <div class=&quot;form-horizontal&quot;>
+                    <div class=&quot;row&quot;>
+                    <div class=&quot;col-sm-10 col-form-label&quot;>Fungsi</div>
+                    <div class=&quot;col-sm-2 col-form-label&quot; style=&quot;text-align:right;&quot;>';
+
+                    if ($s->fungsi == "ok") {
+                        $btn .= '<small><i class=&quot;fas fa-check-circle popiconsc&quot;></i></small>';
+                    } else if ($s->fungsi == "nok") {
+                        $btn .= '<small><i class=&quot;fas fa-times-circle popiconer&quot;></i></small>';
+                    }
+
+                    $btn .= '</div>
+                    </div>
+
                     <div class=&quot;row&quot;>
                     <div class=&quot;col-sm-10 col-form-label&quot;>Kondisi Setelah Perakitan</div>
                     <div class=&quot;col-sm-2 col-form-label&quot; style=&quot;text-align:right;&quot;>';

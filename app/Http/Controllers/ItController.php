@@ -57,9 +57,29 @@ class ItController extends Controller
         return view('page.it.produk_show');
     }
 
-    public function produk_show()
+    public function produk_grid_show($kelompok)
     {
-        $s = Produk::all();
+        $s = "";
+        if ($kelompok == "semua" || $kelompok == "") {
+            $s = Produk::with('KelompokProduk', 'KategoriProduk')->get();
+        } else {
+            $s = Produk::whereHas('KelompokProduk', function ($q) use ($kelompok) {
+                $q->where('nama', $kelompok);
+            })->get();
+        }
+        return $s;
+    }
+
+    public function produk_show($kelompok)
+    {
+        $s =  "";
+        if ($kelompok == "semua" || $kelompok == "") {
+            $s = Produk::all();
+        } else {
+            $s = Produk::whereHas('KelompokProduk', function ($q) use ($kelompok) {
+                $q->where('nama', $kelompok);
+            })->get();
+        }
         return DataTables::of($s)
             ->addIndexColumn()
             ->editColumn('kategori_id', function ($s) {

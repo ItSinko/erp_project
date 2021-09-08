@@ -102,7 +102,7 @@ class GbjController extends Controller
                 return $btn . " " . $s->Divisi->nama;
             })
             ->editColumn('keterangan', function ($s) {
-                $btn = '<a href="#" class="btn pop limitchar larget" data-container="body" data-placement="bottom" data-html="true" data-toggle="popover" 
+                $btn = '<a href="#" class="btn pop limitchar medt" data-container="body" data-placement="bottom" data-html="true" data-toggle="popover" 
                     data-content="' . $s->keterangan . '">' . $s->keterangan . '</a>';
                 return $btn;
             })
@@ -169,7 +169,7 @@ class GbjController extends Controller
             })
             ->editColumn('keterangan', function ($s) {
                 $btn = '<div class="limitchar">' . $s->keterangan . '</div>';
-                $btn = '<a href="#" class="btn pop limitchar medt" data-container="body" data-placement="bottom" data-html="true" data-toggle="popover" 
+                $btn = '<a href="#" class="btn pop limitchar larget" data-container="body" data-placement="bottom" data-html="true" data-toggle="popover" 
                     data-content="' . $s->keterangan . '">' . $s->keterangan . '</a>';
                 return $btn;
             })
