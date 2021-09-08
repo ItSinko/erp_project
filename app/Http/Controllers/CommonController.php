@@ -12,7 +12,6 @@ use Yajra\DataTables\Facades\DataTables;
 
 use App\Jasa_eks;
 use App\Distributor;
-use App\Karyawan;
 use App\Produk;
 use App\Penjualan_produk;
 

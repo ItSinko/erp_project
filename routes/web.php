@@ -39,6 +39,14 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/template_form_cancel', 'ItController@template_form_cancel')->name('template-form-cancel');
 });
 
+
+
+
+//Kesehatan
+/* Tabel */
+Route::get('/daftar_karyawan', 'KaryawanController@karyawan');
+
+
 //Kesehatan
 /* Tabel */
 Route::get('/kesehatan', 'KesehatanController@kesehatan');
