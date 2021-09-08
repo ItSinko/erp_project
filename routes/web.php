@@ -306,6 +306,17 @@ Route::group(['prefix' => '/podo_offline', 'middleware' => 'auth'], function () 
 });
 
 
+//PURCHASE ORDER
+Route::group(['prefix' => '/purchase_order', 'middleware' => 'auth'], function () {
+    Route::get('/', 'GbjController@purchase_order')->name('purchase_order');
+    Route::get('/show/{id}', 'GbjController@purchase_order_show')->name('purchase_order.show');
+    Route::get('/create', 'GbjController@purchase_order_create')->name('purchase_order.create');
+    Route::post('/store', 'GbjController@purchase_order_store')->name('purchase_order.store');
+    Route::get('/edit/{id}', 'GbjController@purchase_order_edit')->name('purchase_order.edit');
+    Route::put('/update/{id}', 'GbjController@purchase_order_update')->name('purchase_order.update');
+});
+
+
 //GET DATA SELECT
 Route::group(['prefix' => '/produk', 'middleware' => 'auth'], function () {
     Route::get('/get_select/{id}', 'CommonController@produk_get_select');    /* Get Data */
@@ -513,17 +524,37 @@ Route::group(['prefix' => '/perakitan', 'middleware' => 'auth'], function () {
         Route::get('/bppb/{id}', 'QCController@perakitan_pemeriksaan_bppb')->name('perakitan.pemeriksaan.bppb');
         Route::get('/bppb/show/{id}', 'QCController@perakitan_pemeriksaan_bppb_show')->name('perakitan.pemeriksaan.bppb.show');
     });
+
     Route::get('/analisa_ps/show/{id}', 'EngController@perakitan_analisa_ps_show')->name('perakitan.analisa_ps.show');
     Route::get('/analisa_ps/create/{id}', 'EngController@perakitan_analisa_ps_create')->name('perakitan.analisa_ps.create');
     Route::put('/analisa_ps/store/{id}', 'EngController@perakitan_analisa_ps_store')->name('perakitan.analisa_ps.store');
 });
 
+Route::group(['prefix' => 'gudang_produk_gbj', 'middleware' => 'auth'], function () {
+    Route::get('', 'GbjController@gudang_produk')->name('gudang_produk_gbj');
+    Route::get('/show', 'GbjController@gudang_produk_show')->name('gudang_produk_gbj.show');
+    Route::get('/produk/{id}', 'GbjController@gudang_produk_produk')->name('gudang_produk_gbj.produk');
+    Route::get('/produk/show/{id}', 'GbjController@gudang_produk_produk_show')->name('gudang_produk_gbj.produk.show');
+    Route::get('/tanggal/show/{tanggal}', 'GbjController@gudang_produk_tanggal_show')->name('gudang_produk_gbj.tanggal.show');
+    Route::get('/create/{id}', 'GbjController@gudang_produk_create')->name('gudang_produk_gbj.create');
+    Route::put('/store/{id}', 'GbjController@gudang_produk_store')->name('gudang_produk_gbj.store');
+    Route::get('/mutasi/{id}', 'GbjController@mutasi_gudang_produk')->name('gudang_produk_gbj.mutasi');
+    Route::get('/mutasi/show/{id}', 'GbjController@mutasi_gudang_produk_show')->name('gudang_produk_gbj.mutasi.show');
+});
+
+Route::group(['prefix' => 'surat_jalan', 'middleware' => 'auth'], function () {
+    Route::get('/', 'GbjController@surat_jalan')->name('surat_jalan');
+    Route::get('/show', 'GbjController@surat_jalan_show')->name('surat_jalan.show');
+    Route::get('/create', 'GbjController@surat_jalan_create')->name('surat_jalan.create');
+    Route::post('/store', 'GbjController@surat_jalan_store')->name('surat_jalan.store');
+    Route::get('/edit/{id}', 'GbjController@surat_jalan_edit')->name('surat_jalan.edit');
+    Route::put('/update/{id}', 'GbjController@surat_jalan_update')->name('surat_jalan.update');
+});
 
 // PENGUJIAN
 Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {
     Route::get('/', 'QCController@pengujian')->name('pengujian');
     Route::get('/pdf_lkp/{produk}', 'QCController@pdf_lkp')->name('pdf_lkp');
-
 
     Route::get('/bppb/{id}', 'QCController@pengujian_bppb')->name('pengujian.bppb');
     Route::get('/bppb/show/{id}', 'QCController@pengujian_bppb_show')->name('pengujian.bppb.show');
@@ -665,7 +696,6 @@ Route::group(['prefix' => '/pengemasan', 'middleware' => 'auth'], function () {
     Route::put('/analisa_ps/store/{id}', 'EngController@pengemasan_analisa_ps_store')->name('pengemasan.analisa_ps.store');
 });
 
-
 // PERBAIKAN
 Route::group(['prefix' => '/perbaikan', 'middleware' => 'auth'], function () {
     Route::get('/produksi', 'ProduksiController@perbaikan_produksi')->name('perbaikan.produksi');
@@ -709,11 +739,8 @@ Route::group(['prefix' => 'dc', 'middleware' => 'auth'], function () {
 
 //GBMP
 Route::group(['prefix' => 'gbmp'], function () {
-    Route::get('/part', 'GudangController@part');
-    Route::get('/data-part', 'GudangController@data_part');
-    Route::get('/input-form', 'GudangController@input_form');
-    Route::get('/part_order', 'GudangController@part_order');
-    Route::get('/data-part-order', 'GudangController@data_part_order');
+    // TODO: make controller for gbmp
+    // TODO: make UI gbmp with react typescript
 });
 
 
@@ -726,7 +753,6 @@ Route::group(['prefix' => 'ppic'], function () {
     Route::get('/get-version-bom/{id}', 'PpicController@getVersionBomProduct');
     Route::get('/get-max-product/{id}', 'PpicController@getMaxProduct');
 
-
     Route::get('/get_item_bom', 'PpicController@get_item_bom');
     Route::get('/get_versi_bom', 'PpicController@get_versi_bom');
     Route::get('/add_part_order/{id}/{quantity}', 'PpicController@add_part_order');
@@ -736,7 +762,6 @@ Route::group(['prefix' => 'ppic'], function () {
     Route::post('/change_status_event', 'PpicController@schedule_event_change_status');
     Route::get('/bppb', 'PpicController@bppb_ppic');
 });
-
 
 // Eng
 Route::view('/eng', 'page.engineering.index');
@@ -750,6 +775,7 @@ Route::get('/notif', function () {
     event(new SimpleNotifEvent('ari', 'hello there'));
     // $user = User::first();
     // $user->notify(new RealTimeNotification("Hello World"));
+    return "success";
 });
 Route::get('/test', function () {
     return view('test');

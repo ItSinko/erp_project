@@ -31,7 +31,9 @@ use App\HasilPengemasan;
 use App\PermintaanBahanBaku;
 use App\DetailPermintaanBahanBaku;
 use App\Bom_Version;
+use App\Events\SimpleNotifEvent;
 use App\GudangProduk;
+use App\HistoriMutasiGudangProduk;
 use App\MutasiGudangProduk;
 use App\PengembalianBarangGudang;
 use App\ProdukBillOfMaterial;
@@ -84,17 +86,6 @@ class PpicController extends Controller
 
     public function schedule_create(Request $request)
     {
-        // Update status column
-        if (isset($request->status_update) && $request->status_update == true) {
-            $event = Event::find((int)$request->id);
-            $event->status = $request->status;
-            $event->save();
-
-            event(new RealTimeMessage(Auth::user(), (string)$event->detail_produk->nama, (string)$event->jumlah_produksi));
-
-            return $event;
-        }
-
         // Create new row
         $request->validate([
             'id_produk' => 'required',
@@ -125,7 +116,15 @@ class PpicController extends Controller
     public function schedule_update(Request $request)
     {
         if (isset($request->confirmation)) {
-            Event::where('status', $request->status)->update(['konfirmasi' => $request->confirmation]);
+            if (isset($request->id)) {
+                Event::find($request->id)->update(['konfirmasi' => $request->confirmation]);
+            } else {
+                Event::where('status', $request->status)->update(['konfirmasi' => $request->confirmation]);
+            }
+            if ($request->confirmation < 3) {
+                $data = ["confirmation" => $request->confirmation, "message" => $request->message];
+                event(new SimpleNotifEvent(Auth::user(), $data));
+            }
         }
 
         return $request;
@@ -176,11 +175,6 @@ class PpicController extends Controller
             }
         }
         return "done";
-    }
-
-    public function schedule_notif(Request $request)
-    {
-        event(new RealTimeMessage(Auth::user(), $request->message, $request->status));
     }
 
     public function get_item_bom(Request $request)
@@ -329,11 +323,17 @@ class PpicController extends Controller
 
                 $btn = '<a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="Klik untuk melihat detail BPPB">';
                 $btn .= '<i class="fas fa-eye" aria-hidden="true"></i> </a>';
-
                 $btn .= '<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">';
-                $btn .= '<a class="dropdown-item" href="/bppb/permintaan_bahan_baku/' . $s->id . '"><span style="color: black;"><i class="fas fa-box-open" aria-hidden="true"></i>&nbsp;Permintaan Bahan Baku</span></a>';
-                $btn .= '<a class="dropdown-item" href="/bppb/pengembalian_barang_gudang/' . $s->id . '"><span style="color: black;"><i class="fas fa-dolly" aria-hidden="true"></i>&nbsp;Pengembalian Barang Gudang</span></a>';
-                $btn .= '<a class="dropdown-item" href="/bppb/penyerahan_barang_jadi/' . $s->id . '"><span style="color: black;"><i class="fas fa-pallet" aria-hidden="true"></i>&nbsp;Penyerahan Barang Jadi</span></a>';
+                if (Auth::user()->Divisi->nama == "Gudang Barang Masuk") {
+                    $btn .= '<a class="dropdown-item" href="/bppb/permintaan_bahan_baku/' . $s->id . '"><span style="color: black;"><i class="fas fa-box-open" aria-hidden="true"></i>&nbsp;Permintaan Bahan Baku</span></a>';
+                    $btn .= '<a class="dropdown-item" href="/bppb/pengembalian_barang_gudang/' . $s->id . '"><span style="color: black;"><i class="fas fa-dolly" aria-hidden="true"></i>&nbsp;Pengembalian Barang Gudang</span></a>';
+                } else if (Auth::user()->Divisi->nama == "Gudang Barang Jadi") {
+                    $btn .= '<a class="dropdown-item" href="/bppb/penyerahan_barang_jadi/' . $s->id . '"><span style="color: black;"><i class="fas fa-pallet" aria-hidden="true"></i>&nbsp;Penyerahan Barang Jadi</span></a>';
+                } else if (Auth::user()->Divisi->nama == "Gudang Karantina" ||  Auth::user()->Divisi->nama == "Produksi") {
+                    $btn .= '<a class="dropdown-item" href="/bppb/permintaan_bahan_baku/' . $s->id . '"><span style="color: black;"><i class="fas fa-box-open" aria-hidden="true"></i>&nbsp;Permintaan Bahan Baku</span></a>';
+                    $btn .= '<a class="dropdown-item" href="/bppb/pengembalian_barang_gudang/' . $s->id . '"><span style="color: black;"><i class="fas fa-dolly" aria-hidden="true"></i>&nbsp;Pengembalian Barang Gudang</span></a>';
+                    $btn .= '<a class="dropdown-item" href="/bppb/penyerahan_barang_jadi/' . $s->id . '"><span style="color: black;"><i class="fas fa-pallet" aria-hidden="true"></i>&nbsp;Penyerahan Barang Jadi</span></a>';
+                }
                 return $btn;
             })
             ->addColumn('status', function ($s) {
@@ -847,10 +847,13 @@ class PpicController extends Controller
         $pbj = DetailPenyerahanBarangJadi::where('penyerahan_barang_jadi_id', $s->id)->get();
         $pbjc = $pbj->count();
         $bool = true;
+        $arr = array();
         foreach ($pbj as $i) {
             $hp = HasilPengemasan::where('hasil_perakitan_id', $i->hasil_perakitan_id)
                 ->orderBy('updated_at', 'desc')
                 ->first();
+
+            array_push($arr, $i->hasil_perakitan_id);
             $hps = HasilPengemasan::find($hp->id);
             $hps->status = "penyerahan";
             $us = $hps->save();
@@ -864,6 +867,7 @@ class PpicController extends Controller
                 ['detail_produk_id', '=', $dp],
                 ['divisi_id', '=', Auth::user()->divisi_id]
             ])->first();
+            $gpid = "";
             if ($gp) {
                 $m = MutasiGudangProduk::where('gudang_produk_id', $gp->id)->orderBy('id', 'desc')->first();
 
@@ -876,6 +880,7 @@ class PpicController extends Controller
                     'jumlah_keluar' => '0',
                     'jumlah_saldo' => $pbjc + $m->jumlah_saldo
                 ]);
+                $gpid = $gpc->id;
             } else if (!$gp) {
                 $gpi = GudangProduk::create([
                     'detail_produk_id' => $dp,
@@ -891,6 +896,17 @@ class PpicController extends Controller
                         'jumlah_masuk' => $pbjc,
                         'jumlah_keluar' => '0',
                         'jumlah_saldo' => $pbjc
+                    ]);
+                    $gpid = $gpc->id;
+                }
+            }
+            if ($gpc != "") {
+                echo json_encode($arr);
+                for ($z = 0; $z < count($arr); $z++) {
+                    HistoriMutasiGudangProduk::create([
+                        'mutasi_gudang_produk_id' => $gpid,
+                        'hasil_perakitan_id' => $arr[$z],
+                        'status' => 'T'
                     ]);
                 }
             }

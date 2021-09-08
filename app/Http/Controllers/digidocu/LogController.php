@@ -6,8 +6,9 @@ use Illuminate\Http\Request;
 
 class LogController extends Controller
 {
-    public function __construct() {
-        return $this->middleware(['auth','permission:manage']);
+    public function __construct()
+    {
+        return $this->middleware(['auth', 'permission:manage']);
     }
 
     // public function testAddLog()
@@ -18,9 +19,9 @@ class LogController extends Controller
 
     public function log()
     {
-    	$logs = \Log::logLists();
+        $logs = \Log::logLists();
 
-    	return view('pages.logs',compact('logs'));
+        return view('pages.logs', compact('logs'));
     }
 
     public function logdel()

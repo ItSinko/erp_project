@@ -38,7 +38,7 @@ class DetailProduk extends Model
     {
         return $this->hasOne(KartuStockGbj::class);
     }
-    
+
     public function DetailProdukToBillOfMaterial()
     {
         return $this->hasMany(DetailProdukToBillOfMaterial::class, 'detail_produk_id');
@@ -47,5 +47,10 @@ class DetailProduk extends Model
     public function BillOfMaterial()
     {
         return $this->hasManyThrough(BillOfMaterial::class, DetailProdukToBillOfMaterial::class, 'detail_produk_id', 'produk_bill_of_material_id');
+    }
+
+    public function GudangProduk()
+    {
+        return $this->hasMany(GudangProduk::class);
     }
 }

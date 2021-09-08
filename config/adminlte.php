@@ -129,7 +129,7 @@ return [
     'classes_sidebar' => 'sidebar-dark-primary elevation-4',
     'classes_sidebar2' => 'sidebar-dark-primary royal-bg  elevation-4',
     'classes_sidebar_nav' => '',
-    'classes_topnav' => 'navbar-white navbar-light',
+    'classes_topnav' => 'navbar-dark',
     'classes_topnav_nav' => 'navbar-expand',
     'classes_topnav_container' => 'container',
 
@@ -894,7 +894,7 @@ return [
         [
             'text'    => 'Permintaan',
             'icon'    => 'fas fa-box-open',
-            'url'  => '/kalibrasi/',
+            'url'  => '/kalibrasi',
             'auth' => [22],
         ],
         [
@@ -929,12 +929,15 @@ return [
             'icon' => 'fas fa-circle',
             'auth' => [13],
         ],
-        ['header' => 'LOGOUT'],
         [
-            'text' => 'Logout',
-            'url' => '/logout',
-            'icon' => 'fas fa-sign-out-alt',
-            'form' => true,
+            'header' => 'Permintaan',
+            'auth' => [13]
+        ],
+        [
+            'text' => 'PO Penjualan',
+            'url' => '/purchase_order',
+            'icon' => 'fas fa-circle',
+            'auth' => [13],
         ],
         [
             'text' => 'test',
@@ -977,61 +980,69 @@ return [
     |
     */
     'plugins' => [
-        'Datatables' => [
-            'active' => true,
-            'files' => [
-                [
-                    'type' => 'js',
-                    'asset' => true,
-                    'location' => 'vendor/datatables/jquery.dataTables.min.js',
-                ],
-                [
-                    'type' => 'js',
-                    'asset' => true,
-                    'location' => 'vendor/datatables/dataTables.bootstrap4.min.js',
-                ],
-                [
-                    'type' => 'js',
-                    'asset' => true,
-                    'location' => 'vendor/datatables/dataTables.responsive.min.js',
-                ],
-                [
-                    'type' => 'css',
-                    'asset' => true,
-                    'location' => 'vendor/datatables/dataTables.bootstrap4.min.css',
-                ],
+        // core plugins
+        'FontAwesome' => [
+            'css' => [
+                'vendor/fontawesome-free/css/all.min.css',
+            ]
+        ],
+        'jQuery' => [
+            'js' => [
+                'vendor/jquery/jquery.min.js',
+            ],
+        ],
+        'BootStrap' => [
+            'js' => [
+                'vendor/bootstrap/js/bootstrap.bundle.min.js',
+            ],
+        ],
+        'AdminLte' => [
+            'js' => [
+                'vendor/adminlte/dist/js/adminlte.min.js',
+            ],
+            'css' => [
+                'vendor/adminlte/dist/css/adminlte.min.css',
+            ],
+        ],
+        // dependecies plugins
+        'DataTables' => [
+            'js' => [
+                'vendor/datatables/jquery.dataTables.min.js',
+                'vendor/datatables/dataTables.bootstrap4.min.js',
+                'vendor/datatables/dataTables.responsive.min.js',
+            ],
+            'css' => [
+                'vendor/datatables/dataTables.bootstrap4.min.css',
+            ],
+        ],
+        'overlayScrollbars' => [
+            'js' => [
+                'vendor/overlayScrollbars/js/jquery.overlayScrollbars.min.js',
+            ],
+            'CSS' => [
+                'vendor/overlayScrollbars/css/OverlayScrollbars.min.css',
             ],
         ],
         'Select2' => [
-            'active' => true,
-            'files' => [
-                [
-                    'type' => 'js',
-                    'asset' => true,
-                    'location' => 'vendor/select2/js/select2.full.min.js',
-                ],
-                [
-                    'type' => 'css',
-                    'asset' => true,
-                    'location' => 'vendor/select2/css/select2.min.css',
-                ],
-                [
-                    'type' => 'css',
-                    'asset' => true,
-                    'location' => 'vendor/select2-bootstrap4-theme/select2-bootstrap4.min.css',
-                ],
+            'js' => [
+                'vendor/select2/js/select2.full.min.js',
+            ],
+            'css' => [
+                'vendor/select2/css/select2-bootstrap4.min.css',
+                'vendor/select2/css/select2.min.css',
             ],
         ],
         'Chartjs' => [
-            'active' => true,
-            'files' => [
-                [
-                    'type' => 'js',
-                    'asset' => true,
-                    'location' => 'vendor/charts/chart.js',
-                ]
+            'js' => [
+                'vendor/charts/chart.js',
             ],
         ],
+        'Pusher' => [
+            'js' => [
+                'vendor/pusher/pusher.min.js',
+                // 'vendor/pusher/echo.min.js',
+            ],
+        ]
     ],
 
     /*

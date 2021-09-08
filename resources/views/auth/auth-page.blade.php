@@ -8,7 +8,13 @@
 @php( $dashboard_url = $dashboard_url ? url($dashboard_url) : '' )
 @endif
 
-@section('adminlte_css')
+@section('master_css')
+<style>
+    body {
+        background-color: #000;
+    }
+</style>
+
 @stack('css')
 @yield('css')
 @stop
