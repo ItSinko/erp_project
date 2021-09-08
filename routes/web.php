@@ -781,3 +781,5 @@ Route::get('/notif', function () {
 Route::get('/test', function () {
     return view('test');
 });
+
+Route::get('/status', 'UserController@userOnlineStatus');
