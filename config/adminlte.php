@@ -1029,12 +1029,6 @@ return [
                 'vendor/charts/chart.js',
             ],
         ],
-        'Pusher' => [
-            'js' => [
-                'vendor/pusher/pusher.min.js',
-                // 'vendor/pusher/echo.min.js',
-            ],
-        ],
         'AdminLte' => [
             'js' => [
                 'vendor/adminlte/dist/js/adminlte.min.js',

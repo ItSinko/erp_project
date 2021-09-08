@@ -27,6 +27,7 @@
     },
     "dependencies": {
         "fullcalendar": "^5.8.0",
-        "icheck-bootstrap": "^3.0.1"
+        "icheck-bootstrap": "^3.0.1",
+        "vue-notification": "^1.3.20"
     }
 }

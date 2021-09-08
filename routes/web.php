@@ -1,6 +1,7 @@
 <?php
 
 use App\Events\SimpleNotifEvent;
+use App\Http\Controllers\ChatController;
 use App\Notifications\RealTimeNotification;
 use App\User;
 use Illuminate\Support\Facades\Route;
@@ -785,3 +786,7 @@ Route::get('/test', function () {
 });
 
 Route::get('/status', 'UserController@userOnlineStatus');
+
+Route::get('/chat', 'ChatController@index');
+Route::get('/messages', 'ChatController@fetchMessages');
+Route::post('/messages', 'ChatController@sendMessage');

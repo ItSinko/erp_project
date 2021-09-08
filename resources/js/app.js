@@ -2,13 +2,14 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
-Vue.component('chat-messages', require('./components/ChatMessage.vue'));
-Vue.component('chat-form', require('./components/ChatForm.vue'));
+Vue.component('chat-messages', require('./components/ChatMessage.vue').default);
+Vue.component('chat-form', require('./components/ChatForm.vue').default);
 
 const app = new Vue({
     el: '#app',
     data: {
         messages: [],
+        count: 0,
     },
     created() {
         this.fetchMessage();
@@ -24,7 +25,7 @@ const app = new Vue({
 
             axios.post('/messages', message).then(response => {
                 console.log(response.data);
-            })
+            });
         }
-    }
-})
+    },
+});

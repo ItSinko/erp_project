@@ -55,7 +55,7 @@
     @endif
 </head>
 
-<body class="@yield('classes_body')" style="font-family:Inter;" @yield('body_data')>
+<body class="@yield('classes_body')" style="font-family:Inter; padding-top: 0;" @yield('body_data')>
     {{-- Body Content --}}
     @yield('body')
 
