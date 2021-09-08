@@ -272,7 +272,6 @@ class KesehatanController extends Controller
     {
         $data = Karyawan::with('divisi', 'kesehatan_awal')
             ->orderBy('nama', 'ASC')
-            ->has('kesehatan_awal')
             ->where('divisi_id', $id)->get();
         echo json_encode($data);
     }
