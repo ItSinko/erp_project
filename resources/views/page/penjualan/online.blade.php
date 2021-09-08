@@ -460,7 +460,6 @@
               typeof i === 'number' ?
               i : 0;
           };
-
           // computing column Total of the complete result 
           var jumlah_pesanan = api
             .column(4)

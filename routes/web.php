@@ -46,6 +46,7 @@ Route::group(['middleware' => 'auth'], function () {
 //Kesehatan
 /* Tabel */
 Route::get('/daftar_karyawan', 'KaryawanController@karyawan');
+Route::get('/daftar_karyawan/data', 'KaryawanController@karyawan_data');
 
 
 //Kesehatan

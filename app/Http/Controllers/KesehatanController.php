@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Validation\Rule;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -83,7 +84,14 @@ class KesehatanController extends Controller
                 return $age . " Thn";
             })
             ->addColumn('vaksin_detail', function ($data) {
-                $btn = '' . $data->vaksin . '<br><div class="inline-flex"><button type="button" id="vaksin_detail" class="btn btn-block btn-primary karyawan-img-small" style="border-radius:50%;" ><i class="fa fa-eye" aria-hidden="true"></i></button></div>';
+                if ($data->karyawan->vaksin_karyawan->isEmpty()) {
+                    $status = 'Belum Vaksin';
+                } else {
+                    $status = 'Sudah Vaksin';
+                }
+
+
+                $btn = '' . $status . '<br><div class="inline-flex"><button type="button" id="vaksin_detail" class="btn btn-block btn-primary karyawan-img-small" style="border-radius:50%;" ><i class="fa fa-eye" aria-hidden="true"></i></button></div>';
                 return $btn;
             })
             ->rawColumns(['berat_kg', 'vaksin_detail'])
