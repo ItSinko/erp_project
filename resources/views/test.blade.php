@@ -1,18 +1,21 @@
-@extends('adminlte.master')
+@extends('adminlte.page')
 
-@section('body')
-<h1>Test</h1>
+@section('content')
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <div id="app">
+                        <Test />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @stop
 
-@section('master_js')
-<script>
-    var pusher = new Pusher(12345, {
-        cluster: "mt1",
-    });
-
-    var channel = pusher.subscribe("my-channel");
-    channel.bind("my-event", (data) => {
-        alert(data);
-    });
-</script>
+@section('adminlte_js')
+<script src="{{ asset('costum/js/ppic.js') }}"></script>
 @stop

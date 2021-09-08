@@ -542,13 +542,13 @@ return [
             'text' => 'Stok',
             'auth' => [11],
             'icon' =>  'fas fa-boxes',
-            'url' => '/gbmp/part'
+            'url' => '/gbmp/data_view'
         ],
         [
             'text' => 'Pesanan PPIC',
             'auth' => [11],
             'icon' =>  'fas fa-boxes',
-            'url' => '/gbmp/part_order'
+            'url' => '/gbmp/bppb_view'
         ],
         // PPIC (24)
         [
@@ -559,7 +559,7 @@ return [
                 [
                     'text'  =>  'Gudang',
                     'icon'  =>  'far fa-circle',
-                    'url'   =>  '/gbmp/part'
+                    'url'   =>  '/gbmp/data_view'
                 ],
                 [
                     'text'  =>  'RND',
@@ -1027,12 +1027,6 @@ return [
         'Chartjs' => [
             'js' => [
                 'vendor/charts/chart.js',
-            ],
-        ],
-        'Pusher' => [
-            'js' => [
-                'vendor/pusher/pusher.min.js',
-                // 'vendor/pusher/echo.min.js',
             ],
         ],
         'AdminLte' => [

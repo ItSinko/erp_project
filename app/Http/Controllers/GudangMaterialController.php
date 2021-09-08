@@ -9,12 +9,18 @@ use Illuminate\Http\Request;
 use App\Part;
 use App\ProdukBillOfMaterial;
 use App\User;
+use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\DB;
 
 class GudangMaterialController extends Controller
 {
+    // API
     public function getData()
     {
-        return Part::select('kode', 'nama')->get();
+        $data = Part::all();
+        return DataTables::of($data)
+            ->addIndexColumn()
+            ->make(true);
     }
 
     public function getBom($id)
@@ -34,5 +40,34 @@ class GudangMaterialController extends Controller
             $d['bom'] = $this->getBom($d->produk_bill_of_material_id);
         }
         return $event;
+    }
+    // End of API
+
+
+    public function showData()
+    {
+        return view('page.gbmp.data_gudang');
+    }
+
+    public function showOrder()
+    {
+        $data = $this->getBppb();
+        return view('page.gbmp.part_order', compact('data'));
+    }
+
+    public function getBomTable($id)
+    {
+        $bom = $this->getBom($id);
+        return DataTables::of($bom)
+            ->addIndexColumn()
+            ->make(true);
+    }
+
+    public function getExampleData()
+    {
+        $data = DB::table('tws')->get();
+        return $data;
+        // return DataTables::of($data)
+        //     ->make(true);
     }
 }

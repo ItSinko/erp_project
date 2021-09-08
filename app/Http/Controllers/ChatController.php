@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Message;
+
 use App\Events\MessageEvent;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -16,19 +17,19 @@ class ChatController extends Controller
 
     public function index()
     {
-        return view('page.chat');
+        return view('page.common.chat');
     }
 
     public function fetchMessages()
     {
-        return Message::with('user')->get();
+        return Message::with('User')->get();
     }
 
     public function sendMessage(Request $request)
     {
         $user = Auth::user();
 
-        $message = $user->messages()->create([
+        $message = $user->Messages()->create([
             'message' => $request->input('message')
         ]);
 

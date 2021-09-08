@@ -12,23 +12,21 @@
         <div class="card">
             <div class="card-body">
                 <div class='table-responsive'>
-                    <h2>Data Ekspedisi</h2>
+                    <h2>Data Stok</h2>
                     <table id="gudang_table" class="table table-hover styled-table table-striped">
                         <thead style="text-align: center;">
                             <tr>
                                 <th>No</th>
                                 <th>Kode</th>
-                                <th>Unit</th>
                                 <th>Nama</th>
-                                <th>Layout</th>
                                 <th>Jumlah</th>
+                                <th>Layout</th>
                             </tr>
                         </thead>
                         <tbody>
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th></th>
                                 <th></th>
                                 <th></th>
                                 <th></th>
@@ -49,17 +47,14 @@
     var table = $("#gudang_table").DataTable({
         processing: true,
         serverSide: true,
-        ajax: '/gudang/data',
+        ajax: '/api/data',
         columns: [{
                 data: 'DT_RowIndex',
                 orderable: false,
                 searchable: false
             },
             {
-                data: 'part_id'
-            },
-            {
-                data: 'klasifikasi'
+                data: 'kode'
             },
             {
                 data: 'nama'

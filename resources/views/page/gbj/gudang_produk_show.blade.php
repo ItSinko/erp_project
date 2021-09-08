@@ -19,6 +19,20 @@
         border: 1px solid #CCC;
         margin: 2px 10px;
     }
+
+    .limitchar {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    .larget {
+        width: 250px;
+    }
+
+    .medt {
+        width: 250px;
+    }
 </style>
 @stop
 @section('content_header')
@@ -234,6 +248,52 @@
 <script>
     $(function() {
         $(".tooltip").tooltip();
+        $("#example1").popover({
+                trigger: "manual",
+                html: true,
+                animation: false,
+                content: function() {
+                    return $(this).next('.pop').html();
+                }
+            })
+            .on("mouseenter", '.pop', function() {
+                var _this = this;
+                $(this).popover("show");
+                $(".pop").on("mouseleave", function() {
+                    $(_this).popover('hide');
+                });
+            }).on("mouseleave", '.pop', function() {
+                var _this = this;
+                setTimeout(function() {
+                    if (!$(".pop:hover").length) {
+                        $(_this).popover("hide");
+                    }
+                }, 300);
+            });
+
+        $("#example2").popover({
+                trigger: "manual",
+                html: true,
+                animation: false,
+                content: function() {
+                    return $(this).next('.pop').html();
+                }
+            })
+            .on("mouseenter", '.pop', function() {
+                var _this = this;
+                $(this).popover("show");
+                $(".pop").on("mouseleave", function() {
+                    $(_this).popover('hide');
+                });
+            }).on("mouseleave", '.pop', function() {
+                var _this = this;
+                setTimeout(function() {
+                    if (!$(".pop:hover").length) {
+                        $(_this).popover("hide");
+                    }
+                }, 300);
+            });
+
         $(document).on('click', '.historimutasimodal', function(event) {
             event.preventDefault();
             var href = $(this).attr('data-attr');
@@ -346,38 +406,49 @@
                         {
                             data: 'tanggal',
                             name: 'tanggal',
-                            className: 'text-center'
+                            className: 'text-center',
+                            type: 'date-euro',
                         },
                         {
                             data: 'divisi_id',
                             name: 'divisi_id',
-                            className: 'text-left'
+                            className: 'text-left',
+                            orderable: false,
+                            searchable: false
                         },
                         {
                             data: 'keterangan',
-                            name: 'keterangan'
+                            name: 'keterangan',
+                            orderable: false,
+                            searchable: false
                         },
                         {
                             data: 'jumlah_masuk',
                             name: 'jumlah_masuk',
-                            className: 'text-right'
-
+                            className: 'text-right',
+                            orderable: false,
+                            searchable: false
                         },
                         {
                             data: 'jumlah_keluar',
                             name: 'jumlah_keluar',
-                            className: 'text-right'
-
+                            className: 'text-right',
+                            orderable: false,
+                            searchable: false
                         },
                         {
                             data: 'jumlah_saldo',
                             name: 'jumlah_saldo',
-                            className: 'text-right'
+                            className: 'text-right',
+                            orderable: false,
+                            searchable: false
                         },
                         {
                             data: 'aksi',
                             name: 'aksi',
-                            className: 'text-center'
+                            className: 'text-center',
+                            orderable: false,
+                            searchable: false
                         },
                     ]
                 });
@@ -412,29 +483,38 @@
                         },
                         {
                             data: 'keterangan',
-                            name: 'keterangan'
+                            name: 'keterangan',
+                            orderable: false,
+                            searchable: false
                         },
                         {
                             data: 'jumlah_masuk',
                             name: 'jumlah_masuk',
-                            className: 'text-right'
-
+                            className: 'text-right',
+                            orderable: false,
+                            searchable: false
                         },
                         {
                             data: 'jumlah_keluar',
                             name: 'jumlah_keluar',
-                            className: 'text-right'
+                            className: 'text-right',
+                            orderable: false,
+                            searchable: false
 
                         },
                         {
                             data: 'jumlah_saldo',
                             name: 'jumlah_saldo',
-                            className: 'text-right'
+                            className: 'text-right',
+                            orderable: false,
+                            searchable: false
                         },
                         {
                             data: 'aksi',
                             name: 'aksi',
-                            className: 'text-center'
+                            className: 'text-center',
+                            orderable: false,
+                            searchable: false
                         },
                     ],
                 });

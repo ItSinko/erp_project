@@ -1,6 +1,7 @@
 <?php
 
 use App\Events\SimpleNotifEvent;
+use App\Http\Controllers\ChatController;
 use App\Notifications\RealTimeNotification;
 use App\User;
 use Illuminate\Support\Facades\Route;
@@ -317,7 +318,8 @@ Route::group(['prefix' => '/podo_offline', 'middleware' => 'auth'], function () 
 //PURCHASE ORDER
 Route::group(['prefix' => '/purchase_order', 'middleware' => 'auth'], function () {
     Route::get('/', 'GbjController@purchase_order')->name('purchase_order');
-    Route::get('/show/{id}', 'GbjController@purchase_order_show')->name('purchase_order.show');
+    Route::get('/grid/show/{status}', 'GbjController@purchase_order_grid_show')->name('purchase_order.grid.show');
+    Route::get('/table/show/{status}', 'GbjController@purchase_order_table_show')->name('purchase_order.table.show');
     Route::get('/create', 'GbjController@purchase_order_create')->name('purchase_order.create');
     Route::post('/store', 'GbjController@purchase_order_store')->name('purchase_order.store');
     Route::get('/edit/{id}', 'GbjController@purchase_order_edit')->name('purchase_order.edit');
@@ -478,8 +480,9 @@ Route::group(['prefix' => '/perakitan', 'middleware' => 'auth'], function () {
     Route::get('/create/get_bppb/{bppb_id}', 'GetController@get_bppb');
     Route::get('/create/get_kode_perakitan_exist_not_in/{bppb}/{no_seri}', 'GetController@get_kode_perakitan_exist_not_in');
     Route::post('/store', 'ProduksiController@perakitan_store')->name('perakitan.store');
+    Route::get('/multiple/status/{id}/{status}', 'QCController@perakitan_multiple_status')->name('perakitan.multiple.status');
 
-    // LAPORAN
+    // LAPORAN1
     Route::group(['prefix' => '/laporan'], function () {
         Route::get('/{id}', 'ProduksiController@perakitan_laporan')->name('perakitan.laporan');
         Route::get('/show/{id}', 'ProduksiController@perakitan_laporan_show')->name('perakitan.laporan.show');
@@ -530,7 +533,7 @@ Route::group(['prefix' => '/perakitan', 'middleware' => 'auth'], function () {
         Route::get('/hasil/detail/{id}', 'QCController@perakitan_pemeriksaan_hasil_detail')->name('perakitan.pemeriksaan.hasil.detail');
         /* BPPB */
         Route::get('/bppb/{id}', 'QCController@perakitan_pemeriksaan_bppb')->name('perakitan.pemeriksaan.bppb');
-        Route::get('/bppb/show/{id}', 'QCController@perakitan_pemeriksaan_bppb_show')->name('perakitan.pemeriksaan.bppb.show');
+        Route::get('/bppb/show/{id}/{status}', 'QCController@perakitan_pemeriksaan_bppb_show')->name('perakitan.pemeriksaan.bppb.show');
     });
 
     Route::get('/analisa_ps/show/{id}', 'EngController@perakitan_analisa_ps_show')->name('perakitan.analisa_ps.show');
@@ -747,8 +750,9 @@ Route::group(['prefix' => 'dc', 'middleware' => 'auth'], function () {
 
 //GBMP
 Route::group(['prefix' => 'gbmp'], function () {
-    // TODO: make controller for gbmp
-    // TODO: make UI gbmp with react typescript
+    Route::get('data/', 'GudangMaterialController@getData');
+    Route::get('data_view/', 'GudangMaterialController@showData');
+    Route::get('bppb_view', 'GudangMaterialController@showOrder');
 });
 
 
@@ -788,3 +792,9 @@ Route::get('/notif', function () {
 Route::get('/test', function () {
     return view('test');
 });
+
+Route::get('/status', 'UserController@userOnlineStatus');
+
+Route::get('/chat', 'ChatController@index');
+Route::get('/messages', 'ChatController@fetchMessages');
+Route::post('/messages', 'ChatController@sendMessage');
