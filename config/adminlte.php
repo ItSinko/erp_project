@@ -324,20 +324,39 @@ return [
                 [
                     'icon' => 'far fa-circle',
                     'text' => 'Jadwal Kerja Operator',
-                    'url'  => '/karyawan',
-                    'auth' => [],
+                    'url'  => '/karyawan'
                 ],
                 [
                     'icon' => 'far fa-circle',
                     'text' => 'Daftar Staff',
-                    'url'  => '/karyawan',
-                    'auth' => [28],
+                    'url'  => '/karyawan'
                 ],
                 [
                     'icon' => 'far fa-circle',
                     'text' => 'Permohonan Penugasan',
-                    'url'  => '/karyawan/peminjaman',
-                    'auth' => [],
+                    'url'  => '/karyawan/peminjaman'
+                ],
+            ],
+        ],
+        [
+            'text' => 'IK Pemeriksaan',
+            'icon' => 'fas fa-users',
+            'auth' => [23],
+            'submenu' => [
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Perakitan',
+                    'url'  => '/ik_pemeriksaan/perakitan'
+                ],
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Pengujian',
+                    'url'  => '/ik_pemeriksaan/pengujian'
+                ],
+                [
+                    'icon' => 'far fa-circle',
+                    'text' => 'Pengemasan',
+                    'url'  => '/ik_pemeriksaan/pengemasan'
                 ],
             ],
         ],

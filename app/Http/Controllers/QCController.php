@@ -2116,8 +2116,15 @@ class QCController extends Controller
         }
     }
 
+    public function ik_pemeriksaan()
+    {
+        $p = DetailProduk::all();
+        return view('page.qc.ik_pemeriksaan', ['p' => $p]);
+    }
+
     public function pengujian_ik_pemeriksaan()
     {
+
         return view('page.qc.pengujian_ik_pemeriksaan_show');
     }
 
