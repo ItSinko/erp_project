@@ -55,7 +55,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-12" id="berat" style="display:none">
+        <div class="col-lg-12" id="berat">
             <div class="col-lg-12">
                 <form action="/kesehatan_bulanan_berat/aksi_tambah" method="post">
                     {{ csrf_field() }}
@@ -131,71 +131,6 @@
                         </div>
                         <div class="card-footer">
                             <span class="float-left"><a class="btn btn-danger rounded-pill" href="/kesehatan_mingguan"><i class="fas fa-times"></i>&nbsp;Batal</a></span>
-                            <span class="float-right"><button class="btn btn-success rounded-pill" id="button_tambah"><i class="fas fa-plus"></i>&nbsp;Tambah Data</button></span>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <div class="col-lg-12" id="gcu" style="display:none">
-            <div class="col-lg-12">
-                <form action="/kesehatan_bulanan_gcu/aksi_tambah" method="post">
-                    {{ csrf_field() }}
-                    <div class="card">
-                        <div class="card-header bg-success">
-                            <div class="card-title"><i class="fas fa-plus-circle"></i>&nbsp;Pemeriksaan GCU (Glucose, Cholesterol, Uric ACID) </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="col-lg-12">
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <div class="form-horizontal">
-                                            <div class="form-group row">
-                                                <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Divisi</label>
-                                                <div class="col-sm-8">
-                                                    <select type="text" class="form-control @error('divisi') is-invalid @enderror select2" name="divisi" style="width:45%;">
-                                                        <option value=""></option>
-                                                        @foreach ($divisi as $d)
-                                                        <option value="{{$d->id}}">{{$d->nama}}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Tanggal</label>
-                                                <div class="col-sm-8">
-                                                    <input type="date" class="form-control @error('tgl') is-invalid @enderror " name="tgl_cek" style="width:45%;" id="tgls">
-                                                    @if($errors->has('tgl_cek'))
-                                                    <div class="text-danger">
-                                                        {{ $errors->first('tgl_cek')}}
-                                                    </div>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <table id="tabel_gcu" class="table table-hover styled-table table-striped">
-                                            <thead style="text-align: center;">
-                                                <tr>
-                                                    <th>No</th>
-                                                    <th>Tanggal</th>
-                                                    <th>Nama</th>
-                                                    <th>Glucose</th>
-                                                    <th>Cholesterol</th>
-                                                    <th>Uric Acid</th>
-                                                    <th>Catatan</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody style="text-align: center;">
-                                                <tr>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-footer">
-                            <span class="float-left"><a class="btn btn-danger rounded-pill" href="/kesehatan_bulanan"><i class="fas fa-times"></i>&nbsp;Batal</a></span>
                             <span class="float-right"><button class="btn btn-success rounded-pill" id="button_tambah"><i class="fas fa-plus"></i>&nbsp;Tambah Data</button></span>
                         </div>
                     </div>

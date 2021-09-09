@@ -662,11 +662,17 @@ class KesehatanController extends Controller
         $labels3 = $data->pluck('diastolik');
         return response()->json(compact('tgl', 'labels2', 'labels3', 'data2', 'data3', 'data4', 'data5'));
     }
-    public function kesehatan_bulanan_tambah()
+    public function kesehatan_bulanan_gcu_tambah()
     {
         $divisi = Divisi::all();
-        return view('page.kesehatan.kesehatan_bulanan_tambah', ['divisi' => $divisi]);
+        return view('page.kesehatan.kesehatan_bulanan_gcu_tambah', ['divisi' => $divisi]);
     }
+    public function kesehatan_bulanan_berat_tambah()
+    {
+        $divisi = Divisi::all();
+        return view('page.kesehatan.kesehatan_bulanan_berat_tambah', ['divisi' => $divisi]);
+    }
+
     public function kesehatan_bulanan()
     {
         return view('page.kesehatan.kesehatan_bulanan');
