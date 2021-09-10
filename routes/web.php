@@ -557,27 +557,11 @@ Route::group(['prefix' => 'surat_jalan', 'middleware' => 'auth'], function () {
 // PENGUJIAN
 Route::group(['prefix' => '/ik_pemeriksaan', 'middleware' => 'auth'], function () {
     Route::get('/', 'QCController@ik_pemeriksaan')->name('ik_pemeriksaan');
-    Route::group(['prefix' => '/perakitan', 'middleware' => 'auth'], function () {
-        Route::get('/show/{id}', 'QCController@ik_pemeriksaan_perakitan_show')->name('ik_pemeriksaan.perakitan.show');
-        Route::get('/create/{id}', 'QCController@ik_pemeriksaan_perakitan_create')->name('ik_pemeriksaan.perakitan.create');
-        Route::put('/store/{id}', 'QCController@ik_pemeriksaan_perakitan_store')->name('ik_pemeriksaan.perakitan.store');
-        Route::get('/edit/{id}', 'QCController@ik_pemeriksaan_perakitan_edit')->name('ik_pemeriksaan.perakitan.edit');
-        Route::put('/update/{id}', 'QCController@ik_pemeriksaan_perakitan_update')->name('ik_pemeriksaan.perakitan.update');
-    });
-    Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {
-        Route::get('/show/{id}', 'QCController@ik_pemeriksaan_pengujian_show')->name('ik_pemeriksaan.pengujian.show');
-        Route::get('/create/{id}', 'QCController@ik_pemeriksaan_pengujian_create')->name('ik_pemeriksaan.pengujian.create');
-        Route::put('/store/{id}', 'QCController@ik_pemeriksaan_pengujian_store')->name('ik_pemeriksaan.pengujian.store');
-        Route::get('/edit/{id}', 'QCController@ik_pemeriksaan_pengujian_edit')->name('ik_pemeriksaan.pengujian.edit');
-        Route::put('/update/{id}', 'QCController@ik_pemeriksaan_pengujian_update')->name('ik_pemeriksaan.pengujian.update');
-    });
-    Route::group(['prefix' => '/pengemasan', 'middleware' => 'auth'], function () {
-        Route::get('/show/{id}', 'QCController@ik_pemeriksaan_pengemasan_show')->name('ik_pemeriksaan.pengemasan.show');
-        Route::get('/create/{id}', 'QCController@ik_pemeriksaan_pengemasan_create')->name('ik_pemeriksaan.pengemasan.create');
-        Route::put('/store/{id}', 'QCController@ik_pemeriksaan_pengemasan_store')->name('ik_pemeriksaan.pengemasan.store');
-        Route::get('/edit/{id}', 'QCController@ik_pemeriksaan_pengemasan_edit')->name('ik_pemeriksaan.pengemasan.edit');
-        Route::put('/update/{id}', 'QCController@ik_pemeriksaan_pengemasan_update')->name('ik_pemeriksaan.pengemasan.update');
-    });
+    Route::get('/show/{id}/{proses}', 'QCController@ik_pemeriksaan_show')->name('ik_pemeriksaan.show');
+    Route::get('/create/{id}/{proses}', 'QCController@ik_pemeriksaan_create')->name('ik_pemeriksaan.create');
+    Route::put('/store/{id}/{proses}', 'QCController@ik_pemeriksaan_store')->name('ik_pemeriksaan.store');
+    Route::get('/edit/{id}/{proses}', 'QCController@ik_pemeriksaan_edit')->name('ik_pemeriksaan.edit');
+    Route::put('/update/{id}/{proses}', 'QCController@ik_pemeriksaan_update')->name('ik_pemeriksaan.update');
 });
 
 Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {

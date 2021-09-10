@@ -87,20 +87,16 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="form-group row">
-                                    <label for="tanggal_daftar" class="col-sm-4 col-form-label" style="text-align:left;">Tipe Produk</label>
+                                    <label for="tipe_produk" class="col-sm-4 col-form-label" style="text-align:left;">Tipe Produk</label>
                                     <span class="col-sm-8 col-form-label" style="text-align:right;" id="tipe_produk">-</span>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="tanggal_permintaan_selesai" class="col-sm-4 col-form-label" style="text-align:left;">Nama Produk</label>
+                                    <label for="nama_produk" class="col-sm-4 col-form-label" style="text-align:left;">Nama Produk</label>
                                     <span class="col-sm-8 col-form-label" style="text-align:right;" id="nama_produk">-</span>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="tanggal_permintaan_selesai" class="col-sm-5 col-form-label" style="text-align:left;">Stok Terakhir</label>
-                                    <span class="col-sm-7 col-form-label" style="text-align:right;" id="jumlah_stok">-</span>
-                                </div>
-                                <div class="form-group row" id="kartu_stock_tambah" hidden>
-                                    <label for="tambah" class="col-sm-5 col-form-label" style="text-align:left;">Tambahkan</label>
-                                    <span class="col-sm-7"><a class="tambahurl" href="/gudang_produk_gbj/create/"><button class="btn btn-success btn-sm btn-rounded col-form-label float-right" id="tambah" name="tambah">Tambah Kartu Stok</button></a></span>
+                                    <label for="kelompok_produk" class="col-sm-4 col-form-label" style="text-align:left;">Kelompok Produk</label>
+                                    <span class="col-sm-8 col-form-label" style="text-align:right;" id="kelompok_produk">-</span>
                                 </div>
                             </div>
                         </div>
@@ -126,9 +122,12 @@
                                                         <div class="float-right" style="margin-bottom:1%;">
                                                             <a class="tambahikperakitan" href="#"><button class="btn btn-info btn-sm"><i class="fas fa-plus"></i>&nbsp;Tambah</button></a>
                                                         </div>
+                                                        <div class="float-right" style="margin-bottom:1%;">
+                                                            <a class="editikperakitan" href="#"><button class="btn btn-warning btn-sm"><i class="fas fa-pencil-alt"></i>&nbsp;Ubah</button></a>
+                                                        </div>
                                                         <div class="table-responsive">
                                                             <table id="perakitan-table" class="table table-striped" style="width:100%;">
-                                                                <thead bgcolor="#ADD8E6" style="color:#1f2d3d;">
+                                                                <thead bgcolor="#ADD8E6" style="color:#1f2d3d; text-align:center;">
                                                                     <tr>
                                                                         <th>No</th>
                                                                         <th>Hal yang diperiksa</th>
@@ -153,9 +152,12 @@
                                                         <div class="float-right" style="margin-bottom:1%;">
                                                             <a class="tambahikpengujian" href=""><button class="btn btn-info btn-sm"><i class="fas fa-plus"></i>&nbsp;Tambah</button></a>
                                                         </div>
+                                                        <div class="float-right" style="margin-bottom:1%;">
+                                                            <a class="editikperakitan" href="#"><button class="btn btn-warning btn-sm"><i class="fas fa-pencil-alt"></i>&nbsp;Ubah</button></a>
+                                                        </div>
                                                         <div class="table-responsive">
                                                             <table id="pengujian-table" class="table table-striped" style="width:100%;">
-                                                                <thead bgcolor="#F0E68C" style="color:#1f2d3d;">
+                                                                <thead bgcolor="#F0E68C" style="color:#1f2d3d; text-align:center;">
                                                                     <tr>
                                                                         <th>No</th>
                                                                         <th>Hal yang diperiksa</th>
@@ -182,7 +184,7 @@
                                                         </div>
                                                         <div class="table-responsive">
                                                             <table id="pengemasan-table" class="table table-striped" style="width:100%;">
-                                                                <thead bgcolor="#d6ebad" style="color:#1f2d3d;">
+                                                                <thead bgcolor="#d6ebad" style="color:#1f2d3d; text-align:center;">
                                                                     <tr>
                                                                         <th>No</th>
                                                                         <th>Hal yang diperiksa</th>
@@ -231,10 +233,122 @@
 @section('adminlte_js')
 <script>
     $(function() {
-        $('select[name="produk"]').on('keyup change', function() {
-            $(".tambahikperakitan").attr('href', '/ik_pemeriksaan/perakitan/create/' + k);
-            $(".tambahikpengujian").attr('href', '/ik_pemeriksaan/pengujian/create/' + k);
-            $(".tambahikpengemasan").attr('href', '/ik_pemeriksaan/pengemasan/create/' + k);
+        function tableview(produk) {
+            $.ajax({
+                url: "/ik_pemeriksaan/show/" + produk + "/Perakitan",
+                type: "GET",
+                dataType: 'json',
+                success: function(data) {
+                    var datas = "";
+                    if (data != "") {
+                        for (var i = 0; i < data['list_ik_pemeriksaan'].length; i++) {
+                            var first = 0;
+                            datas += `<tr>
+                                <td rowspan="` + data['list_ik_pemeriksaan'][i]['detail_ik_pemeriksaan'].length + `">` + i + `</td>
+                                <td rowspan="` + data['list_ik_pemeriksaan'][i]['detail_ik_pemeriksaan'].length + `">` + data['list_ik_pemeriksaan'][i]['pemeriksaan'] + `</td>`;
+                            for (var j = 0; j < data['list_ik_pemeriksaan'][i]['detail_ik_pemeriksaan'].length; i++) {
+                                if (first == 0) {
+                                    first = 1;
+                                    datas += `<td>` + data['list_ik_pemeriksaan'][i]['detail_ik_pemeriksaan'][j]['penerimaan'] + `</td>
+                                    </tr>`;
+                                } else if (first == 1) {
+                                    datas += `<tr>
+                                    <td>` + data['list_ik_pemeriksaan'][i]['detail_ik_pemeriksaan'][j]['penerimaan'] + `</td>
+                                    </tr>`;
+                                }
+                            }
+                        }
+                        $(".editikperakitan").attr('href', '/ik_pemeriksaan/edit/' + data['id']);
+                        $(".editikperakitan").removeAttr('hidden');
+                        $(".tambahikperakitan").attr('hidden', true);
+                    } else if (data == "") {
+                        datas += `<tr><td colspan="3"  style="text-align:center;"><i>Tidak Ada Data</i></td></tr>`;
+                        $(".tambahikperakitan").attr('href', '/ik_pemeriksaan/create/' + produk + '/Perakitan');
+                        $(".tambahikperakitan").removeAttr('hidden');
+                        $(".editikperakitan").attr('hidden', true);
+                    }
+                    $('#perakitan-table tbody').html(datas);
+                },
+            })
+
+            $.ajax({
+                url: "/ik_pemeriksaan/show/" + produk + "/Pengujian",
+                type: "GET",
+                dataType: 'json',
+                success: function(data) {
+                    var datas = "";
+                    if (data != "") {
+                        for (var i = 0; i < data['list_ik_pemeriksaan'].length; i++) {
+                            var first = 0;
+                            datas += `<tr>
+                                <td rowspan="` + data['list_ik_pemeriksaan'][i]['detail_ik_pemeriksaan'].length + `">` + i + `</td>
+                                <td rowspan="` + data['list_ik_pemeriksaan'][i]['detail_ik_pemeriksaan'].length + `">` + data['list_ik_pemeriksaan'][i]['pemeriksaan'] + `</td>`;
+                            for (var j = 0; j < data['list_ik_pemeriksaan'][i]['detail_ik_pemeriksaan'].length; i++) {
+                                if (first == 0) {
+                                    first = 1;
+                                    datas += `<td>` + data['list_ik_pemeriksaan'][i]['detail_ik_pemeriksaan'][j]['penerimaan'] + `</td>
+                                    </tr>`;
+                                } else if (first == 1) {
+                                    datas += `<tr>
+                                    <td>` + data['list_ik_pemeriksaan'][i]['detail_ik_pemeriksaan'][j]['penerimaan'] + `</td>
+                                    </tr>`;
+                                }
+                            }
+                        }
+                        $(".editikpengujian").attr('href', '/ik_pemeriksaan/edit/' + data['id']);
+                        $(".editikpengujian").removeAttr('hidden');
+                        $(".tambahikpengujian").attr('hidden', true);
+                    } else if (data == "") {
+                        datas += `<tr><td colspan="3"  style="text-align:center;"><i>Tidak Ada Data</i></td></tr>`;
+                        $(".tambahikpengujian").attr('href', '/ik_pemeriksaan/create/' + produk + '/Pengujian');
+                        $(".tambahikpengujian").removeAttr('hidden');
+                        $(".editikpengujian").attr('hidden', true);
+                    }
+                    $('#pengujian-table tbody').html(datas);
+                },
+            })
+
+            $.ajax({
+                url: "/ik_pemeriksaan/show/" + produk + "/Pengemasan",
+                type: "GET",
+                dataType: 'json',
+                success: function(data) {
+                    var datas = "";
+                    if (data != "") {
+                        for (var i = 0; i < data['list_ik_pemeriksaan'].length; i++) {
+                            var first = 0;
+                            datas += `<tr>
+                                <td rowspan="` + data['list_ik_pemeriksaan'][i]['detail_ik_pemeriksaan'].length + `">` + i + `</td>
+                                <td rowspan="` + data['list_ik_pemeriksaan'][i]['detail_ik_pemeriksaan'].length + `">` + data['list_ik_pemeriksaan'][i]['pemeriksaan'] + `</td>`;
+                            for (var j = 0; j < data['list_ik_pemeriksaan'][i]['detail_ik_pemeriksaan'].length; i++) {
+                                if (first == 0) {
+                                    first = 1;
+                                    datas += `<td>` + data['list_ik_pemeriksaan'][i]['detail_ik_pemeriksaan'][j]['penerimaan'] + `</td>
+                                    </tr>`;
+                                } else if (first == 1) {
+                                    datas += `<tr>
+                                    <td>` + data['list_ik_pemeriksaan'][i]['detail_ik_pemeriksaan'][j]['penerimaan'] + `</td>
+                                    </tr>`;
+                                }
+                            }
+                        }
+                        $(".editikpengemasan").attr('href', '/ik_pemeriksaan/edit/' + data['id']);
+                        $(".editikpengemasan").removeAttr('hidden');
+                        $(".tambahikpengemasan").attr('hidden', true);
+                    } else if (data == "") {
+                        datas += `<tr><td colspan="3" style="text-align:center;"><i>Tidak Ada Data</i></td></tr>`;
+                        $(".tambahikpengemasan").attr('href', '/ik_pemeriksaan/create/' + produk + '/Pengemasan');
+                        $(".tambahikpengemasan").removeAttr('hidden');
+                        $(".editikpengemasan").attr('hidden', true);
+                    }
+                    $('#pengemasan-table tbody').html(datas);
+                },
+            })
+        }
+
+        $('select[name="produk"]').on('change', function() {
+            var produk = $(this).val();
+            tableview(produk);
         });
     });
 </script>

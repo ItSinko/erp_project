@@ -22,11 +22,14 @@ use App\Http\Controllers\UserLogController;
 use App\PerbaikanProduksi;
 use App\HasilPengemasan;
 use App\CekPengemasan;
+use App\DetailIkPemeriksaan;
 use App\FormatLkpLup;
 use App\Kalibrasi;
 use App\ListKalibrasi;
 use App\PackingList;
 use App\DetailPackingList;
+use App\IkPemeriksaan;
+use App\ListIkPemeriksaan;
 use App\PeriksaBarangMasuk;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -2122,9 +2125,85 @@ class QCController extends Controller
         return view('page.qc.ik_pemeriksaan', ['p' => $p]);
     }
 
+    public function ik_pemeriksaan_show($id, $proses)
+    {
+        $ik = IkPemeriksaan::where([['detail_produk_id', '=', $id], ['proses', '=', $proses]])->with('ListIkPemeriksaan', 'ListIkPemeriksaan.DetailIkPemeriksaan')->get();
+        return $ik;
+    }
+
+    public function ik_pemeriksaan_create($id, $proses)
+    {
+        $prd = DetailProduk::find($id);
+        return view('page.qc.ik_pemeriksaan_create', ['id' => $id, 'proses' => $proses, 'prd' => $prd]);
+    }
+
+    public function ik_pemeriksaan_store(Request $request, $id, $proses)
+    {
+        $v = Validator::make(
+            $request->all(),
+            [
+                'pemeriksaan.*' => 'required',
+                'penerimaan.*' => 'required'
+            ],
+            [
+                'pemeriksaan.*.required' => "aaaaaaaaaaPemeriksaan harus diisi",
+                'penerimaan.*.required' => "Penerimaan harus diisi"
+            ]
+        );
+        if ($v->fails()) {
+            return redirect()->back()->withErrors($v);
+        } else {
+            $c = IkPemeriksaan::create([
+                'detail_produk_id' => $id,
+                'proses' => $proses,
+                'keterangan' => $request->keterangan
+            ]);
+            $bool = true;
+            if ($c) {
+                for ($i = 0; $i < count($request->pemeriksaan); $i++) {
+                    $cl = ListIkPemeriksaan::create([
+                        'ik_pemeriksaan_id' => $c->id,
+                        'pemeriksaan' => $request->pemeriksaan[$i]
+                    ]);
+
+                    if ($cl) {
+                        for ($j = 0; $j < count($request->penerimaan[$i]); $j++) {
+                            $cd = DetailIkPemeriksaan::create([
+                                'list_ik_pemeriksaan_id' => $c->id,
+                                'pemeriksaan' => $request->penerimaan[$i][$j]
+                            ]);
+                            if (!$cd) {
+                                $bool = false;
+                            }
+                        }
+                    } else {
+                        $bool = false;
+                    }
+                }
+            } else {
+                $bool = false;
+            }
+
+            if ($bool == true) {
+                return redirect()->back()->with('success', "Berhasil menambahkan IK Pemeriksaan " + $proses);
+            } else if ($bool == false) {
+                return redirect()->back()->with('error', "Gagal menambahkan IK Pemeriksaan " + $proses);
+            }
+        }
+    }
+
+    public function ik_pemeriksaan_edit($id)
+    {
+        $ik = IkPemeriksaan::find($id);
+        return view('page.qc.ik_pemeriksaan_edit', ['ik' => $ik, 'id' => $id]);
+    }
+
+    public function ik_pemeriksaan_update(Request $request, $id)
+    {
+    }
+
     public function pengujian_ik_pemeriksaan()
     {
-
         return view('page.qc.pengujian_ik_pemeriksaan_show');
     }
 
