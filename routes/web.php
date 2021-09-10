@@ -100,8 +100,8 @@ Route::get('/kesehatan_mingguan_tensi/detail/data/{karyawan_id}', 'KesehatanCont
 
 //Kesehatan Bulanan
 Route::get('/kesehatan_bulanan', 'KesehatanController@kesehatan_bulanan');
-Route::get('/kesehatan_bulanan_gcu/tambah', 'KesehatanController@kesehatan_bulanan_gcu_tambah');
-Route::get('/kesehatan_bulanan_berat/tambah', 'KesehatanController@kesehatan_bulanan_berat_tambah');
+Route::get('/kesehatan_bulanan/gcu/tambah', 'KesehatanController@kesehatan_bulanan_gcu_tambah');
+Route::get('/kesehatan_bulanan/berat/tambah', 'KesehatanController@kesehatan_bulanan_berat_tambah');
 Route::get('/kesehatan_bulanan/tambah/data', 'KesehatanController@kesehatan_bulanan_tambah_data');
 Route::post('/kesehatan_bulanan_gcu/aksi_tambah', 'KesehatanController@kesehatan_bulanan_gcu_aksi_tambah');
 Route::post('/kesehatan_bulanan_berat/aksi_tambah', 'KesehatanController@kesehatan_bulanan_berat_aksi_tambah');

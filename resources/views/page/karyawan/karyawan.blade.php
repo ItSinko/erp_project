@@ -31,11 +31,6 @@
           <table id="tabel" class="table table-hover styled-table table-striped">
             <thead style="text-align: center;">
               <tr>
-                <th colspan="14">
-                  <a href="/kesehatan/tambah" style="color: white;"><button type="button" class="btn btn-block btn-success btn-sm" style="width: 200px;"><i class="fas fa-plus"></i> &nbsp; Tambah</i></button></a>
-                </th>
-              </tr>
-              <tr>
                 <th>No</th>
                 <th>Divisi</th>
                 <th>Jabatan</th>
@@ -90,6 +85,7 @@
                                     <th width="25%">Divisi</th>
                                     <th>Jabatan</th>
                                     <th>Kelamin</th>
+                                    <th>Pemerika Rapid</th>
                                   </tr>
                                 </thead>
                                 <tbody>
@@ -125,6 +121,16 @@
                                       <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="jenis" id="jenis" value="L">
                                         <label class="form-check-label">Laki laki</label>
+                                      </div>
+                                    </td>
+                                    <td>
+                                      <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="pemeriksa_rapid" id="pemeriksa_rapid" value="1">
+                                        <label class="form-check-label">Ya</label>
+                                      </div>
+                                      <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="pemeriksa_rapid" id="pemeriksa_rapid" value="0">
+                                        <label class="form-check-label">Tidak</label>
                                       </div>
                                     </td>
                                   </tr>
@@ -205,10 +211,18 @@
       );
       var optionDivisi = rows[0]['divisi_id'];
       var optionJabatan = rows[0]['jabatan'];
+      var optionPemeriksa = rows[0]['pemeriksa_rapid'];
 
       $("#divisi").val(optionDivisi).trigger('change');
       $("#jabatan").val(optionJabatan).trigger('change');
       $('input[name="jenis"][value="' + rows[0]['kelamin'] + '"]').attr('checked', 'checked');
+
+      if (optionPemeriksa == 1) {
+        $('input[name="pemeriksa_rapid"][value="1"]').attr('checked', 'checked');
+      } else {
+        $('input[name="pemeriksa_rapid"][value="0"]').attr('checked', 'checked');
+      }
+
       $('input[id="id"]').val(rows[0]['id']);
       $('input[id="tgllahir"]').val(rows[0]['tgllahir']);
       $('#edit_mod').modal('show');

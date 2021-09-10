@@ -49,6 +49,7 @@ class KaryawanController extends Controller
         $karyawan->divisi_id = $request->divisi;
         $karyawan->jabatan = $request->jabatan;
         $karyawan->kelamin = $request->jenis;
+        $karyawan->pemeriksa_rapid = $request->pemeriksa_rapid;
         $karyawan->save();
 
         if ($karyawan) {

@@ -464,8 +464,7 @@ class KesehatanController extends Controller
     }
     public function kesehatan_mingguan_rapid_tambah()
     {
-        $pengecek = Karyawan::where('divisi_id', '28')
-            ->orWhere('divisi_id', '22')
+        $pengecek = Karyawan::where('pemeriksa_rapid', '1')
             ->get();
         $karyawan = Karyawan::all();
         $divisi = Divisi::all();
@@ -513,7 +512,6 @@ class KesehatanController extends Controller
                 'pemeriksa_id.*' => 'required ',
                 'date.*' => 'required ',
                 'hasil_covid.*' => 'required ',
-                'file.*' => 'mimes:pdf|max:50000 ',
 
             ],
             [
@@ -525,12 +523,12 @@ class KesehatanController extends Controller
         );
         for ($i = 0; $i < count($request->karyawan_id); $i++) {
 
-            if (!empty($request->file[$i])) {
-                $file_name = $request->file('file')[$i]->getClientOriginalName();
-                $x = $request->file('file')[$i]->move(base_path('\public\file\kesehatan_rapid'), $request->date[$i] . '-' . $file_name);
-            } else {
-                $file_name = NULL;
-            }
+            // if (!empty($request->file[$i])) {
+            //     $file_name = $request->file('file')[$i]->getClientOriginalName();
+            //     $x = $request->file('file')[$i]->move(base_path('\public\file\kesehatan_rapid'), $request->date[$i] . '-' . $file_name);
+            // } else {
+            //     $file_name = NULL;
+            // }
 
             $kesehatan_mingguan_rapid = kesehatan_mingguan_rapid::create([
                 'karyawan_id' => $request->karyawan_id[$i],
@@ -539,7 +537,7 @@ class KesehatanController extends Controller
                 'hasil' => $request->hasil_covid[$i],
                 'jenis' => $request->jenis_tes[$i],
                 'keterangan' => $request->keterangan[$i],
-                'file' => $file_name
+
             ]);
         }
         if ($kesehatan_mingguan_rapid) {
@@ -664,13 +662,13 @@ class KesehatanController extends Controller
     }
     public function kesehatan_bulanan_gcu_tambah()
     {
-        $divisi = Divisi::all();
-        return view('page.kesehatan.kesehatan_bulanan_gcu_tambah', ['divisi' => $divisi]);
+        $karyawan = Karyawan::orderby('nama')->get();
+        return view('page.kesehatan.kesehatan_bulanan_gcu_tambah', ['karyawan' => $karyawan]);
     }
     public function kesehatan_bulanan_berat_tambah()
     {
-        $divisi = Divisi::all();
-        return view('page.kesehatan.kesehatan_bulanan_berat_tambah', ['divisi' => $divisi]);
+        $karyawan = Karyawan::orderby('nama')->get();
+        return view('page.kesehatan.kesehatan_bulanan_berat_tambah', ['karyawan' => $karyawan]);
     }
 
     public function kesehatan_bulanan()
@@ -715,17 +713,17 @@ class KesehatanController extends Controller
         $this->validate(
             $request,
             [
-                'divisi' => 'required',
-                'tgl_cek' => 'required',
+                'karyawan_id.*' => 'required',
+                'tgl_cek.*' => 'required',
                 'berat.*' => 'required',
                 'lemak.*' => 'required',
                 'kandungan_air.*' => 'required',
-                'otot..*' => 'required',
+                'otot.*' => 'required',
                 'tulang.*' => 'required',
                 'kalori.*' => 'required',
             ],
             [
-                'divisi.required' => 'Divisi harus di pilih',
+                'karyawan_id.required' => 'Divisi harus di pilih',
                 'tgl_cek.required' => 'Tanggal pengecekan harus dipilih',
                 'berat.required' => 'Berat harus di isi',
                 'lemak.required' => 'Lemak harus di isi',
@@ -735,11 +733,10 @@ class KesehatanController extends Controller
                 'kalori.required' => 'Kalori harus di isi',
             ]
         );
-
         for ($i = 0; $i < count($request->karyawan_id); $i++) {
             $berat_karyawan = berat_karyawan::create([
                 'karyawan_id' => $request->karyawan_id[$i],
-                'tgl_cek' => $request->tgl_cek,
+                'tgl_cek' => $request->tgl_cek[$i],
                 'berat' => $request->berat[$i],
                 'lemak' => $request->lemak[$i],
                 'kandungan_air' => $request->kandungan_air[$i],
@@ -749,7 +746,6 @@ class KesehatanController extends Controller
                 'keterangan' => $request->keterangan[$i]
             ]);
         }
-
         if ($berat_karyawan) {
             return redirect()->back()->with('success', 'Berhasil menambahkan data');
         } else {
@@ -761,19 +757,25 @@ class KesehatanController extends Controller
         $this->validate(
             $request,
             [
-                'divisi' => 'required',
-                'tgl_cek' => 'required',
+                'tgl_cek.*' => 'required',
+                'karyawan_id.*' => 'required',
+                'glukosa.*' => 'required',
+                'kolesterol.*' => 'required',
+                'asam_urat.*' => 'required',
             ],
             [
-                'divisi.required' => 'Divisi harus di pilih',
                 'tgl_cek.required' => 'Tanggal pengecekan harus dipilih',
+                'karyawan_id.required' => 'Karyawan harus di isi',
+                'glukosa.required' => 'Glukosa harus di isi',
+                'kolesterol.required' => 'Kolesterol harus di isi',
+                'asam_urat.required' => 'Asam urat harus di isi',
             ]
         );
 
         for ($i = 0; $i < count($request->karyawan_id); $i++) {
             $gcu_karyawan = gcu_karyawan::create([
                 'karyawan_id' => $request->karyawan_id[$i],
-                'tgl_cek' => $request->tgl_cek,
+                'tgl_cek' => $request->tgl_cek[$i],
                 'glukosa' => $request->glukosa[$i],
                 'kolesterol' => $request->kolesterol[$i],
                 'asam_urat' => $request->asam_urat[$i],

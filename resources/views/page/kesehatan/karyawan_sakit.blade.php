@@ -27,7 +27,7 @@
                 <th>Diagnosa</th>
                 <th>Tindak Lanjut</th>
                 <th>Hasil</th>
-                <th></th>
+
               </tr>
             </thead>
             <tbody style="text-align: center;">
@@ -124,9 +124,6 @@
         },
         {
           data: 'keputusan'
-        },
-        {
-          data: 'button'
         }
       ]
     });

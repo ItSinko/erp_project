@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UpdateRapidTes extends Migration
+class UpdateKesehatanAwalStatusPemeriksa extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class UpdateRapidTes extends Migration
      */
     public function up()
     {
-        Schema::table('karyawans', function (Blueprint $table) {
-            $table->string('pemeriksa_rapid')->after('kelamin')->nullable();
+        Schema::table('kesehatan_mingguan_rapids', function (Blueprint $table) {
+            $table->string('file')->after('keterangan')->nullable();
         });
     }
 
@@ -25,8 +25,8 @@ class UpdateRapidTes extends Migration
      */
     public function down()
     {
-        Schema::table('karyawans', function (Blueprint $table) {
-            $table->dropColumn('pemeriksa_rapid');
+        Schema::table('kesehatan_mingguan_rapids', function (Blueprint $table) {
+            $table->dropColumn('file');
         });
     }
 }

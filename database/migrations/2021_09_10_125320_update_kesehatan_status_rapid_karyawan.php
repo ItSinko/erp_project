@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UpdateRapidTes extends Migration
+class UpdateKesehatanStatusRapidKaryawan extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class UpdateRapidTes extends Migration
     public function up()
     {
         Schema::table('karyawans', function (Blueprint $table) {
-            $table->string('pemeriksa_rapid')->after('kelamin')->nullable();
+            $table->integer('pemeriksa_rapid')->after('kelamin')->nullable();
         });
     }
 

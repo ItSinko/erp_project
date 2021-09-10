@@ -142,6 +142,10 @@ class ActiveChecker
             $request = $this->request->fullUrl();
         }
 
-        return Str::is(trim($pattern), trim($request));
+        $filter_request = trim($request, "/tambah");
+        $filter_request = trim($filter_request, "/gcu");
+        $filter_request = trim($filter_request, "/berat");
+
+        return Str::is(trim($pattern), $filter_request);
     }
 }

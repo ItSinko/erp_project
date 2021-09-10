@@ -48,7 +48,7 @@
                                                     <th>Nama</th>
                                                     <th>Hasil</th>
                                                     <th>Catatan</th>
-                                                    <th>File</th>
+                                                    <!-- <th>File</th> -->
                                                     <th></th>
                                                 </tr>
                                             </thead>
@@ -126,9 +126,9 @@
                                                     <td>
                                                         <textarea type="text" class="form-control keterangan" name="keterangan[]"></textarea>
                                                     </td>
-                                                    <td>
+                                                    <!-- <td>
                                                         <input type="file" class="form-control file" name="file[]">
-                                                    </td>
+                                                    </td> -->
                                                     <td>
                                                         <button name="add" type="button" id="tambahitem" class="btn btn-success"><i class="nav-icon fas fa-plus-circle"></i></button>
                                                     </td>
@@ -278,9 +278,7 @@
                                                     <td>
                                                         <textarea type="text" class="form-control keterangan" name="keterangan[]"></textarea>
                                                     </td>
-                                                    <td>
-                                                        <input type="file" class="form-control file" name="file[]">
-                                                    </td>
+                                                 
                                                     <td>
                                                     <button type="button" class="btn btn-danger karyawan-img-small" style="border-radius:50%;" id="closetable"><i class="fas fa-times-circle"></i></button> 
                                                     </td>
