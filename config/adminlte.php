@@ -340,25 +340,9 @@ return [
         ],
         [
             'text' => 'IK Pemeriksaan',
-            'icon' => 'fas fa-users',
+            'icon' => 'fas fa-clipboard-list',
             'auth' => [23],
-            'submenu' => [
-                [
-                    'icon' => 'far fa-circle',
-                    'text' => 'Perakitan',
-                    'url'  => '/ik_pemeriksaan/perakitan'
-                ],
-                [
-                    'icon' => 'far fa-circle',
-                    'text' => 'Pengujian',
-                    'url'  => '/ik_pemeriksaan/pengujian'
-                ],
-                [
-                    'icon' => 'far fa-circle',
-                    'text' => 'Pengemasan',
-                    'url'  => '/ik_pemeriksaan/pengemasan'
-                ],
-            ],
+            'url'  => '/ik_pemeriksaan'
         ],
         [
             'text'    => 'Inventory',

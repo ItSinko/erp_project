@@ -26,7 +26,14 @@
     <div class="container-fluid">
         <div class="row">
             <!-- left column -->
-            <div class="col-md-12">
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h3>Info Produk</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9">
                 @if(session()->has('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     <strong><i class="fas fa-check"></i></strong> {{session()->get('success')}}
@@ -58,7 +65,7 @@
                             <form action="{{ route('ik_pemeriksaan.store', ['id' => $id, 'proses' => $proses]) }}" method="post" enctype="multipart/form-data">
                                 {{ csrf_field() }}
                                 {{ method_field('PUT') }}
-                                <h3>Info Produk</h3>
+
                                 <div class="form-horizontal">
 
                                     <div class="form-group row">
@@ -76,12 +83,12 @@
                                                     <td rowspan="1" class="nomor">1</td>
                                                     <td rowspan="1" class="pemeriksaan">
                                                         <div class="form-group">
-                                                            <input type="text" class="form-control pemeriksaan" id="pemeriksaan[]" name="pemeriksaan[]">
+                                                            <input type="text" class="form-control pemeriksaan" id="pemeriksaan" name="pemeriksaan[]">
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group">
-                                                            <input type="text" class="form-control penerimaan" id="penerimaan[]" name="penerimaan[]">
+                                                            <input type="text" class="form-control penerimaan" id="penerimaan" name="penerimaan[][]">
                                                         </div>
                                                     </td>
                                                     <td>
@@ -102,36 +109,36 @@
                             <a class="cancelmodal" data-toggle="modal" data-target="#cancelmodal"><button type="button" class="btn btn-block btn-danger rounded-pill" style="width:200px;float:left;"><i class="fas fa-times"></i>&nbsp;Batal</button></a>
                         </span>
                         <span>
-                            <button type="submit" class="btn btn-block btn-success rounded-pill" style="width:200px;float:right;" id="tambahlaporan" disabled><i class="fas fa-plus"></i>&nbsp;Tambah Data</button>
+                            <button type="submit" class="btn btn-block btn-success rounded-pill" style="width:200px;float:right;" id="tambahlaporan"><i class="fas fa-plus"></i>&nbsp;Tambah Data</button>
                         </span>
                     </div>
                     </form>
                 </div>
 
-            </div>
-            <!-- /.row -->
-        </div><!-- /.container-fluid -->
-        <div class="modal fade" id="cancelmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-            <div class="modal-dialog modal-md" role="document">
-                <div class="modal-content">
-                    <div class="modal-header" style="background-color:	#778899;">
-                        <h4 class="modal-title" id="myModalLabel" style="color:white;">Keluar Halaman</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    </div>
-                    <div class="modal-body" id="cancel">
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="card">
-                                    <div class="card-body" style="text-align:center;">
-                                        <h6>Apakah anda yakin meninggalkan halaman ini?</h6>
-                                    </div>
-                                    <div class="card-footer col-12" style="margin-bottom: 2%;">
-                                        <span>
-                                            <button type="button" class="btn btn-block btn-secondary" data-dismiss="modal" id="batalhapussk" style="width:30%;float:left;">Batal</button>
-                                        </span>
-                                        <span>
-                                            <a href="/pengujian"><button type="submit" class="btn btn-block btn-danger" id="hapussk" style="width:30%;float:right;">Keluar</button></a>
-                                        </span>
+                <!-- /.row -->
+            </div><!-- /.container-fluid -->
+            <div class="modal fade" id="cancelmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog modal-md" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header" style="background-color:	#778899;">
+                            <h4 class="modal-title" id="myModalLabel" style="color:white;">Keluar Halaman</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        </div>
+                        <div class="modal-body" id="cancel">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="card">
+                                        <div class="card-body" style="text-align:center;">
+                                            <h6>Apakah anda yakin meninggalkan halaman ini?</h6>
+                                        </div>
+                                        <div class="card-footer col-12" style="margin-bottom: 2%;">
+                                            <span>
+                                                <button type="button" class="btn btn-block btn-secondary" data-dismiss="modal" id="batalhapussk" style="width:30%;float:left;">Batal</button>
+                                            </span>
+                                            <span>
+                                                <a href="/ik_pemeriksaan"><button type="submit" class="btn btn-block btn-danger" id="hapussk" style="width:30%;float:right;">Keluar</button></a>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -139,7 +146,6 @@
                     </div>
                 </div>
             </div>
-        </div>
 </section>
 @endsection
 
@@ -147,16 +153,33 @@
 <script>
     $(function() {
         var rowCount = 0;
+
+        function numberRows($t) {
+            var c = 0;
+            $t.find("tr.kolom").each(function(ind, el) {
+                $(el).find("td:eq(0)").html(++c);
+                var j = c - 1;
+                var id = $(el).attr('id');
+                $('tr[id="' + id + '"]').find('input[id="penerimaan"]').attr('name', 'penerimaan[' + j + '][]');
+                $('tr[id="' + id + '"]').attr('id', 'kolom' + j);
+                $(el).attr('id', 'kolom' + j);
+                $(el).find('input[id="pemeriksaan"]').attr('name', 'pemeriksaan[' + j + ']');
+                $(el).find('input[id="penerimaan"]').attr('name', 'penerimaan[' + j + '][]');
+            });
+        }
+
         $('#tableitem').on('click', '.kolom #tambahkolom', function() {
             var id = $(this).closest('tr').attr('id');
             var x = $(this).closest('tr[id="' + id + '"]').find('.nomor').attr('rowspan');
-            $(this).closest('tr[id="' + id + '"]').find('.nomor').attr('rowspan', (x + 1));
-            $(this).closest('tr[id="' + id + '"]').find('.pemeriksaan').attr('rowspan', (x + 1));
-            $(this).closest('tr[id="' + id + '"]').find('.tambahbaris').attr('rowspan', (x + 1));
-            $(this).closest('tr').after(`<tr id="` + id + `">
+            var penerimaan = $(this).closest('tr[id="' + id + '"]').find('.penerimaan').attr('name');
+
+            $(this).closest('tr[id="' + id + '"]').find('.nomor').attr('rowspan', (parseInt(x) + 1));
+            $(this).closest('tr[id="' + id + '"]').find('.pemeriksaan').attr('rowspan', (parseInt(x) + 1));
+            $(this).closest('tr[id="' + id + '"]').find('.tambahbaris').attr('rowspan', (parseInt(x) + 1));
+            $(this).closest('tr.kolom').after(`<tr id="` + id + `">
             <td>
                 <div class="form-group">
-                    <input type="text" class="form-control penerimaan" id="penerimaan[]" name="penerimaan[]">
+                    <input type="text" class="form-control penerimaan" id="penerimaan" name="` + penerimaan + `">
                 </div>
             </td>
             <td>
@@ -169,11 +192,12 @@
 
         $('#tableitem').on('click', '#hapuskolom', function() {
             var id = $(this).closest('tr').attr('id');
-            var x = $(this).closest('tr[id="' + id + '"]').find('.nomor').attr('rowspan');
-            $(this).closest('tr[id="' + id + '"]').find('.nomor').attr('rowspan', (x - 1));
-            $(this).closest('tr[id="' + id + '"]').find('.pemeriksaan').attr('rowspan', (x - 1));
-            $(this).closest('tr[id="' + id + '"]').find('.tambahbaris').attr('rowspan', (x - 1));
-            $(this).closest('tr[id="' + id + '"]').remove();
+            var x = $('tr[id="' + id + '"]').find('.nomor').attr('rowspan');
+
+            $('tr[id="' + id + '"]').find('.nomor').attr('rowspan', (parseInt(x) - 1));
+            $('tr[id="' + id + '"]').find('.pemeriksaan').attr('rowspan', (parseInt(x) - 1));
+            $('tr[id="' + id + '"]').find('.tambahbaris').attr('rowspan', (parseInt(x) - 1));
+            $(this).closest('tr').remove();
         });
 
         $('#tableitem').on('click', '#tambahitem', function() {
@@ -182,12 +206,12 @@
                 <td rowspan="1" class="nomor">1</td>
                 <td rowspan="1" class="pemeriksaan">
                     <div class="form-group">
-                        <input type="text" class="form-control pemeriksaan" id="pemeriksaan[]" name="pemeriksaan[]">
+                        <input type="text" class="form-control pemeriksaan" id="pemeriksaan" name="pemeriksaan[]">
                     </div>
                 </td>
                 <td>
                     <div class="form-group">
-                        <input type="text" class="form-control penericmaan" id="penerimaan[]" name="penerimaan[]">
+                        <input type="text" class="form-control penerimaan" id="penerimaan" name="penerimaan[][]">
                     </div>
                 </td>
                 <td>
@@ -197,11 +221,13 @@
                 </td>
                 <td rowspan="1" class="tambahbaris"><button type="button" class="btn btn-danger btn-sm m-1" style="border-radius:50%;" id="hapusitem"><i class="fas fa-times-circle"></i></button></td>
             </tr>`);
+            numberRows($("#tableitem"));
         });
 
         $('#tableitem').on('click', '#hapusitem', function() {
             var id = $(this).closest('tr').attr('id');
             $('tr[id="' + id + '"]').remove();
+            numberRows($("#tableitem"));
         });
     });
 </script>

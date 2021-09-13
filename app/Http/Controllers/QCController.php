@@ -97,6 +97,12 @@ class QCController extends Controller
         $a = "";
     }
 
+    public function lkp_lup_create()
+    {
+        $p = DetailProduk::all();
+        return view('page.qc.lkp_lup_create', ['p' => $p]);
+    }
+
     public function perakitan_pemeriksaan()
     {
         return view('page.qc.perakitan_pemeriksaan_show');

@@ -564,6 +564,10 @@ Route::group(['prefix' => '/ik_pemeriksaan', 'middleware' => 'auth'], function (
     Route::put('/update/{id}/{proses}', 'QCController@ik_pemeriksaan_update')->name('ik_pemeriksaan.update');
 });
 
+Route::group(['prefix' => 'lkp_lup', 'middleware' => 'auth'], function(){
+    Route::get('/create', 'QCController@lkp_lup_create')->name('lkp_lup.create');
+});
+
 Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {
     Route::get('/', 'QCController@pengujian')->name('pengujian');
     Route::get('/pdf_lkp/{produk}', 'QCController@pdf_lkp')->name('pdf_lkp');
@@ -595,6 +599,7 @@ Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {
 
     Route::group(['prefix' => '/lkp_lup', 'middleware' => 'auth'], function () {
         Route::get('/{bppb_id}', 'QCController@pengujian_lkp_lup')->name('pengujian.lkp_lup');
+        
         Route::get('/show/{bppb_id}/{status}', 'QCController@pengujian_lkp_lup_show')->name('pengujian.lkp_lup.show');
         Route::get('/detail/{id}', 'QCController@pengujian_lkp_lup_detail');
         Route::get('/create/{id}', 'QCController@pengujian_lkp_lup_create')->name('pengujian.lkp_lup.create');

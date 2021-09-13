@@ -129,7 +129,7 @@
                                                     <td>
                                                         <div class="form-group row">
                                                             <div class="col-sm-12">
-                                                                <input type="text" class="form-control" name="{{$k}}" id="{{$k}}" value="" readonly>
+                                                                <input type="text" class="form-control" name="{{$k}}" id="{{$k}}" value="">
                                                             </div>
                                                         </div>
                                                     </td>
