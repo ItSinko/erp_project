@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\AcuanLkpLup;
 use App\AnalisaPsPengujian;
 use Illuminate\Http\Request;
 use App\DetailProduk;
 use App\Bppb;
+use App\Produk;
 use App\Karyawan;
 use App\Perakitan;
 use App\HasilPerakitan;
@@ -30,6 +32,7 @@ use App\PackingList;
 use App\DetailPackingList;
 use App\IkPemeriksaan;
 use App\ListIkPemeriksaan;
+use App\ParameterLkpLup;
 use App\PeriksaBarangMasuk;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -99,8 +102,53 @@ class QCController extends Controller
 
     public function lkp_lup_create()
     {
-        $p = DetailProduk::all();
+        $p = Produk::whereDoesntHave('FormatLkpLup')->get();
         return view('page.qc.lkp_lup_create', ['p' => $p]);
+    }
+
+    public function lkp_lup_store(Request $request)
+    {
+        $bool = true;
+        if ($request->nama_pengecekan != "") {
+            for ($i = 0; $i < count($request->nama_pengecekan); $i++) {
+                $f = FormatLkpLup::create([
+                    'produk_id' => $request->produk_id,
+                    'nama_pengecekan' => $request->nama_pengecekan[$i]
+                ]);
+
+                if ($f) {
+                    if ($request->nama_parameter[$i] != "") {
+                        for ($j = 0; $j < count($request->nama_parameter[$i]); $j++) {
+                            $a = AcuanLkpLup::create([
+                                'format_lkp_lup_id' => $f->id,
+                                'nama_parameter' => $request->nama_parameter[$i][$j]
+                            ]);
+
+                            if ($a) {
+                                for ($k = 0; $k < count($request->nilai_parameter[$i][$j]); $k++) {
+                                    $p = ParameterLkpLup::create([
+                                        'acuan_lkp_lup_id' => $a->id,
+                                        'nilai_parameter' => $request->nilai_parameter[$i][$j][$k]
+                                    ]);
+                                }
+                            } else {
+                                $bool = false;
+                            }
+                        }
+                    }
+                } else {
+                    $bool = false;
+                }
+            }
+        } else {
+            $bool = false;
+        }
+
+        if ($bool == true) {
+            return redirect()->back()->with('success', "Berhasil mengubah status Pengujian");
+        } else if ($bool == false) {
+            return redirect()->back()->with('error', "Gagal mengubah status Pengujian");
+        }
     }
 
     public function perakitan_pemeriksaan()

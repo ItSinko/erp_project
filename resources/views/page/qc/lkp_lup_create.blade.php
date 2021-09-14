@@ -24,14 +24,7 @@
 @section('content')
 <section class="content">
     <div class="row">
-        <div class="col-3">
-            <div class="card">
-                <div class="card-body">
-                    <h3>Info</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-9">
+        <div class="col-12">
             @if(session()->has('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 <strong><i class="fas fa-check"></i></strong> {{session()->get('success')}}
@@ -54,218 +47,98 @@
                 </button>
             </div>
             @endif
-            <form action="" method="post" enctype="multipart/form-data">
-                {{ csrf_field() }}
-                {{ method_field('PUT') }}
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="card">
-                            <div class="card-header bg-success">
-                                <div class="card-title">Format LKP dan LUP</div>
-                            </div>
-                            <div class="card-body">
-                                <div class="form-horizontal">
-                                    <div class="form-group row">
-                                        <label for="produk_id" class="col-sm-4 col-form-label" style="text-align:right;">Produk</label>
-                                        <div class="col-sm-8">
-                                            <select class="form-control select2 select2-info @error('produk_id') is-invalid @enderror" data-dropdown-css-class="select2-info" style="width: 30%;" data-placeholder="Pilih Kelompok Barang" name="kelompok_produk_id" id="kelompok_produk_id">
-                                                <option value=""></option>
-                                                @foreach($p as $i)
-                                                <option value="{{$i->id}}">{{$i->nama}}</option>
-                                                @endforeach
-                                            </select>
-                                            @if ($errors->has('produk_id'))
-                                            <span class="invalid-feedback" role="alert">{{$errors->first('produk_id')}}</span>
-                                            @endif
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header bg-success">
+                            <h3 class="card-title" style="color:white;"><i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;LKP LUP</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="col-md-12">
+                                <form action="{{route('lkp_lup.store')}}" method="post" enctype="multipart/form-data">
+                                    {{ csrf_field() }}
+                                    <div class="form-horizontal">
+                                        <div class="form-group row">
+                                            <label for="produk_id" class="col-sm-5 col-form-label" style="text-align:right;">Produk</label>
+                                            <div class="col-sm-7">
+                                                <select class="form-control select2 select2-info @error('produk_id') is-invalid @enderror" data-dropdown-css-class="select2-info" style="width: 50%;" data-placeholder="Pilih Produk" name="produk_id" id="produk_id">
+                                                    <option value=""></option>
+                                                    @foreach($p as $i)
+                                                    <option value="{{$i->id}}">{{$i->nama}} {{$i->tipe}}</option>
+                                                    @endforeach
+                                                </select>
+                                                @if ($errors->has('produk_id'))
+                                                <span class="invalid-feedback" role="alert">{{$errors->first('produk_id')}}</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <table id="tableitem" class="table table-hover tableitem">
+                                                <thead style="text-align:center;">
+                                                    <tr>
+                                                        <th rowspan="3">No</th>
+                                                        <th colspan="6">Pengecekan</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th rowspan="2"></th>
+                                                        <th colspan="5">Parameter</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th colspan="4">Nilai Parameter</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody style="text-align: center;">
+                                                    <tr class="kolom" id="koloma0">
+                                                        <td rowspan="1" class="nomor">1</td>
+                                                        <td rowspan="1" class="nama_pengecekan">
+                                                            <div class="form-group">
+                                                                <input type="text" class="form-control nama_pengecekan" id="nama_pengecekan" name="nama_pengecekan[]">
+                                                            </div>
+                                                        </td>
+                                                        <td rowspan="1" class="nama_parameter kolom1" id="koloma0" name="kolomb00">
+                                                            <div class="form-group">
+                                                                <input type="text" class="form-control" id="nama_parameter" name="nama_parameter[][]">
+                                                            </div>
+                                                        </td>
+                                                        <td class="nilai_parameter" id="kolomb00">
+                                                            <div class="form-group">
+                                                                <input type="text" class="form-control" id="nilai_parameter" name="nilai_parameter[][][]">
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="form-group">
+                                                                <a type="button" id="tambahnilaiparameter"><i class="fas fa-plus" style="color:green;"></i></button>
+                                                            </div>
+                                                        </td>
+                                                        <td rowspan="1" class="aksinamaparameter">
+                                                            <div class="form-group">
+                                                                <a type="button" id="tambahnamaparameter"><i class="fas fa-plus" style="color:green;"></i></button>
+                                                            </div>
+                                                        </td>
+                                                        <td rowspan="1" class="aksinamapengecekan"><button type="button" class="btn btn-success btn-sm m-1" style="border-radius:50%;" id="tambahnamapengecekan"><i class="fas fa-plus-circle"></i></button></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
-
-                                    <div class="form-group row">
-                                        <table id="format_lkp_lup" class="table table-bordered">
-                                            <tbody>
-                                                <tr class="tbformat">
-                                                    <td>
-                                                        <div class="form-horizontal">
-                                                            <div class="form-group row">
-                                                                <label for="nama_pengecekan" class="col-sm-5 col-form-label" style="text-align:left;">Pengecekan</label>
-                                                                <div class="col-sm-7">
-                                                                    <input type="text" class="form-control" name="nama_pengecekan[]" id="nama_pengecekan" value="">
-                                                                </div>
-                                                                @if ($errors->has('nama_pengecekan'))
-                                                                <span class="invalid-feedback" role="alert">{{$errors->first('nama_pengecekan')}}</span>
-                                                                @endif
-                                                            </div>
-                                                            <div class="form-group row">
-                                                                <table class="table table-bordered acuan_lkp_lup">
-                                                                    <thead>
-                                                                        <tr>
-                                                                            <th>No</th>
-                                                                            <th>Parameter</th>
-                                                                            <th>Aksi</th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                        <tr class="tbacuan">
-                                                                            <td>1</td>
-                                                                            <td>
-                                                                                <div class="form-horizontal">
-                                                                                    <div class="form-group row">
-                                                                                        <div class="col-sm-12">
-                                                                                            <input type="text" class="form-control" name="nama_parameter[][]" id="nama_parameter" value="">
-                                                                                        </div>
-                                                                                        @if ($errors->has('nama_parameter'))
-                                                                                        <span class="invalid-feedback" role="alert">{{$errors->first('nama_parameter')}}</span>
-                                                                                        @endif
-                                                                                    </div>
-                                                                                    <div class="form-group row">
-                                                                                        <table class="table table-bordered parameter_lkp_lup">
-                                                                                            <thead>
-                                                                                                <tr>
-                                                                                                    <th>No</th>
-                                                                                                    <th>Nilai Parameter</th>
-                                                                                                    <th>Aksi</th>
-                                                                                                </tr>
-                                                                                            </thead>
-                                                                                            <tbody>
-                                                                                                <tr class="tbparameter">
-                                                                                                    <td>1</td>
-                                                                                                    <td>
-                                                                                                        <div class="form-horizontal">
-                                                                                                            <div class="form-group row">
-                                                                                                                <div class="col-sm-12">
-                                                                                                                    <input type="text" class="form-control" name="nilai_parameter[][][]" id="nilai_parameter" value="">
-                                                                                                                </div>
-                                                                                                                @if ($errors->has('nilai_parameter'))
-                                                                                                                <span class="invalid-feedback" role="alert">{{$errors->first('nilai_parameter')}}</span>
-                                                                                                                @endif
-                                                                                                            </div>
-                                                                                                        </div>
-                                                                                                    </td>
-                                                                                                    <td>
-                                                                                                        <div class="form-group">
-                                                                                                            <a type="button" class="tambah_parameter_lkp_lup"><i class="fas fa-plus" style="color:green;"></i></button>
-                                                                                                        </div>
-                                                                                                    </td>
-                                                                                                </tr>
-                                                                                            </tbody>
-                                                                                        </table>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </td>
-                                                                            <td>
-                                                                                <div class="form-group">
-                                                                                    <a type="button" class="tambah_acuan_lkp_lup"><i class="fas fa-plus" style="color:green;"></i></button>
-                                                                                </div>
-                                                                            </td>
-                                                                        </tr>
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="form-group">
-                                                            <a type="button" class="tambah_format_lkp_lup"><i class="fas fa-plus" style="color:green;"></i></button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-footer">
-                                <span>
-                                    <button type="button" class="btn btn-block btn-danger rounded-pill" style="width:200px;float:left;"><i class="fas fa-times"></i>&nbsp;Batal</button>
-                                </span>
-                                <span>
-                                    <button type="submit" class="btn btn-block btn-success rounded-pill" style="width:200px;float:right;"><i class="fas fa-plus"></i>&nbsp;Tambah Data</button>
-                                </span>
                             </div>
                         </div>
-                        <!-- /.card -->
+                        <div class="card-footer">
+                            <span>
+                                <a class="cancelmodal" data-toggle="modal" data-target="#cancelmodal"><button type="button" class="btn btn-block btn-danger rounded-pill" style="width:200px;float:left;"><i class="fas fa-times"></i>&nbsp;Batal</button></a>
+                            </span>
+                            <span>
+                                <button type="submit" class="btn btn-block btn-success rounded-pill" style="width:200px;float:right;" id="tambahlaporan"><i class="fas fa-plus"></i>&nbsp;Tambah Data</button>
+                            </span>
+                        </div>
+                        </form>
 
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="card">
-                                    <div class="card-header bg-success">
-                                        <h3 class="card-title" style="color:white;"><i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;LKP LUP</h3>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="col-md-12">
-                                            <form action="" method="post" enctype="multipart/form-data">
-                                                {{ csrf_field() }}
-                                                {{ method_field('PUT') }}
-                                                <div class="form-horizontal">
-                                                    <div class="form-group row">
-                                                        <table id="tableitem" class="table table-hover tableitem">
-                                                            <thead style="text-align:center;">
-                                                                <tr>
-                                                                    <th rowspan="3">No</th>
-                                                                    <th colspan="6">Pengecekan</th>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th rowspan="2"></th>
-                                                                    <th colspan="5">Parameter</th>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th></th>
-                                                                    <th colspan="4">Nilai Parameter</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody style="text-align: center;">
-                                                                <tr class="kolom" id="kolom0">
-                                                                    <td rowspan="1" class="nomor">1</td>
-                                                                    <td rowspan="1" class="nama_pengecekan">
-                                                                        <div class="form-group">
-                                                                            <input type="text" class="form-control nama_pengecekan" id="nama_pengecekan" name="nama_pengecekan[]">
-                                                                        </div>
-                                                                    </td>
-                                                                    <td rowspan="1" class="nama_parameter">
-                                                                        <div class="form-group">
-                                                                            <input type="text" class="form-control nama_parameter" id="nama_parameter" name="nama_parameter[][]">
-                                                                        </div>
-                                                                    </td>
-                                                                    <td class="nilai_parameter">
-                                                                        <div class="form-group">
-                                                                            <input type="text" class="form-control nilai_parameter" id="nilai_parameter" name="nilai_parameter[][][]">
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>
-                                                                        <div class="form-group">
-                                                                            <a type="button" id="tambahnilaiparameter"><i class="fas fa-plus" style="color:green;"></i></button>
-                                                                        </div>
-                                                                    </td>
-                                                                    <td rowspan="1" class="aksinamaparameter">
-                                                                        <div class="form-group">
-                                                                            <a type="button" id="tambahnamaparameter"><i class="fas fa-plus" style="color:green;"></i></button>
-                                                                        </div>
-                                                                    </td>
-                                                                    <td rowspan="1" class="aksinamapengecekan"><button type="button" class="btn btn-success btn-sm m-1" style="border-radius:50%;" id="tambahnamapengecekan"><i class="fas fa-plus-circle"></i></button></td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                        </div>
-                                    </div>
-                                    <div class="card-footer">
-                                        <span>
-                                            <a class="cancelmodal" data-toggle="modal" data-target="#cancelmodal"><button type="button" class="btn btn-block btn-danger rounded-pill" style="width:200px;float:left;"><i class="fas fa-times"></i>&nbsp;Batal</button></a>
-                                        </span>
-                                        <span>
-                                            <button type="submit" class="btn btn-block btn-success rounded-pill" style="width:200px;float:right;" id="tambahlaporan"><i class="fas fa-plus"></i>&nbsp;Tambah Data</button>
-                                        </span>
-                                    </div>
-            </form>
-        </div>
-    </div>
-    </div>
-    </form>
-    </div>
-    <!-- /.col -->
-    </div>
-    <!-- /.row -->
+                    </div>
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
 </section>
 @endsection
 
@@ -273,171 +146,42 @@
 <script>
     $(function() {
         var rowCount = 0;
-        $('#format_lkp_lup').on('click', '.tambah_format_lkp_lup', function() {
-            $('#format_lkp_lup tr.tbformat:last').after(`
-                                        <tr class="tbformat">
-                                            <td>
-                                                <div class="form-horizontal">
-                                                    <div class="form-group row">
-                                                        <label for="nama_pengecekan" class="col-sm-5 col-form-label" style="text-align:left;">Pengecekan</label>
-                                                        <div class="col-sm-7">
-                                                            <input type="text" class="form-control" name="nama_pengecekan[]" id="nama_pengecekan" value="">
-                                                        </div>
-                                                        @if ($errors->has('nama_pengecekan'))
-                                                        <span class="invalid-feedback" role="alert">{{$errors->first('nama_pengecekan')}}</span>
-                                                        @endif
-                                                    </div>
-                                                    <div class="form-group row">
-                                                        <table class="table table-bordered acuan_lkp_lup">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>No</th>
-                                                                    <th>Parameter</th>
-                                                                    <th>Aksi</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <tr class="tbacuan">
-                                                                    <td>1</td>
-                                                                    <td>
-                                                                        <div class="form-horizontal">
-                                                                            <div class="form-group row">
-                                                                                <div class="col-sm-12">
-                                                                                    <input type="text" class="form-control" name="nama_parameter[][]" id="nama_parameter" value="">
-                                                                                </div>
-                                                                                @if ($errors->has('nama_parameter'))
-                                                                                <span class="invalid-feedback" role="alert">{{$errors->first('nama_parameter')}}</span>
-                                                                                @endif
-                                                                            </div>
-                                                                            <div class="form-group row">
-                                                                                <table class="table table-bordered parameter_lkp_lup">
-                                                                                    <thead>
-                                                                                        <tr>
-                                                                                            <th>No</th>
-                                                                                            <th>Nilai Parameter</th>
-                                                                                            <th>Aksi</th>
-                                                                                        </tr>
-                                                                                    </thead>
-                                                                                    <tbody>
-                                                                                        <tr class="tbparameter">
-                                                                                            <td>1</td>
-                                                                                            <td>
-                                                                                                <div class="form-horizontal">
-                                                                                                    <div class="form-group row">
-                                                                                                        <div class="col-sm-12">
-                                                                                                            <input type="text" class="form-control" name="nilai_parameter[][][]" id="nilai_parameter" value="">
-                                                                                                        </div>
-                                                                                                        @if ($errors->has('nilai_parameter'))
-                                                                                                        <span class="invalid-feedback" role="alert">{{$errors->first('nilai_parameter')}}</span>
-                                                                                                        @endif
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                            <td>
-                                                                                                <div class="form-group">
-                                                                                                    <a type="button" class="tambah_parameter_lkp_lup"><i class="fas fa-plus" style="color:green;"></i></button>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                    </tbody>
-                                                                                </table>
-                                                                            </div>
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>
-                                                                        <div class="form-group">
-                                                                            <a type="button" class="tambah_acuan_lkp_lup"><i class="fas fa-plus" style="color:green;"></i></button>
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <a type="button" class="hapus_format_lkp_lup"><i class="fas fa-times" style="color:red;"></i></button>
-                                                </div>
-                                            </td>
-                                        </tr>`);
-        });
 
-        $('.acuan_lkp_lup').on('click', '.tambah_acuan_lkp_lup', function() {
-            alert("tes");
-            $(this).closest('tr').after(`
-            <tr class="tbacuan">
-                <td>1</td>
-                <td>
-                    <div class="form-horizontal">
-                        <div class="form-group row">
-                            <div class="col-sm-12">
-                                <input type="text" class="form-control" name="nama_parameter[][]" id="nama_parameter" value="">
-                            </div>
-                            @if ($errors->has('nama_parameter'))
-                            <span class="invalid-feedback" role="alert">{{$errors->first('nama_parameter')}}</span>
-                            @endif
-                        </div>
-                        <div class="form-group row">
-                            <table class="table table-bordered parameter_lkp_lup">
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Nilai Parameter</th>
-                                        <th>Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="tbparameter">
-                                        <td>1</td>
-                                        <td>
-                                            <div class="form-horizontal">
-                                                <div class="form-group row">
-                                                    <div class="col-sm-12">
-                                                        <input type="text" class="form-control" name="nilai_parameter[][][]" id="nilai_parameter" value="">
-                                                    </div>
-                                                    @if ($errors->has('nilai_parameter'))
-                                                    <span class="invalid-feedback" role="alert">{{$errors->first('nilai_parameter')}}</span>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="form-group">
-                                                <a type="button" class="tambah_parameter_lkp_lup"><i class="fas fa-plus" style="color:green;"></i></button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    <div class="form-group">
-                        <a type="button" class="hapus_acuan_lkp_lup"><i class="fas fa-times" style="color:red;"></i></button>
-                    </div>
-                </td>
-            </tr>`);
-        });
+        function numberRowsPengecekan($t) {
+            var c = 0;
+            $t.find("tr.kolom").each(function(ind, el) {
+                $(el).find("td:eq(0)").html(++c);
+                var j = c - 1;
+                var id = $(el).attr('id');
+
+                var k = 0;
+                $('tr[id="' + id + '"]').each(function(ind1, el1) {
+                    var name = $(el1).attr('name');
+                    $(el1).find('input[id="nama_parameter"]').attr('name', 'nama_parameter[' + j + '][' + k + ']');
+                    $(el1).find('input[id="nilai_parameter"]').attr('name', 'nilai_parameter[' + j + '][' + k + '][]');
+                    k++;
+                });
+                $('tr[id="' + id + '"]').find('input[id="nama_pengecekan"]').attr('name', 'nama_pengecekan[' + j + ']');
+            });
+        }
 
         $('#tableitem').on('click', '#tambahnamapengecekan', function() {
             rowCount++;
-            $('#tableitem tr:last').after(`<tr class="kolom" id="kolom` + rowCount + `">
+            $('#tableitem tr:last').after(`<tr class="kolom" id="koloma` + rowCount + `">
                 <td rowspan="1" class="nomor"></td>
                 <td rowspan="1" class="nama_pengecekan">
                     <div class="form-group">
                         <input type="text" class="form-control nama_pengecekan" id="nama_pengecekan" name="nama_pengecekan[]">
                     </div>
                 </td>
-                <td rowspan="1" class="nama_parameter">
+                <td rowspan="1" class="nama_parameter kolom1" id="koloma` + rowCount + `" name="kolomb` + rowCount + `0">
                     <div class="form-group">
-                        <input type="text" class="form-control nama_parameter" id="nama_parameter" name="nama_parameter[][]">
+                        <input type="text" class="form-control" id="nama_parameter" name="nama_parameter[][]">
                     </div>
                 </td>
-                <td class="nilai_parameter">
+                <td class="nilai_parameter" id="kolomb` + rowCount + `0">
                     <div class="form-group">
-                        <input type="text" class="form-control nilai_parameter" id="nilai_parameter" name="nilai_parameter[][][]">
+                        <input type="text" class="form-control" id="nilai_parameter" name="nilai_parameter[][][]">
                     </div>
                 </td>
                 <td>
@@ -452,15 +196,105 @@
                 </td>
                 <td rowspan="1" class="aksinamapengecekan"><button type="button" class="btn btn-danger btn-sm m-1" style="border-radius:50%;" id="hapusnamapengecekan"><i class="fas fa-times-circle"></i></button></td>
             </tr>`);
-            // numberRows($("#tableitem"));
+            numberRowsPengecekan($("#tableitem"));
         });
 
         $('#tableitem').on('click', '#hapusnamapengecekan', function() {
             var id = $(this).closest('tr').attr('id');
             $('tr[id="' + id + '"]').remove();
-            // numberRows($("#tableitem"));
+            numberRowsPengecekan($("#tableitem"));
         });
 
+        $('#tableitem').on('click', '.kolom #tambahnamaparameter', function() {
+            var id = $(this).closest('tr').attr('id');
+            var x = $(this).closest('tr[id="' + id + '"]').find('.nomor').attr('rowspan');
+            var nama_parameter = $(this).closest('tr[id="' + id + '"]').find('.nama_parameter').attr('name');
+            var currRow = String(parseInt($("#tableitem").find('tr[id="' + id + '"]').length));
+
+            $(this).closest('tr[id="' + id + '"]').find('.nomor').attr('rowspan', (parseInt(x) + 1));
+            $(this).closest('tr[id="' + id + '"]').find('.nama_pengecekan').attr('rowspan', (parseInt(x) + 1));
+            $(this).closest('tr[id="' + id + '"]').find('.aksinamapengecekan').attr('rowspan', (parseInt(x) + 1));
+            var nid = String(id.substring(6)) + currRow;
+            $(this).closest('tr.kolom').after(`<tr class="kolom1" id="` + id + `" name="kolomb` + nid + `">
+                <td rowspan="1" class="nama_parameter">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="nama_parameter" name="nama_parameter[][]">
+                    </div>
+                </td>
+                <td class="nilai_parameter" id="kolomb` + nid + `">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="nilai_parameter" name="nilai_parameter[][][]">
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group">
+                        <a type="button" id="tambahnilaiparameter"><i class="fas fa-plus" style="color:green;"></i></button>
+                    </div>
+                </td>
+                <td rowspan="1" class="aksinamaparameter">
+                    <div class="form-group">
+                        <a type="button" id="hapusnamaparameter"><i class="fas fa-times" style="color:red;"></i></button>
+                    </div>
+                </td>
+            </tr>`);
+            numberRowsPengecekan($("#tableitem"));
+
+        });
+
+        $('#tableitem').on('click', '#hapusnamaparameter', function() {
+            var id = $(this).closest('tr').attr('id');
+            var name = $(this).closest('tr').attr('name');
+            var x = $('tr[id="' + id + '"]').find('.nomor').attr('rowspan');
+            var y = $(this).closest('tr[id="' + id + '"]').find('.nama_parameter').attr('rowspan');
+
+            $('tr[id="' + id + '"]').find('.nomor').attr('rowspan', (parseInt(x) - y));
+            $('tr[id="' + id + '"]').find('.nama_pengecekan').attr('rowspan', (parseInt(x) - y));
+            $('tr[id="' + id + '"]').find('.aksinamapengecekan').attr('rowspan', (parseInt(x) - y));
+            $(this).closest('tr').remove();
+            $('tr[id="' + name + '"]').remove();
+            numberRowsPengecekan($("#tableitem"));
+        });
+
+        $('#tableitem').on('click', '.kolom1 #tambahnilaiparameter', function() {
+            var name = $(this).closest('tr').attr('name');
+            var id = $(this).closest('tr').attr('id');
+            var x = $('tr[id="' + id + '"]').find('.nomor').attr('rowspan');
+            var y = $(this).closest('tr[id="' + id + '"]').find('.nama_parameter').attr('rowspan');
+            var nilai_parameter = $(this).closest('tr').find('input[id="nilai_parameter"]').attr('name');
+
+            $('tr[id="' + id + '"]').find('.nomor').attr('rowspan', (parseInt(x) + 1));
+            $('tr[id="' + id + '"]').find('.nama_pengecekan').attr('rowspan', (parseInt(x) + 1));
+            $(this).closest('tr[id="' + id + '"]').find('.nama_parameter').attr('rowspan', (parseInt(y) + 1));
+            $(this).closest('tr[id="' + id + '"]').find('.aksinamaparameter').attr('rowspan', (parseInt(y) + 1));
+            $('tr[id="' + id + '"]').find('.aksinamapengecekan').attr('rowspan', (parseInt(x) + 1));
+            $(this).closest('tr.kolom1').after(`<tr id="` + name + `">
+                <td class="nilai_parameter">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="nilai_parameter" name="` + nilai_parameter + `">
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group">
+                        <a type="button" id="hapusnilaiparameter"><i class="fas fa-times" style="color:red;"></i></button>
+                    </div>
+                </td>
+            </tr>`);
+        });
+
+        $('#tableitem').on('click', '#hapusnilaiparameter', function() {
+            var id = $(this).closest('tr').attr('id');
+            var ids = $(this).closest('tr[name="' + id + '"]').attr('id');
+            var x = $('tr[id="' + id + '"]').find('.nomor').attr('rowspan');
+            var y = $('tr[name="' + id + '"]').find('.nama_parameter').attr('rowspan');
+
+            $('tr[id="' + ids + '"]').find('.nomor').attr('rowspan', (parseInt(x) - 1));
+            $('tr[id="' + ids + '"]').find('.nama_pengecekan').attr('rowspan', (parseInt(x) - 1));
+            $('tr[name="' + id + '"]').find('.nama_parameter').attr('rowspan', (parseInt(y) - 1));
+            $('tr[name="' + id + '"]').find('.aksinamaparameter').attr('rowspan', (parseInt(y) - 1));
+            $('tr[id="' + ids + '"]').find('.aksinamapengecekan').attr('rowspan', (parseInt(x) - 1));
+            $(this).closest('tr').remove();
+            $('tr[id="' + name + '"]').remove();
+        });
     })
 </script>
 @endsection
