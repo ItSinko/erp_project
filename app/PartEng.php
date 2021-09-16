@@ -9,9 +9,17 @@ class PartEng extends Model
     protected $primaryKey = "kode_part";
     protected $fillable = ['kode_part', 'nama', 'foto', 'deskripsi', 'spesifikasi', 'status'];
 
-    public function PartGudang()
+    protected $keyType = "string";
+    public $incrementing = false;
+
+    public function toPartGudangPartEng()
     {
         return $this->hasMany(PartGudangPartEng::class, 'kode_eng');
+    }
+
+    public function toPartGudang()
+    {
+        return $this->belongsToMany(Part::class, 'part_gudang_part_engs', 'kode_eng', 'kode_gudang', 'kode_part', 'kode');
     }
 
     public function BillOfMaterial()

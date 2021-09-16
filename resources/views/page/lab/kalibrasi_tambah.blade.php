@@ -196,16 +196,31 @@
             }]
         });
         $('#button_tambah').click(function() {
+<<<<<<< HEAD
             //var data = noseri_list.rows(0).data();
+=======
+            var data = noseri_list.rows().data();
+
+>>>>>>> 202b602cedb0b7d149e4d23eae66bb8c91ee7fe2
             var no_pendaftaran = $("#no_pendaftaran").val();
             var jenis = $("#no_pendaftaran").val();
             var pic = $("#date_master").val();
             var tanggal_selesai = $("#tanggal_selesai").val();
             var tanggal_kalibrasi = $("#tanggal_kalibrasi").val();
             var tanggal_penyerahan = $("#tanggal_penyerahan").val();
+<<<<<<< HEAD
 
             console.log(no_pendaftaran);
             alert('ok');
+=======
+
+            console.log(data);
+            console.log(noseri_list.cell(0, 1).nodes().to$().find('.date').val())
+
+            for (var i = 0; i < data.count(); ++i) {
+                console.log(noseri_list.cell(0, 1).nodes().to$().find('.date').val())
+            };
+>>>>>>> 202b602cedb0b7d149e4d23eae66bb8c91ee7fe2
             return false;
         });
     });

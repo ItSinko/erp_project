@@ -22,39 +22,14 @@
     {{-- Custom stylesheets (pre AdminLTE) --}}
     @yield('adminlte_css_pre')
 
-    {{-- Base Stylesheets --}}
-    <link rel="stylesheet" href="{{asset('css/table.css')}}">
-    <link rel="stylesheet" href="{{asset('css/text.css')}}">
-    <link rel="stylesheet" href="{{asset('css/image.css')}}">
-    <link rel="stylesheet" href="{{asset('css/calendar.css')}}">
-    <link rel="stylesheet" href="{{asset('css/background.css')}}">
-    <link rel="stylesheet" href="{{asset('css/button.css')}}">
-
-    @if(!config('adminlte.enabled_laravel_mix'))
-
-    <link rel="stylesheet" href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('vendor/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
-
     {{-- Configured Stylesheets --}}
     @include('adminlte.plugins', ['type' => 'css'])
-    <link rel="stylesheet" href="{{ asset('vendor/adminlte/dist/css/adminlte.min.css') }}">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:400, 300">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
-    @else
-    <link rel="stylesheet" href="{{ mix(config('adminlte.laravel_mix_css_path', 'css/app.css')) }}">
-    @endif
-
-    {{-- Livewire Styles --}}
-    @if(config('adminlte.livewire'))
-    @if(app()->version() >= 7)
-    @livewireStyles
-    @else
-    <livewire:styles />
-    @endif
-    @endif
 
     {{-- Custom Stylesheets (post AdminLTE) --}}
-    @yield('adminlte_css')
+    @yield('master_css')
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:400, 300">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 
     {{-- Favicon --}}
     @if(config('adminlte.use_ico_only'))
@@ -78,130 +53,17 @@
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="{{ asset('favicon/ms-icon-144x144.png') }}">
     @endif
-
-    <style>
-        #loader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 10000;
-            background-color: #000;
-        }
-
-        #loading-gif {
-            display: block;
-            position: relative;
-            left: 50%;
-            top: 50%;
-            width: 150px;
-            height: 150px;
-            margin: -75px 0 0 -75px;
-            border-radius: 50%;
-            border: 3px solid transparent;
-            border-top-color: #3489db;
-            animation: spin 2s linear infinite;
-            z-index: 10001;
-        }
-
-        #loading-gif:before {
-            content: "";
-            position: absolute;
-            left: 5px;
-            top: 5px;
-            right: 5px;
-            bottom: 5px;
-            border-radius: 50%;
-            border: 3px solid transparent;
-            border-top-color: #f9c922;
-            animation: spin 3s linear infinite;
-        }
-
-        #loading-gif:after {
-            content: "";
-            position: absolute;
-            left: 15px;
-            top: 15px;
-            right: 15px;
-            bottom: 15px;
-            border-radius: 50%;
-            border: 3px solid transparent;
-            border-top-color: #e74c3c;
-            animation: spin 1.5s linear infinite;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-    </style>
 </head>
 
-<body class="@yield('classes_body')" style="font-family:Inter;" @yield('body_data')>
-    <div id="loader">
-        <div id="loading-gif"></div>
-    </div>
+<body class="@yield('classes_body')" style="font-family:Inter; padding-top: 0;" @yield('body_data')>
     {{-- Body Content --}}
     @yield('body')
-
-    {{-- Base Scripts --}}
-    @if(!config('adminlte.enabled_laravel_mix'))
-    <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('vendor/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
 
     {{-- Configured Scripts --}}
     @include('adminlte.plugins', ['type' => 'js'])
 
-    <script src="{{ asset('vendor/adminlte/dist/js/adminlte.min.js') }}"></script>
-    @else
-    <script src="{{ mix(config('adminlte.laravel_mix_js_path', 'js/app.js')) }}"></script>
-    @endif
-
-    {{-- Livewire Script --}}
-    @if(config('adminlte.livewire'))
-    @if(app()->version() >= 7)
-    @livewireScripts
-    @else
-    <livewire:scripts />
-    @endif
-    @endif
-
     {{-- Custom Scripts --}}
-    @yield('adminlte_js')
-    <script>
-        $(function() {
-            $('.select2').select2({
-                placeholder: "Pilih Data",
-                allowClear: true
-            });
-        });
-
-        var flag = 0;
-        $('[data-widget="pushmenu"]').click(function() {
-            if (flag == 0) {
-                $('#user-image').hide();
-                $('#search-widget').hide();
-                flag = 1;
-            } else if (flag == 1) {
-                $('#user-image').show();
-                $('#search-widget').show();
-                flag = 0;
-            }
-        });
-
-        $(document).ready(function() {
-            setTimeout(function() {
-                $('#loader').fadeOut();
-            }, 100);
-        });
-    </script>
+    @yield('master_js')
 </body>
 
 </html>

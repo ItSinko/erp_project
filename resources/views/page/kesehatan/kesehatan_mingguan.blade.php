@@ -52,7 +52,7 @@
             <thead style="text-align: center;">
               <tr>
                 <th colspan="12">
-                  <a href="/kesehatan_mingguan/tambah" style="color: white;"><button type="button" class="btn btn-block btn-success btn-sm" style="width: 200px;"><i class="fas fa-plus"></i> &nbsp; Tambah</i></button></a>
+                  <a href="/kesehatan_mingguan_tensi/tambah" style="color: white;"><button type="button" class="btn btn-block btn-success btn-sm" style="width: 200px;"><i class="fas fa-plus"></i> &nbsp; Tambah</i></button></a>
                 </th>
               </tr>
               <tr>
@@ -84,7 +84,7 @@
             <thead style="text-align: center;">
               <tr>
                 <th colspan="12">
-                  <a href="/kesehatan_mingguan/tambah" style="color: white;"><button type="button" class="btn btn-block btn-success btn-sm" style="width: 200px;"><i class="fas fa-plus"></i> &nbsp; Tambah</i></button></a>
+                  <a href="/kesehatan_mingguan_rapid/tambah" style="color: white;"><button type="button" class="btn btn-block btn-success btn-sm" style="width: 200px;"><i class="fas fa-plus"></i> &nbsp; Tambah</i></button></a>
                 </th>
               </tr>
               <tr>
@@ -96,6 +96,7 @@
                 <th>Jenis</th>
                 <th>Hasil</th>
                 <th>Catatan</th>
+                <th>File</th>
                 <th></th>
               </tr>
             </thead>
@@ -365,6 +366,9 @@
             },
             {
               data: 'keterangan'
+            },
+            {
+              data: 'cetak'
             },
             {
               data: 'button'

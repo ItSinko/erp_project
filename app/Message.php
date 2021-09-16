@@ -8,7 +8,7 @@ class Message extends Model
 {
     protected $fillable = ['message'];
 
-    public function user()
+    public function User()
     {
         return $this->belongsTo(User::class);
     }

@@ -15,6 +15,7 @@ use App\kesehatan_mingguan_rapid;
 use App\kesehatan_mingguan_tensi;
 use App\kesehatan_tahunan;
 use App\obat;
+use App\vaksin_karyawan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -22,6 +23,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Validation\Rule;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -59,7 +61,7 @@ class KesehatanController extends Controller
                 return $data->karyawan->divisi->nama;
             })
             ->addColumn('berat_kg', function ($data) {
-                return $data->berat . ' Kg';
+                return $data->berat . ' Kg' . '<br><div class="inline-flex"><button type="button" id="berat"  class="btn btn-block btn-primary karyawan-img-small" style="border-radius:50%;" ><i class="fa fa-eye" aria-hidden="true"></i></button></div>';
             })
             ->addColumn('tinggi_cm', function ($data) {
                 return $data->tinggi . ' Cm';
@@ -79,27 +81,72 @@ class KesehatanController extends Controller
             ->addColumn('umur', function ($data) {
                 $tgl  = $data->karyawan->tgllahir;
                 $age = Carbon::parse($tgl)->diff(Carbon::now())->y;
-
-
                 return $age . " Thn";
             })
-            ->addColumn('button', function ($data) {
-                $btn = '<div class="inline-flex"><a href="/kesehatan/ubah/' . $data->id . '"><button type="button" class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-edit"></i></button></a>';
+            ->addColumn('vaksin_detail', function ($data) {
+                if ($data->karyawan->vaksin_karyawan->isEmpty()) {
+                    $status = 'Belum Vaksin';
+                } else {
+                    $status = 'Sudah Vaksin';
+                }
+
+
+                $btn = '' . $status . '<br><div class="inline-flex"><button type="button" id="vaksin_detail" class="btn btn-block btn-primary karyawan-img-small" style="border-radius:50%;" ><i class="fa fa-eye" aria-hidden="true"></i></button></div>';
                 return $btn;
             })
-            ->rawColumns(['button', 'berat_kg'])
+            ->rawColumns(['berat_kg', 'vaksin_detail'])
+            ->make(true);
+    }
+    public function kesehatan_vaksin($karyawan_id)
+    {
+        $data = vaksin_karyawan::where('karyawan_id', $karyawan_id);
+        return datatables::of($data)
+            ->addIndexColumn()
             ->make(true);
     }
     public function kesehatan_tambah()
     {
-        $karyawan = Karyawan::orderBy('nama', 'ASC')->get();;
-        return view('page.kesehatan.kesehatan_tambah', ['karyawan' => $karyawan]);
+        $karyawan = Karyawan::orderBy('nama', 'ASC')->get();
+        $pengecek = Karyawan::where('divisi_id', '28')
+            ->orWhere('divisi_id', '22')
+            ->get();
+        return view('page.kesehatan.kesehatan_tambah', ['karyawan' => $karyawan, 'pengecek' => $pengecek]);
     }
     public function kesehatan_ubah($id)
     {
         $karyawan = Karyawan::all();
         $kesehatan_awal = Kesehatan_awal::find($id);
         return view('page.kesehatan.kesehatan_ubah', ['karyawan' => $karyawan, 'kesehatan_awal' => $kesehatan_awal]);
+    }
+    public function kesehatan_vaksin_aksi_tambah(Request $request)
+    {
+        $this->validate(
+            $request,
+            [
+                'tgl.*' => 'required',
+                'dosis.*' => 'required',
+                'tahap.*' => 'required',
+            ],
+            [
+                'tgl.required' => 'Tanggal harus di isi',
+                'dosis.required' => 'Dosis pengecekan harus di isi',
+                'tahap.required' => 'Tahap pengecekan harus di isi',
+            ]
+        );
+        for ($i = 0; $i < count($request->date); $i++) {
+            $vaksin_karyawan = vaksin_karyawan::create([
+                'karyawan_id' => $request->fk_karyawan_id,
+                'tgl' => $request->date[$i],
+                'dosis' => $request->dosis[$i],
+                'tahap' => $request->ket[$i],
+            ]);
+        }
+
+        if ($vaksin_karyawan) {
+            return redirect()->back()->with('success', "Berhasil menambahkan data");
+        } else {
+            return redirect()->back()->with('error', "Gagal menambahkan data");
+        }
     }
     public function kesehatan_aksi_tambah(Request $request)
     {
@@ -113,7 +160,7 @@ class KesehatanController extends Controller
                 'status_mata' => 'required',
                 'suhu' => 'required',
                 'spo2' => 'required',
-                'pr' => 'required'
+                'pr' => 'required',
             ],
             [
                 'karyawan_id.required' => 'Karyawan harus di pilih',
@@ -125,7 +172,7 @@ class KesehatanController extends Controller
                 'suhu.required' => 'Suhu harus di isi',
                 'spo2.required' => 'Spo2 buta warna harus di isi',
                 'pr.required' => 'Pulse Oximeter buta warna harus di isi',
-                'status_mata.required' => 'Kategori buta warna harus di isi',
+                'status_mata.required' => 'Kategori buta warna harus di isi'
             ]
         );
 
@@ -138,15 +185,58 @@ class KesehatanController extends Controller
             $file_mcu = NULL;
         }
 
-        if ($request->hasFile('file_covid')) {
-            $karyawan = Karyawan::find($request->karyawan_id);
-            $file = $request->file('file_covid')->getClientOriginalName();
-            $path = $request->file('file_covid')->move(base_path('\public\file\kesehatan'), $karyawan->nama . '_COVID_' . $file);
-            $file_covid = $karyawan->nama . '_COVID_' . $file;
-        } else {
-            $file_covid = NULL;
-        }
 
+
+        if ($request->status_vaksin == 'Sudah') {
+            $this->validate(
+                $request,
+                [
+                    'tgl.*' => 'required',
+                    'dosis.*' => 'required',
+                    'tahap.*' => 'required',
+                ],
+                [
+                    'tgl.required' => 'Tanggal harus di isi',
+                    'dosis.required' => 'Dosis pengecekan harus di isi',
+                    'tahap.required' => 'Tahap pengecekan harus di isi',
+                ]
+            );
+            for ($i = 0; $i < count($request->date); $i++) {
+                $vaksin_karyawan = vaksin_karyawan::create([
+                    'karyawan_id' => $request->karyawan_id,
+                    'tgl' => $request->date[$i],
+                    'dosis' => $request->dosis[$i],
+                    'tahap' => $request->ket[$i],
+                ]);
+            }
+        }
+        if ($request->status_tes == 'Iya') {
+            $this->validate(
+                $request,
+                [
+                    'tgl_cek.*' => 'required',
+                    'pemeriksa_id.*' => 'required',
+                    'hasil_covid.*' => 'required',
+                    'jenis_tes.*' => 'required',
+                ],
+                [
+                    'tgl_cek.required' => 'Tanggal harus di isi',
+                    'pemeriksa_id.required' => 'Pemeriksa harus di isi',
+                    'hasil_covid.required' => 'Pemeriksa harus di isi',
+                    'jenis_tes.required' => 'Pemeriksa harus di isi',
+                ]
+            );
+            for ($i = 0; $i < count($request->tgl_cek); $i++) {
+                $kesehatan_mingguan_rapid = kesehatan_mingguan_rapid::create([
+                    'karyawan_id' => $request->karyawan_id,
+                    'pemeriksa_id' => $request->pemeriksa_id[$i],
+                    'tgl_cek' => $request->tgl_cek[$i],
+                    'hasil' => $request->hasil_covid[$i],
+                    'jenis' => $request->jenis_tes[$i],
+                    'keterangan' => $request->keterangan[$i],
+                ]);
+            }
+        }
         $kesehatan_awal = Kesehatan_awal::create([
             'karyawan_id' => $request->karyawan_id,
             'vaksin' => $request->status_vaksin,
@@ -164,10 +254,9 @@ class KesehatanController extends Controller
             'suhu' => $request->suhu,
             'spo2' => $request->spo2,
             'pr' => $request->pr,
-            'tes_covid' => $request->tes_covid,
-            'hasil_covid' => $request->hasil_covid,
+            'sistolik' => $request->sistolik,
+            'diastolik' => $request->diastolik,
             'file_mcu' => $file_mcu,
-            'file_covid' => $file_covid,
         ]);
 
 
@@ -182,21 +271,18 @@ class KesehatanController extends Controller
     public function kesehatan_harian_tambah()
     {
 
-        $data = Karyawan::with('divisi')
+        $karyawan = Karyawan::with('divisi')
             ->get();
         $divisi = Divisi::all();
-        return view('page.kesehatan.kesehatan_harian_tambah', ['data' => $data, 'divisi' => $divisi]);
+        return view('page.kesehatan.kesehatan_harian_tambah', ['karyawan' => $karyawan, 'divisi' => $divisi]);
     }
-
     public function kesehatan_harian_tambah_data($id)
     {
         $data = Karyawan::with('divisi', 'kesehatan_awal')
             ->orderBy('nama', 'ASC')
-            ->has('kesehatan_awal')
             ->where('divisi_id', $id)->get();
         echo json_encode($data);
     }
-
     public function kesehatan_harian_aksi_tambah(Request $request)
     {
         $this->validate(
@@ -289,7 +375,6 @@ class KesehatanController extends Controller
             ->get();
         return view('page.kesehatan.kesehatan_harian_detail', ['karyawan' => $karyawan]);
     }
-
     public function kesehatan_harian_detail_data($id)
     {
         $data = Kesehatan_harian::with('karyawan')
@@ -364,27 +449,49 @@ class KesehatanController extends Controller
         $pengecek = Karyawan::where('divisi_id', '28')
             ->orWhere('divisi_id', '22')
             ->get();
+        $karyawan = Karyawan::all();
         $divisi = Divisi::all();
-        return view('page.kesehatan.kesehatan_mingguan_tambah', ['divisi' => $divisi, 'pengecek' => $pengecek]);
+        return view('page.kesehatan.kesehatan_mingguan_tambah', ['divisi' => $divisi, 'pengecek' => $pengecek, 'karyawan' => $karyawan]);
+    }
+    public function kesehatan_mingguan_tensi_tambah()
+    {
+        $pengecek = Karyawan::where('divisi_id', '28')
+            ->orWhere('divisi_id', '22')
+            ->get();
+        $karyawan = Karyawan::all();
+        $divisi = Divisi::all();
+        return view('page.kesehatan.kesehatan_mingguan_tensi_tambah', ['divisi' => $divisi, 'pengecek' => $pengecek, 'karyawan' => $karyawan]);
+    }
+    public function kesehatan_mingguan_rapid_tambah()
+    {
+        $pengecek = Karyawan::where('pemeriksa_rapid', '1')
+            ->get();
+        $karyawan = Karyawan::all();
+        $divisi = Divisi::all();
+        return view('page.kesehatan.kesehatan_mingguan_rapid_tambah', ['divisi' => $divisi, 'pengecek' => $pengecek, 'karyawan' => $karyawan]);
     }
     public function kesehatan_mingguan_tensi_aksi_tambah(Request $request)
     {
         $x = $this->validate(
             $request,
             [
-                'tgl_cek' => 'required ',
-                'divisi' => ['required', Rule::unique('divisis')
-                    ->where('id', $request->divisi)],
+                'karyawan_id.*' => 'required ',
+                'date.*' => 'required ',
+                'sistolik.*' => 'required ',
+                'diastolik.*' => 'required ',
+
             ],
             [
-                'divisi.required' => 'Divisi harus di pilih',
-                'tgl_cek.required' => 'Tanggal pengecekan harus dipilih',
+                'karyawan_id.required' => 'Karyawan harus di pilih',
+                'date.required' => 'Tanggal harus di pilih',
+                'diastolik.required' => 'Hasil Diastolik harus di isi',
+                'sistolik.required' => 'Hasil Sistolik harus di isi',
             ]
         );
         for ($i = 0; $i < count($request->karyawan_id); $i++) {
             $kesehatan_mingguan_tensi = kesehatan_mingguan_tensi::create([
                 'karyawan_id' => $request->karyawan_id[$i],
-                'tgl_cek' => $request->tgl_cek,
+                'tgl_cek' => $request->date[$i],
                 'sistolik' => $request->sistolik[$i],
                 'diastolik' => $request->diastolik[$i],
                 'keterangan' => $request->keterangan[$i]
@@ -398,30 +505,41 @@ class KesehatanController extends Controller
     }
     public function kesehatan_mingguan_rapid_aksi_tambah(Request $request)
     {
-        $this->validate(
+        $x = $this->validate(
             $request,
             [
-                'divisi' => 'required',
-                'tgl_cek' => 'required',
-                'pemeriksa_id.*' => 'required',
+                'jenis_tes.*' => 'required ',
+                'pemeriksa_id.*' => 'required ',
+                'date.*' => 'required ',
+                'hasil_covid.*' => 'required ',
+
             ],
             [
-                'divisi.required' => 'Divisi harus di pilih',
-                'tgl_cek.required' => 'Tanggal pengecekan harus dipilih',
+                'jenis_tes.required' => 'Jenis Tes harus di pilih',
+                'pemeriksa_id.required' => 'Pemeriksa harus di pilih',
+                'date.required' => 'Tanggal harus di pilih',
+                'hasil_covid.required' => 'Hasil Covid harus di pilih',
             ]
         );
-
         for ($i = 0; $i < count($request->karyawan_id); $i++) {
+
+            // if (!empty($request->file[$i])) {
+            //     $file_name = $request->file('file')[$i]->getClientOriginalName();
+            //     $x = $request->file('file')[$i]->move(base_path('\public\file\kesehatan_rapid'), $request->date[$i] . '-' . $file_name);
+            // } else {
+            //     $file_name = NULL;
+            // }
+
             $kesehatan_mingguan_rapid = kesehatan_mingguan_rapid::create([
                 'karyawan_id' => $request->karyawan_id[$i],
                 'pemeriksa_id' => $request->pemeriksa_id[$i],
-                'tgl_cek' => $request->tgl_cek,
+                'tgl_cek' => $request->date[$i],
                 'hasil' => $request->hasil_covid[$i],
                 'jenis' => $request->jenis_tes[$i],
-                'keterangan' => $request->keterangan[$i]
+                'keterangan' => $request->keterangan[$i],
+
             ]);
         }
-
         if ($kesehatan_mingguan_rapid) {
             return redirect()->back()->with('success', 'Berhasil menambahkan data');
         } else {
@@ -488,7 +606,15 @@ class KesehatanController extends Controller
                 $btn = '<div class="inline-flex"><button type="button" id="edit_rapid"  class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-edit"></i></button></div>';
                 return $btn;
             })
-            ->rawColumns(['button'])
+            ->addColumn('cetak', function ($data) {
+                if ($data->file == NULL) {
+                    $btn = '<a  class="disabled"  aria-disabled="true"><button type="button" class="btn btn-block btn-warning karyawan-img-small disabled" style="border-radius:50%;" ><i class="fas fa-file"></i></button></a>';
+                } else {
+                    $btn = '<a href="url(assets/public/file/kesehatan_rapid/a.pdf)"  target="_break"><button type="button" class="btn btn-block btn-warning karyawan-img-small " style="border-radius:50%;" ><i class="fas fa-file"></i></button></a>';
+                }
+                return $btn;
+            })
+            ->rawColumns(['button', 'cetak'])
             ->make(true);
     }
     public function kesehatan_mingguan_detail()
@@ -497,7 +623,6 @@ class KesehatanController extends Controller
         $karyawan = Karyawan::orderBy('nama', 'ASC')
             ->has('Kesehatan_awal')
             ->get();
-
         return view('page.kesehatan.kesehatan_mingguan_detail', ['karyawan' => $karyawan]);
     }
     public function kesehatan_mingguan_tensi_detail_data($karyawan_id)
@@ -516,7 +641,6 @@ class KesehatanController extends Controller
     public function kesehatan_mingguan_rapid_detail_data($karyawan_id)
     {
         $data = kesehatan_mingguan_rapid::where('karyawan_id', $karyawan_id);
-
         return datatables::of($data)
             ->addIndexColumn()
             ->addColumn('z', function ($data) {
@@ -536,12 +660,17 @@ class KesehatanController extends Controller
         $labels3 = $data->pluck('diastolik');
         return response()->json(compact('tgl', 'labels2', 'labels3', 'data2', 'data3', 'data4', 'data5'));
     }
-
-    public function kesehatan_bulanan_tambah()
+    public function kesehatan_bulanan_gcu_tambah()
     {
-        $divisi = Divisi::all();
-        return view('page.kesehatan.kesehatan_bulanan_tambah', ['divisi' => $divisi]);
+        $karyawan = Karyawan::orderby('nama')->get();
+        return view('page.kesehatan.kesehatan_bulanan_gcu_tambah', ['karyawan' => $karyawan]);
     }
+    public function kesehatan_bulanan_berat_tambah()
+    {
+        $karyawan = Karyawan::orderby('nama')->get();
+        return view('page.kesehatan.kesehatan_bulanan_berat_tambah', ['karyawan' => $karyawan]);
+    }
+
     public function kesehatan_bulanan()
     {
         return view('page.kesehatan.kesehatan_bulanan');
@@ -584,17 +713,17 @@ class KesehatanController extends Controller
         $this->validate(
             $request,
             [
-                'divisi' => 'required',
-                'tgl_cek' => 'required',
+                'karyawan_id.*' => 'required',
+                'tgl_cek.*' => 'required',
                 'berat.*' => 'required',
                 'lemak.*' => 'required',
                 'kandungan_air.*' => 'required',
-                'otot..*' => 'required',
+                'otot.*' => 'required',
                 'tulang.*' => 'required',
                 'kalori.*' => 'required',
             ],
             [
-                'divisi.required' => 'Divisi harus di pilih',
+                'karyawan_id.required' => 'Divisi harus di pilih',
                 'tgl_cek.required' => 'Tanggal pengecekan harus dipilih',
                 'berat.required' => 'Berat harus di isi',
                 'lemak.required' => 'Lemak harus di isi',
@@ -604,11 +733,10 @@ class KesehatanController extends Controller
                 'kalori.required' => 'Kalori harus di isi',
             ]
         );
-
         for ($i = 0; $i < count($request->karyawan_id); $i++) {
             $berat_karyawan = berat_karyawan::create([
                 'karyawan_id' => $request->karyawan_id[$i],
-                'tgl_cek' => $request->tgl_cek,
+                'tgl_cek' => $request->tgl_cek[$i],
                 'berat' => $request->berat[$i],
                 'lemak' => $request->lemak[$i],
                 'kandungan_air' => $request->kandungan_air[$i],
@@ -618,7 +746,6 @@ class KesehatanController extends Controller
                 'keterangan' => $request->keterangan[$i]
             ]);
         }
-
         if ($berat_karyawan) {
             return redirect()->back()->with('success', 'Berhasil menambahkan data');
         } else {
@@ -630,19 +757,25 @@ class KesehatanController extends Controller
         $this->validate(
             $request,
             [
-                'divisi' => 'required',
-                'tgl_cek' => 'required',
+                'tgl_cek.*' => 'required',
+                'karyawan_id.*' => 'required',
+                'glukosa.*' => 'required',
+                'kolesterol.*' => 'required',
+                'asam_urat.*' => 'required',
             ],
             [
-                'divisi.required' => 'Divisi harus di pilih',
                 'tgl_cek.required' => 'Tanggal pengecekan harus dipilih',
+                'karyawan_id.required' => 'Karyawan harus di isi',
+                'glukosa.required' => 'Glukosa harus di isi',
+                'kolesterol.required' => 'Kolesterol harus di isi',
+                'asam_urat.required' => 'Asam urat harus di isi',
             ]
         );
 
         for ($i = 0; $i < count($request->karyawan_id); $i++) {
             $gcu_karyawan = gcu_karyawan::create([
                 'karyawan_id' => $request->karyawan_id[$i],
-                'tgl_cek' => $request->tgl_cek,
+                'tgl_cek' => $request->tgl_cek[$i],
                 'glukosa' => $request->glukosa[$i],
                 'kolesterol' => $request->kolesterol[$i],
                 'asam_urat' => $request->asam_urat[$i],
@@ -699,8 +832,7 @@ class KesehatanController extends Controller
     }
     public function kesehatan_bulanan_berat_data()
     {
-        $data = berat_karyawan::with('karyawan')
-            ->orderBy('tgl_cek', 'DESC');
+        $data = berat_karyawan::orderBy('tgl_cek', 'DESC');
 
         return datatables::of($data)
             ->addIndexColumn()
@@ -749,13 +881,13 @@ class KesehatanController extends Controller
                 }
             })
             ->addColumn('ti', function ($data) {
-                return $data->karyawan->kesehatan_awal->tinggi . ' Cm';
+                $y = $data->id;
+                $x = Kesehatan_awal::where('karyawan_id', $y)->first();
+                return $x['tinggi'] . ' Cm';
             })
-
             ->addColumn('bmi', function ($data) {
-                return  $data->berat / (($data->karyawan->kesehatan_awal->tinggi / 100) * ($data->karyawan->kesehatan_awal->tinggi / 100));
+                return  $data->berat / ((150 / 100) * (150 / 100));
             })
-
             ->addColumn('button', function ($data) {
                 $btn = '<div class="inline-flex"><button type="button" id="edit_berat"  class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-edit"></i></button></div>';
                 return $btn;
@@ -1059,6 +1191,7 @@ class KesehatanController extends Controller
             })
             ->addColumn('button', function ($data) {
                 $btn = '<div class="inline-flex"><button type="button" id="riwayat"  class="btn btn-block btn-primary karyawan-img-small" style="border-radius:50%;" ><i class="fa fa-eye" aria-hidden="true"></i></button></div>';
+                $btn = $btn . '<div class="inline-flex"><button type="button" id="edit" class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-edit"></i></button></div>';
                 return $btn;
             })
             ->rawColumns(['button', 'detail_button'])
@@ -1114,6 +1247,20 @@ class KesehatanController extends Controller
             'keterangan' => $request->keterangan
         ]);
 
+        if ($obat) {
+            return redirect()->back()->with('success', 'Berhasil menambahkan data');
+        } else {
+            return redirect()->back()->with('error', 'Gagal menambahkan data');
+        }
+    }
+
+    public function obat_aksi_ubah(Request $request)
+    {
+        $id = $request->id;
+        $obat = obat::find($id);
+        $obat->nama = $request->nama;
+        $obat->keterangan = $request->keterangan;
+        $obat->save();
         if ($obat) {
             return redirect()->back()->with('success', 'Berhasil menambahkan data');
         } else {

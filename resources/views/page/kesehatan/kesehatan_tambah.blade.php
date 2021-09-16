@@ -73,14 +73,50 @@
                                                     <span class="invalid-feedback" role="alert" id="kondisi-msg"></span>
                                                 </div>
                                             </div>
-                                            <div class="form-group row">
+                                            <div class="form-group row" id="vaksin_ket" hidden>
                                                 <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;">Keterangan</label>
                                                 <div class="col-sm-8">
-                                                    <textarea type="text" class="form-control @error('ket_vaksin') is-invalid @enderror" name="ket_vaksin" id="keterangan" value="{{old('ket_vaksin')}}" placeholder="Keterangan Vaksin" style="width:45%;" disabled></textarea>
+                                                    <table id="tabel_vaksin" class="table table-hover styled-table table-striped col-sm-8">
+                                                        <thead style="text-align: center;">
+                                                            <tr>
+                                                                <th>No</th>
+                                                                <th>Tgl Vaksin</th>
+                                                                <th>Dosis</th>
+                                                                <th>Vaksin ke </th>
+                                                                <th></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody style="text-align: center;">
+                                                            <tr>
+                                                                <td>1</td>
+                                                                <td>
+                                                                    <input type="date" class="form-control date" name="date[]">
+                                                                </td>
+                                                                <td>
+                                                                    <select class="form-control select2 dosis" name="dosis[]">
+                                                                        <option value="">Pilih</option>
+                                                                        <option value="Astrazeneca">Astrazeneca</option>
+                                                                        <option value="Sinovac">Sinovac</option>
+                                                                        <option value="Moderna">Moderna</option>
+                                                                    </select>
+                                                                </td>
+                                                                <td>
+                                                                    <select class="form-control select2 ket" name="ket[]">
+                                                                        <option value="">Pilih</option>
+                                                                        <option value="1">1</option>
+                                                                        <option value="2">2</option>
+                                                                        <option value="3">3</option>
+                                                                    </select>
+                                                                </td>
+                                                                <td>
+                                                                    <button name="add" type="button" id="tambahitem_vaksin" class="btn btn-success"><i class="nav-icon fas fa-plus-circle"></i></button>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
                                                 </div>
                                                 <span role="alert" id="no_seri-msg"></span>
                                             </div>
-
                                             <div class="form-group row">
                                                 <label for="keterangan" class="col-sm-4 col-form-label" style="text-align:right;">Berat Badan</label>
                                                 <div class="col-sm-2">
@@ -269,6 +305,38 @@
                                                 </div>
                                             </div>
                                             <div class="form-group row">
+                                                <label for="keterangan" class="col-sm-4 col-form-label" style="text-align:right;">Systol</label>
+                                                <div class="col-sm-2">
+                                                    <div class="input-group mb-3">
+                                                        <input type="text" class="form-control" name="sistolik" id="sistolik" value="{{ old('sistolik') }}">
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text">mmHg</span>
+                                                        </div>
+                                                    </div>
+                                                    @if($errors->has('sistolik'))
+                                                    <div class="text-danger">
+                                                        {{ $errors->first('sistolik')}}
+                                                    </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="keterangan" class="col-sm-4 col-form-label" style="text-align:right;">Dyastol</label>
+                                                <div class="col-sm-2">
+                                                    <div class="input-group mb-3">
+                                                        <input type="text" class="form-control" name="diastolik" id="diastolik" value="{{ old('diastolik') }}">
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text">mmHg</span>
+                                                        </div>
+                                                    </div>
+                                                    @if($errors->has('diastolik'))
+                                                    <div class="text-danger">
+                                                        {{ $errors->first('diastolik')}}
+                                                    </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
                                                 <label class="col-sm-4 col-form-label" style="text-align:right;">Rabun Mata</label>
                                                 <div class="col-sm-8 ">
                                                     <div class="col-sm-4  d-inline">
@@ -296,108 +364,104 @@
                                                 <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;">Pemeriksaan Covid</label>
                                                 <div class="col-sm-8" style="margin-top:7px;">
                                                     <div class="icheck-success d-inline col-sm-4">
-                                                        <input type="radio" name="tes_covid" value="Antibody">
+                                                        <input type="radio" name="status_tes" value="Iya">
                                                         <label for="no">
-                                                            Antibody
+                                                            Iya
                                                         </label>
                                                     </div>
                                                     <div class="icheck-warning d-inline col-sm-4">
-                                                        <input type="radio" name="tes_covid" value="Antigen">
+                                                        <input type="radio" name="status_tes" value="Tidak" checked="0">
                                                         <label for="sample">
-                                                            Antigen
-                                                        </label>
-                                                    </div>
-                                                    <div class="icheck-warning d-inline col-sm-4">
-                                                        <input type="radio" name="tes_covid" value="Saliva">
-                                                        <label for="sample">
-                                                            Saliva
-                                                        </label>
-                                                    </div>
-                                                    <div class="icheck-warning d-inline col-sm-4">
-                                                        <input type="radio" name="tes_covid" value="Genose / PCR">
-                                                        <label for="sample">
-                                                            Genose / PCR
+                                                            Tidak
                                                         </label>
                                                     </div>
                                                     <span class="invalid-feedback" role="alert" id="kondisi-msg"></span>
                                                 </div>
                                             </div>
-                                            <div id="tipe_1">
-                                                <div class="form-group row">
-                                                    <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;"></label>
-                                                    <div class="col-sm-8" style="margin-top:7px;">
-                                                        <div class="icheck-success d-inline col-sm-4">
-                                                            <input type="radio" name="hasil_covid" value="C">
-                                                            <label for="no">
-                                                                C
-                                                            </label>
-                                                        </div>
-                                                        <div class="icheck-success d-inline col-sm-4">
-                                                            <input type="radio" name="hasil_covid" value="C/IG">
-                                                            <label for="no">
-                                                                C/IG
-                                                            </label>
-                                                        </div>
-                                                        <div class="icheck-warning d-inline col-sm-4">
-                                                            <input type="radio" name="hasil_covid" value="C/IgM">
-                                                            <label for="sample">
-                                                                C/IgM
-                                                            </label>
-                                                        </div>
-                                                        <div class="icheck-warning d-inline col-sm-4">
-                                                            <input type="radio" name="hasil_covid" value="C/IgG/IgM">
-                                                            <label for="sample">
-                                                                C/IgG/IgM
-                                                            </label>
-                                                        </div>
-                                                        <span class="invalid-feedback" role="alert" id="kondisi-msg"></span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div id="tipe_2">
-                                                <div class="form-group row">
-                                                    <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;"></label>
-                                                    <div class="col-sm-8" style="margin-top:7px;">
-                                                        <div class="icheck-success d-inline col-sm-4">
-                                                            <input type="radio" name="hasil_covid" value="C">
-                                                            <label for="no">
-                                                                C
-                                                            </label>
-                                                        </div>
-                                                        <div class="icheck-warning d-inline col-sm-4">
-                                                            <input type="radio" name="hasil_covid" value="C/T">
-                                                            <label for="sample">
-                                                                C/T
-                                                            </label>
-                                                        </div>
-                                                        <span class="invalid-feedback" role="alert" id="kondisi-msg"></span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div id="tipe_3">
-                                                <div class="form-group row">
-                                                    <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;"></label>
-                                                    <div class="col-sm-4">
-                                                        <div class="icheck-success d-inline col-sm-4">
-                                                            <input type="radio" name="hasil_covid" value="Positif">
-                                                            <label for="no">
-                                                                Positif
-                                                            </label>
-                                                        </div>
-                                                        <div class="icheck-warning d-inline col-sm-4">
-                                                            <input type="radio" name="hasil_covid" value="Negatif">
-                                                            <label for="sample">
-                                                                Negatif
-                                                            </label>
-                                                        </div>
-                                                        <input type="file" class="form-control @error('file_covid') is-invalid @enderror" name="file_covid" value="{{old('file_covid')}}" style="width:45%;">
-                                                        @if($errors->has('file_covid'))
-                                                        <div class="text-danger">
-                                                            {{ $errors->first('file_covid')}}
-                                                        </div>
-                                                        @endif
-                                                    </div>
-                                                </div>
+                                            <div class="form-group row" id="tes_ket" hidden>
+                                                <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;"></label>
+                                                <table id="tabel_tes" class="table table-hover styled-table table-striped col-sm-8">
+                                                    <thead>
+                                                        <tr>
+                                                            <th width="1%">No</th>
+                                                            <th width="20%">Jenis Tes</th>
+                                                            <th width="20%">Pemeriksa</th>
+                                                            <th width="20%">Tanggal</th>
+                                                            <th width="25%"></th>
+                                                            <th width="20%">Catatan</th>
+                                                            <th width="1%"></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody style="text-align: center;">
+                                                        <tr>
+                                                            <td>1</td>
+                                                            <td>
+                                                                <select class="form-control select2 jenis_tes" name="jenis_tes[]" id="0">
+                                                                    <option value="">Pilih</option>
+                                                                    <option value="Rapid">Rapid</option>
+                                                                    <option value="Antigen">Antigen</option>
+                                                                </select>
+                                                            </td>
+                                                            <td>
+                                                                <select type="text" class="form-control @error('pemeriksa_id') is-invalid @enderror pemeriksa_id select2 select2-info" name="pemeriksa_id[]" style="width:100%;" id="pemeriksa_id[]">
+                                                                    <option value=""></option>
+                                                                    @foreach ($pengecek as $p)
+                                                                    <option value="{{$p->id}}">{{$p->nama}}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </td>
+                                                            <td><input type="date" name="tgl_cek[]" class="form-control tgl_cek"></td>
+                                                            <td>
+                                                                <div id="rapids0" class="row rapids" hidden>
+                                                                    <div class="icheck-success d-inline col-sm-6">
+                                                                        <input type="radio" name="hasil_covid[]" value="Non reaktif" class="hasil_covid">
+                                                                        <label for="no">
+                                                                            Non reaktif
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="icheck-success d-inline col-sm-6">
+                                                                        <input type="radio" name="hasil_covid[]" value="IgG" class="hasil_covid">
+                                                                        <label for="no">
+                                                                            IgG
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="icheck-warning d-inline col-sm-6">
+                                                                        <input type="radio" name="hasil_covid[]" value="IgM" class="hasil_covid">
+                                                                        <label for="sample">
+                                                                            IgM
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="icheck-warning d-inline col-sm-6">
+                                                                        <input type="radio" name="hasil_covid[]" value="IgG-IgM" class="hasil_covid">
+                                                                        <label for="sample">
+                                                                            IgG-IgM
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                                <div id="antigens0" class="row antigens" hidden>
+                                                                    <div class="icheck-success d-inline col-sm-12">
+                                                                        <input type="radio" name="hasil_covid[]" value="C" class="hasil_covid">
+                                                                        <label for="no">
+                                                                            C
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="icheck-warning d-inline col-sm-12">
+                                                                        <input type="radio" name="hasil_covid[]" value="C/T" class="hasil_covid">
+                                                                        <label for="sample">
+                                                                            C/T
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <textarea class="form-control keterangan" name="keterangan[]"></textarea>
+                                                            </td>
+                                                            <td style="text-align: right;">
+                                                                <button name="add" type="button" id="tambahitem_tes" class="btn btn-success"><i class="nav-icon fas fa-plus-circle"></i></button>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
                                             </div>
                                         </div>
                                     </div>
@@ -418,17 +482,184 @@
 @section('adminlte_js')
 <script>
     $(document).ready(function() {
+        function numberRow_vaksin($t) {
+            var c = 0 - 1;
+            $t.find("tr").each(function(ind, el) {
+                $(el).find("td:eq(0)").html(++c);
+                var j = c - 1;
+                $(el).find('.dosis').attr('name', 'dosis[' + j + ']');
+                $(el).find('.date').attr('name', 'date[' + j + ']');
+                $(el).find('.ket').attr('name', 'ket[' + j + ']');
+                $('.dosis').select2();
+                $('.ket').select2();
+            });
+        }
+
+        function numberRow_tes($t) {
+            var c = 0 - 1;
+            $t.find("tr").each(function(ind, el) {
+                $(el).find("td:eq(0)").html(++c);
+                var j = c - 1;
+                $(el).find('.jenis_tes').attr('id', '' + j + '');
+                $(el).find('.antigens').attr('id', 'antigens' + j + '');
+                $(el).find('.rapids').attr('id', 'rapids' + j + '');
+                $(el).find('.pemeriksa_id').attr('id', 'pemeriksa_id[' + j + ']');
+
+                $(el).find('.jenis_tes').attr('name', 'jenis_tes[' + j + ']');
+                $(el).find('.pemeriksa_id').attr('name', 'pemeriksa_id[' + j + ']');
+                $(el).find('.tgl_cek').attr('name', 'tgl_cek[' + j + ']');
+                $(el).find('.hasil_covid').attr('name', 'hasil_covid[' + j + ']');
+                $(el).find('.keterangan').attr('name', 'keterangan[' + j + ']');
+                $('.jenis_tes').select2();
+                $('.pemeriksa_id').select2();
+            });
+        }
         $('input[type=radio][name=status_vaksin]').on('change', function() {
-            if (this.value == 'Belum') {
-                $('textarea[name=ket_vaksin]').val('');
-                $('textarea[name=ket_vaksin]').prop("disabled", true);
-                $('textarea[name=ket_vaksin]').prop("required", false);
-            } else if (this.value == 'Sudah') {
-                $('textarea[name=ket_vaksin]').val('');
-                $('textarea[name=ket_vaksin]').prop("disabled", false);
-                $('textarea[name=ket_vaksin]').prop("required", true);
+            if (this.value == 'Sudah') {
+                $('#vaksin_ket').removeAttr('hidden');
+            } else if (this.value == 'Belum') {
+                $('#vaksin_ket').attr('hidden', 'hidden');
             }
         });
+        $('input[type=radio][name=status_tes]').on('change', function() {
+            if (this.value == 'Iya') {
+                $('#tes_ket').removeAttr('hidden');
+            } else if (this.value == 'Tidak') {
+                $('#tes_ket').attr('hidden', 'hidden');
+            }
+        });
+        $('#tambahitem_vaksin').click(function(e) {
+            var data = `  <tr>  
+            <td>1</td>
+                                                                <td>
+                                                                <input type="date" class="form-control date" name="date[]">
+                                                                </td>
+                                                                <td>
+                                                                    <select class="form-control select2 dosis" name="dosis[]">
+                                                                        <option value="">Pilih</option>
+                                                                        <option value="Astrazeneca">Astrazeneca</option>
+                                                                        <option value="Sinovac">Sinovac</option>
+                                                                        <option value="Moderna">Moderna</option>
+                                                                    </select>
+                                                                </td>
+                                                                <td>
+                                                                    <select class="form-control select2 ket" name="ket[]">
+                                                                        <option value="">Pilih</option>
+                                                                        <option value="1">1</option>
+                                                                        <option value="2">2</option>
+                                                                        <option value="3">3</option>
+                                                                    </select>
+                                                                </td>
+                                                                <td>
+                                                                <button type="button" class="btn btn-danger karyawan-img-small" style="border-radius:50%;" id="closetable_vaksin"><i class="fas fa-times-circle"></i></button> 
+                                                   </td>
+                                                </tr>`;
+            $('#tabel_vaksin tr:last').after(data);
+            numberRow_vaksin($("#tabel_vaksin"));
+        });
+        $('#tabel_vaksin').on('click', '#closetable_vaksin', function(e) {
+            $(this).closest('tr').remove();
+            numberRow_vaksin($("#tabel_vaksin"));
+        });
+        $('#tambahitem_tes').click(function(e) {
+            var data = `  <tr>  
+            <td>1</td>
+                                                            <td>
+                                                                <select class="form-control select2 jenis_tes" name="jenis_tes[]">
+                                                                    <option value="">Pilih</option>
+                                                                    <option value="Rapid">Rapid</option>
+                                                                    <option value="Antigen">Antigen</option>
+                                                                </select>
+                                                            </td>
+                                                            <td>
+                                                                <select type="text" class="form-control @error('pemeriksa_id') is-invalid @enderror pemeriksa_id select2 select2-info" name="pemeriksa_id[]" style="width:100%;" id="pemeriksa_id[]">
+                                                                    <option value=""></option>
+                                                                    @foreach ($pengecek as $p)
+                                                                    <option value="{{$p->id}}">{{$p->nama}}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </td>
+                                                            <td><input type="date" name="tgl_cek[]" class="form-control tgl_cek"></td>
+                                                            <td>
+                                                            <div id="rapids" class="row rapids" hidden>
+                                                            <div class="icheck-success d-inline col-sm-6">
+                                                                <input type="radio" name="hasil_covid[]" value="Non reaktif" class="hasil_covid">
+                                                                <label for="no">
+                                                                    Non reaktif
+                                                                </label>
+                                                            </div>
+                                                            <div class="icheck-success d-inline col-sm-6">
+                                                                <input type="radio" name="hasil_covid[]" value="IgG" class="hasil_covid">
+                                                                <label for="no">
+                                                                    IgG
+                                                                </label>
+                                                            </div>
+                                                            <div class="icheck-warning d-inline col-sm-6">
+                                                                <input type="radio" name="hasil_covid[]" value="IgM" class="hasil_covid">
+                                                                <label for="sample">
+                                                                    IgM
+                                                                </label>
+                                                            </div>
+                                                            <div class="icheck-warning d-inline col-sm-6">
+                                                                <input type="radio" name="hasil_covid[]" value="IgG-IgM" class="hasil_covid">
+                                                                <label for="sample">
+                                                                    IgG-IgM
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                        <div id="antigens" class="row antigens" hidden>
+                                                            <div class="icheck-success d-inline col-sm-12">
+                                                                <input type="radio" name="hasil_covid[]" value="C" class="hasil_covid">
+                                                                <label for="no">
+                                                                    C
+                                                                </label>
+                                                            </div>
+                                                            <div class="icheck-warning d-inline col-sm-12">
+                                                                <input type="radio" name="hasil_covid[]" value="C/T" class="hasil_covid" >
+                                                                <label for="sample">
+                                                                    C/T
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                            </td>
+                                                            <td>
+                                                                <textarea class="form-control keterangan" name="keterangan[]"></textarea>
+                                                            </td>
+                                                                <td>
+                                                                <button type="button" class="btn btn-danger karyawan-img-small" style="border-radius:50%;" id="closetable_tes"><i class="fas fa-times-circle"></i></button> 
+                                                   </td>
+                                                </tr>`;
+            $('#tabel_tes tr:last').after(data);
+            numberRow_tes($("#tabel_tes"));
+        });
+        $('#tabel_tes').on('click', '#closetable_tes', function(e) {
+            $(this).closest('tr').remove();
+            numberRow_tes($("#tabel_tes"));
+        });
+        $('#tabel_tes').on("change", ".jenis_tes", function() {
+            var x = $(this).closest('tr').find('.jenis_tes').val();
+            var y = this.id;
+
+            if (x == "Antigen") {
+                $('#antigens' + y + '').removeAttr('hidden');
+                $('#rapids' + y + '').attr('hidden', 'hidden');
+            } else if (x == "Rapid") {
+                $('#rapids' + y + '').removeAttr('hidden');
+                $('#antigens' + y + '').attr('hidden', 'hidden');
+            }
+            console.log(y);
+        });
+
+
+
+
+
+
+
+
+
+
+
 
         $('#cek_form').hide();
         $('#tipe_1').show();
