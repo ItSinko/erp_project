@@ -53,4 +53,9 @@ class DetailProduk extends Model
     {
         return $this->hasMany(GudangProduk::class);
     }
+
+    public function IkPemeriksaan()
+    {
+        return $this->hasOne(IkPemeriksaan::class);
+    }
 }

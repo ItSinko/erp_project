@@ -261,17 +261,7 @@
       return column; // return column data..
     }
 
-    function numberRows($t) {
-      var c = 0 - 1;
-      $t.find("tr").each(function(ind, el) {
-        $(el).find("td:eq(0)").html(++c);
-        var j = c - 1;
-        $(el).find('.karyawan_id').attr('name', 'karyawan_id[' + j + '][]');
-        $(el).find('.karyawan_id').attr('id', 'karyawan_id' + j);
-        $(el).find('input[id="alias"]').attr('name', 'alias[' + j + ']');
-        $('.karyawan_id').select2();
-      });
-    }
+
 
     $('#tambahitem').click(function(e) {
       $('#tambahdata').attr('disabled', true);

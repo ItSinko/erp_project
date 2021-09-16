@@ -345,6 +345,12 @@ return [
             'url'  => '/ik_pemeriksaan'
         ],
         [
+            'text' => 'LKP dan LUP',
+            'icon' => 'fas fa-clipboard-list',
+            'auth' => [23],
+            'url'  => '/lkp_lup'
+        ],
+        [
             'text'    => 'Inventory',
             'icon'    => 'fas fa-boxes',
             'auth' => [14, 17],

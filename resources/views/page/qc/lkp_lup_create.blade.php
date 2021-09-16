@@ -283,8 +283,8 @@
 
         $('#tableitem').on('click', '#hapusnilaiparameter', function() {
             var id = $(this).closest('tr').attr('id');
-            var ids = $(this).closest('tr[name="' + id + '"]').attr('id');
-            var x = $('tr[id="' + id + '"]').find('.nomor').attr('rowspan');
+            var ids = $('tr[name="' + id + '"]').attr('id');
+            var x = $('tr[id="' + ids + '"]').find('.nomor').attr('rowspan');
             var y = $('tr[name="' + id + '"]').find('.nama_parameter').attr('rowspan');
 
             $('tr[id="' + ids + '"]').find('.nomor').attr('rowspan', (parseInt(x) - 1));

@@ -71,7 +71,7 @@ class GetController extends Controller
 
     public function get_detail_produk_by_id($id)
     {
-        $s = DetailProduk::with('Produk')->with("produk.kelompokproduk", "produk.kategoriproduk")->where('id', $id)->get();
+        $s = DetailProduk::with('Produk')->with("produk.kelompokproduk", "produk.kategoriproduk")->where('id', $id)->first();
         echo json_encode($s);
     }
 
@@ -267,19 +267,16 @@ class GetController extends Controller
     public function getbarcode($id)
     {
         $mp = HasilMonitoringProses::with('MonitoringProses')
-        ->where('hasil_perakitan_id', $id)
-        ->first();
+            ->where('hasil_perakitan_id', $id)
+            ->first();
 
         $p = HasilPengemasan::with('Pengemasan')
-        ->where('hasil_perakitan_id', $id)
-        ->first();
+            ->where('hasil_perakitan_id', $id)
+            ->first();
 
-        if($mp != "")
-        {
+        if ($mp != "") {
             return $mp;
-        }
-        else if($p != "")
-        {
+        } else if ($p != "") {
             return $p;
         }
     }

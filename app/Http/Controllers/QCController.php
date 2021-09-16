@@ -126,10 +126,15 @@ class QCController extends Controller
 
                             if ($a) {
                                 for ($k = 0; $k < count($request->nilai_parameter[$i][$j]); $k++) {
-                                    $p = ParameterLkpLup::create([
-                                        'acuan_lkp_lup_id' => $a->id,
-                                        'nilai_parameter' => $request->nilai_parameter[$i][$j][$k]
-                                    ]);
+                                    if ($request->nilai_parameter[$i][$j][$k] != "") {
+                                        $p = ParameterLkpLup::create([
+                                            'acuan_lkp_lup_id' => $a->id,
+                                            'nilai_parameter' => $request->nilai_parameter[$i][$j][$k]
+                                        ]);
+                                        if (!$p) {
+                                            $bool = false;
+                                        }
+                                    }
                                 }
                             } else {
                                 $bool = false;
@@ -2182,7 +2187,7 @@ class QCController extends Controller
     public function ik_pemeriksaan_show($id, $proses)
     {
         $ik = IkPemeriksaan::where([['detail_produk_id', '=', $id], ['proses', '=', $proses]])->with('ListIkPemeriksaan', 'ListIkPemeriksaan.DetailIkPemeriksaan')->get();
-        return $ik;
+        return json_encode($ik);
     }
 
     public function ik_pemeriksaan_create($id, $proses)
@@ -2224,7 +2229,7 @@ class QCController extends Controller
                         for ($j = 0; $j < count($request->penerimaan[$i]); $j++) {
                             $cd = DetailIkPemeriksaan::create([
                                 'list_ik_pemeriksaan_id' => $c->id,
-                                'pemeriksaan' => $request->penerimaan[$i][$j]
+                                'penerimaan' => $request->penerimaan[$i][$j]
                             ]);
                             if (!$cd) {
                                 $bool = false;
@@ -2239,9 +2244,9 @@ class QCController extends Controller
             }
 
             if ($bool == true) {
-                return redirect()->back()->with('success', "Berhasil menambahkan IK Pemeriksaan " + $proses);
+                return redirect()->back()->with('success', "Berhasil menambahkan IK Pemeriksaan " . $proses);
             } else if ($bool == false) {
-                return redirect()->back()->with('error', "Gagal menambahkan IK Pemeriksaan " + $proses);
+                return redirect()->back()->with('error', "Gagal menambahkan IK Pemeriksaan " . $proses);
             }
         }
     }

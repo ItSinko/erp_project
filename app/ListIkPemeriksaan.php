@@ -12,4 +12,9 @@ class ListIkPemeriksaan extends Model
     {
         return $this->belongsTo(IkPemeriksaan::class);
     }
+
+    public function DetailIkPemeriksaan()
+    {
+        return $this->hasMany(DetailIkPemeriksaan::class);
+    }
 }

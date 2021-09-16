@@ -557,14 +557,17 @@ Route::group(['prefix' => 'surat_jalan', 'middleware' => 'auth'], function () {
 // PENGUJIAN
 Route::group(['prefix' => '/ik_pemeriksaan', 'middleware' => 'auth'], function () {
     Route::get('/', 'QCController@ik_pemeriksaan')->name('ik_pemeriksaan');
+    Route::get('/get_detail_produk_by_id/{id}', 'GetController@get_detail_produk_by_id');
     Route::get('/show/{id}/{proses}', 'QCController@ik_pemeriksaan_show')->name('ik_pemeriksaan.show');
     Route::get('/create/{id}/{proses}', 'QCController@ik_pemeriksaan_create')->name('ik_pemeriksaan.create');
+    Route::get('/create/get_detail_produk_by_id/{id}', 'GetController@get_detail_produk_by_id');
     Route::put('/store/{id}/{proses}', 'QCController@ik_pemeriksaan_store')->name('ik_pemeriksaan.store');
     Route::get('/edit/{id}/{proses}', 'QCController@ik_pemeriksaan_edit')->name('ik_pemeriksaan.edit');
     Route::put('/update/{id}/{proses}', 'QCController@ik_pemeriksaan_update')->name('ik_pemeriksaan.update');
 });
 
 Route::group(['prefix' => 'lkp_lup', 'middleware' => 'auth'], function () {
+    Route::get('/show/{produk}', 'QCController@lkp_lup_show')->name('lkp_lup.show');
     Route::get('/create', 'QCController@lkp_lup_create')->name('lkp_lup.create');
     Route::post('/store', 'QCController@lkp_lup_store')->name('lkp_lup.store');
 });
