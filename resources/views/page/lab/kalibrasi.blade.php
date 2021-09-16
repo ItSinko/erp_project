@@ -7,11 +7,6 @@
 @stop
 
 @section('content')
-<style>
-  tr.details td.details-control {
-    background: ;
-  }
-</style>
 <div class="row">
   <div class="col-lg-12">
     <div class="card">
@@ -37,29 +32,70 @@
     </div>
   </div>
 </div>
+
+
+<!-- Modal Detail -->
+<div class="modal fade  bd-example-modal-lg" id="detail_mod" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">
+          <div class="data_detail_head"></div>
+        </h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <div class="data_detail">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="col-lg-12">
+                <div class="card">
+                  <div class="card-header bg-success">
+                    <div class="card-title">&nbsp;Detail</div>
+                  </div>
+                  <div class="card-body">
+                    <div class="col-lg-12">
+                      <div class="row">
+                        <div class="col-lg-12">
+                          <div class="form-horizontal">
+                            <table class="table table-bordered table-striped" id="tabel_detail">
+                              <thead>
+                                <tr>
+                                  <th width="1%">No</th>
+                                  <th>Tgl Pendaftaran</th>
+                                  <th>Barcode</th>
+                                  <th></th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 @stop
 @section('adminlte_js')
 <script>
-  function format(d) {
-    console.log(d);
-    return `<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">
-      <tr>
-      <td>Tgl Permintaan</td> 
-      <td>Status</td>
-      <td></td>
-      </tr> 
-      <tr> 
-      <td></td>
-      <td><span class="badge bg-danger">Belum Kalibrasi</span></td>
-      <td><div class="inline-flex"><a href="/kalibrasi/tambah/32"><button type="button" class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-balance-scale"></i></button></a></td>
-      </tr>
-      <tr> 
-      <td>3 Juni 2021</td>
-      <td><span class="badge bg-success">Sudah Kalibrasi</span></td>
-      <td><div class="inline-flex"><a href="/kalibrasi/tambah/32"><button type="button" class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-balance-scale"></i></button></a></td>
-      </tr>
-      </table>`;
-  }
   $(function() {
     var tabel = $('#tabel').DataTable({
       processing: true,
@@ -74,19 +110,15 @@
           searchable: false
         },
         {
-          className: 'details-control',
+          data: 'button',
           orderable: false,
-          data: null,
-          defaultContent: '',
-          render: function() {
-            return '<button  class="btn btn-primary"><i class="fas fa-plus-circle"></i></button>';
-          }
+          searchable: false
         },
         {
           data: 'no_bppb',
         },
         {
-          data: 'gambar',
+          data: 'button',
           orderable: false,
           searchable: false
         },
@@ -100,19 +132,40 @@
         }
       ]
     });
-    $('#tabel tbody').on('click', 'td.details-control', function() {
-      var tr = $(this).closest('tr');
-      var row = tabel.row(tr);
-      if (row.child.isShown()) {
-        // This row is already open - close it
-        row.child.hide();
-        tr.removeClass('shown');
-      } else {
-        // Open this row
-        row.child(format(row.data())).show();
-        tr.addClass('shown');
-      }
-    })
+
+
+    $('#tabel > tbody').on('click', '#detail', function() {
+      var rows = tabel.rows($(this).parents('tr')).data();
+      $('.data_detail_head').html(
+        'Detail Paket : ' + rows[0]['no_bppb']
+      );
+
+      var tabel_detail = $('#tabel_detail').DataTable({
+        processing: true,
+        destroy: true,
+        serverSide: false,
+        ajax: '/kalibrasi/data/detail/' + rows[0]['id'],
+        columns: [{
+            data: 'DT_RowIndex',
+            orderable: false,
+            searchable: false
+          },
+          {
+            data: 'tanggal_daftar',
+          },
+          {
+            data: 'barcode_list',
+          },
+          {
+            data: 'button',
+            orderable: false,
+            searchable: false
+          }
+        ]
+      });
+
+      $('#detail_mod').modal('show');
+    });
   });
 </script>
 @endsection

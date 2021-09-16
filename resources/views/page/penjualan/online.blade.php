@@ -493,7 +493,6 @@
       var rows = $(this).data('id');
 
       $.ajax({
-
         url: '/penjualan_online/detail/data/edit/' + rows,
         type: "GET",
         dataType: "json",

@@ -46,13 +46,14 @@
                                                             <span class="input-group-text">LAB-</span>
                                                         </div>
                                                         <input type="text" class="form-control" value="{{$no }}" name="no_pendaftaran" id="no_pendaftaran">
+                                                        <input type="text" class="form-control d-none" value="{{$kalibrasi->id }}" id="kalibrasi_id">
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class=" form-group row">
                                                 <label for="keterangan" class="col-sm-4 col-form-label" style="text-align:right;">Jenis</label>
                                                 <div class="col-sm-2">
-                                                    <select type="text" class="form-control @error('karyawan_id') is-invalid @enderror select2" name="kode_sertifikat">
+                                                    <select type="text" class="form-control @error('karyawan_id') is-invalid @enderror select2" name="kode_sertifikat" id="jenis">
                                                         <option value="">Pilih</option>
                                                         <option value="rsud">Rumah Sakit Umum Daerah (RSUD)</option>
                                                         <option value="dinkes">Dinas Kesehatan</option>
@@ -69,7 +70,7 @@
                                             <div class=" form-group row">
                                                 <label for="keterangan" class="col-sm-4 col-form-label" style="text-align:right;">PIC</label>
                                                 <div class="col-sm-2">
-                                                    <select type="text" class="form-control @error('teknisi_id') is-invalid @enderror select2" name="teknisi_id">
+                                                    <select type="text" class="form-control @error('teknisi_id') is-invalid @enderror select2" name="teknisi_id" id="pic">
                                                         <option value="">Pilih</option>
                                                         @foreach($karyawan as $k)
                                                         <option value="{{$k->id}}">{{$k->nama}}</option>
@@ -91,13 +92,13 @@
                                             <div class=" form-group row">
                                                 <label for="keterangan" class="col-sm-4 col-form-label" style="text-align:right;">Tgl Selesai</label>
                                                 <div class="col-sm-2">
-                                                    <input type="date" class="form-control @error('tanggal_selesai') is-invalid @enderror" name="tanggal_selesai">
+                                                    <input type="date" class="form-control @error('tanggal_selesai') is-invalid @enderror" name="tanggal_selesai" id="tanggal_selesai">
                                                 </div>
                                             </div>
                                             <div class=" form-group row">
                                                 <label for="keterangan" class="col-sm-4 col-form-label" style="text-align:right;">Tgl Penyerahan</label>
                                                 <div class="col-sm-2">
-                                                    <input type="date" class="form-control @error('tanggal_penyerahan') is-invalid @enderror" name="tanggal_penyerahan">
+                                                    <input type="date" class="form-control @error('tanggal_penyerahan') is-invalid @enderror" name="tanggal_penyerahan" id="tanggal_penyerahan">
                                                 </div>
                                             </div>
                                             <table class=" table table-bordered table-striped" style="width:100%" id="noseri_list">
@@ -133,35 +134,33 @@
 @endsection
 @section('adminlte_js')
 <script>
-    // $('#date_master').change(function() {
-    //     $('#date').val($(this).val());
-    // });
+    $('#date_master').change(function() {
+        $('.date').val($(this).val());
+    });
 
-    // $("#user_table ").append(`<tr>
-    //                             <td></td>
-    //                             </tr>`);
-    var draw = function() {
-        $('#check_row1').click(function() {
-            //var dates = $("#date_master").val();
-            // if ($(this).is(":checked")) {
-            //     $('#date1').prop('readonly', false);
-
-            // } else {
-            //     $('#date1').prop('readonly', true);
-            //     //  $('#date').val(dates);
-            // }
-            alert('tes');
+    $('#noseri_list > tbody').on('click', '#div_check', function() {
+        var id = $(this).data("id")
+        $('#check_row' + id + '').change(function() {
+            var dates = $("#date_master").val();
+            if ($(this).is(":checked")) {
+                $('#date' + id + '').prop('readonly', false);
+            } else {
+                $('#date' + id + '').prop('readonly', true);
+                $('#date' + id + '').val(dates);
+            }
         });
-    }
+        console.log(id);
+    })
     $(function() {
+        var value = $("#kalibrasi_id").val();
         var noseri_list = $('#noseri_list').DataTable({
-            drawCallback: draw,
             processing: true,
+            searching: false,
             serverSide: false,
             language: {
                 processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
             },
-            ajax: '/kalibrasi/data',
+            ajax: '/kalibrasi/list/data/' + value,
             columns: [{
                 data: 'DT_RowIndex',
                 orderable: false,
@@ -171,37 +170,43 @@
                 orderable: false,
                 searchable: false,
                 render: function(data) {
-                    return `<div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="check_row1">
+                    return `<div class="form-check" id="div_check" data-id=` + data + `>
+                    <input class="form-check-input" type="checkbox"  id="check_row` + data + `">
                     <label class="form-check-label" for="flexCheckDefault">
-                    <input type="date" class="form-control" id="date ` + data + `">
+                    <input type="date" class="form-control date" id="date` + data + `" readonly>
                     </label>
                     </div>`;
                 }
             }, {
-                data: 'DT_RowIndex',
+                data: 'barcode',
                 orderable: false,
                 searchable: false
             }, {
-                data: 'DT_RowIndex',
+                data: 'type',
                 orderable: false,
                 searchable: false
             }, {
-                data: 'DT_RowIndex',
+                data: 'nama',
                 orderable: false,
                 searchable: false
             }, {
-                data: 'DT_RowIndex',
+                data: 'dsb',
                 orderable: false,
                 searchable: false
             }]
         });
-
         $('#button_tambah').click(function() {
-            var noseri_list = noseri_list.$('input').serialize();
-            var no_pendaftaran = $('#no_pendaftaran').val();
+            //var data = noseri_list.rows(0).data();
+            var no_pendaftaran = $("#no_pendaftaran").val();
+            var jenis = $("#no_pendaftaran").val();
+            var pic = $("#date_master").val();
+            var tanggal_selesai = $("#tanggal_selesai").val();
+            var tanggal_kalibrasi = $("#tanggal_kalibrasi").val();
+            var tanggal_penyerahan = $("#tanggal_penyerahan").val();
 
-            alert(noseri_list);
+            console.log(no_pendaftaran);
+            alert('ok');
+            return false;
         });
     });
 </script>

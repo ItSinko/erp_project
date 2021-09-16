@@ -74,7 +74,7 @@
                             <div class="col-lg-12">
                                 <div class="row">
                                     <div class="col-lg-12">
-                                        <div class="form-horizontal">
+                                        <div class='table-responsive'>
                                             <div class="form-group row">
                                                 <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Divisi</label>
                                                 <div class="col-sm-8">
@@ -372,6 +372,7 @@
                                                          <textarea type="text" class="form-control" name="keterangan[` + x + `]"  ></textarea>
                                                         </td>
                                                         </tr>`);
+
                                 x++;
                                 var n = no;
                                 console.log(n);
@@ -385,7 +386,6 @@
                                         $('#rapids' + n + '').removeAttr('hidden');
                                         $('#antigens' + n + '').attr('hidden', 'hidden');
                                         $('#hasil_cov' + n + '').prop("required", true);
-
                                     }
                                     console.log(tes)
                                 });

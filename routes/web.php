@@ -151,13 +151,20 @@ Route::get('/pengeluaran/tambah', 'GudangMaterialController@pengeluaran_tambah')
 
 //Lab
 Route::get('/kalibrasi', 'LabController@kalibrasi');
-Route::get('/kalibrasi/{id}', 'LabController@kalibrasi_id');
+Route::get('/kalibrasi/data/detail/{id}', 'LabController@kalibrasi_data_detail');
+Route::get('/kalibrasi/tambah/{id}', 'LabController@kalibrasi_tambah');
+Route::get('/kalibrasi/list/data/{id}', 'LabController@kalibrasi_data_list');
+
+
+
+//Route::get('/kalibrasi/{id}', 'LabController@kalibrasi_id');
 Route::get('/acc_kalibrasi', 'LabController@acc_kalibrasi');
 Route::get('/acc_kalibrasi/data', 'LabController@acc_kalibrasi_data');
 Route::get('/acc_list_kalibrasi/data', 'LabController@acc_list_kalibrasi_data');
 
 Route::get('/kalibrasi/data', 'LabController@kalibrasi_data');
-Route::get('/kalibrasi/tambah/{id}', 'LabController@kalibrasi_tambah');
+
+
 Route::post('/kalibrasi/aksi_tambah', 'LabController@ka_internal_aksi_tambah');
 Route::get('/kalibrasi/cetak', 'LabController@ka_internal_form');
 Route::get('/kalibrasi/cetak2', 'LabController@ka_permintaan_form');
