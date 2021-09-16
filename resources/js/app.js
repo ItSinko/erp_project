@@ -1,31 +1,20 @@
-require('./bootstrap');
+import Vue from 'vue';
+import { BootstrapVue, IconsPlugin } from 'bootstrap-vue';
 
-window.Vue = require('vue');
+// Import Bootstrap an BootstrapVue CSS files (order is important)
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
 
-Vue.component('chat-messages', require('./components/ChatMessage.vue').default);
-Vue.component('chat-form', require('./components/ChatForm.vue').default);
+// Make BootstrapVue available throughout your project
+Vue.use(BootstrapVue)
+// Optionally install the BootstrapVue icon components plugin
+Vue.use(IconsPlugin)
 
-const app = new Vue({
-    el: '#app',
-    data: {
-        messages: [],
-        count: 0,
-    },
-    created() {
-        this.fetchMessage();
-    },
-    methods: {
-        fetchMessage() {
-            axios.get('/messages').then(response => {
-                this.messages = response.data;
-            });
-        },
-        addMessage(message) {
-            this.messages.push(message);
+import Test from "./Test.vue";
 
-            axios.post('/messages', message).then(response => {
-                console.log(response.data);
-            });
-        }
-    },
+new Vue({
+    el: "#app",
+    components: {
+        Test,
+    }
 });

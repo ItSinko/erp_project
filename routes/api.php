@@ -29,5 +29,13 @@ Route::get("example-data", "GudangMaterialController@getExampleData");
 
 //PPIC
 Route::group(['prefix' => 'ppic'], function () {
+    // get
     Route::get('/event/{status}', 'PpicController@getEvent');
+    Route::get('/get-all-detail-produk', 'PpicController@getAllDetailProduk');
+    Route::get('/version-bom-product/{id}', 'PpicController@getVersionBomProduct');
+    Route::get('/get-max-quantity/{id}', 'PpicController@getMaxQuantity');
+    // change
+    Route::post('/add-event', 'PpicController@addEvent');
+    Route::post('/delete-event', 'PpicController@deleteEvent');
+    Route::post('/update-confirmation', 'PpicController@updateConfirmationEvent');
 });

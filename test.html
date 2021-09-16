@@ -2,46 +2,23 @@
 <html>
 
 <head>
-    <title>Test Page</title>
-    <style>
-        .container-1.container-2 {
-            height: 100px;
-            width: 100px;
-            background-color: red;
-        }
-
-        div.container-1 {
-            border: 3px solid green;
-        }
-    </style>
+  <title>Modal Component</title>
+  <meta charset="utf-8">
 </head>
 
 <body>
-    <div id="app">
-        {{ message }}
-    </div>
+  <!-- app -->
+  <div id="app">
+    <button onClick="buttonClick()">click me</button>
+  </div>
 
-    <div id="app-6">
-        <p>{{ message }}</p>
-        <input v-model="message">
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
-    <script>
-        var app = new Vue({
-            el: '#app',
-            data: {
-                message: 'Hello Vue!'
-            }
-        });
-
-        var app6 = new Vue({
-            el: "#app-6",
-            data: {
-                message: 'Hello Vue!'
-            }
-        })
-    </script>
+  <script>
+    var event = new Event("build");
+    document.addEventListener("build", function () {
+      alert("build event");
+    });
+    document.dispatchEvent(event);
+  </script>
 </body>
 
 </html>

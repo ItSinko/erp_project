@@ -17,4 +17,6 @@ const mix = require("laravel-mix");
 // mix.js("resources/js/app.js", "public/costum/js");
 // mix.sass("resources/sass/app.scss", "public/costum/css");
 
-mix.js("resources/js/app/ppic/app.js", "public/costum/js/ppic.js");
+// mix.js("resources/js/app/ppic/app.js", "public/costum/js/ppic.js");
+mix.js("resources/js/ppic/schedule/app.js", "public/costum/js/schedule.js");
+mix.js("resources/js/app.js", "public/costum/js/test.js");

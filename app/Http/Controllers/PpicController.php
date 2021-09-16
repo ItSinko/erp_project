@@ -44,49 +44,117 @@ class PpicController extends Controller
     // Query function
     public function getEvent($status)
     {
-        // $month = date('m');
-        // $year = date('Y');
-        $event = Event::with('DetailProduk')->orderBy('tanggal_mulai', 'asc');
-        return $event->get();
-    }
-
-    public function schedule_show(Request $request, $status_url)
-    {
         $month = date('m');
         $year = date('Y');
         $event = Event::with('DetailProduk')->orderBy('tanggal_mulai', 'asc');
-        $status = null;
 
-        if ($status_url == "pelaksanaan") {
+        if ($status == "pelaksanaan") {
             $event = $event->whereYear('tanggal_mulai', $year)->whereMonth('tanggal_mulai', $month)->get();
-            $status = 'pelaksanaan';
-            foreach ($event as $data) {
-                $item = Event::find($data['id']);
-                $item->status = "pelaksanaan";
-                $item->save();
-            }
-        } else if ($status_url == "penyusunan") {
+        } else if ($status == "penyusunan") {
             $month += 1;
             $event = $event->where('tanggal_mulai', '>=', "$year-$month-01")->get();
-            $status = "penyusunan";
-        } else if ($status_url == "selesai") {
+        } else {
             $event = $event->where('tanggal_mulai', '<', "$year-$month-01")->get();
-            $status = 'selesai';
-            foreach ($event as $data) {
-                $item = Event::find($data['id']);
-                $item->status = "selesai";
-                $item->save();
-            }
         }
-
-        $detail_produk = DetailProduk::select('nama', 'id')->get();
-        return view('page.ppic.jadwal_produksi', compact('event', 'detail_produk', 'status'));
+        return $event;
     }
 
-    public function getVersionBomProduct($id)
+    public function getAllDetailProduk()
     {
+        $data = DetailProduk::all();
+        return $data;
+    }
+
+    public function getVersionBomProduct($id = null)
+    {
+        if ($id == null) return [];
+
         return DetailProduk::with('ProdukBillOfMaterial')->find($id);
     }
+
+    public function getMaxQuantity($produkBomId = null)
+    {
+        if ($produkBomId == null) return 0;
+
+        $bom = BillOfMaterial::where('produk_bill_of_material_id', '=', $produkBomId)
+            ->join('part_gudang_part_engs', 'bill_of_materials.part_eng_id', '=', 'part_gudang_part_engs.kode_eng')
+            ->join('part_engs', 'part_gudang_part_engs.kode_eng', '=', 'part_engs.kode_part')
+            ->join('parts', 'part_gudang_part_engs.kode_gudang', '=', 'parts.kode')
+            ->select('bill_of_materials.id', 'part_engs.nama', 'bill_of_materials.jumlah', 'parts.jumlah as stok', 'parts.kode')
+            ->get();
+
+        $max_val = INF;
+        foreach ($bom as $data) {
+            $result = (int)($data->stok / $data->jumlah);
+            if ($result < $max_val) $max_val = $result;
+        }
+        return $max_val;
+    }
+
+    // Change function
+    public function updateStatusEvent($event, $status)
+    {
+        foreach ($event as $data) {
+            $data->status = $status;
+            $data->save();
+        }
+    }
+
+    public function updateConfirmationEvent(Request $request)
+    {
+        $event = Event::where('status', 'penyusunan')->get();
+        foreach ($event as $data) {
+            $data->konfirmasi = $request->confirmation;
+            $data->save();
+        }
+    }
+
+    public function addEvent(Request $request)
+    {
+        $request->validate([
+            'detail_produk_id' => 'required',
+            'produk_bill_of_material_id' => 'required',
+            'jumlah_produksi' => 'required',
+        ]);
+
+        $data = [
+            'detail_produk_id' => $request->detail_produk_id,
+            'produk_bill_of_material_id' => $request->produk_bill_of_material_id,
+            'jumlah_produksi' => $request->jumlah_produksi,
+            'tanggal_mulai' => $request->tanggal_mulai,
+            'tanggal_selesai' => $request->tanggal_selesai,
+            'status' => "penyusunan",
+            'warna' => $request->warna,
+            'konfirmasi' => 0,
+        ];
+        Event::create($data);
+
+        return Event::with("ProdukBillOfMaterial", "DetailProduk")->get();
+    }
+
+    public function deleteEvent(Request $request)
+    {
+        Event::destroy($request->id);
+        return Event::with("ProdukBillOfMaterial", "DetailProduk")->get();
+    }
+
+    // View function
+    public function schedule_show($status)
+    {
+        $event = $this->getEvent($status);
+        $this->updateStatusEvent($event, $status);
+        $detailProduk = $this->getAllDetailProduk();
+
+        return view('page.ppic.jadwal_produksi', ["event" => $event, "detail_produk" => $detailProduk, "status" => $status]);
+    }
+
+
+
+
+
+
+
+
 
     public function schedule_create(Request $request)
     {

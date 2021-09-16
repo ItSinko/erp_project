@@ -1,21 +1,15 @@
-@extends('adminlte.page')
+<!DOCTYPE html>
+<html>
 
-@section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-body">
-                    <div id="app">
-                        <Test />
-                    </div>
-                </div>
-            </div>
-        </div>
+<head>
+    <title>Test Page</title>
+    <link rel="stylesheet" href="{{ asset('vendor/adminlte/dist/css/adminlte.min.css') }}" </head>
+
+<body>
+    <div id="app">
+        <test />
     </div>
-</div>
-@stop
+    <script src="{{ asset('costum/js/test.js') }}"></script>
+</body>
 
-@section('adminlte_js')
-<script src="{{ asset('costum/js/ppic.js') }}"></script>
-@stop
+</html>

@@ -97,7 +97,7 @@
         @endif
 
         {{-- Content Wrapper --}}
-        <div class="content-wrapper {{ config('adminlte.classes_content_wrapper') ?? '' }}">
+        <div id="App" class="content-wrapper {{ config('adminlte.classes_content_wrapper') ?? '' }}">
 
             {{-- Content Header --}}
             <div class="content-header">
@@ -140,7 +140,7 @@
 
         $('.select2').select2({
             placeholder: "Pilih Data",
-            allowClear: true
+            allowClear: false,
         });
 
         var flag = 0;
