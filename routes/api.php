@@ -38,4 +38,9 @@ Route::group(['prefix' => 'ppic'], function () {
     Route::post('/add-event', 'PpicController@addEvent');
     Route::post('/delete-event', 'PpicController@deleteEvent');
     Route::post('/update-confirmation', 'PpicController@updateConfirmationEvent');
+
+});
+
+Route::get("/change-confirmation/{user}/{message}", function($user, $message){
+    event(new SimpleNotifEvent($user, $message));
 });

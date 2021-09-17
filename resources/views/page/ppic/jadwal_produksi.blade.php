@@ -9,7 +9,7 @@
 
 @section('content')
 <div>
-    <schedule-app events="{{ $event }}" produks="{{ $detail_produk }}" status="{{ $status }}" :view="view" />
+    <schedule-app events="{{ $event }}" produks="{{ $detail_produk }}" status="{{ $status }}" :view="view" user="{{ Auth::user() }}"/>
 </div>
 @stop
 

@@ -17,7 +17,7 @@
 
       <b-modal ref="delete-modal" title="Hapus Jadwal" hide-footer>
         <b-button size="sm" variant="success" @click="ok()"> OK </b-button>
-        <b-button size="sm" variant="danger" @click="cancel()">
+        <b-button size="sm" variant="danger" @click="hide()">
           Cancel
         </b-button>
       </b-modal>
@@ -137,6 +137,8 @@ export default {
 
     handleEventClick(clickInfo) {
       this.clickEvent = clickInfo;
+      this.publicId = clickInfo.event._def.publicId;
+      console.log(clickInfo);
       this.$refs["delete-modal"].show();
     },
 

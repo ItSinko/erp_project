@@ -24,7 +24,7 @@
                     <div class="form-group row">
                         <label for="produk" class="col-sm-2 col-form-label">Produk</label>
                         <div class="col-sm-8">
-                            <select class="form-control  select2-info" style="width: 30%" data-dropdown-css-class="select2-info" data-placeholder="Pilih Produk" id="produk">
+                            <select class="form-control  select2" style="width: 30%" data-dropdown-css-class="select2-info" data-placeholder="Pilih Produk" id="produk">
                                 <option value=""></option>
                                 @foreach($produk as $i)
                                 <option value="{{$i->id}}">{{$i->tipe}}</option>
@@ -36,7 +36,7 @@
                     <div class="form-group row">
                         <label for="detail_produk" class="col-sm-2 col-form-label">Detail Produk</label>
                         <div class="col-sm-8">
-                            <select class="form-control  select2-info" style="width: 50%" data-dropdown-css-class="select2-info" data-placeholder="Pilih Detail Produk" disabled="disabled" id="detail_produk">
+                            <select class="form-control  select2" style="width: 50%" data-dropdown-css-class="select2-info" data-placeholder="Pilih Detail Produk" disabled="disabled" id="detail_produk">
                                 <option value=""></option>
                             </select>
                         </div>
@@ -45,7 +45,7 @@
                     <div class="form-group row">
                         <label for="versi_bom" class="col-sm-2 col-form-label">Versi BOM</label>
                         <div class="col-sm-8">
-                            <select class="form-control" style="width: 20%" disabled="disabled" id="versi_bom">>
+                            <select class="form-control select2" style="width: 20%" disabled="disabled" id="versi_bom">>
                                 <option value=""></option>
                             </select>
                         </div>

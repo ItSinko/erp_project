@@ -8,12 +8,7 @@
         <b-table striped hover :items="items"></b-table>
       </div>
     </div>
-    <notifications
-      group="foo-css"
-      :width="500"
-      position="top center"
-      :speed="500"
-    />
+    
 
     <div v-if="status == 'penyusunan'">
       <button
@@ -68,37 +63,13 @@ export default {
 
   methods: {
     sendConfirmation() {
-      axios
-        .post("/api/ppic/update-confirmation", {
-          confirmation: 1,
-        })
-        .then(() => {
-          this.confirmation = 1;
-          this.$notify({
-            group: "foo-css",
-            title: "Berhasil",
-            text: "Permintaan untuk konfirmasi jadwal berhasil dikirim",
-            type: "success",
-          });
-          this.$emit("change-confirmation", this.confirmation);
-        });
+      this.confirmation = 1;
+      this.$emit("change-confirmation", this.confirmation);
     },
 
     cancelConfirmation() {
-      axios
-        .post("/api/ppic/update-confirmation", {
-          confirmation: 0,
-        })
-        .then(() => {
-          this.confirmation = 0;
-          this.$notify({
-            group: "foo-css",
-            title: "Dibatalkan",
-            text: "Permintaan untuk konfirmasi jadwal telah dibatalkan",
-            type: "error",
-          });
-          this.$emit("change-confirmation", this.confirmation);
-        });
+      this.confirmation = 0;
+      this.$emit("change-confirmation", this.confirmation);
     },
 
     sendBppb() {},

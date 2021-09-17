@@ -669,7 +669,7 @@ return [
             'text' => 'Jadwal Produksi',
             'icon' => 'fas fa-calendar-alt',
             'auth' => [3],
-            'url'   =>  '/ppic/schedule?penyusunan=true',
+            'url'   =>  '/ppic/schedule/penyusunan',
         ],
         // Produksi (17)
         [

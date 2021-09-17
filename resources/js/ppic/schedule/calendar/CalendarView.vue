@@ -25,12 +25,7 @@ export default {
     events: Array,
     produks: Array,
     status: String,
-  },
-
-  data: function () {
-    return {
-      konfirmasi: this.events.length > 0 ? this.events[0].konfirmasi : -1,
-    };
+    konfirmasi: Number,
   },
 
   components: {
@@ -40,12 +35,11 @@ export default {
 
   methods: {
     updateEvent(data) {
-      alert("update-event");
       this.$emit("update-event", data);
     },
 
     changeConfirmation(data) {
-      this.konfirmasi = data;
+      this.$emit("change-confirmation", data);
     },
   },
 };
