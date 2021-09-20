@@ -100,19 +100,28 @@ class QCController extends Controller
         $a = "";
     }
 
-    public function lkp_lup_create()
+    public function lkp_lup_show($produk)
     {
-        $p = Produk::whereDoesntHave('FormatLkpLup')->get();
-        return view('page.qc.lkp_lup_create', ['p' => $p]);
+        $f = FormatLkpLup::where('produk_id', $produk)
+            ->with('AcuanLkpLup', 'AcuanLkpLup.ParameterLkpLup')
+            ->get();
+
+        echo json_encode($f);
     }
 
-    public function lkp_lup_store(Request $request)
+    public function lkp_lup_create($id)
+    {
+        $p = Produk::find($id);
+        return view('page.qc.lkp_lup_create', ['p' => $p, 'id' => $id]);
+    }
+
+    public function lkp_lup_store(Request $request, $id)
     {
         $bool = true;
         if ($request->nama_pengecekan != "") {
             for ($i = 0; $i < count($request->nama_pengecekan); $i++) {
                 $f = FormatLkpLup::create([
-                    'produk_id' => $request->produk_id,
+                    'produk_id' => $id,
                     'nama_pengecekan' => $request->nama_pengecekan[$i]
                 ]);
 

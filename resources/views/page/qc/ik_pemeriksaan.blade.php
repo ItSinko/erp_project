@@ -225,11 +225,27 @@
 
                     </div>
                     <div class="tab-pane fade" id="nav-lkp_lup" role="tabpanel" aria-labelledby="nav-lkp_lup-tab">
-                        <div class="row" id="lkpluptable">
+                        <div class="row" id="lkpluptable" hidden>
                             <div class="col-lg-12">
                                 <div class="card">
                                     <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="float-right" style="margin-bottom:1%;">
+                                                    <a class="tambahlkplup" href="#"><button class="btn btn-info btn-sm"><i class="fas fa-plus"></i>&nbsp;Tambah</button></a>
+                                                </div>
+                                                <div class="float-right" style="margin-bottom:1%;">
+                                                    <a class="editlkplup" href="#"><button class="btn btn-warning btn-sm"><i class="fas fa-pencil-alt"></i>&nbsp;Ubah</button></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div id="lkp_lup_table" style="font-size:13px;">
 
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -387,14 +403,64 @@
                 type: "GET",
                 dataType: "json",
                 success: function(data) {
-                    if (data != null) {
-
+                    console.log(data);
+                    var datas = "";
+                    if (data != "") {
+                        for (var i = 0; i < data.length; i++) {
+                            datas += `<h5>` + data[i]['nama_pengecekan'] + `</h5>
+                                <div class="form-horizontal">
+                                    <div class="form-group row">
+                                        <table class="table table-bordered">
+                                            <thead style="background-color:#ecd9c6;color:#4d3319;">
+                                                <tr>`;
+                            for (var j = 0; j < data[i]['acuan_lkp_lup'].length; j++) {
+                                datas += `<th>` + data[i]['acuan_lkp_lup'][j]['nama_parameter'] + `</th>`;
+                            }
+                            datas += `</tr>
+                                </thead>
+                                <tbody>`;
+                            var c = 0;
+                            for (var j = 0; j < data[i]['acuan_lkp_lup'].length; j++) {
+                                if (data[i]['acuan_lkp_lup'][j]['parameter_lkp_lup'].length > c) {
+                                    c = data[i]['acuan_lkp_lup'][j]['parameter_lkp_lup'].length;
+                                }
+                            }
+                            for (var j = 0; j < data[i]['acuan_lkp_lup'].length; j++) {
+                                for (var k = 0; k < c; k++) {
+                                    datas += '<tr>';
+                                    for (var j = 0; j < data[i]['acuan_lkp_lup'].length; j++) {
+                                        if (data[i]['acuan_lkp_lup'][j]['parameter_lkp_lup'].length > 0) {
+                                            if (data[i]['acuan_lkp_lup'][j]['id'] == data[i]['acuan_lkp_lup'][j]['parameter_lkp_lup'][k]['acuan_lkp_lup_id']) {
+                                                datas += `<td>` + data[i]['acuan_lkp_lup'][j]['parameter_lkp_lup'][k]['nilai_parameter'] + `</td>`;
+                                            }
+                                        } else if (data[i]['acuan_lkp_lup'][j]['parameter_lkp_lup'].length <= 0) {
+                                            datas += `<td></td>`;
+                                        }
+                                    }
+                                    datas += `</tr>`;
+                                }
+                            }
+                            datas += `</tbody>
+                                        </table>
+                                    </div>
+                                </div>`;
+                        }
+                        $(".editlkplup").attr('href', '/lkp_lup/edit/' + data['id']);
+                        $(".editlkplup").removeAttr('hidden');
+                        $(".tambahlkplup").attr('hidden', true);
+                    } else {
+                        $(".tambahlkplup").attr('href', '/lkp_lup/create/' + produk);
+                        $(".tambahlkplup").removeAttr('hidden');
+                        $(".editlkplup").attr('hidden', true);
+                        datas += `<div style="text-align:center;"><i>Belum Tersedia</i></div>`;
                     }
+                    $('#lkp_lup_table').html(datas);
                 }
             })
         }
         $('select[name="produk"]').on('change', function() {
             var produk = $(this).val();
+            var idproduk = "";
             if (produk != "") {
                 $.ajax({
                     url: 'ik_pemeriksaan/get_detail_produk_by_id/' + produk,
@@ -408,11 +474,13 @@
                             $("#nama_produk").text(data['nama']);
                             $("#kelompok_produk").text(data['produk']['kelompokproduk']['nama']);
                             $("#produktable").removeAttr('hidden');
+                            $("#lkpluptable").removeAttr('hidden');
+                            tablelkplupview(data['produk']['id']);
                         } else {
                             $("#tipe_produk").text("-");
                             $("#nama_produk").text("-");
                             $("#kelompok_produk").text("-");
-                            $("#produktable").attr('hidden', true);
+                            $("#lkpluptable").attr('hidden', true);
                         }
                     },
                     error: function(data) {
@@ -420,11 +488,14 @@
                         $("#nama_produk").text("-");
                         $("#kelompok_produk").text("-");
                         $("#produktable").attr('hidden', true);
+                        $("#lkpluptable").attr('hidden', true);
                     }
                 });
                 tableikpemeriksaanview(produk);
+
             } else {
                 $("#produktable").attr('hidden', true);
+                $("#lkpluptable").attr('hidden', true);
             }
         });
     });

@@ -568,8 +568,8 @@ Route::group(['prefix' => '/ik_pemeriksaan', 'middleware' => 'auth'], function (
 
 Route::group(['prefix' => 'lkp_lup', 'middleware' => 'auth'], function () {
     Route::get('/show/{produk}', 'QCController@lkp_lup_show')->name('lkp_lup.show');
-    Route::get('/create', 'QCController@lkp_lup_create')->name('lkp_lup.create');
-    Route::post('/store', 'QCController@lkp_lup_store')->name('lkp_lup.store');
+    Route::get('/create/{id}', 'QCController@lkp_lup_create')->name('lkp_lup.create');
+    Route::put('/store/{id}', 'QCController@lkp_lup_store')->name('lkp_lup.store');
 });
 
 Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {

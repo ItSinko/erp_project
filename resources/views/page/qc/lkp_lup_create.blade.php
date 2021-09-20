@@ -7,13 +7,13 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>Kalibrasi</h1>
+                <h1>Format Pengecekan QC</h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="/">Home</a></li>
-                    <li class="breadcrumb-item"><a href="/lkp_lup">LKP dan LUP</a></li>
-                    <li class="breadcrumb-item active">Tambah LKP dan LUP</li>
+                    <li class="breadcrumb-item"><a href="/ik_pemeriksaan">Laporan QC</a></li>
+                    <li class="breadcrumb-item active">Tambah LKP atau LUP</li>
                 </ol>
             </div>
         </div>
@@ -48,30 +48,35 @@
             </div>
             @endif
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-lg-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class=" form-group row">
+                                <label for="tipe_produk" class="col-sm-4 col-form-label" style="text-align:left;">Tipe Produk</label>
+                                <span class="col-sm-8 col-form-label" style="text-align:right;" id="tipe_produk">{{$p->tipe}}</span>
+                            </div>
+                            <div class="form-group row">
+                                <label for="nama_produk" class="col-sm-4 col-form-label" style="text-align:left;">Nama Produk</label>
+                                <span class="col-sm-8 col-form-label" style="text-align:right;" id="nama_produk">{{$p->nama}}</span>
+                            </div>
+                            <div class="form-group row">
+                                <label for="kelompok_produk" class="col-sm-5 col-form-label" style="text-align:left;">Kelompok Produk</label>
+                                <span class="col-sm-7 col-form-label" style="text-align:right;" id="kelompok_produk">{{$p->KelompokProduk->nama}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-9">
                     <div class="card">
                         <div class="card-header bg-success">
                             <h3 class="card-title" style="color:white;"><i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;LKP LUP</h3>
                         </div>
                         <div class="card-body">
                             <div class="col-md-12">
-                                <form action="{{route('lkp_lup.store')}}" method="post" enctype="multipart/form-data">
+                                <form action="{{route('lkp_lup.store', ['id' => $id])}}" method="post" enctype="multipart/form-data">
                                     {{ csrf_field() }}
+                                    {{ method_field('PUT') }}
                                     <div class="form-horizontal">
-                                        <div class="form-group row">
-                                            <label for="produk_id" class="col-sm-5 col-form-label" style="text-align:right;">Produk</label>
-                                            <div class="col-sm-7">
-                                                <select class="form-control select2 select2-info @error('produk_id') is-invalid @enderror" data-dropdown-css-class="select2-info" style="width: 50%;" data-placeholder="Pilih Produk" name="produk_id" id="produk_id">
-                                                    <option value=""></option>
-                                                    @foreach($p as $i)
-                                                    <option value="{{$i->id}}">{{$i->nama}} {{$i->tipe}}</option>
-                                                    @endforeach
-                                                </select>
-                                                @if ($errors->has('produk_id'))
-                                                <span class="invalid-feedback" role="alert">{{$errors->first('produk_id')}}</span>
-                                                @endif
-                                            </div>
-                                        </div>
                                         <div class="form-group row">
                                             <table id="tableitem" class="table table-hover tableitem">
                                                 <thead style="text-align:center;">
@@ -133,7 +138,6 @@
                             </span>
                         </div>
                         </form>
-
                     </div>
                 </div>
                 <!-- /.col -->
