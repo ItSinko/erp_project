@@ -7,3 +7,4 @@ This project is about ERP system for Sinko Prima Alloy Company. It is still unde
 ## Contributors
 
 -   Anonimious
+
