@@ -10,9 +10,6 @@
       <h5><i class="icon fas fa-check"></i> Selesai</h5>
     </div>
 
-    <div>{{ konfirmasi }}</div>
-    <div>test</div>
-
     <div v-if="dataUser.divisi_id != 3">
       <calendar-view
         v-if="view === 'calendar'"
@@ -27,7 +24,13 @@
     </div>
     <div v-if="dataUser.divisi_id == 3">
       <table-view :events="dataEvent" />
-      <b-button block variant="success" v-on:click="changeConfirmation(2)" :disabled="konfirmasi == 2" >Setuju</b-button>
+      <b-button
+        block
+        variant="success"
+        v-on:click="changeConfirmation(2)"
+        :disabled="konfirmasi == 2"
+        >Setuju</b-button
+      >
     </div>
 
     <notifications
@@ -63,17 +66,48 @@ export default {
       dataProduk: JSON.parse(this.produks),
       dataUser: JSON.parse(this.user),
 
-      konfirmasi: JSON.parse(this.events).length > 0 ? JSON.parse(this.events)[0].konfirmasi : 0,
+      konfirmasi:
+        JSON.parse(this.events).length > 0
+          ? JSON.parse(this.events)[0].konfirmasi
+          : 0,
     };
   },
 
-  // computed: {
-    
-  // },
+  mounted: function() {
+    echo.channel("event").listen("SimpleNotifEvent", function (data) {
+      // alert(this.konfirmasi);
+      this.konfirmasi = data.data;
+    });
+  },
 
   methods: {
     updateEvent(data) {
       this.dataEvent = data;
+    },
+
+    notifFunction(data) {
+      if (data == 0) {
+        this.$notify({
+          group: "foo-css",
+          title: "Dibatalkan",
+          text: "Permintaan untuk konfirmasi jadwal telah dibatalkan",
+          type: "error",
+        });
+      } else if (data == 1) {
+        this.$notify({
+          group: "foo-css",
+          title: "Berhasil",
+          text: "Permintaan untuk konfirmasi jadwal berhasil dikirim",
+          type: "success",
+        });
+      } else if (data == 2) {
+        this.$notify({
+          group: "foo-css",
+          title: "Disetujui",
+          text: "Jadwal telah disetujui",
+          type: "info",
+        });
+      }
     },
 
     changeConfirmation(data) {
@@ -84,27 +118,27 @@ export default {
         })
         .then(() => {
           this.konfirmasi = data;
-          if (this.konfirmasi == 0){
+          if (data == 0) {
             this.$notify({
-            group: "foo-css",
-            title: "Dibatalkan",
-            text: "Permintaan untuk konfirmasi jadwal telah dibatalkan",
-            type: "error",
-          });
-          }else if (this.konfirmasi == 1){
+              group: "foo-css",
+              title: "Dibatalkan",
+              text: "Permintaan untuk konfirmasi jadwal telah dibatalkan",
+              type: "error",
+            });
+          } else if (data == 1) {
             this.$notify({
-            group: "foo-css",
-            title: "Berhasil",
-            text: "Permintaan untuk konfirmasi jadwal berhasil dikirim",
-            type: "success",
-          });
-          } else if (this.konfirmasi == 2){
+              group: "foo-css",
+              title: "Berhasil",
+              text: "Permintaan untuk konfirmasi jadwal berhasil dikirim",
+              type: "success",
+            });
+          } else if (data == 2) {
             this.$notify({
-            group: "foo-css",
-            title: "Disetujui",
-            text: "Jadwal telah disetujui",
-            type: "info",
-          });
+              group: "foo-css",
+              title: "Disetujui",
+              text: "Jadwal telah disetujui",
+              type: "info",
+            });
           }
         });
     },

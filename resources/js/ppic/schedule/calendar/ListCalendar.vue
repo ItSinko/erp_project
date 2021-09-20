@@ -4,7 +4,7 @@
       <div class="card-header">
         <h5 class="text-center">Daftar Produksi</h5>
       </div>
-      <div class="card-body table-responsive" style="height: 500px">
+      <div class="card-body table-responsive" style="max-height: 500px">
         <b-table striped hover :items="items"></b-table>
       </div>
     </div>
@@ -19,7 +19,7 @@
         Konfirmasi
       </button>
       <button
-        v-if="konfirmasi == 1"
+        v-if="konfirmasi != 0"
         class="btn btn-block btn-danger"
         v-on:click="cancelConfirmation"
       >

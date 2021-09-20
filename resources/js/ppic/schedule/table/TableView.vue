@@ -1,7 +1,8 @@
 <template>
   <div>
     <div class="card">
-      <apexchart
+      <div v-if="events.length == 0" class="p-3">Data Kosong</div>
+      <apexchart v-else
         type="rangeBar"
         height="200"
         :options="options"

@@ -107,6 +107,7 @@ class PpicController extends Controller
             $data->konfirmasi = $request->confirmation;
             $data->save();
         }
+        event(new SimpleNotifEvent($request->user, $request->confirmation));
     }
 
     public function addEvent(Request $request)
