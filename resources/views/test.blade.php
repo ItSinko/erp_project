@@ -10,6 +10,7 @@
         <test />
     </div>
     <script src="{{ asset('costum/js/test.js') }}"></script>
+    
 </body>
 
 </html>
