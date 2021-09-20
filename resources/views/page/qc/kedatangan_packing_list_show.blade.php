@@ -23,85 +23,115 @@
 @section('content')
 <section class="content">
     <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body">
-                    <div class="form-horizontal">
-                        <div class="form-group row">
-                            <label for="detail_produk_id" class="col-sm-5 col-form-label" style="text-align:right;">Cari Packing List</label>
-                            <div class="col-sm-4">
-                                <div class="select2-info">
-                                    <select class="select2 custom-select form-control @error('packing_list_id') is-invalid @enderror packing_list_id" data-placeholder="Pilih Packing List" data-dropdown-css-class="select2-info" style="width: 80%;" name="packing_list_id" id="packing_list_id">
-                                        <option value=""></option>
-                                        @foreach($pl as $pl)
-                                        <option value="{{$pl->id}}">{{$pl->PoPembelian->nomor}} - {{$pl->nomor}}</option>
-                                        @endforeach
-                                    </select>
+        <div class="col-lg-12">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Proses</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Analisa</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Sampling</a>
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="form-horizontal">
+                                                <div class="form-group row">
+                                                    <label for="detail_produk_id" class="col-sm-5 col-form-label" style="text-align:right;">Cari Packing List</label>
+                                                    <div class="col-sm-4">
+                                                        <div class="select2-info">
+                                                            <select class="select2 custom-select form-control @error('packing_list_id') is-invalid @enderror packing_list_id" data-placeholder="Pilih Packing List" data-dropdown-css-class="select2-info" style="width: 80%;" name="packing_list_id" id="packing_list_id">
+                                                                <option value=""></option>
+                                                                @foreach($pl as $pl)
+                                                                <option value="{{$pl->id}}">{{$pl->PoPembelian->nomor}} - {{$pl->nomor}}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" id="rowinfo" hidden>
+                        <div class="col-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4>Informasi</h4><br>
+                                    <div class="form-horizontal">
+                                        <div class="row">
+                                            <label for="no_packing_list" class="col-sm-5 col-form-label">No Packing List</label>
+                                            <div class="col-sm-7 col-form-label" style="text-align:right;" id="no_packing_list">
+
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <label for="no_po" class="col-sm-4 col-form-label">No PO</label>
+                                            <div class="col-sm-8 col-form-label" style="text-align:right;" id="no_po">
+
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <label for="supplier" class="col-sm-6 col-form-label">Supplier</label>
+                                            <div class="col-sm-6 col-form-label" style="text-align:right;" id="supplier">
+
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <label for="tanggal" class="col-sm-6 col-form-label">Tanggal</label>
+                                            <div class="col-sm-6 col-form-label" style="text-align:right;" id="tanggal">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-9">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4>Packing List</h4><br>
+                                    <div class="table-responsive">
+                                        <table id="example1" class="table table-hover table-striped styled-table" style="width:100%;">
+                                            <thead style="text-align: center;">
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Nama Barang</th>
+                                                    <th>Jumlah</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody style="text-align:center;">
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">Profile</div>
+                <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">Contact</div>
             </div>
         </div>
     </div>
-    <div class="row" id="rowinfo" hidden>
-        <div class="col-3">
-            <div class="card">
-                <div class="card-body">
-                    <h4>Informasi</h4><br>
-                    <div class="form-horizontal">
-                        <div class="row">
-                            <label for="no_packing_list" class="col-sm-5 col-form-label">No Packing List</label>
-                            <div class="col-sm-7 col-form-label" style="text-align:right;" id="no_packing_list">
 
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <label for="no_po" class="col-sm-4 col-form-label">No PO</label>
-                            <div class="col-sm-8 col-form-label" style="text-align:right;" id="no_po">
-
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <label for="supplier" class="col-sm-6 col-form-label">Supplier</label>
-                            <div class="col-sm-6 col-form-label" style="text-align:right;" id="supplier">
-
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <label for="tanggal" class="col-sm-6 col-form-label">Tanggal</label>
-                            <div class="col-sm-6 col-form-label" style="text-align:right;" id="tanggal">
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-9">
-            <div class="card">
-                <div class="card-body">
-                    <h4>Packing List</h4><br>
-                    <div class="table-responsive">
-                        <table id="example1" class="table table-hover table-striped styled-table" style="width:100%;">
-                            <thead style="text-align: center;">
-                                <tr>
-                                    <th>#</th>
-                                    <th>Nama Barang</th>
-                                    <th>Jumlah</th>
-                                </tr>
-                            </thead>
-                            <tbody style="text-align:center;">
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
+    <div class="row" id="modalinfo">
+        <div class="col-12">
             <div class="modal fade" id="monitoringprosesmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                 <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">

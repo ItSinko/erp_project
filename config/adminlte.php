@@ -842,12 +842,6 @@ return [
                     'url'  => '/perakitan/pemeriksaan',
                     'auth' => [23],
                 ],
-                [
-                    'icon' => 'far fa-circle',
-                    'text' => 'IK Pemeriksaan',
-                    'url'  => '/perakitan/ik_pemeriksaan',
-                    'auth' => [23],
-                ],
             ],
         ],
         [
@@ -867,12 +861,6 @@ return [
                     'url'  => '/kalibrasi',
                     'auth' => [23],
                 ],
-                [
-                    'icon' => 'far fa-circle',
-                    'text' => 'IK Pemeriksaan',
-                    'url'  => '/pengujian/ik_pemeriksaan',
-                    'auth' => [23],
-                ],
             ],
         ],
         [
@@ -884,12 +872,6 @@ return [
                     'icon' => 'far fa-circle',
                     'text' => 'Laporan',
                     'url'  => '/pengemasan/qc',
-                    'auth' => [23],
-                ],
-                [
-                    'icon' => 'far fa-circle',
-                    'text' => 'IK Pemeriksaan',
-                    'url'  => '/pengemasan/ik_pemeriksaan',
                     'auth' => [23],
                 ],
             ],

@@ -281,7 +281,7 @@ class PpicController extends Controller
     {
         $month = date('m');
         $year = date('Y');
-        $b = Bppb::orderBy('tanggal_bppb', 'asc');
+        $b = Bppb::where('divisi_id', Auth::user()->divisi_id)->orderBy('tanggal_bppb', 'asc')->get();
 
         if (isset($request->status)) {
             if ($request->status == "pelaksanaan") {
@@ -293,7 +293,7 @@ class PpicController extends Controller
                 $b = $b->where('tanggal_bppb', '<', "$year-$month-01")->get();
             }
         } else {
-            $b = Bppb::all();
+            $b = Bppb::where('divisi_id', Auth::user()->divisi_id)->get();
         }
 
         return DataTables::of($b)
