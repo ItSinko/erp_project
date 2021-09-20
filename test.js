@@ -9,6 +9,7 @@ var obj = {
     }
 }
 
+
 obj = [1, , 3];
 obj.length = 10;
 console.log(obj.length);
