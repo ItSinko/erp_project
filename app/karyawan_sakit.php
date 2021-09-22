@@ -22,4 +22,9 @@ class karyawan_sakit extends Model
     {
         return $this->belongsTo('App\obat', 'obat_id');
     }
+
+    public function detail_obat()
+    {
+        return $this->hasMany('App\detail_obat');
+    }
 }

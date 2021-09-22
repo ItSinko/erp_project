@@ -15,6 +15,10 @@ class CreateDetailObats extends Migration
     {
         Schema::create('detail_obats', function (Blueprint $table) {
             $table->id();
+            $table->integer('karyawan_sakit_id');
+            $table->integer('obat_id');
+            $table->string('aturan');
+            $table->string('konsumsi');
             $table->timestamps();
         });
     }

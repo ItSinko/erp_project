@@ -17,4 +17,8 @@ class obat extends Model
     {
         return $this->hasMany('App\karyawan_masuk');
     }
+    public function detail_obat()
+    {
+        return $this->hasMany('App\detail_obat');
+    }
 }

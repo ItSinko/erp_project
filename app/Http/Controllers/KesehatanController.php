@@ -28,6 +28,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Validation\Rule;
 use Yajra\DataTables\Facades\DataTables;
+use PDF;
 
 
 class KesehatanController extends Controller
@@ -1112,6 +1113,11 @@ class KesehatanController extends Controller
     {
         return view('page.kesehatan.karyawan_sakit');
     }
+    public function karyawan_sakit_cetak()
+    {
+        $pdf = PDF::loadView('page.kesehatan.surat_sakit')->setPaper('A5', 'Landscape');
+        return $pdf->stream('');
+    }
     public function karyawan_sakit_tambah()
     {
         $karyawan = Karyawan::orderBy('nama', 'ASC')
@@ -1136,16 +1142,13 @@ class KesehatanController extends Controller
                 'karyawan_id' => 'required',
                 'tgl' => 'required',
                 'pemeriksa_id' => 'required',
-
             ],
             [
-
                 'pemeriksa_id.required' => 'Pemeriksa harus di pilih',
                 'karyawan_id.required' => 'Karyawan harus di pilih',
                 'tgl.required' => 'Tanggal pengecekan harus di isi',
             ]
         );
-
         if ($request->dosis_obat_custom != NULL) {
             $karyawan_sakit = Karyawan_sakit::create([
                 'tgl_cek' => $request->tgl,
@@ -1178,13 +1181,14 @@ class KesehatanController extends Controller
             ]);
         }
         if ($request->hasil_1 == 'Pengobatan') {
-            $id = $request->obat_id;
-            $jumlah = $request->jumlah;
-            $obat = Obat::find($id)->decrement('stok', $jumlah);
-            // for ($i = 0; $i < count($request->karyawan_id); $i++) {
-            //     $jumlah = $request->jumlah[$i];
-            //     $obat = obat::find($id[$i])->decrement('stok',$jumlah)
-            // }
+            // $id = $request->obat_id;
+            // $jumlah = $request->jumlah;
+            // $obat = Obat::find($id)->decrement('stok', $jumlah);
+
+            for ($i = 0; $i < count($request->obat); $i++) {
+                $jumlah = $request->jumlah[$i];
+                $obat = obat::find($id[$i])->decrement('stok', $jumlah);
+            }
         }
         if ($karyawan_sakit) {
             return redirect()->back()->with('success', 'Berhasil menambahkan data');
@@ -1192,7 +1196,6 @@ class KesehatanController extends Controller
             return redirect()->back()->with('error', 'Gagal menambahkan data');
         }
     }
-
     public function karyawan_sakit_data()
     {
         $data = Karyawan_sakit::all();
@@ -1240,19 +1243,21 @@ class KesehatanController extends Controller
                 $btn = $btn . '<br><div class="inline-flex"><button type="button" id="detail_tindakan"  class="btn btn-block btn-primary karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-eye"></i></button></div>';
                 return  $btn;
             })
-            ->addColumn('button', function ($data) {
+            ->addColumn('button', function () {
                 $btn = '<div class="inline-flex"><button type="button" id="edit_gcu"  class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fa fa-eye" aria-hidden="true"></i></button></div>';
                 return $btn;
             })
-            ->rawColumns(['button', 'detail_button'])
+            ->addColumn('cetak', function () {
+                $btn = '<div class="inline-flex"><button type="button" id="cetak_gcu"  class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fa fa-eye" aria-hidden="true"></i></button></div>';
+                return $btn;
+            })
+            ->rawColumns(['button', 'detail_button', 'cetak'])
             ->make(true);
     }
-
     public function karyawan_masuk()
     {
         return view('page.kesehatan.karyawan_masuk');
     }
-
     public function karyawan_masuk_tambah()
     {
         $obat = Obat::where('stok', '!=', 0)->get();
@@ -1471,7 +1476,6 @@ class KesehatanController extends Controller
                     'keputusan' => $request->hasil_2
                 ]);
             }
-
             $karyawan_masuk = Karyawan_masuk::create([
                 'karyawan_id' => $request->karyawan_id,
                 'pemeriksa_id' => $request->pemeriksa_id,
@@ -1489,7 +1493,6 @@ class KesehatanController extends Controller
                 'keterangan' => $request->keterangan
             ]);
         }
-
         if ($request->hasil_1 == 'Pengobatan') {
             $id = $request->obat_id;
             $jumlah = $request->jumlah;
@@ -1665,7 +1668,6 @@ class KesehatanController extends Controller
     }
     public function laporan_harian_data($filter, $id, $start, $end)
     {
-
         if ($filter == 'divisi') {
             $data = Kesehatan_harian::wherehas('karyawan', function ($divisi) use ($id) {
                 $divisi->where('divisi_id', $id);
@@ -1684,8 +1686,6 @@ class KesehatanController extends Controller
                 ->orderBy('tgl_cek', 'DESC')
                 ->whereBetween('tgl_cek', [$start, $end]);
         }
-
-
         return datatables::of($data)
             ->addIndexColumn()
             ->addColumn('x', function ($data) {

@@ -18,7 +18,7 @@
                 </th>
               </tr>
               <tr>
-                <th>No</th>
+                <th style="width:1%">No</th>
                 <th>Tgl</th>
                 <th>Divisi</th>
                 <th>Nama</th>
@@ -27,7 +27,6 @@
                 <th>Diagnosa</th>
                 <th>Tindak Lanjut</th>
                 <th>Hasil</th>
-
               </tr>
             </thead>
             <tbody style="text-align: center;">
@@ -124,6 +123,9 @@
         },
         {
           data: 'keputusan'
+        },
+        {
+          data: 'cetak'
         }
       ]
     });
@@ -134,7 +136,6 @@
       $('.data_detail_head').html(
         rows[0]['tindakan'] + ' : ' + rows[0]['y']
       );
-
       if (rows[0]['tindakan'] == 'Terapi') {
         $('#pengobatan').addClass('d-none');
         $('#terapi').removeClass('d-none');

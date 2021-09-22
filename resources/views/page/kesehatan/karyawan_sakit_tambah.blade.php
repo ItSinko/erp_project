@@ -213,6 +213,18 @@
                                                     <span class="invalid-feedback" role="alert" id="kondisi-msg"></span>
                                                 </div>
                                             </div>
+                                            <div class="form-group row">
+                                                <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;"></label>
+                                                <div class="col-sm-8" style="margin-top:7px;">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                        <label class="" for=" flexCheckDefault">
+                                                            Surat Keterangan Sakit
+                                                        </label>
+                                                    </div>
+                                                    <span class="invalid-feedback" role="alert" id="kondisi-msg"></span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -310,16 +322,7 @@
             $(this).closest('tr').remove();
             numberRows($("#obat"));
         });
-        var data = [{
-                id: 0,
-                text: '<div style="color:green">enhancement</div>'
-            },
-            {
-                id: 1,
-                text: '<div style="color:red">bug</div><div><small>This is some small text on a new line</small></div>'
-            }
-        ];
-        var check;
+
         $('input[name=dosis_obat]').on("click", function() {
             check = $("#custom_radio").is(":checked");
             if (check) {
@@ -329,6 +332,8 @@
                 $('#dosis_obat_custom').val('');
             }
         });
+
+
         $('input[name=hasil_1]').prop("required", true);
         $('input[name=hasil_2]').prop("required", true);
         $('input[type=radio][name=hasil_1]').on('change', function() {
