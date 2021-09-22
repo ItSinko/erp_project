@@ -15,6 +15,8 @@ use App\kesehatan_mingguan_rapid;
 use App\kesehatan_mingguan_tensi;
 use App\kesehatan_tahunan;
 use App\obat;
+use App\riwayat_penyakit;
+use App\riwayat_stok_obat;
 use App\vaksin_karyawan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -40,7 +42,7 @@ class KesehatanController extends Controller
     }
     public function kesehatan_data_detail($karyawan_id)
     {
-        $data = Kesehatan_awal::with('karyawan')
+        $data = Kesehatan_awal::with('karyawan.divisi')
             ->where('karyawan_id', $karyawan_id)->get();
         echo json_encode($data);
     }
@@ -89,12 +91,18 @@ class KesehatanController extends Controller
                 } else {
                     $status = 'Sudah Vaksin';
                 }
-
-
                 $btn = '' . $status . '<br><div class="inline-flex"><button type="button" id="vaksin_detail" class="btn btn-block btn-primary karyawan-img-small" style="border-radius:50%;" ><i class="fa fa-eye" aria-hidden="true"></i></button></div>';
                 return $btn;
             })
-            ->rawColumns(['berat_kg', 'vaksin_detail'])
+            ->addColumn('detail', function ($s) {
+                $btn = '<a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="Klik untuk melihat detail Kesehatan">';
+                $btn .= '<i class="fa fa-ellipsis-v" aria-hidden="true"></i> </a>';
+
+                $btn .= '<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">';
+                $btn .= '<button class="btn btn-block dropdown-item" type="button" id="penyakit" ><i class="fa fa-edit" aria-hidden="true"></i>&nbsp;Riwayat Penyakit</span></button>';
+                return $btn;
+            })
+            ->rawColumns(['berat_kg', 'vaksin_detail', 'detail'])
             ->make(true);
     }
     public function kesehatan_vaksin($karyawan_id)
@@ -102,6 +110,20 @@ class KesehatanController extends Controller
         $data = vaksin_karyawan::where('karyawan_id', $karyawan_id);
         return datatables::of($data)
             ->addIndexColumn()
+            ->make(true);
+    }
+    public function kesehatan_riwayat_penyakit($karyawan_id)
+    {
+        $data = riwayat_penyakit::where('karyawan_id', $karyawan_id);
+        return datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('kriteria_penyakit', function ($data) {
+                if ($data->kriteria != 1) {
+                    return 'Penyakit tidak menular';
+                } else {
+                    return ' Penyakit menular';
+                }
+            })
             ->make(true);
     }
     public function kesehatan_tambah()
@@ -141,8 +163,37 @@ class KesehatanController extends Controller
                 'tahap' => $request->ket[$i],
             ]);
         }
-
         if ($vaksin_karyawan) {
+            return redirect()->back()->with('success', "Berhasil menambahkan data");
+        } else {
+            return redirect()->back()->with('error', "Gagal menambahkan data");
+        }
+    }
+    public function kesehatan_riwayat_penyakit_aksi_tambah(Request $request)
+    {
+        $this->validate(
+            $request,
+            [
+                'jenis.*' => 'required',
+                'nama.*' => 'required',
+                'kriteria.*' => 'required',
+            ],
+            [
+                'jenis.required' => 'Jenis penyakit harus di isi',
+                'nama.required' => 'Nama penyakit harus di isi',
+                'kriteria.required' => 'Kriteria harus di pilih',
+            ]
+        );
+        for ($i = 0; $i < count($request->nama); $i++) {
+            $riwayat_penyakit = riwayat_penyakit::create([
+                'karyawan_id' => $request->fk_karyawan_id,
+                'nama' => $request->nama[$i],
+                'jenis' => $request->jenis[$i],
+                'kriteria' => $request->kriteria[$i],
+                'keterangan' => $request->keterangan[$i],
+            ]);
+        }
+        if ($riwayat_penyakit) {
             return redirect()->back()->with('success', "Berhasil menambahkan data");
         } else {
             return redirect()->back()->with('error', "Gagal menambahkan data");
@@ -210,6 +261,45 @@ class KesehatanController extends Controller
                 ]);
             }
         }
+
+        if ($request->riwayat_penyakit == 'Iya') {
+            $this->validate(
+                $request,
+                [
+                    'jenis.*' => 'required',
+                    'nama.*' => 'required',
+                    'kriteria.*' => 'required',
+                ],
+                [
+                    'jenis.required' => 'Jenis penyakit harus di isi',
+                    'nama.required' => 'Nama penyakit harus di isi',
+                    'kriteria.required' => 'Kriteria harus di pilih',
+                ]
+            );
+            for ($i = 0; $i < count($request->nama); $i++) {
+                $riwayat_penyakit = riwayat_penyakit::create([
+                    'karyawan_id' => $request->karyawan_id,
+                    'nama' => $request->nama[$i],
+                    'jenis' => $request->jenis[$i],
+                    'kriteria' => $request->kriteria[$i],
+                    'keterangan' => $request->keterangan[$i],
+                ]);
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if ($request->status_tes == 'Iya') {
             $this->validate(
                 $request,
@@ -1091,6 +1181,10 @@ class KesehatanController extends Controller
             $id = $request->obat_id;
             $jumlah = $request->jumlah;
             $obat = Obat::find($id)->decrement('stok', $jumlah);
+            // for ($i = 0; $i < count($request->karyawan_id); $i++) {
+            //     $jumlah = $request->jumlah[$i];
+            //     $obat = obat::find($id[$i])->decrement('stok',$jumlah)
+            // }
         }
         if ($karyawan_sakit) {
             return redirect()->back()->with('success', 'Berhasil menambahkan data');
@@ -1184,17 +1278,20 @@ class KesehatanController extends Controller
             ->addIndexColumn()
             ->addColumn('a', function ($data) {
                 if ($data->stok <= 1) {
-                    return $data->stok . ' Pc';
+                    $x = $data->stok . ' Pc';
                 } else {
-                    return $data->stok . ' Pcs';
+                    $x =  $data->stok . ' Pcs';
                 }
+
+                $btn = $x . '<br><div class="inline-flex"><button type="button" id="stok"  class="btn btn-block btn-primary karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-sync" aria-hidden="true"></i></button></div>';
+                return $btn;
             })
             ->addColumn('button', function ($data) {
                 $btn = '<div class="inline-flex"><button type="button" id="riwayat"  class="btn btn-block btn-primary karyawan-img-small" style="border-radius:50%;" ><i class="fa fa-eye" aria-hidden="true"></i></button></div>';
                 $btn = $btn . '<div class="inline-flex"><button type="button" id="edit" class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-edit"></i></button></div>';
                 return $btn;
             })
-            ->rawColumns(['button', 'detail_button'])
+            ->rawColumns(['button', 'detail_button', 'a'])
             ->make(true);
     }
     public function obat_detail_data($id)
@@ -1213,6 +1310,22 @@ class KesehatanController extends Controller
             })
             ->make(true);
     }
+    public function obat_stok_data($id)
+    {
+        $data = riwayat_stok_obat::where('obat_id', $id);
+        return datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('a', function ($data) {
+                if ($data->stok <= 1) {
+                    $x = $data->stok . ' Pc';
+                } else {
+                    $x =  $data->stok . ' Pcs';
+                }
+                return $x;
+            })
+            ->make(true);
+    }
+
     public function karyawan_masuk_detail_data($id)
     {
         $data = Karyawan_sakit::where('id', $id);
@@ -1227,23 +1340,36 @@ class KesehatanController extends Controller
             ->make(true);
     }
 
+
+
+
+    public function obat_cekdata($nama)
+    {
+        $data = Obat::where('nama', $nama)->get();
+        echo json_encode($data);
+    }
+
+
+
+
+
+
+
     public function obat_aksi_tambah(Request $request)
     {
         $this->validate(
             $request,
             [
                 'nama' => 'required|unique:obats',
-                'stok' => 'required'
             ],
             [
                 'nama.required' => 'Nama obat harus di isi',
                 'nama.unique' => 'Nama obat harus sudah pernah di input',
-                'stok.required' => 'Stok obat harus di isi'
             ]
         );
         $obat = Obat::create([
             'nama' => $request->nama,
-            'stok' => $request->stok,
+            'stok' => 0,
             'keterangan' => $request->keterangan
         ]);
 
@@ -1254,6 +1380,7 @@ class KesehatanController extends Controller
         }
     }
 
+
     public function obat_aksi_ubah(Request $request)
     {
         $id = $request->id;
@@ -1262,6 +1389,35 @@ class KesehatanController extends Controller
         $obat->keterangan = $request->keterangan;
         $obat->save();
         if ($obat) {
+            return redirect()->back()->with('success', 'Berhasil menambahkan data');
+        } else {
+            return redirect()->back()->with('error', 'Gagal menambahkan data');
+        }
+    }
+
+    public function obat_stok_aksi_tambah(Request $request)
+    {
+
+        $this->validate(
+            $request,
+            [
+                'tgl_pembelian' => 'required',
+                'stok' => 'required'
+            ],
+            [
+                'tgl_pembelian.required' => 'Tgl Pembelian harus di isi',
+                'stok.required' => 'Stok obat harus di isi'
+            ]
+        );
+        $stok_obat = riwayat_stok_obat::create([
+            'tgl_pembelian' => $request->tgl_pembelian,
+            'obat_id' => $request->id,
+            'stok' => $request->stok,
+            'keterangan' => $request->keterangan
+        ]);
+
+        $obat = Obat::find($request->id)->increment('stok', $request->stok);
+        if ($stok_obat || $obat) {
             return redirect()->back()->with('success', 'Berhasil menambahkan data');
         } else {
             return redirect()->back()->with('error', 'Gagal menambahkan data');
@@ -1489,12 +1645,16 @@ class KesehatanController extends Controller
             return redirect()->back()->with('error', 'Gagal menambahkan data');
         }
     }
-    public function obat_data_id($id)
+    public function obat_detail_data_karyawan($karyawan_id)
     {
-        $data = Obat::where('id', $id)->get();
-        echo json_encode($data);
+        $data = karyawan_sakit::with('obat')
+            ->whereHas('obat')
+            ->where('tindakan', 'Pengobatan')
+            ->where('karyawan_id', $karyawan_id);
+        return datatables::of($data)
+            ->addIndexColumn()
+            ->make(true);
     }
-
     public function laporan_harian()
     {
         $karyawan = Karyawan::orderBy('nama', 'ASC')
@@ -1503,9 +1663,6 @@ class KesehatanController extends Controller
         $divisi = Divisi::all();
         return view('page.kesehatan.laporan_harian', ['karyawan' => $karyawan, 'divisi' => $divisi]);
     }
-
-
-
     public function laporan_harian_data($filter, $id, $start, $end)
     {
 

@@ -31,6 +31,11 @@
           <table id="tabel" class="table table-hover styled-table table-striped">
             <thead style="text-align: center;">
               <tr>
+                <th colspan="14">
+                  <a href="/daftar_karyawan/tambah" style="color: white;"><button type="button" class="btn btn-block btn-success btn-sm" style="width: 200px;"><i class="fas fa-plus"></i> &nbsp; Tambah</i></button></a>
+                </th>
+              </tr>
+              <tr>
                 <th>No</th>
                 <th>Divisi</th>
                 <th>Jabatan</th>

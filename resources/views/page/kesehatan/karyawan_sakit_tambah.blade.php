@@ -121,81 +121,78 @@
                                             </div>
                                             <div id="tipe_2" style="display:none">
                                                 <div class="form-group row">
-                                                    <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Obat</label>
-                                                    <div class="col-sm-8">
-                                                        <select type="text" class="form-control @error('obat_id') is-invalid @enderror select2" style="width:45%;" id="obat" name="obat_id">
-
-                                                            @foreach($obat as $o)
-                                                            <option value="{{$o->id}}">{{$o->nama}}</option>
-                                                            @endforeach
-                                                        </select>
-                                                        @if($errors->has('obat_id'))
-                                                        <div class="text-danger">
-                                                            {{ $errors->first('obat_id')}}
-                                                        </div>
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                                <div class="form-group row">
-                                                    <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;">Aturan konsumsi</label>
-                                                    <div class="col-sm-8" style="margin-top:7px;">
-                                                        <div class="icheck-success d-inline col-sm-4">
-                                                            <input type="radio" name="aturan_obat" value="Sebelum Makan">
-                                                            <label for="no">
-                                                                Sebelum Makan
-                                                            </label>
-                                                        </div>
-                                                        <div class="icheck-warning d-inline col-sm-4">
-                                                            <input type="radio" name="aturan_obat" value="Sesudah Makan">
-                                                            <label for="sample">
-                                                                Sesudah Makan
-                                                            </label>
-                                                        </div>
-                                                        <span class="invalid-feedback" role="alert" id="kondisi-msg"></span>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group row">
-                                                    <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;"></label>
-                                                    <div class="col-sm-8" style="margin-top:7px;">
-                                                        <div class="icheck-success d-inline col-sm-4">
-                                                            <input type="radio" name="dosis_obat" value="1x1">
-                                                            <label for="no">
-                                                                1x1 Hari
-                                                            </label>
-                                                        </div>
-                                                        <div class="icheck-warning d-inline col-sm-4">
-                                                            <input type="radio" name="dosis_obat" value="2x1">
-                                                            <label for="sample">
-                                                                2x1 Hari
-                                                            </label>
-                                                        </div>
-                                                        <div class="icheck-warning d-inline col-sm-2">
-                                                            <input type="radio" name="dosis_obat" id="custom_radio">
-                                                            <label for="sample">
-                                                                <div class="input-group mb-3">
-                                                                    <input type="text" class="form-control" name="dosis_obat_custom" id="dosis_obat_custom" placeholder="Jumlah obat x hari">
-                                                                    <div class="input-group-append">
-                                                                        <span class="input-group-text">Hari</span>
+                                                    <table class="table table-hover styled-table table-striped col-sm-12" id="obat">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>No</th>
+                                                                <th width="15%">Obat</th>
+                                                                <th width="20%">Aturan</th>
+                                                                <th></th>
+                                                                <th>Jumlah</th>
+                                                                <th width="3%"></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody style="text-align: center;">
+                                                            <tr>
+                                                                <td>1</td>
+                                                                <td>
+                                                                    <select class="form-control select2 obat_data" name="obat[]">
+                                                                        <option value="">Pilih produk</option>
+                                                                        @foreach ($obat as $o)
+                                                                        <option value="{{$o->id}}">{{$o->nama}}</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input aturan_obat" type="radio" name="aturan_obat[]" value="Sebelum Makan">
+                                                                        <label class="form-check-label">Sebelum Makan</label>
                                                                     </div>
-                                                                </div>
-                                                            </label>
-                                                        </div>
-                                                        <span class="invalid-feedback" role="alert" id="kondisi-msg"></span>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group row">
-                                                    <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;">Jumlah</label>
-                                                    <div class="col-sm-1">
-                                                        <div class="input-group mb-3">
-                                                            <input type="number" class="form-control" name="jumlah" id="jumlah" value="{{ old('jumlah') }}" min="1">
-                                                            <div class="input-group-append">
-                                                                <span class="input-group-text">Pc</span>
-                                                            </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input aturan_obat" type="radio" name="aturan_obat[]" value="Sesudah Makan">
+                                                                        <label class="form-check-label">Sesudah Makan</label>
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input dosis_obat" type="radio" name="dosis_obat[]" value="1x1">
+                                                                        <label class="form-check-label" for="dosis_obat">
+                                                                            1x1 Hari
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input dosis_obat" type="radio" name="dosis_obat[]" value="2x1">
+                                                                        <label class="form-check-label" for="dosis_obat">
+                                                                            2x1 Hari
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input dosis_obat" type="radio" name="dosis_obat[]" value="2x1">
+                                                                        <label class="form-check-label" for="dosis_obat">
+                                                                            <div class="input-group mb-3">
+                                                                                <input type="text" class="form-control dosis_obat_custom" name="dosis_obat_custom" id="dosis_obat_custom" placeholder="Jumlah obat x hari">
+                                                                                <div class="input-group-append">
+                                                                                    <span class="input-group-text">Hari</span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </label>
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="input-group mb-3">
+                                                                        <input type="text" class="form-control jumlah" name="jumlah[]" id="dosis_obat_custom" placeholder="Jumlah obat">
+                                                                        <div class="input-group-append">
+                                                                            <span class="input-group-text">Pcs</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
 
-                                                        </div>
-                                                        <small id="stok" class="form-text text-muted"> </small>
-                                                    </div>
-                                                    <span role="alert" id="no_seri-msg"></span>
+                                                                <td style="text-align: right;">
+                                                                    <button name="add" type="button" id="tambahitem" class="btn btn-success"><i class="nav-icon fas fa-plus-circle"></i></button>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
@@ -235,6 +232,84 @@
 @section('adminlte_js')
 <script>
     $(document).ready(function() {
+        function numberRows($t) {
+            var c = 0 - 1;
+            $t.find("tr").each(function(ind, el) {
+                $(el).find("td:eq(0)").html(++c);
+                var j = c - 1;
+                $(el).find('input.aturan_obat:radio').attr('name', 'aturan_obat[' + j + ']');
+                $(el).find('input.dosis_obat:radio').attr('name', 'dosis_obat[' + j + ']');
+                $(el).find('.jumlah').attr('name', 'jumlah[' + j + ']');
+                $(el).find('.obat').attr('name', 'obat[' + j + ']');
+                $('.obat_data').select2();
+            });
+        }
+
+        $('#tambahitem').click(function(e) {
+            var data = `     <tr>
+            <td>1</td>
+                                                                <td>
+                                                                    <select class="form-control select2 obat_data" name="obat[]">
+                                                                    <option value="">Pilih Produk</option>   
+                                                                    @foreach ($obat as $o)
+                                                                        <option value="{{$o->id}}">{{$o->nama}}</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input aturan_obat" type="radio" name="aturan_obat[]" value="Sebelum Makan">
+                                                                        <label class="form-check-label">Sebelum Makan</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input aturan_obat" type="radio" name="aturan_obat[]" value="Sesudah Makan">
+                                                                        <label class="form-check-label">Sesudah Makan</label>
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input dosis_obat" type="radio" name="dosis_obat[]" value="1x1">
+                                                                        <label class="form-check-label">
+                                                                            1x1 Hari
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input dosis_obat" type="radio" name="dosis_obat[]" value="2x1">
+                                                                        <label class="form-check-label" for="sample">
+                                                                            2x1 Hari
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input dosis_obat" type="radio" name="dosis_obat[]" id="custom_radio">
+                                                                        <label class="form-check-label" for="sample">
+                                                                            <div class="input-group mb-3">
+                                                                                <input type="text" class="form-control dosis_obat_custom" name="dosis_obat_custom[]" id="dosis_obat_custom" placeholder="Jumlah obat x hari">
+                                                                                <div class="input-group-append">
+                                                                                    <span class="input-group-text">Hari</span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </label>
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="input-group mb-3">
+                                                                        <input type="text" class="form-control jumlah" name="jumlah[]" id="dosis_obat_custom" placeholder="Jumlah obat">
+                                                                        <div class="input-group-append">
+                                                                            <span class="input-group-text">Pcs</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td style="text-align: right;">
+                                                                <button type="button" class="btn btn-danger karyawan-img-small" style="border-radius:50%;" id="closetable"><i class="fas fa-times-circle"></i></button> 
+                                                                </td>
+                            </tr>`;
+            $('#obat tr:last').after(data);
+            numberRows($("#obat"));
+        });
+        $('#obat').on('click', '#closetable', function(e) {
+            $(this).closest('tr').remove();
+            numberRows($("#obat"));
+        });
         var data = [{
                 id: 0,
                 text: '<div style="color:green">enhancement</div>'
@@ -284,23 +359,10 @@
             }
         });
     });
-    $(document).ready(function() {
-        $('select[id="obat"]').on('change', function() {
-            var id = jQuery(this).val();
-            $.ajax({
-                url: '/obat/data/' + id,
-                type: "GET",
-                dataType: "json",
-                success: function(data) {
-                    $('#stok').text("Jumlah Stok : " + data[0].stok);
-                    $('#jumlah').prop('max', data[0].stok);
-                    $('#jumlah').prop('min', 1);
-                },
-                error: function(error) {
-                    console.log(error);
-                }
-            });
-        });
-    });
+    // $(document).ready(function() {
+    //     $('.obat').on('change', function() {
+    //         alert('ok');
+    //     });
+    // });
 </script>
 @stop

@@ -21,6 +21,12 @@ class KaryawanController extends Controller
         $karyawan = Divisi::all();
         return view('page.karyawan.karyawan', ['karyawan' => $karyawan]);
     }
+
+    public function karyawan_tambah()
+    {
+        $divisi = Divisi::all();
+        return view('page.karyawan.karyawan_tambah', ['divisi' => $divisi]);
+    }
     public function karyawan_data()
     {
         $data = Karyawan::orderBy('nama', 'ASC');
@@ -57,5 +63,47 @@ class KaryawanController extends Controller
         } else {
             return redirect()->back()->with('error', 'Gagal menambahkan data');
         }
+    }
+    public function karyawan_aksi_tambah(Request $request)
+    {
+        $this->validate(
+            $request,
+            [
+                'nama' => 'required|unique:ekatjuals',
+                'divisi_id' => 'required',
+                'tgllahir' => 'required',
+                'tgl_kerja' => 'required',
+                'jenis' => 'required',
+                'jabatan' => 'required',
+            ],
+            [
+                'nama.required' => 'Nama harus di isi',
+                'divisi_id.required' => 'Divisi harus di isi',
+                'tgllahir.required' => 'Tgl Lahir harus di isi',
+                'tgl_kerja.required' => 'Tgl Kerja harus di isi',
+                'jenis.required' => 'Jenis Kelamin  harus di isi',
+                'jabatan.required' => 'Jabatan harus di isi',
+            ]
+        );
+        $karyawan = Karyawan::create([
+            'nama' => $request->nama,
+            'divisi_id' => $request->divisi_id,
+            'tgllahir' => $request->tgllahir,
+            'tgl_kerja' => $request->tgl_kerja,
+            'kelamin' => $request->jenis,
+            'jabatan' => $request->jabatan,
+        ]);
+
+
+        if ($karyawan) {
+            return redirect()->back()->with('success', "Berhasil menambahkan data");
+        } else {
+            return redirect()->back()->with('error', "Gagal menambahkan data");
+        }
+    }
+    public function karyawan_cekdata($nama)
+    {
+        $data = Karyawan::where('nama', $nama)->get();
+        echo json_encode($data);
     }
 }

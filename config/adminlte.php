@@ -402,7 +402,7 @@ return [
                         [
                             'icon' => 'fas fa-info-circle',
                             'text' => 'Detail',
-                            'auth' => [],
+                            'auth' => [28],
                             'url'  => '/kesehatan/detail',
                         ]
                     ],

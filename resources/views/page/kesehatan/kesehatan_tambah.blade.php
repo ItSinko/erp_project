@@ -361,6 +361,73 @@
                                                 </div>
                                             </div>
                                             <div class="form-group row">
+                                                <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;">Penyakit Bawaan</label>
+                                                <div class="col-sm-8" style="margin-top:7px;">
+                                                    <div class="icheck-success d-inline col-sm-4">
+                                                        <input type="radio" name="riwayat_penyakit" value="Iya">
+                                                        <label for="no">
+                                                            Iya
+                                                        </label>
+                                                    </div>
+                                                    <div class="icheck-warning d-inline col-sm-4">
+                                                        <input type="radio" name="riwayat_penyakit" value="Tidak" checked="0">
+                                                        <label for="sample">
+                                                            Tidak
+                                                        </label>
+                                                    </div>
+                                                    <span class="invalid-feedback" role="alert" id="kondisi-msg"></span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row" id="penyakit_ket" hidden>
+                                                <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;"></label>
+                                                <table class="table table-bordered table-striped" id="tabel_penyakit">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>No</th>
+                                                            <th>Nama Penyakit</th>
+                                                            <th width="25%">Jenis Penyakit</th>
+                                                            <th>Keterangan</th>
+                                                            <th></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody style="text-align: center;">
+                                                        <tr>
+                                                            <td>1</td>
+                                                            <td>
+                                                                <input type="text" class="form-control d-none" name="fk_karyawan_id" id="id">
+                                                                <textarea type="text" class="form-control nama" name="nama[]"></textarea>
+                                                            </td>
+                                                            <td>
+                                                                <select class="form-control select2 jenis" style="width:100%" name="jenis[]">
+                                                                    <option value="">Pilih jenis penyakit</option>
+                                                                    <option value="Penyakit saat ini">Penyakit saat ini</option>
+                                                                    <option value="Penyakit lama">Penyakit lama</option>
+                                                                    <option value="Penyakit keluarga">Penyakit keluarga</option>
+                                                                    <option value="Penyakit karena pekerjaan">Penyakit karena pekerjaan</option>
+                                                                </select>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-check form-check-inline">
+                                                                    <input class="form-check-input" type="radio" name="kriteria[]" id="kriteria" value="1">
+                                                                    <label class="form-check-label">Menular</label>
+                                                                </div>
+                                                                <div class="form-check form-check-inline">
+                                                                    <input class="form-check-input" type="radio" name="kriteria[]" id="kriteria" value="0">
+                                                                    <label class="form-check-label">Tidak menular</label>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <textarea type="text" class="form-control keterangan" name="keterangan[]" id="keterangan"></textarea>
+                                                            </td>
+                                                            <td>
+                                                                <button name="add" type="button" id="tambahitem_penyakit" class="btn btn-success"><i class="nav-icon fas fa-plus-circle"></i></button>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                            <div class="form-group row">
                                                 <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;">Pemeriksaan Covid</label>
                                                 <div class="col-sm-8" style="margin-top:7px;">
                                                     <div class="icheck-success d-inline col-sm-4">
@@ -380,7 +447,7 @@
                                             </div>
                                             <div class="form-group row" id="tes_ket" hidden>
                                                 <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;"></label>
-                                                <table id="tabel_tes" class="table table-hover styled-table table-striped col-sm-8">
+                                                <table id="tabel_tes" class="table table-hover styled-table table-striped ">
                                                     <thead>
                                                         <tr>
                                                             <th width="1%">No</th>
@@ -528,6 +595,16 @@
                 $('#tes_ket').attr('hidden', 'hidden');
             }
         });
+
+        $('input[type=radio][name=riwayat_penyakit]').on('change', function() {
+            if (this.value == 'Iya') {
+                $('#penyakit_ket').removeAttr('hidden');
+            } else if (this.value == 'Tidak') {
+                $('#penyakit_ket').attr('hidden', 'hidden');
+            }
+        });
+
+
         $('#tambahitem_vaksin').click(function(e) {
             var data = `  <tr>  
             <td>1</td>
@@ -651,15 +728,59 @@
         });
 
 
+        function numberRow_penyakit($t) {
+            var c = 0 - 1;
+            $t.find("tr").each(function(ind, el) {
+                $(el).find("td:eq(0)").html(++c);
+                var j = c - 1;
+                $(el).find('.nama').attr('name', 'nama[' + j + ']');
+                $(el).find('.jenis').attr('name', 'jenis[' + j + ']');
+                $(el).find('.keterangan').attr('name', 'keterangan[' + j + ']');
+                $(el).find('input[type="radio"]').attr('name', 'kriteria[' + j + ']');
+                $('.jenis').select2();
+            });
+        }
 
-
-
-
-
-
-
-
-
+        $('#tambahitem_penyakit').click(function(e) {
+            var data = `  <tr>  
+      <td>1</td>
+                                    <td>
+                                      <input type="text" class="form-control d-none" name="id" id="id">
+                                      <textarea type="text" class="form-control nama" name="nama[]"></textarea>
+                                    </td>
+                                    <td>
+                                      <select class="form-control select2 jenis" style="width:100%" name="jenis[]">
+                                        <option value="">Pilih jenis penyakit</option>
+                                        <option value="Penyakit saat ini">Penyakit saat ini</option>
+                                        <option value="Penyakit lama">Penyakit lama</option>
+                                        <option value="Penyakit keluarga">Penyakit keluarga</option>
+                                        <option value="Penyakit karena pekerjaan">Penyakit karena pekerjaan</option>
+                                      </select>
+                                    </td>
+                                    <td>
+                                      <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="kriteria[]" id="kriteria" value="1">
+                                        <label class="form-check-label">Menular</label>
+                                      </div>
+                                      <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="kriteria[]" id="kriteroa" value="0">
+                                        <label class="form-check-label">Tidak menular</label>
+                                      </div>
+                                    </td>
+                                    <td>
+                                      <textarea type="text" class="form-control keterangan" name="keterangan[]" id="keterangan"></textarea>
+                                    </td>
+                                    <td>
+                                    <button type="button" class="btn btn-danger karyawan-img-small" style="border-radius:50%;" id="closetable_penyakit"><i class="fas fa-times-circle"></i></button> 
+                                                  </td>
+                                                </tr>`;
+            $('#tabel_penyakit tr:last').after(data);
+            numberRow_penyakit($("#tabel_penyakit"));
+        });
+        $('#tabel_penyakit').on('click', '#closetable_penyakit', function(e) {
+            $(this).closest('tr').remove();
+            numberRow_vaksin($("#tabel_penyakit"));
+        });
 
         $('#cek_form').hide();
         $('#tipe_1').show();

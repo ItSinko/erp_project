@@ -40,15 +40,14 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/template_form_cancel', 'ItController@template_form_cancel')->name('template-form-cancel');
 });
 
-
-
-
 //Kesehatan
 /* Tabel */
 Route::get('/daftar_karyawan', 'KaryawanController@karyawan');
+Route::get('/daftar_karyawan/tambah', 'KaryawanController@karyawan_tambah');
+Route::get('/daftar_karyawan/cekdata/{nama}', 'KaryawanController@karyawan_cekdata');
 Route::get('/daftar_karyawan/data', 'KaryawanController@karyawan_data');
+Route::post('/daftar_karyawan/aksi_tambah', 'KaryawanController@karyawan_aksi_tambah');
 Route::put('/daftar_karyawan/aksi_ubah', 'KaryawanController@karyawan_aksi_ubah');
-
 
 //Kesehatan
 /* Tabel */
@@ -63,7 +62,9 @@ Route::get('/kesehatan/data', 'KesehatanController@kesehatan_data');
 Route::get('/kesehatan/data/{karyawan_id}', 'KesehatanController@kesehatan_data_detail');
 Route::get('/kesehatan/detail/', 'KesehatanController@kesehatan_detail');
 Route::get('/kesehatan/vaksin/{karyawan_id}', 'KesehatanController@kesehatan_vaksin');
+Route::get('/kesehatan/penyakit/{karyawan_id}', 'KesehatanController@kesehatan_riwayat_penyakit');
 Route::post('/kesehatan/vaksin/aksi_tambah', 'KesehatanController@kesehatan_vaksin_aksi_tambah');
+Route::post('/kesehatan/penyakit/aksi_tambah', 'KesehatanController@kesehatan_riwayat_penyakit_aksi_tambah');
 
 //Kesehatan Harian
 /* Tabel */
@@ -142,9 +143,13 @@ Route::get('/karyawan_masuk/detail/data/{id}', 'KesehatanController@karyawan_mas
 Route::get('/obat', 'KesehatanController@obat');
 Route::get('/obat/data', 'KesehatanController@obat_data');
 Route::get('/obat/data/{id}', 'KesehatanController@obat_data_id');
+Route::get('/obat/data/detail/{karyawan_id}', 'KesehatanController@obat_detail_data_karyawan');
+Route::get('/obat/cekdata/{nama}', 'KesehatanController@obat_cekdata');
 Route::get('/obat/detail/data/{id}', 'KesehatanController@obat_detail_data');
 Route::get('/obat/tambah', 'KesehatanController@obat_tambah');
 Route::post('/obat/aksi_tambah', 'KesehatanController@obat_aksi_tambah');
+Route::post('/obat/stok/aksi_tambah', 'KesehatanController@obat_stok_aksi_tambah');
+Route::get('/obat/stok/data/{id}', 'KesehatanController@obat_stok_data');
 Route::put('/obat/aksi_ubah', 'KesehatanController@obat_aksi_ubah');
 
 //Laporan
@@ -163,15 +168,11 @@ Route::get('/kalibrasi/data/detail/{id}', 'LabController@kalibrasi_data_detail')
 Route::get('/kalibrasi/tambah/{id}', 'LabController@kalibrasi_tambah');
 Route::get('/kalibrasi/list/data/{id}', 'LabController@kalibrasi_data_list');
 
-
-
 //Route::get('/kalibrasi/{id}', 'LabController@kalibrasi_id');
 Route::get('/acc_kalibrasi', 'LabController@acc_kalibrasi');
 Route::get('/acc_kalibrasi/data', 'LabController@acc_kalibrasi_data');
 Route::get('/acc_list_kalibrasi/data', 'LabController@acc_list_kalibrasi_data');
-
 Route::get('/kalibrasi/data', 'LabController@kalibrasi_data');
-
 
 Route::post('/kalibrasi/aksi_tambah', 'LabController@ka_internal_aksi_tambah');
 Route::get('/kalibrasi/cetak', 'LabController@ka_internal_form');

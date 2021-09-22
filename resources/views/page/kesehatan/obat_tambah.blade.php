@@ -42,7 +42,7 @@
                                             <div class="form-group row">
                                                 <label for="no_pemeriksaan" class="col-sm-4 col-form-label" style="text-align:right;">Nama Obat</label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" class="form-control @error('nama') is-invalid @enderror" name="nama" style="width:45%;" placeholder="Masukkan Nama Obat" value="{{ old('nama') }}">
+                                                    <input type="text" class="form-control @error('nama') is-invalid @enderror" name="nama" style="width:45%;" placeholder="Masukkan Nama Obat" value="{{ old('nama') }}" id="nama">
                                                     @if($errors->has('nama'))
                                                     <div class="text-danger">
                                                         {{ $errors->first('nama')}}
@@ -50,22 +50,7 @@
                                                     @endif
                                                 </div>
                                             </div>
-                                            <div class="form-group row">
-                                                <label for="keterangan" class="col-sm-4 col-form-label" style="text-align:right;">Jumlah</label>
-                                                <div class="col-sm-2">
-                                                    <div class="input-group mb-3">
-                                                        <input type="number" class="form-control" name="stok" value="{{ old('stok') }}">
-                                                        <div class="input-group-append">
-                                                            <span class="input-group-text">Pcs</span>
-                                                        </div>
-                                                    </div>
-                                                    @if($errors->has('stok'))
-                                                    <div class="text-danger">
-                                                        {{ $errors->first('stok')}}
-                                                    </div>
-                                                    @endif
-                                                </div>
-                                            </div>
+
                                             <div class="form-group row">
                                                 <label for="tanggal" class="col-sm-4 col-form-label" style="text-align:right;">Keterangan</label>
                                                 <div class="col-sm-8">
@@ -90,4 +75,24 @@
 </section>
 @endsection
 @section('adminlte_js')
+<script>
+    $(document).ready(function() {
+        $('#nama').keyup(function() {
+            var nama = $(this).val();
+            $.ajax({
+                url: '/obat/cekdata/' + nama,
+                method: "GET",
+                dataType: "json",
+                success: function(data) {
+                    if (data != 0) {
+                        $('#nama').html('<span class="text-danger">Nama Obat pernah di input</span>');
+                        $('#button_tambah').attr("disabled", true);
+                    } else {
+                        $('#button_tambah').attr("disabled", false);
+                    }
+                }
+            })
+        });
+    });
+</script>
 @stop
