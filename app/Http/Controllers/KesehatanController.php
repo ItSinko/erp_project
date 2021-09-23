@@ -30,7 +30,6 @@ use Illuminate\Validation\Rule;
 use Yajra\DataTables\Facades\DataTables;
 use PDF;
 
-
 class KesehatanController extends Controller
 {
     public function kesehatan_harian()
@@ -1113,11 +1112,16 @@ class KesehatanController extends Controller
     {
         return view('page.kesehatan.karyawan_sakit');
     }
-    public function karyawan_sakit_cetak()
+    public function karyawan_sakit_cetak($id)
     {
-        $pdf = PDF::loadView('page.kesehatan.surat_sakit')->setPaper('A5', 'Landscape');
+        $karyawan_sakit = Karyawan_sakit::find($id);
+        $dateOfBirth = $karyawan_sakit->karyawan->tgllahir;
+        $umur = Carbon::parse($dateOfBirth)->age;
+        $carbon = Carbon::now();
+        $pdf = PDF::loadView('page.kesehatan.surat_sakit', ['karyawan_sakit' => $karyawan_sakit, 'umur' => $umur, 'carbon' => $carbon])->setPaper('A5', 'Landscape');
         return $pdf->stream('');
     }
+
     public function karyawan_sakit_tambah()
     {
         $karyawan = Karyawan::orderBy('nama', 'ASC')
@@ -1133,6 +1137,7 @@ class KesehatanController extends Controller
     //     $data = Obat::all();
     //     echo json_encode($data);
     // }
+
 
     public function karyawan_sakit_aksi_tambah(Request $request)
     {
@@ -1247,8 +1252,8 @@ class KesehatanController extends Controller
                 $btn = '<div class="inline-flex"><button type="button" id="edit_gcu"  class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fa fa-eye" aria-hidden="true"></i></button></div>';
                 return $btn;
             })
-            ->addColumn('cetak', function () {
-                $btn = '<div class="inline-flex"><button type="button" id="cetak_gcu"  class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fa fa-eye" aria-hidden="true"></i></button></div>';
+            ->addColumn('cetak', function ($data) {
+                $btn = '<div class="inline-flex"><a href="/karyawan_sakit/cetak/' . $data->id . '" target="_break"><button type="button" id="cetak_gcu"  class="btn btn-block btn-success karyawan-img-small" style="border-radius:50%;" ><i class="fas fa-print"></i></button></a></div>';
                 return $btn;
             })
             ->rawColumns(['button', 'detail_button', 'cetak'])
@@ -1299,6 +1304,11 @@ class KesehatanController extends Controller
             ->rawColumns(['button', 'detail_button', 'a'])
             ->make(true);
     }
+    public function obat_data_id($id)
+    {
+        $data = Obat::where('id', $id)->get();
+        echo json_encode($data);
+    }
     public function obat_detail_data($id)
     {
         $data = Karyawan_sakit::where('obat_id', $id);
@@ -1330,7 +1340,6 @@ class KesehatanController extends Controller
             })
             ->make(true);
     }
-
     public function karyawan_masuk_detail_data($id)
     {
         $data = Karyawan_sakit::where('id', $id);
@@ -1344,22 +1353,11 @@ class KesehatanController extends Controller
             })
             ->make(true);
     }
-
-
-
-
     public function obat_cekdata($nama)
     {
         $data = Obat::where('nama', $nama)->get();
         echo json_encode($data);
     }
-
-
-
-
-
-
-
     public function obat_aksi_tambah(Request $request)
     {
         $this->validate(

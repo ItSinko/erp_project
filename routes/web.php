@@ -127,7 +127,7 @@ Route::put('/kesehatan_tahunan/aksi_ubah', 'KesehatanController@kesehatan_tahuna
 
 //Karyawan Sakit
 Route::get('/karyawan_sakit', 'KesehatanController@karyawan_sakit');
-Route::get('/karyawan_sakit/cetak', 'KesehatanController@karyawan_sakit_cetak');
+Route::get('/karyawan_sakit/cetak/{id}', 'KesehatanController@karyawan_sakit_cetak');
 Route::get('/karyawan_sakit/data', 'KesehatanController@karyawan_sakit_data');
 Route::get('/karyawan_sakit/tambah', 'KesehatanController@karyawan_sakit_tambah');
 Route::get('/karyawan_sakit/obat/data/', 'KesehatanController@obat_data');

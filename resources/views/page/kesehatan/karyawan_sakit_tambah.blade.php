@@ -3,12 +3,18 @@
 @section('content_header')
 <h1 class="m-0 text-dark">Dashboard</h1>
 @stop
+@section('adminltecss')
+<style>
+    #obat td.bottom {
+        vertical-align: bottom;
+    }
+</style>
+
 @section('content')
 <section class="content-header">
     <div class="container-fluid">
     </div>
 </section>
-
 <section class="content">
     <div class="row">
         <div class="col-lg-12">
@@ -128,7 +134,7 @@
                                                                 <th width="15%">Obat</th>
                                                                 <th width="20%">Aturan</th>
                                                                 <th></th>
-                                                                <th>Jumlah</th>
+                                                                <th width="10%">Jumlah</th>
                                                                 <th width="3%"></th>
                                                             </tr>
                                                         </thead>
@@ -136,7 +142,7 @@
                                                             <tr>
                                                                 <td>1</td>
                                                                 <td>
-                                                                    <select class="form-control select2 obat_data" name="obat[]">
+                                                                    <select class="form-control select2 obat_data" name="obat[]" id="0">
                                                                         <option value="">Pilih produk</option>
                                                                         @foreach ($obat as $o)
                                                                         <option value="{{$o->id}}">{{$o->nama}}</option>
@@ -178,13 +184,15 @@
                                                                         </label>
                                                                     </div>
                                                                 </td>
-                                                                <td>
+                                                                <td class="bottom">
                                                                     <div class="input-group mb-3">
-                                                                        <input type="text" class="form-control jumlah" name="jumlah[]" id="dosis_obat_custom" placeholder="Jumlah obat">
+                                                                        <input type="number" class="form-control jumlah" name="jumlah[]" id="jumlah0" placeholder="Jumlah obat">
                                                                         <div class="input-group-append">
                                                                             <span class="input-group-text">Pcs</span>
                                                                         </div>
                                                                     </div>
+                                                                    <small id="stok0" class="stok text-muted">Stok : - </small>
+
                                                                 </td>
 
                                                                 <td style="text-align: right;">
@@ -252,16 +260,36 @@
                 $(el).find('input.aturan_obat:radio').attr('name', 'aturan_obat[' + j + ']');
                 $(el).find('input.dosis_obat:radio').attr('name', 'dosis_obat[' + j + ']');
                 $(el).find('.jumlah').attr('name', 'jumlah[' + j + ']');
+                $(el).find('.jumlah').attr('id', 'jumlah' + j + '');
+                $(el).find('.stok').attr('id', 'stok' + j + '');
                 $(el).find('.obat').attr('name', 'obat[' + j + ']');
+                $(el).find('.obat_data').attr('id', j);
                 $('.obat_data').select2();
             });
         }
-
+        $('#obat').on("change", ".obat_data", function(i) {
+            var id = jQuery(this).val();
+            var index = $(this).attr('id');
+            console.log(index);
+            $.ajax({
+                url: '/obat/data/' + id,
+                type: "GET",
+                dataType: "json",
+                success: function(data) {
+                    $("#stok" + index).text('Stok : ' + data[0].stok);
+                    $("#jumlah" + index).prop('max', data[0].stok);
+                    $("#jumlah" + index).prop('min', 1);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        })
         $('#tambahitem').click(function(e) {
             var data = `     <tr>
             <td>1</td>
                                                                 <td>
-                                                                    <select class="form-control select2 obat_data" name="obat[]">
+                                                                    <select class="form-control select2 obat_data" id="0" name="obat[]">
                                                                     <option value="">Pilih Produk</option>   
                                                                     @foreach ($obat as $o)
                                                                         <option value="{{$o->id}}">{{$o->nama}}</option>
@@ -303,13 +331,14 @@
                                                                         </label>
                                                                     </div>
                                                                 </td>
-                                                                <td>
+                                                                <td class="bottom">
                                                                     <div class="input-group mb-3">
-                                                                        <input type="text" class="form-control jumlah" name="jumlah[]" id="dosis_obat_custom" placeholder="Jumlah obat">
+                                                                        <input type="number" class="form-control jumlah" name="jumlah[]" id="jumlah0" placeholder="Jumlah obat">
                                                                         <div class="input-group-append">
                                                                             <span class="input-group-text">Pcs</span>
                                                                         </div>
                                                                     </div>
+                                                                    <small id="stok0" class="stok text-muted">Stok : - </small>
                                                                 </td>
                                                                 <td style="text-align: right;">
                                                                 <button type="button" class="btn btn-danger karyawan-img-small" style="border-radius:50%;" id="closetable"><i class="fas fa-times-circle"></i></button> 
@@ -364,10 +393,5 @@
             }
         });
     });
-    // $(document).ready(function() {
-    //     $('.obat').on('change', function() {
-    //         alert('ok');
-    //     });
-    // });
 </script>
 @stop
