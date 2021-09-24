@@ -156,4 +156,9 @@ class Bppb extends Model
     {
         return $this->hasMany(Kalibrasi::class);
     }
+
+    public function PemeriksaanProses()
+    {
+        return $this->hasMany(PemeriksaanProses::class);
+    }
 }

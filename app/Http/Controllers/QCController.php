@@ -33,6 +33,7 @@ use App\DetailPackingList;
 use App\IkPemeriksaan;
 use App\ListIkPemeriksaan;
 use App\ParameterLkpLup;
+use App\PemeriksaanProses;
 use App\PeriksaBarangMasuk;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -1003,9 +1004,18 @@ class QCController extends Controller
             ->make(true);
     }
 
-    public function perakitan_ik_pemeriksaan()
+    public function pemeriksaan_proses($bppb_id)
     {
-        return view('page.qc.perakitan_ik_pemeriksaan');
+        $b = Bppb::find($bppb_id);
+        return view('page.qc.pemeriksaan_proses_show', ['bppb_id' => $bppb_id, 'b' => $b]);
+    }
+
+    public function pemeriksaan_proses_show($bppb_id, $proses)
+    {
+        $s = PemeriksaanProses::where([
+            ['bppb_id', '=', $bppb_id],
+            ['proses', '=', $proses]
+        ])->get();
     }
 
     public function pengujian()

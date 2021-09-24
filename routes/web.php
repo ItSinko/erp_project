@@ -664,6 +664,13 @@ Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {
     Route::put('/analisa_ps/store/{id}', 'EngController@pengujian_analisa_ps_store')->name('pengujian.analisa_ps.store');
 });
 
+//PEMERIKSAAN PROSES
+Route::group(['prefix' => '/pemeriksaan_proses', 'middleware' => 'auth'], function () {
+    Route::get('/{bppb_id}', 'QCController@pemeriksaan_proses')->name('pemeriksaan_proses');
+    Route::get('/show/{bppb_id}/{proses}', 'QCController@pemeriksaan_proses_show')->name('pemeriksaan_proses.show');
+    Route::get('/create/{bppb_id}/{proses}', 'QCController@pemeriksaan_proses_create')->name('pemeriksaan_proses.create');
+    Route::put('/store/{bppb_id}/{proses}', 'QCController@pemeriksaan_proses_store')->name('pemeriksaan_proses.store');
+});
 
 // KALIBRASI
 Route::group(['prefix' => '/kalibrasi', 'middleware' => 'auth'], function () {
