@@ -37,7 +37,7 @@
                     <div class="card-body">
                         <h4>Data Info</h4>
                         <ul class="list-group list-group-flush borderless">
-                            <li class="list-group-item"><b>Nama Produk</b><a class="float-right">543</a></li>
+                            <li class="list-group-item"><b>Nama Produk</b><a class="float-right"></a></li>
                             <li class="list-group-item"><b>Kelompok Produk</b><a class="float-right">543</a></li>
                             <li class="list-group-item"><b>No BPPB</b><a class="float-right">543</a></li>
                             <li class="list-group-item"><b>Tanggal BPPB</b><a class="float-right">543</a></li>
@@ -61,15 +61,14 @@
                                 <div class="row">
                                     <div class="col-lg-12">
                                         @if(isset($b->Perakitan))
-                                        @empty($b->PemeriksaanProses)
-                                        <div class="float-right" style="margin-bottom:1%;margin-top:1%;">
+                                        @if(!isset($pr)) <div class="float-right" style="margin-bottom:1%;margin-top:1%;">
                                             <a class="tambahrakit" href="#"><button class="btn btn-info btn-sm"><i class="fas fa-plus"></i>&nbsp;Tambah</button></a>
                                         </div>
                                         @else
                                         <div class="float-right" style="margin-bottom:1%;margin-top:1%;">
                                             <a class="editrakit" href="#"><button class="btn btn-warning btn-sm"><i class="fas fa-pencil-alt"></i>&nbsp;Ubah</button></a>
                                         </div>
-                                        @endempty
+                                        @endif
                                         @endif
                                         <div class="table-responsive">
                                             <table class="table table-striped" id="rakittable">
@@ -109,15 +108,14 @@
                                 <div class="row">
                                     <div class="col-lg-12">
                                         @if(isset($b->Pengujian))
-                                        @empty($b->PemeriksaanProses)
-                                        <div class="float-right" style="margin-bottom:1%;margin-top:1%;">
+                                        @if(!isset($pa)) <div class="float-right" style="margin-bottom:1%;margin-top:1%;">
                                             <a class="tambahaging" href="#"><button class="btn btn-info btn-sm"><i class="fas fa-plus"></i>&nbsp;Tambah</button></a>
                                         </div>
-                                        @else
+                                        @elseif(isset($pa))
                                         <div class="float-right" style="margin-bottom:1%;margin-top:1%;">
                                             <a class="editaging" href="#"><button class="btn btn-warning btn-sm"><i class="fas fa-pencil-alt"></i>&nbsp;Ubah</button></a>
                                         </div>
-                                        @endempty
+                                        @endif
                                         @endif
                                         <div class="table-responsive">
                                             <table class="table table-striped" id="agingtable">
@@ -137,8 +135,10 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
+                                                    @if(isset($pa))
+                                                    @foreach($pk as $i)
                                                     <tr>
-                                                        <td></td>
+                                                        <td>{{$loop->iteration}}</td>
                                                         <td></td>
                                                         <td></td>
                                                         <td></td>
@@ -147,6 +147,10 @@
                                                         <td></td>
                                                         <td></td>
                                                     </tr>
+                                                    @endforeach
+                                                    @elseif(!isset($pa))
+                                                    <tr></tr>
+                                                    @endif
                                                 </tbody>
                                             </table>
                                         </div>
@@ -157,15 +161,14 @@
                                 <div class="row">
                                     <div class="col-lg-12">
                                         @if(isset($b->Pengemasan))
-                                        @empty($b->PemeriksaanProses)
-                                        <div class="float-right" style="margin-bottom:1%;margin-top:1%;">
-                                            <a class="tambahkemas" href="#"><button class="btn btn-info btn-sm"><i class="fas fa-plus"></i>&nbsp;Tambah</button></a>
+                                        @if(!isset($pk)) <div class="float-right" style="margin-bottom:1%;margin-top:1%;">
+                                            <a class="tambahkemas" href="/pemeriksaan"><button class="btn btn-info btn-sm"><i class="fas fa-plus"></i>&nbsp;Tambah</button></a>
                                         </div>
-                                        @else
+                                        @elseif(isset($pk))
                                         <div class="float-right" style="margin-bottom:1%;margin-top:1%;">
                                             <a class="editkemas" href="#"><button class="btn btn-warning btn-sm"><i class="fas fa-pencil-alt"></i>&nbsp;Ubah</button></a>
                                         </div>
-                                        @endempty
+                                        @endif
                                         @endif
                                         <div class="table-responsive">
                                             <table class="table table-striped" id="kemastable">

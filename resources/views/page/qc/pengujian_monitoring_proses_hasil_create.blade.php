@@ -445,7 +445,6 @@
                 $(this).closest('tr').find("select.tindak_lanjut option[value='pengemasan']").attr('disabled', false);
                 $(this).closest('tr').find("select.tindak_lanjut option[value='perbaikan']").attr('disabled', true);
                 $(this).closest('tr').find("select.tindak_lanjut option[value='produk_spesialis']").attr('disabled', true);
-
             } else if (this.value == 'nok') {
                 // $('select').select2('val', '');
                 $(this).closest('tr').find('select.tindak_lanjut').val('').trigger('change');

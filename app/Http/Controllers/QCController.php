@@ -1007,7 +1007,10 @@ class QCController extends Controller
     public function pemeriksaan_proses($bppb_id)
     {
         $b = Bppb::find($bppb_id);
-        return view('page.qc.pemeriksaan_proses_show', ['bppb_id' => $bppb_id, 'b' => $b]);
+        $pr = PemeriksaanProses::where([['bppb_id', '=', $bppb_id], ['proses', '=', 'rakit']])->get();
+        $pa = PemeriksaanProses::where([['bppb_id', '=', $bppb_id], ['proses', '=', 'aging']])->get();
+        $pk = PemeriksaanProses::where([['bppb_id', '=', $bppb_id], ['proses', '=', 'kemas']])->get();
+        return view('page.qc.pemeriksaan_proses_show', ['bppb_id' => $bppb_id, 'b' => $b, 'pr' => $pr, 'pa' => $pa, 'pk' => $pk]);
     }
 
     public function pemeriksaan_proses_show($bppb_id, $proses)
@@ -1016,6 +1019,22 @@ class QCController extends Controller
             ['bppb_id', '=', $bppb_id],
             ['proses', '=', $proses]
         ])->get();
+    }
+
+    public function pemeriksaan_proses_create($bppb_id, $proses)
+    {
+        $b = Bppb::find($bppb_id);
+
+        $dp = $b->detail_produk_id;
+
+        $p = ListIkPemeriksaan::whereHas('IkPemeriksaan', function ($q) use ($dp, $proses) {
+            $q->where([
+                ['detail_produk_id', '=', $dp],
+                ['proses', '=', $proses]
+            ]);
+        })->get();
+
+        return view('page.qc.pemeriksaan_proses_create', ['bppb_id' => $bppb_id, 'proses' => $proses, 'p' => $p, 'b' => $b]);
     }
 
     public function pengujian()
