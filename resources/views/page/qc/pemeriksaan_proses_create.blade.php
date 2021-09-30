@@ -12,7 +12,8 @@
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item active">Pemeriksaan Proses</li>
+                    <li class="breadcrumb-item"><a href="/pemeriksaan_proses/{{$bppb_id}}">Pemeriksaan Proses</a></li>
+                    <li class="breadcrumb-item active">Tambah Pemeriksaan Proses {{$proses}}</li>
                 </ol>
             </div>
         </div>
@@ -67,6 +68,7 @@
                     <div class="card-header bg-success">
                         <h3 class="card-title" style="color:white;"><i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;Pemeriksaan Proses {{$proses}}</h3>
                     </div>
+                    @if(count($p) > 0)
                     <div class="card-body">
                         <div class="col-md-12">
                             <form action="{{ route('pemeriksaan_proses.store', ['bppb_id' => $bppb_id, 'proses' => $proses]) }}" method="post" enctype="multipart/form-data">
@@ -75,16 +77,22 @@
 
                                 <div class="form-horizontal">
                                     <h4>Detail Pemeriksaan</h4>
-                                    <div class="form-group row">
-                                        <label for="nomor" class="col-sm-5 col-form-label" style="text-align:right;">Nomor</label>
-                                        <div class="col-sm-7">
-                                            <input type="text" class="form-control" name="nomor" id="nomor" value="" style="width: 25%;">
+                                    <div class="form-group row" style="text-align:right;">
+                                        <label for="nomor" class="col-sm-5 col-form-label">Nomor</label>
+                                        <div class="col-sm-1">
+                                            <input type="text" class="form-control @error('nomor') is-invalid @enderror" name="nomor" id="nomor" value="">
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <input type="text" class="form-control" name="bulan" id="bulan" value="{{date('m')}}" readonly>
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <input type="text" class="form-control" name="tahun" id="tahun" value="{{date('Y')}}" readonly>
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label for="tanggal" class="col-sm-5 col-form-label" style="text-align:right;">Tanggal</label>
                                         <div class="col-sm-7">
-                                            <input type="date" class="form-control" name="tanggal" id="tanggal" value="" style="width: 20%;">
+                                            <input type="date" class="form-control  @error('tanggal') is-invalid @enderror" name="tanggal" id="tanggal" value="{{date('Y-m-d')}}" style="width: 20%;">
                                         </div>
                                     </div>
 
@@ -92,7 +100,7 @@
                                     <div class="form-group row">
                                         <label for="jumlah_all" class="col-sm-5 col-form-label" style="text-align:right;">Jumlah</label>
                                         <div class="col-sm-7">
-                                            <input type="number" class="form-control" name="jumlah_all" id="jumlah_all" value="{{$b->jumlah}}" style="width: 20%;">
+                                            <input type="number" class="form-control @error('jumlah_all') is-invalid @enderror" name="jumlah_all" id="jumlah_all" value="{{$b->jumlah}}" style="width: 20%;">
                                         </div>
                                     </div>
                                     <div class="form-group row">
@@ -180,36 +188,42 @@
                             <a class="cancelmodal" data-toggle="modal" data-target="#cancelmodal"><button type="button" class="btn btn-block btn-danger rounded-pill" style="width:200px;float:left;"><i class="fas fa-times"></i>&nbsp;Batal</button></a>
                         </span>
                         <span>
-                            <button type="submit" class="btn btn-block btn-success rounded-pill" style="width:200px;float:right;" id="tambahlaporan" disabled><i class="fas fa-plus"></i>&nbsp;Tambah Data</button>
+                            <button type="submit" class="btn btn-block btn-success rounded-pill" style="width:200px;float:right;" id="tambahlaporan"><i class="fas fa-plus"></i>&nbsp;Tambah Data</button>
                         </span>
                     </div>
                     </form>
+                    @elseif(count($p) <= 0) <div class="card-body">
+                        <div style="text-align:center;"><i>
+                                <h4>Format Pengecekan <span style="color:red; font: weight 5px;">Belum Tersedia</span>, Silahkan Tambahkan terlebih dahulu</h4>
+                            </i></div>
+                        <div style="text-align:center;"><a href="/pemeriksaan_proses/{{$bppb_id}}">Kembali ke Halaman Sebelumnya</a></div>
                 </div>
+                @endif
+            </div>
 
-                <!-- /.row -->
-            </div><!-- /.container-fluid -->
-            <div class="modal fade" id="cancelmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                <div class="modal-dialog modal-md" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header" style="background-color:	#778899;">
-                            <h4 class="modal-title" id="myModalLabel" style="color:white;">Keluar Halaman</h4>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        </div>
-                        <div class="modal-body" id="cancel">
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="card">
-                                        <div class="card-body" style="text-align:center;">
-                                            <h6>Apakah anda yakin meninggalkan halaman ini?</h6>
-                                        </div>
-                                        <div class="card-footer col-12" style="margin-bottom: 2%;">
-                                            <span>
-                                                <button type="button" class="btn btn-block btn-secondary" data-dismiss="modal" id="batalhapussk" style="width:30%;float:left;">Batal</button>
-                                            </span>
-                                            <span>
-                                                <a href="/pemeriksaan_proses/{{$bppb_id}}"><button type="button" class="btn btn-block btn-danger" id="" style="width:30%;float:right;">Keluar</button></a>
-                                            </span>
-                                        </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+        <div class="modal fade" id="cancelmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-md" role="document">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color:	#778899;">
+                        <h4 class="modal-title" id="myModalLabel" style="color:white;">Keluar Halaman</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body" id="cancel">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="card">
+                                    <div class="card-body" style="text-align:center;">
+                                        <h6>Apakah anda yakin meninggalkan halaman ini?</h6>
+                                    </div>
+                                    <div class="card-footer col-12" style="margin-bottom: 2%;">
+                                        <span>
+                                            <button type="button" class="btn btn-block btn-secondary" data-dismiss="modal" id="batalhapussk" style="width:30%;float:left;">Batal</button>
+                                        </span>
+                                        <span>
+                                            <a href="/pemeriksaan_proses/{{$bppb_id}}"><button type="button" class="btn btn-block btn-danger" id="" style="width:30%;float:right;">Keluar</button></a>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -217,6 +231,7 @@
                     </div>
                 </div>
             </div>
+        </div>
 </section>
 @endsection
 

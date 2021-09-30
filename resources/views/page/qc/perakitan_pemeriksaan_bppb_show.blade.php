@@ -156,10 +156,8 @@
                                 </button>
                                 <ul id="filter_dd" class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownFilter">
                                     <li><a class="dropdown-item status_filter semua" id="status_filter" name="status_filter">Semua</a></li>
-                                    <li><a class="dropdown-item status_filter req_pemeriksaan_terbuka" id="status_filter" name="status_filter">Permintaan Pemeriksaan Terbuka</a></li>
-                                    <li><a class="dropdown-item status_filter req_pemeriksaan_tertutup" id="status_filter" name="status_filter">Permintaan Pemeriksaan Tertutup</a></li>
-                                    <li><a class="dropdown-item status_filter req_pemeriksaan_tertutup" id="status_filter" name="status_filter">Selesai Pemeriksaan Terbuka</a></li>
-                                    <li><a class="dropdown-item status_filter acc_pemeriksaan_tertutup" id="status_filter" name="status_filter">Selesai Pemeriksaan Tertutup</a></li>
+                                    <li><a class="dropdown-item status_filter req_pemeriksaan" id="status_filter" name="status_filter">Permintaan Pemeriksaan</a></li>
+                                    <li><a class="dropdown-item status_filter acc_pemeriksaan" id="status_filter" name="status_filter">Selesai Pemeriksaan</a></li>
                                 </ul>
                             </span>
                             <span class="dropdown float-right" id="status" style="margin-right:5px;" hidden>
@@ -167,8 +165,7 @@
                                     Status
                                 </button>
                                 <ul id="status_dd" class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownFilter">
-                                    <li><a class="dropdown-item status_update acc_pemeriksaan_terbuka_status" id="status_update" name="status_update">Pemeriksaan Terbuka</a></li>
-                                    <li><a class="dropdown-item status_update acc_pemeriksaan_tertutup_status" id="status_update" name="status_update">Pemeriksaan Tertutup</a></li>
+                                    <li><a class="dropdown-item status_update request" id="status_update" name="status_update"><i class="fas fa-check"></i>&nbsp;Pemeriksaan OK</a></li>
                                 </ul>
                             </span>
                             <div></div>
@@ -181,17 +178,13 @@
                                 <table id="examples" class="table table-hover table-striped styled-table" style="width:100%;">
                                     <thead style="text-align: center;">
                                         <tr>
-                                            <th rowspan="2">#</th>
-                                            <th rowspan="2">Tanggal</th>
-                                            <th rowspan="2">No Seri</th>
-                                            <th rowspan="2">Operator</th>
-                                            <th colspan="2">Pemeriksaan</th>
-                                            <th rowspan="2">Keterangan</th>
-                                            <th rowspan="2">Aksi</th>
-                                        </tr>
-                                        <tr>
-                                            <th>Terbuka</th>
-                                            <th>Tertutup</th>
+                                            <th>#</th>
+                                            <th>Tanggal</th>
+                                            <th>No Seri</th>
+                                            <th>Operator</th>
+                                            <th>Pemeriksaan</th>
+                                            <th>Keterangan</th>
+                                            <th>Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody style="text-align:center; vertical-align: middle;">
@@ -203,7 +196,6 @@
                         </div>
                         <!-- /.card -->
                     </div>
-
                     <!-- /.card -->
                 </div>
             </div>
@@ -276,7 +268,7 @@
                 destroy: true,
                 scrollX: true,
                 processing: true,
-                serverSide: false,
+                serverSide: true,
                 ajax: "/perakitan/pemeriksaan/bppb/show/{{$id}}/" + status,
                 columns: [{
                         data: 'checkbox',
@@ -293,10 +285,6 @@
                     {
                         data: 'operator',
                         name: 'operator'
-                    },
-                    {
-                        data: 'hasil_terbuka',
-                        name: 'hasil_terbuka'
                     },
                     {
                         data: 'hasil_tertutup',
@@ -319,24 +307,24 @@
             if (cbox.length <= 0) {
                 $('#status').attr('hidden', true);
                 $('#filter').removeAttr('hidden');
-                $('input[type="checkbox"].req_pemeriksaan_tertutup').removeAttr('disabled');
-                $('input[type="checkbox"].req_pemeriksaan_terbuka').removeAttr('disabled');
-                $('.acc_pemeriksaan_terbuka_status').removeClass('disabled');
-                $('.acc_pemeriksaan_tertutup_status').removeClass('disabled');
+                // $('input[type="checkbox"].req_pemeriksaan_tertutup').removeAttr('disabled');
+                // $('input[type="checkbox"].req_pemeriksaan_terbuka').removeAttr('disabled');
+                // $('.acc_pemeriksaan_terbuka_status').removeClass('disabled');
+                // $('.acc_pemeriksaan_tertutup_status').removeClass('disabled');
             } else if (cbox.length > 0) {
                 $('#filter').attr('hidden', true);
                 $('#status').removeAttr('hidden');
-                if (cbox.hasClass('req_pemeriksaan_terbuka')) {
-                    $('input[type="checkbox"].req_pemeriksaan_tertutup').attr('disabled', true);
-                    $('input[type="checkbox"].req_pemeriksaan_terbuka').removeAttr('disabled');
-                    $('.acc_pemeriksaan_tertutup_status').addClass('disabled');
-                    $('.acc_pemeriksaan_terbuka_status').removeClass('disabled');
-                } else if (cbox.hasClass('req_pemeriksaan_tertutup')) {
-                    $('input[type="checkbox"].req_pemeriksaan_tertutup').removeAttr('disabled');
-                    $('input[type="checkbox"].req_pemeriksaan_terbuka').attr('disabled', true);
-                    $('.acc_pemeriksaan_tertutup_status').removeClass('disabled');
-                    $('.acc_pemeriksaan_terbuka_status').addClass('disabled');
-                }
+                // if (cbox.hasClass('req_pemeriksaan_terbuka')) {
+                //     $('input[type="checkbox"].req_pemeriksaan_tertutup').attr('disabled', true);
+                //     $('input[type="checkbox"].req_pemeriksaan_terbuka').removeAttr('disabled');
+                //     $('.acc_pemeriksaan_tertutup_status').addClass('disabled');
+                //     $('.acc_pemeriksaan_terbuka_status').removeClass('disabled');
+                // } else if (cbox.hasClass('req_pemeriksaan_tertutup')) {
+                //     $('input[type="checkbox"].req_pemeriksaan_tertutup').removeAttr('disabled');
+                //     $('input[type="checkbox"].req_pemeriksaan_terbuka').attr('disabled', true);
+                //     $('.acc_pemeriksaan_tertutup_status').removeClass('disabled');
+                //     $('.acc_pemeriksaan_terbuka_status').addClass('disabled');
+                // }
             }
         });
 
@@ -346,12 +334,10 @@
 
             if ($(this).hasClass('semua')) {
                 status = "semua";
-            } else if ($(this).hasClass('req_pemeriksaan_terbuka')) {
-                status = "req_pemeriksaan_terbuka";
-            } else if ($(this).hasClass('req_pemeriksaan_tertutup')) {
-                status = "req_pemeriksaan_tertutup";
-            } else if ($(this).hasClass('acc_pemeriksaan_tertutup')) {
-                status = "acc_pemeriksaan_tertutup";
+            } else if ($(this).hasClass('req_pemeriksaan')) {
+                status = "req_pemeriksaan";
+            } else if ($(this).hasClass('acc_pemeriksaan')) {
+                status = "acc_pemeriksaan";
             }
 
             tableview(status);
@@ -365,9 +351,7 @@
                 arr.push($(this).val());
             });
 
-            if ($(this).hasClass('acc_pemeriksaan_terbuka_status')) {
-                status = "acc_pemeriksaan_terbuka";
-            } else if ($(this).hasClass('acc_pemeriksaan_tertutup_status')) {
+            if ($(this).hasClass('request')) {
                 status = "acc_pemeriksaan_tertutup";
             }
 
@@ -375,7 +359,7 @@
                 $.ajax({
                     url: "/perakitan/multiple/status/" + arr + "/" + status,
                     success: function(result) {
-                        window.location.reload(false);
+                        window.location.reload(true);
                     },
                     error: function(jqXHR, testStatus, error) {
                         console.log("error");

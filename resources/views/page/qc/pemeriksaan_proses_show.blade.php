@@ -35,12 +35,14 @@
             <div class="col-lg-3">
                 <div class="card">
                     <div class="card-body">
-                        <h4>Data Info</h4>
-                        <ul class="list-group list-group-flush borderless">
-                            <li class="list-group-item"><b>Nama Produk</b><a class="float-right"></a></li>
-                            <li class="list-group-item"><b>Kelompok Produk</b><a class="float-right">543</a></li>
-                            <li class="list-group-item"><b>No BPPB</b><a class="float-right">543</a></li>
-                            <li class="list-group-item"><b>Tanggal BPPB</b><a class="float-right">543</a></li>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item borderless">
+                                <h4>Data Info</h4>
+                            </li>
+                            <li class="list-group-item borderless"><b>Nama Produk</b><a class="float-right"></a></li>
+                            <li class="list-group-item borderless"><b>Kelompok Produk</b><a class="float-right">543</a></li>
+                            <li class="list-group-item borderless"><b>No BPPB</b><a class="float-right">543</a></li>
+                            <li class="list-group-item borderless"><b>Tanggal BPPB</b><a class="float-right">543</a></li>
                         </ul>
                     </div>
                 </div>
@@ -51,154 +53,261 @@
                     <div class="card-body">
                         <nav>
                             <div class="nav nav-tabs nav-justified" id="nav-tab" role="tablist">
-                                <a class="nav-item nav-link active" id="nav-rakit-tab" data-toggle="tab" href="#nav-rakit" role="tab" aria-controls="nav-rakit" aria-selected="true">Rakit</a>
-                                <a class="nav-item nav-link" id="nav-aging-tab" data-toggle="tab" href="#nav-aging" role="tab" aria-controls="nav-aging" aria-selected="false">Aging</a>
-                                <a class="nav-item nav-link" id="nav-kemas-tab" data-toggle="tab" href="#nav-kemas" role="tab" aria-controls="nav-kemas" aria-selected="false">Kemas</a>
+                                <a class="nav-item nav-link active" id="nav-rakit-tab" data-toggle="tab" href="#nav-rakit" role="tab" aria-controls="nav-rakit" aria-selected="true">
+                                    Rakit
+                                </a>
+                                <a class="nav-item nav-link" id="nav-aging-tab" data-toggle="tab" href="#nav-aging" role="tab" aria-controls="nav-aging" aria-selected="false">
+                                    Aging
+                                </a>
+                                <a class="nav-item nav-link" id="nav-kemas-tab" data-toggle="tab" href="#nav-kemas" role="tab" aria-controls="nav-kemas" aria-selected="false">
+                                    Kemas
+                                </a>
                             </div>
                         </nav>
                         <div class="tab-content" id="nav-tabContent">
                             <div class="tab-pane fade show active" id="nav-rakit" role="tabpanel" aria-labelledby="nav-rakit-tab">
                                 <div class="row">
                                     <div class="col-lg-12">
-                                        @if(isset($b->Perakitan))
-                                        @if(!isset($pr)) <div class="float-right" style="margin-bottom:1%;margin-top:1%;">
-                                            <a class="tambahrakit" href="#"><button class="btn btn-info btn-sm"><i class="fas fa-plus"></i>&nbsp;Tambah</button></a>
-                                        </div>
-                                        @else
-                                        <div class="float-right" style="margin-bottom:1%;margin-top:1%;">
-                                            <a class="editrakit" href="#"><button class="btn btn-warning btn-sm"><i class="fas fa-pencil-alt"></i>&nbsp;Ubah</button></a>
-                                        </div>
-                                        @endif
-                                        @endif
-                                        <div class="table-responsive">
-                                            <table class="table table-striped" id="rakittable">
-                                                <thead style="text-align:center;">
-                                                    <tr>
-                                                        <th rowspan="2">No</th>
-                                                        <th rowspan="2">Hal yang diperiksa</th>
-                                                        <th rowspan="2">Standar Keberterimaan</th>
-                                                        <th rowspan="2">Jumlah</th>
-                                                        <th colspan="2">Hasil</th>
-                                                        <th rowspan="2">Tindak Lanjut</th>
-                                                        <th rowspan="2">Keterangan</th>
-                                                    </tr>
-                                                    <tr>
-                                                        <th><i class="fas fa-check" style="color:green;"></i></th>
-                                                        <th><i class="fas fa-times" style="color:red;"></i></th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                        @if(count($b->Perakitan) > 0)
+                                        @if(count($pr) <= 0) <div class="float-right" style="margin-bottom:1%;margin-top:1%;">
+                                            <a class="tambahrakit" href="{{route('pemeriksaan_proses.create',  ['bppb_id' => $bppb_id, 'proses' => 'Perakitan'])}}"><button class="btn btn-info btn-sm"><i class="fas fa-plus"></i>&nbsp;Tambah</button></a>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="nav-aging" role="tabpanel" aria-labelledby="nav-aging-tab">
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        @if(isset($b->Pengujian))
-                                        @if(!isset($pa)) <div class="float-right" style="margin-bottom:1%;margin-top:1%;">
-                                            <a class="tambahaging" href="#"><button class="btn btn-info btn-sm"><i class="fas fa-plus"></i>&nbsp;Tambah</button></a>
-                                        </div>
-                                        @elseif(isset($pa))
-                                        <div class="float-right" style="margin-bottom:1%;margin-top:1%;">
-                                            <a class="editaging" href="#"><button class="btn btn-warning btn-sm"><i class="fas fa-pencil-alt"></i>&nbsp;Ubah</button></a>
-                                        </div>
-                                        @endif
-                                        @endif
-                                        <div class="table-responsive">
-                                            <table class="table table-striped" id="agingtable">
-                                                <thead style="text-align:center;">
-                                                    <tr>
-                                                        <th rowspan="2">No</th>
-                                                        <th rowspan="2">Hal yang diperiksa</th>
-                                                        <th rowspan="2">Standar Keberterimaan</th>
-                                                        <th rowspan="2">Jumlah</th>
-                                                        <th colspan="2">Hasil</th>
-                                                        <th rowspan="2">Tindak Lanjut</th>
-                                                        <th rowspan="2">Keterangan</th>
+                                    @elseif(count($pr) > 0)
+                                    <div class="float-right" style="margin-bottom:1%;margin-top:1%;">
+                                    </div>
+                                    <!-- <div class="float-right" style="margin-bottom:1%;margin-top:1%;">
+                                        <a class="editrakit" href="#"><button class="btn btn-warning btn-sm"><i class="fas fa-pencil-alt"></i>&nbsp;Ubah</button></a>
+                                    </div> -->
+                                    @endif
+
+                                    @endif
+                                    <div class="table-responsive">
+                                        <table class="table table-striped" id="rakittable">
+                                            <thead style="text-align:center;">
+                                                <tr>
+                                                    <th rowspan="2">No</th>
+                                                    <th rowspan="2">Hal yang diperiksa</th>
+                                                    <th rowspan="2">Standar Keberterimaan</th>
+                                                    <th rowspan="2">Jumlah</th>
+                                                    <th colspan="2">Hasil</th>
+                                                    <th rowspan="2">Tindak Lanjut</th>
+                                                    <th rowspan="2">Keterangan</th>
+                                                </tr>
+                                                <tr>
+                                                    <th><i class="fas fa-check" style="color:green;"></i></th>
+                                                    <th><i class="fas fa-times" style="color:red;"></i></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if(count($pr) <= 0) <tr style="text-align:center;">
+                                                    <td colspan="12"><i>Data Belum tersedia</i></td>
                                                     </tr>
+                                                    @elseif(count($pr)> 0)
+                                                    @foreach($lr as $i)
                                                     <tr>
-                                                        <th><i class="fas fa-check" style="color:green;"></i></th>
-                                                        <th><i class="fas fa-times" style="color:red;"></i></th>
+                                                        <td rowspan="{{count($i->DetailIkPemeriksaan)}}">{{$loop->iteration}}</td>
+                                                        <td rowspan="{{count($i->DetailIkPemeriksaan)}}">{{$i->pemeriksaan}}</td>
+                                                        @foreach($i->DetailIkPemeriksaan as $j)
+                                                        <?php $first = 0; ?>
+                                                        @if ($first == 0)
+                                                        <?php $first = 1; ?>
+                                                        <td>{{$j->penerimaan}}</td>
+                                                        @foreach($pr as $k)
+                                                        @if($k->detail_ik_pemeriksaan_id == $j->id)
+                                                        <td>{{$k->jumlah}}</td>
+                                                        <td>{{$k->hasil_ok}}</td>
+                                                        <td>{{$k->hasil_nok}}</td>
+                                                        <td>{{$k->tindak_lanjut}}</td>
+                                                        <td>{{$k->keterangan}}</td>
+                                                        @endif
+                                                        @endforeach
                                                     </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @if(isset($pa))
-                                                    @foreach($pk as $i)
+                                                    @elseif($first == 1)
                                                     <tr>
-                                                        <td>{{$loop->iteration}}</td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
+                                                        <td>{{$j->penerimaan}}</td>
+                                                        @foreach($pr as $k)
+                                                        @if($k->detail_ik_pemeriksaan_id == $j->id)
+                                                        <td>{{$k->jumlah}}</td>
+                                                        <td>{{$k->hasil_ok}}</td>
+                                                        <td>{{$k->hasil_nok}}</td>
+                                                        <td>{{$k->tindak_lanjut}}</td>
+                                                        <td>{{$k->keterangan}}</td>
+                                                        @endif
+                                                        @endforeach
                                                     </tr>
-                                                    @endforeach
-                                                    @elseif(!isset($pa))
-                                                    <tr></tr>
                                                     @endif
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                                    @endforeach
+                                                    @endforeach
+                                                    @endif
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="nav-kemas" role="tabpanel" aria-labelledby="nav-kemas-tab">
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        @if(isset($b->Pengemasan))
-                                        @if(!isset($pk)) <div class="float-right" style="margin-bottom:1%;margin-top:1%;">
-                                            <a class="tambahkemas" href="/pemeriksaan"><button class="btn btn-info btn-sm"><i class="fas fa-plus"></i>&nbsp;Tambah</button></a>
-                                        </div>
-                                        @elseif(isset($pk))
-                                        <div class="float-right" style="margin-bottom:1%;margin-top:1%;">
-                                            <a class="editkemas" href="#"><button class="btn btn-warning btn-sm"><i class="fas fa-pencil-alt"></i>&nbsp;Ubah</button></a>
-                                        </div>
-                                        @endif
-                                        @endif
-                                        <div class="table-responsive">
-                                            <table class="table table-striped" id="kemastable">
-                                                <thead style="text-align:center;">
-                                                    <tr>
-                                                        <th rowspan="2">No</th>
-                                                        <th rowspan="2">Hal yang diperiksa</th>
-                                                        <th rowspan="2">Standar Keberterimaan</th>
-                                                        <th rowspan="2">Jumlah</th>
-                                                        <th colspan="2">Hasil</th>
-                                                        <th rowspan="2">Tindak Lanjut</th>
-                                                        <th rowspan="2">Keterangan</th>
-                                                    </tr>
-                                                    <tr>
-                                                        <th><i class="fas fa-check" style="color:green;"></i></th>
-                                                        <th><i class="fas fa-times" style="color:red;"></i></th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
+                        </div>
+                        <div class="tab-pane fade" id="nav-aging" role="tabpanel" aria-labelledby="nav-aging-tab">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    @if(count($b->MonitoringProses) > 0)
+                                    @if(count($pa) <= 0) <div class="float-right" style="margin-bottom:1%;margin-top:1%;">
+                                        <a class="tambahaging" href="{{route('pemeriksaan_proses.create',  ['bppb_id' => $bppb_id, 'proses' => 'Pengujian'])}}"><button class="btn btn-info btn-sm"><i class="fas fa-plus"></i>&nbsp;Tambah</button></a>
                                 </div>
+                                @elseif(count($pa) > 0)
+                                <div class="float-right" style="margin-bottom:1%;margin-top:1%;">
+                                </div>
+                                <!-- <div class="float-right" style="margin-bottom:1%;margin-top:1%;">
+                                    <a class="editaging" href="#"><button class="btn btn-warning btn-sm"><i class="fas fa-pencil-alt"></i>&nbsp;Ubah</button></a>
+                                </div> -->
+                                @endif
+                                @endif
+                                <div class="table-responsive">
+                                    <table class="table table-striped" id="agingtable">
+                                        <thead style="text-align:center;">
+                                            <tr>
+                                                <th rowspan="2">No</th>
+                                                <th rowspan="2">Hal yang diperiksa</th>
+                                                <th rowspan="2">Standar Keberterimaan</th>
+                                                <th rowspan="2">Jumlah</th>
+                                                <th colspan="2">Hasil</th>
+                                                <th rowspan="2">Tindak Lanjut</th>
+                                                <th rowspan="2">Keterangan</th>
+                                            </tr>
+                                            <tr>
+                                                <th><i class="fas fa-check" style="color:green;"></i></th>
+                                                <th><i class="fas fa-times" style="color:red;"></i></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if(count($pa) <= 0) <tr style="text-align:center;">
+                                                <td colspan="12"><i>Data Belum tersedia</i></td>
+                                                </tr>
+                                                @elseif(count($pa)> 0)
+                                                @foreach($la as $i)
+                                                <tr>
+                                                    <td rowspan="{{count($i->DetailIkPemeriksaan)}}">{{$loop->iteration}}</td>
+                                                    <td rowspan="{{count($i->DetailIkPemeriksaan)}}">{{$i->pemeriksaan}}</td>
+                                                    @foreach($i->DetailIkPemeriksaan as $j)
+                                                    <?php $first = 0; ?>
+                                                    @if ($first == 0)
+                                                    <?php $first = 1; ?>
+                                                    <td>{{$j->penerimaan}}</td>
+                                                    @foreach($pa as $k)
+                                                    @if($k->detail_ik_pemeriksaan_id == $j->id)
+                                                    <td>{{$k->jumlah}}</td>
+                                                    <td>{{$k->hasil_ok}}</td>
+                                                    <td>{{$k->hasil_nok}}</td>
+                                                    <td>{{$k->tindak_lanjut}}</td>
+                                                    <td>{{$k->keterangan}}</td>
+                                                    @endif
+                                                    @endforeach
+                                                </tr>
+                                                @elseif($first == 1)
+                                                <tr>
+                                                    <td>{{$j->penerimaan}}</td>
+                                                    @foreach($pa as $k)
+                                                    @if($k->detail_ik_pemeriksaan_id == $j->id)
+                                                    <td>{{$k->jumlah}}</td>
+                                                    <td>{{$k->hasil_ok}}</td>
+                                                    <td>{{$k->hasil_nok}}</td>
+                                                    <td>{{$k->tindak_lanjut}}</td>
+                                                    <td>{{$k->keterangan}}</td>
+                                                    @endif
+                                                    @endforeach
+                                                </tr>
+                                                @endif
+                                                @endforeach
+                                                @endforeach
+                                                @endif
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="nav-kemas" role="tabpanel" aria-labelledby="nav-kemas-tab">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                @if(count($b->Pengemasan) > 0)
+                                @if(count($pk) <= 0) <div class="float-right" style="margin-bottom:1%;margin-top:1%;">
+                                    <a class="tambahkemas" href="{{route('pemeriksaan_proses.create',  ['bppb_id' => $bppb_id, 'proses' => 'Pengujian'])}}"><button class="btn btn-info btn-sm"><i class="fas fa-plus"></i>&nbsp;Tambah</button></a>
+                            </div>
+                            @elseif(count($pk) > 0)
+                            <div class="float-right" style="margin-bottom:1%;margin-top:1%;">
+                            </div>
+                            <!-- <div class="float-right" style="margin-bottom:1%;margin-top:1%;">
+                                <a class="editkemas" href="#"><button class="btn btn-warning btn-sm"><i class="fas fa-pencil-alt"></i>&nbsp;Ubah</button></a>
+                            </div> -->
+                            @endif
+                            @endif
+                            <div class="table-responsive">
+                                <table class="table table-striped" id="kemastable">
+                                    <thead style="text-align:center;">
+                                        <tr>
+                                            <th rowspan="2">No</th>
+                                            <th rowspan="2">Hal yang diperiksa</th>
+                                            <th rowspan="2">Standar Keberterimaan</th>
+                                            <th rowspan="2">Jumlah</th>
+                                            <th colspan="2">Hasil</th>
+                                            <th rowspan="2">Tindak Lanjut</th>
+                                            <th rowspan="2">Keterangan</th>
+                                        </tr>
+                                        <tr>
+                                            <th><i class="fas fa-check" style="color:green;"></i></th>
+                                            <th><i class="fas fa-times" style="color:red;"></i></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if(count($pk) <= 0) <tr style="text-align:center;">
+                                            <td colspan="12"><i>Data Belum tersedia</i></td>
+                                            </tr>
+                                            @elseif(count($pk)> 0)
+                                            @foreach($lk as $i)
+                                            <tr>
+                                                <td rowspan="{{count($i->DetailIkPemeriksaan)}}">{{$loop->iteration}}</td>
+                                                <td rowspan="{{count($i->DetailIkPemeriksaan)}}">{{$i->pemeriksaan}}</td>
+                                                @foreach($i->DetailIkPemeriksaan as $j)
+                                                <?php $first = 0; ?>
+                                                @if ($first == 0)
+                                                <?php $first = 1; ?>
+                                                <td>{{$j->penerimaan}}</td>
+                                                @foreach($pk as $k)
+                                                @if($k->detail_ik_pemeriksaan_id == $j->id)
+                                                <td>{{$k->jumlah}}</td>
+                                                <td>{{$k->hasil_ok}}</td>
+                                                <td>{{$k->hasil_nok}}</td>
+                                                <td>{{$k->tindak_lanjut}}</td>
+                                                <td>{{$k->keterangan}}</td>
+                                                @endif
+                                                @endforeach
+                                            </tr>
+                                            @elseif($first == 1)
+                                            <tr>
+                                                <td>{{$j->penerimaan}}</td>
+                                                @foreach($pk as $k)
+                                                @if($k->detail_ik_pemeriksaan_id == $j->id)
+                                                <td>{{$k->jumlah}}</td>
+                                                <td>{{$k->hasil_ok}}</td>
+                                                <td>{{$k->hasil_nok}}</td>
+                                                <td>{{$k->tindak_lanjut}}</td>
+                                                <td>{{$k->keterangan}}</td>
+                                                @endif
+                                                @endforeach
+                                            </tr>
+                                            @endif
+                                            @endforeach
+                                            @endforeach
+                                            @endif
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+    </div>
+    </div>
     </div>
 </section>
 @endsection

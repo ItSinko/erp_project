@@ -521,11 +521,12 @@ Route::group(['prefix' => '/perakitan', 'middleware' => 'auth'], function () {
         Route::put('/tertutup/update/{id}', 'QCController@perakitan_pemeriksaan_tertutup_update')->name('perakitan.pemeriksaan.tertutup.update');
         /* Hasil */
         Route::get('/hasil/{id}', 'QCController@perakitan_pemeriksaan_hasil')->name('perakitan.pemeriksaan.hasil');
-        Route::get('/hasil/show/{id}', 'QCController@perakitan_pemeriksaan_hasil_show')->name('perakitan.pemeriksaan.hasil.show');
+        Route::get('/hasil/show/{id}/{status}', 'QCController@perakitan_pemeriksaan_hasil_show')->name('perakitan.pemeriksaan.hasil.show');
         Route::get('/hasil/detail/{id}', 'QCController@perakitan_pemeriksaan_hasil_detail')->name('perakitan.pemeriksaan.hasil.detail');
         /* BPPB */
         Route::get('/bppb/{id}', 'QCController@perakitan_pemeriksaan_bppb')->name('perakitan.pemeriksaan.bppb');
         Route::get('/bppb/show/{id}/{status}', 'QCController@perakitan_pemeriksaan_bppb_show')->name('perakitan.pemeriksaan.bppb.show');
+        Route::get('/multiple/status/{id}/{status}', 'QCController@perakitan_multiple_status')->name('perakitan.pemeriksaan.multiple.status');
     });
 
     Route::get('/analisa_ps/show/{id}', 'EngController@perakitan_analisa_ps_show')->name('perakitan.analisa_ps.show');

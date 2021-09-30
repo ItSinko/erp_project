@@ -13,4 +13,9 @@ class PemeriksaanProses extends Model
     {
         return $this->belongsTo(Bppb::class);
     }
+
+    public function HasilPemeriksaanProses()
+    {
+        return $this->hasMany(HasilPemeriksaanProses::class);
+    }
 }
