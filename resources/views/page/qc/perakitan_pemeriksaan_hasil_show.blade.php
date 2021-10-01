@@ -1,7 +1,38 @@
 @extends('adminlte.page')
 
 @section('title', 'Beta Version')
+@section('adminlte_css')
+<style>
+    .box {
+        display: block;
+        width: auto;
+        height: auto;
+        background-color: #DDD;
+    }
 
+    #pop {
+        padding: 0px 0px;
+    }
+
+    .popiconsc {
+        color: green;
+        text-align: right;
+    }
+
+    .popiconer {
+        color: red;
+        text-align: right;
+    }
+
+    #example {
+        position: relative;
+    }
+
+    .text-middle {
+        vertical-align: middle;
+    }
+</style>
+@stop
 @section('content_header')
 <section class="content-header">
     <div class="container-fluid">
@@ -255,6 +286,29 @@
 <script>
     $(function() {
         tableview("semua");
+
+        $("#example").popover({
+                trigger: "manual",
+                html: true,
+                animation: false,
+                content: function() {
+                    return $(this).next('.pop').html();
+                }
+            })
+            .on("mouseenter", '.pop', function() {
+                var _this = this;
+                $(this).popover("show");
+                $(".pop").on("mouseleave", function() {
+                    $(_this).popover('hide');
+                });
+            }).on("mouseleave", '.pop', function() {
+                var _this = this;
+                setTimeout(function() {
+                    if (!$(".pop:hover").length) {
+                        $(_this).popover("hide");
+                    }
+                }, 300);
+            });
 
         function tableview(status) {
             $('#example').DataTable({

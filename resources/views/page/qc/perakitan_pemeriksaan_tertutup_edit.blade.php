@@ -7,14 +7,14 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>Pemeriksaan Tertutup</h1>
+                <h1>Pemeriksaan QC</h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="/">Home</a></li>
                     <li class="breadcrumb-item"><a href="/perakitan/pemeriksaan">Perakitan</a></li>
                     <li class="breadcrumb-item"><a href="/perakitan/pemeriksaan/bppb/{{$s->Perakitan->Bppb->id}}">Hasil Perakitan</a></li>
-                    <li class="breadcrumb-item active">Pemeriksaan Tertutup</li>
+                    <li class="breadcrumb-item active">Pemeriksaan QC</li>
                 </ol>
             </div>
         </div>
@@ -95,7 +95,7 @@
                 @endif
                 <div class="card">
                     <div class="card-header bg-warning">
-                        <h3 class="card-title"><i class="fas fa-pencil-alt" aria-hidden="true"></i>&nbsp;Ubah Pemeriksaan Tertutup</h3>
+                        <h3 class="card-title"><i class="fas fa-pencil-alt" aria-hidden="true"></i>&nbsp;Ubah Pemeriksaan</h3>
                     </div>
                     <div class="card-body">
                         <div class="col-md-12">
@@ -110,7 +110,67 @@
                                 <div class="form-horizontal">
 
                                     <div class="form-group row">
-                                        <label for="fungsi" class="col-sm-4 col-form-label" style="text-align:right;">Fungsi</label>
+                                        <label for="kondisi_fisik_bahan_baku" class="col-sm-5 col-form-label" style="text-align:right;">Kondisi Bahan Baku</label>
+                                        <div class="col-sm-1 col-form-label">
+                                            <div class="icheck-primary d-inline">
+                                                <input type="radio" id="kondisi_fisik_bahan_baku_ok" name="kondisi_fisik_bahan_baku" value="ok" @if($s->kondisi_fisik_bahan_baku == "ok")
+                                                checked
+                                                @elseif($s->kondisi_fisik_bahan_baku == "")
+                                                checked
+                                                @endif>
+                                                <label for="kondisi_fisik_bahan_baku_ok">
+                                                    Baik
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-2 col-form-label">
+                                            <div class="icheck-primary d-inline">
+                                                <input type="radio" id="kondisi_fisik_bahan_baku_nok" name="kondisi_fisik_bahan_baku" value="nok" @if($s->kondisi_fisik_bahan_baku == "nok")
+                                                checked
+                                                @endif>
+                                                <label for="kondisi_fisik_bahan_baku_nok">
+                                                    Tidak
+                                                </label>
+                                            </div>
+                                        </div>
+                                        @if ($errors->has('kondisi_fisik_bahan_baku'))
+                                        <span class="invalid-feedback" role="alert">{{$errors->first('kondisi_fisik_bahan_baku')}}</span>
+                                        @endif
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label for="divisi_id" class="col-sm-5 col-form-label" style="text-align:right;">Kondisi Saat Proses Perakitan</label>
+
+                                        <div class="col-sm-1 col-form-label">
+                                            <div class="icheck-primary d-inline">
+                                                <input type="radio" id="kondisi_saat_proses_perakitan_ok" name="kondisi_saat_proses_perakitan" value="ok" @if($s->kondisi_saat_proses_perakitan == "ok")
+                                                checked
+                                                @elseif($s->kondisi_saat_proses_perakitan == "")
+                                                checked
+                                                @endif>
+                                                <label for="kondisi_saat_proses_perakitan_ok">
+                                                    Baik
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-2 col-form-label">
+                                            <div class="icheck-primary d-inline">
+                                                <input type="radio" id="kondisi_saat_proses_perakitan_nok" name="kondisi_saat_proses_perakitan" value="nok" @if($s->kondisi_saat_proses_perakitan == "nok")
+                                                checked
+                                                @endif>
+                                                <label for="kondisi_saat_proses_perakitan_nok">
+                                                    Tidak
+                                                </label>
+                                            </div>
+                                        </div>
+                                        @if ($errors->has('kondisi_saat_proses_perakitan'))
+                                        <span class="invalid-feedback" role="alert">{{$errors->first('kondisi_saat_proses_perakitan')}}</span>
+                                        @endif
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label for="fungsi" class="col-sm-5 col-form-label" style="text-align:right;">Fungsi</label>
                                         <div class="col-sm-1 col-form-label">
                                             <div class="icheck-primary d-inline">
                                                 <input type="radio" id="fungsi_ok" name="fungsi" value="ok" @if($s->fungsi == "ok")
@@ -139,7 +199,7 @@
                                     </div>
 
                                     <div class="form-group row">
-                                        <label for="kondisi_setelah_proses" class="col-sm-4 col-form-label" style="text-align:right;">Kondisi Setelah Proses</label>
+                                        <label for="kondisi_setelah_proses" class="col-sm-5 col-form-label" style="text-align:right;">Kondisi Setelah Proses</label>
 
                                         <div class="col-sm-1 col-form-label">
                                             <div class="icheck-primary d-inline">
@@ -170,7 +230,7 @@
                                     </div>
 
                                     <div class="form-group row">
-                                        <label for="hasil" class="col-sm-4 col-form-label" style="text-align:right;">Hasil</label>
+                                        <label for="hasil" class="col-sm-5 col-form-label" style="text-align:right;">Hasil</label>
                                         <div class="col-sm-1 col-form-label">
                                             <div class="icheck-primary d-inline">
                                                 <input type="radio" id="hasil_ok" name="hasil_tertutup" value="ok" @if($s->hasil_tertutup == "ok")
@@ -199,8 +259,8 @@
                                     </div>
 
                                     <div class="form-group row">
-                                        <label for="kelompok_produk_id" class="col-sm-4 col-form-label" style="text-align:right;">Tindak Lanjut</label>
-                                        <div class="col-sm-8">
+                                        <label for="kelompok_produk_id" class="col-sm-5 col-form-label" style="text-align:right;">Tindak Lanjut</label>
+                                        <div class="col-sm-7">
                                             <select class="form-control select2 select2-info @error('tindak_lanjut_tertutup') is-invalid @enderror" data-dropdown-css-class="select2-info" style="width: 30%;" data-placeholder="Pilih Tindak Lanjut" name="tindak_lanjut_tertutup" id="tindak_lanjut_tertutup">
                                                 <option value=""></option>
                                                 <option value="aging" @if($s->tindak_lanjut_tertutup == "aging")
@@ -232,8 +292,8 @@
 
 
                                     <div class="form-group row">
-                                        <label for="divisi_id" class="col-sm-4 col-form-label" style="text-align:right;">Keterangan</label>
-                                        <div class="col-sm-8">
+                                        <label for="divisi_id" class="col-sm-5 col-form-label" style="text-align:right;">Keterangan</label>
+                                        <div class="col-sm-7">
                                             <textarea name="keterangan_tindak_lanjut_tertutup" id="keterangan_tindak_lanjut_tertutup" class="form-control @error('keterangan_tindak_lanjut_tertutup') is-invalid @enderror">{{$s->keterangan_tindak_lanjut_tertutup}}</textarea>
                                             @if ($errors->has('keterangan_tindak_lanjut_tertutup'))
                                             <span class="invalid-feedback" role="alert">{{$errors->first('keterangan_tindak_lanjut_tertutup')}}</span>
@@ -297,8 +357,11 @@
 <script>
     $(function() {
         var countStatus = "{{$s->countStatus('perbaikan_pemeriksaan_tertutup')}}";
-        $('input[type="radio"][name="kondisi_setelah_proses"]').on("change", function() {
+        $('input[type="radio"][name="kondisi_fisik_bahan_baku"]').on("change", function() {
+            var kspp = $('input[type="radio"][name="kondisi_saat_proses_perakitan"]:checked').val();
+            var ksp = $('input[type="radio"][name="kondisi_setelah_proses"]:checked').val();
             var f = $('input[type="radio"][name="fungsi"]:checked').val();
+
             if (this.value == 'nok') {
                 $("input[name='hasil_tertutup'][value='nok']").prop("checked", true);
                 $('select').val('').trigger('change');
@@ -310,13 +373,85 @@
                     $("select option[value='perbaikan']").attr('disabled', false);
                 }
             } else if (this.value == 'ok') {
-                if (f == 'ok') {
+                if (kspp == "ok" && ksp == "ok" && f == 'ok') {
                     $("input[name='hasil_tertutup'][value='ok']").prop("checked", true);
                     $('select').val('').trigger('change');
                     $("select option[value='aging']").attr('disabled', false);
                     $("select option[value='perbaikan']").attr('disabled', true);
                     $("select option[value='produk_spesialis']").attr('disabled', true);
-                } else if (f == 'nok') {
+                } else if (kspp == "nok" || ksp == "nok" || f == 'nok') {
+                    $("input[name='hasil_tertutup'][value='nok']").prop("checked", true);
+                    $('select').val('').trigger('change');
+                    $("select option[value='aging']").attr('disabled', true);
+                    if (countStatus < 1) {
+                        $("select option[value='perbaikan']").attr('disabled', false);
+                    } else if (countStatus >= 1) {
+                        $("select option[value='produk_spesialis']").attr('disabled', false);
+                        $("select option[value='perbaikan']").attr('disabled', false);
+                    }
+                }
+            }
+        });
+
+        $('input[type="radio"][name="kondisi_saat_proses_perakitan"]').on("change", function() {
+            var kbb = $('input[type="radio"][name="kondisi_fisik_bahan_baku"]:checked').val();
+            var ksp = $('input[type="radio"][name="kondisi_setelah_proses"]:checked').val();
+            var f = $('input[type="radio"][name="fungsi"]:checked').val();
+
+            if (this.value == 'nok') {
+                $("input[name='hasil_tertutup'][value='nok']").prop("checked", true);
+                $('select').val('').trigger('change');
+                $("select option[value='aging']").attr('disabled', true);
+                if (countStatus < 1) {
+                    $("select option[value='perbaikan']").attr('disabled', false);
+                } else if (countStatus >= 1) {
+                    $("select option[value='produk_spesialis']").attr('disabled', false);
+                    $("select option[value='perbaikan']").attr('disabled', false);
+                }
+            } else if (this.value == 'ok') {
+                if (kbb == "ok" && ksp == "ok" && f == 'ok') {
+                    $("input[name='hasil_tertutup'][value='ok']").prop("checked", true);
+                    $('select').val('').trigger('change');
+                    $("select option[value='aging']").attr('disabled', false);
+                    $("select option[value='perbaikan']").attr('disabled', true);
+                    $("select option[value='produk_spesialis']").attr('disabled', true);
+                } else if (kbb == "nok" || ksp == "nok" || f == 'nok') {
+                    $("input[name='hasil_tertutup'][value='nok']").prop("checked", true);
+                    $('select').val('').trigger('change');
+                    $("select option[value='aging']").attr('disabled', true);
+                    if (countStatus < 1) {
+                        $("select option[value='perbaikan']").attr('disabled', false);
+                    } else if (countStatus >= 1) {
+                        $("select option[value='produk_spesialis']").attr('disabled', false);
+                        $("select option[value='perbaikan']").attr('disabled', false);
+                    }
+                }
+            }
+        });
+
+        $('input[type="radio"][name="kondisi_setelah_proses"]').on("change", function() {
+            var kbb = $('input[type="radio"][name="kondisi_fisik_bahan_baku"]:checked').val();
+            var kspp = $('input[type="radio"][name="kondisi_saat_proses_perakitan"]:checked').val();
+            var f = $('input[type="radio"][name="fungsi"]:checked').val();
+
+            if (this.value == 'nok') {
+                $("input[name='hasil_tertutup'][value='nok']").prop("checked", true);
+                $('select').val('').trigger('change');
+                $("select option[value='aging']").attr('disabled', true);
+                if (countStatus < 1) {
+                    $("select option[value='perbaikan']").attr('disabled', false);
+                } else if (countStatus >= 1) {
+                    $("select option[value='produk_spesialis']").attr('disabled', false);
+                    $("select option[value='perbaikan']").attr('disabled', false);
+                }
+            } else if (this.value == 'ok') {
+                if (kbb == "ok" && kspp == "ok" && f == 'ok') {
+                    $("input[name='hasil_tertutup'][value='ok']").prop("checked", true);
+                    $('select').val('').trigger('change');
+                    $("select option[value='aging']").attr('disabled', false);
+                    $("select option[value='perbaikan']").attr('disabled', true);
+                    $("select option[value='produk_spesialis']").attr('disabled', true);
+                } else if (kbb == "nok" || kspp == "nok" || f == 'nok') {
                     $("input[name='hasil_tertutup'][value='nok']").prop("checked", true);
                     $('select').val('').trigger('change');
                     $("select option[value='aging']").attr('disabled', true);
@@ -331,6 +466,8 @@
         });
 
         $('input[type="radio"][name="fungsi"]').on("change", function() {
+            var kbb = $('input[type="radio"][name="kondisi_fisik_bahan_baku"]:checked').val();
+            var kspp = $('input[type="radio"][name="kondisi_saat_proses_perakitan"]:checked').val();
             var ksp = $('input[type="radio"][name="kondisi_setelah_proses"]:checked').val();
             if (this.value == 'nok') {
                 $("input[name='hasil_tertutup'][value='nok']").prop("checked", true);
@@ -343,13 +480,13 @@
                     $("select option[value='perbaikan']").attr('disabled', false);
                 }
             } else if (this.value == 'ok') {
-                if (ksp == 'ok') {
+                if (kbb == "ok" && kspp == "ok" && ksp == 'ok') {
                     $("input[name='hasil_tertutup'][value='ok']").prop("checked", true);
                     $('select').val('').trigger('change');
                     $("select option[value='aging']").attr('disabled', false);
                     $("select option[value='perbaikan']").attr('disabled', true);
                     $("select option[value='produk_spesialis']").attr('disabled', true);
-                } else if (ksp == 'nok') {
+                } else if (kbb == "nok" || kspp == "nok" || ksp == 'nok') {
                     $("input[name='hasil_tertutup'][value='nok']").prop("checked", true);
                     $('select').val('').trigger('change');
                     $("select option[value='aging']").attr('disabled', true);

@@ -45,27 +45,6 @@
               <h6 class="card-subheading text-muted">{{$sh->Bppb->DetailProduk->Produk->nama}}</h6>
             </div>
           </div>
-          <div class="row" style="padding-bottom:10%;">
-            @if(Auth::user()->divisi->nama == "Produksi")
-            <div class="inline-flex col-lg-6">
-              <a href="{{route('perakitan.laporan.edit', ['id' => $sh->id])}}" class="col-lg-12">
-                <button type="button" class="btn btn-block btn-warning rounded-pill"><i class="fas fa-edit"></i> Edit</button>
-              </a>
-            </div>
-            <div class="inline-flex col-lg-6">
-              <a class="delete-perakitan col-lg-12" data-toggle="modal" data-target="#delete-perakitan" data-url="{{route('perakitan.laporan.delete', ['id' => $sh->id])}}">
-                <button type="button" class="btn btn-block btn-danger rounded-pill"><i class="fas fa-trash"></i> Delete</button>
-              </a>
-            </div>
-            @else
-            <div class="inline-flex col-lg-6">
-              <button type="button" class="btn btn-block btn-warning rounded-pill" disabled><i class="fas fa-edit"></i> Edit</button>
-            </div>
-            <div class="inline-flex col-lg-6">
-              <button type="button" class="btn btn-block btn-danger rounded-pill" disabled><i class="fas fa-trash"></i> Delete</button>
-            </div>
-            @endif
-          </div>
 
           <div class="row">
             <div class="col-lg-6" style="vertical-align: middle;">
