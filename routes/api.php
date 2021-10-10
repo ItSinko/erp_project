@@ -44,3 +44,5 @@ Route::group(['prefix' => 'ppic'], function () {
 Route::get("/change-confirmation/{user}/{message}", function($user, $message){
     event(new SimpleNotifEvent($user, $message));
 });
+
+Route::post('/login', 'LoginController@login');
