@@ -25,3 +25,6 @@ Route::get('bom/{id}', 'GudangMaterialController@getBom');
 Route::get('bom-table/{id}', 'GudangMaterialController@getBomTable');
 
 Route::get("example-data", "GudangMaterialController@getExampleData");
+
+Route::post('daftar_karyawan/aksi_tambah', 'KaryawanController@karyawan_aksi_tambah');
+Route::post('daftar_karyawan/add', 'KaryawanController@addUser');

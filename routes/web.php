@@ -131,6 +131,7 @@ Route::get('/karyawan_sakit/cetak/{id}', 'KesehatanController@karyawan_sakit_cet
 Route::get('/karyawan_sakit/data', 'KesehatanController@karyawan_sakit_data');
 Route::get('/karyawan_sakit/tambah', 'KesehatanController@karyawan_sakit_tambah');
 Route::get('/karyawan_sakit/obat/data/', 'KesehatanController@obat_data');
+Route::get('/karyawan_sakit/obat/detail/{id}', 'KesehatanController@obat_data_detail');
 Route::post('/karyawan_sakit/aksi_tambah', 'KesehatanController@karyawan_sakit_aksi_tambah');
 
 //Karyawan Masuk
@@ -144,6 +145,7 @@ Route::get('/karyawan_masuk/detail/data/{id}', 'KesehatanController@karyawan_mas
 Route::get('/obat', 'KesehatanController@obat');
 Route::get('/obat/data', 'KesehatanController@obat_data');
 Route::get('/obat/data/{id}', 'KesehatanController@obat_data_id');
+Route::get('/obat/data/select/{where}', 'KesehatanController@obat_data_select');
 Route::get('/obat/data/detail/{karyawan_id}', 'KesehatanController@obat_detail_data_karyawan');
 Route::get('/obat/cekdata/{nama}', 'KesehatanController@obat_cekdata');
 Route::get('/obat/detail/data/{id}', 'KesehatanController@obat_detail_data');
@@ -190,146 +192,146 @@ Route::group(['prefix' => '/karyawan', 'middleware' => 'auth'], function () {
     Route::get('/peminjaman/show', 'ItController@karyawan_peminjaman_show')->name('karyawan.peminjaman.show');
 });
 
-//JASA EKSPEDISI
-Route::group(['prefix' => '/jasa_eks', 'middleware' => 'auth'], function () {
-    Route::get('', 'CommonController@jasa_eks')->name('jasa_eks'); /* Tabel */
-    Route::get('/data', 'CommonController@jasa_eks_data'); /* Get Data */
-    Route::get('/tambah', 'CommonController@jasa_eks_tambah'); /* Tambah */
-    Route::get('/ubah/{id}', 'CommonController@jasa_eks_ubah');    /* Ubah */
-    Route::post('/aksi_tambah', 'CommonController@jasa_eks_aksi_tambah');  /* Action */
-    Route::put('/aksi_ubah/{id}', 'CommonController@jasa_eks_aksi_ubah');
-});
+// //JASA EKSPEDISI
+// Route::group(['prefix' => '/jasa_eks', 'middleware' => 'auth'], function () {
+//     Route::get('', 'CommonController@jasa_eks')->name('jasa_eks'); /* Tabel */
+//     Route::get('/data', 'CommonController@jasa_eks_data'); /* Get Data */
+//     Route::get('/tambah', 'CommonController@jasa_eks_tambah'); /* Tambah */
+//     Route::get('/ubah/{id}', 'CommonController@jasa_eks_ubah');    /* Ubah */
+//     Route::post('/aksi_tambah', 'CommonController@jasa_eks_aksi_tambah');  /* Action */
+//     Route::put('/aksi_ubah/{id}', 'CommonController@jasa_eks_aksi_ubah');
+// });
 
-//NAMA & ALAMAT
-Route::group(['prefix' => '/nama_alamat', 'middleware' => 'auth'], function () {
-    Route::get('', 'CommonController@nama_alamat')->name('nama_alamat');    /* Tabel */
-    Route::get('/data', 'CommonController@nama_alamat_data');   /* Get Data */
-    Route::get('/tambah', 'CommonController@nama_alamat_tambah');   /* Tambah */
-    Route::get('/ubah/{id}', 'CommonController@nama_alamat_ubah');  /* Ubah */
-    Route::post('/aksi_tambah', 'CommonController@nama_alamat_aksi_tambah');    /* Action */
-    Route::put('/aksi_ubah/{id}', 'CommonController@nama_alamat_aksi_ubah');
-});
+// //NAMA & ALAMAT
+// Route::group(['prefix' => '/nama_alamat', 'middleware' => 'auth'], function () {
+//     Route::get('', 'CommonController@nama_alamat')->name('nama_alamat');    /* Tabel */
+//     Route::get('/data', 'CommonController@nama_alamat_data');   /* Get Data */
+//     Route::get('/tambah', 'CommonController@nama_alamat_tambah');   /* Tambah */
+//     Route::get('/ubah/{id}', 'CommonController@nama_alamat_ubah');  /* Ubah */
+//     Route::post('/aksi_tambah', 'CommonController@nama_alamat_aksi_tambah');    /* Action */
+//     Route::put('/aksi_ubah/{id}', 'CommonController@nama_alamat_aksi_ubah');
+// });
 
-//PENJUALAN PRODUK
-Route::group(['prefix' => '/penjualan_produk', 'middleware' => 'auth'], function () {
-    Route::get('/', 'CommonController@penjualan_produk')->name('penjualan_produk'); /*Tabel*/
-    Route::get('/data', 'CommonController@penjualan_produk_data'); /* Get Data */
-    Route::get('/tambah', 'CommonController@penjualan_produk_tambah'); /* Tambah */
-    Route::post('/aksi_tambah', 'CommonController@penjualan_produk_aksi_tambah');  /* Action */
-    Route::put('/aksi_ubah/{id}', 'CommonController@penjualan_produk_aksi_ubah');
-    Route::get('/cek_data/{tipe}', 'CommonController@penjualan_produk_cek_data');  /* Cek Data */
-    Route::get('/ubah/{id}', 'CommonController@penjualan_produk_ubah');    /* Ubah */
-});
-
-
-//PENJUALAN (ONLINE)
-Route::group(['prefix' => '/penjualan_online', 'middleware' => 'auth'], function () {
-    Route::get('/', 'PenjualanController@penjualan_online');    /*Tabel*/
-    Route::get('/data', 'PenjualanController@penjualan_online_data');  /* Get Data */
-    Route::get('/detail/data/{id}', 'PenjualanController@detail_penjualan_online_data');
-    Route::get('/tambah', 'PenjualanController@penjualan_online_tambah');  /* Tambah */
-    Route::get('/ubah/{id}', 'PenjualanController@penjualan_online_ubah'); /* Ubah */
-    Route::get('/cek_data/{lkpp}', 'PenjualanController@penjualan_online_cek_data');   /* Cek Data */
-    Route::post('/aksi_tambah', 'PenjualanController@penjualan_online_aksi_tambah');   /* Action */
-    Route::put('/aksi_ubah/{id}', 'PenjualanController@penjualan_online_aksi_ubah');
-    Route::put('/detail/aksi_ubah', 'PenjualanController@penjualan_online_detail_aksi_ubah');
-    Route::post('/detail/aksi_tambah', 'PenjualanController@penjualan_online_detail_aksi_tambah'); /* Detail */
-    Route::get('/detail/data/edit/{id}', 'PenjualanController@penjualan_online_detail_edit');
-});
+// //PENJUALAN PRODUK
+// Route::group(['prefix' => '/penjualan_produk', 'middleware' => 'auth'], function () {
+//     Route::get('/', 'CommonController@penjualan_produk')->name('penjualan_produk'); /*Tabel*/
+//     Route::get('/data', 'CommonController@penjualan_produk_data'); /* Get Data */
+//     Route::get('/tambah', 'CommonController@penjualan_produk_tambah'); /* Tambah */
+//     Route::post('/aksi_tambah', 'CommonController@penjualan_produk_aksi_tambah');  /* Action */
+//     Route::put('/aksi_ubah/{id}', 'CommonController@penjualan_produk_aksi_ubah');
+//     Route::get('/cek_data/{tipe}', 'CommonController@penjualan_produk_cek_data');  /* Cek Data */
+//     Route::get('/ubah/{id}', 'CommonController@penjualan_produk_ubah');    /* Ubah */
+// });
 
 
-//PENJUALAN ECOM (ONLINE)
-Route::group(['prefix' => '/penjualan_online_ecom', 'middleware' => 'auth'], function () {
-    Route::get('/', 'PenjualanController@penjualan_online_ecom');  /*Tabel*/
-    Route::get('/tambah', 'PenjualanController@penjualan_online_ecom_tambah');
-    Route::get('/ubah/{id}', 'PenjualanController@penjualan_online_ecom_ubah');
-    Route::post('/aksi_tambah', 'PenjualanController@penjualan_online_ecom_aksi_tambah'); // Action
-    Route::put('/aksi_ubah/{id}', 'PenjualanController@penjualan_online_ecom_aksi_ubah');
-    Route::put('/detail/aksi_ubah/', 'PenjualanController@detail_penjualan_online_ecom_aksi_ubah');
-    Route::get('/data', 'PenjualanController@penjualan_online_ecom_Data');    /* Get Data */
-    Route::get('/detail/data/{id}', 'PenjualanController@detail_penjualan_online_ecom_data');
-    Route::get('/detail/data/edit/{id}', 'PenjualanController@detail_penjualan_online_ecom_data_edit');
-});
+// //PENJUALAN (ONLINE)
+// Route::group(['prefix' => '/penjualan_online', 'middleware' => 'auth'], function () {
+//     Route::get('/', 'PenjualanController@penjualan_online');    /*Tabel*/
+//     Route::get('/data', 'PenjualanController@penjualan_online_data');  /* Get Data */
+//     Route::get('/detail/data/{id}', 'PenjualanController@detail_penjualan_online_data');
+//     Route::get('/tambah', 'PenjualanController@penjualan_online_tambah');  /* Tambah */
+//     Route::get('/ubah/{id}', 'PenjualanController@penjualan_online_ubah'); /* Ubah */
+//     Route::get('/cek_data/{lkpp}', 'PenjualanController@penjualan_online_cek_data');   /* Cek Data */
+//     Route::post('/aksi_tambah', 'PenjualanController@penjualan_online_aksi_tambah');   /* Action */
+//     Route::put('/aksi_ubah/{id}', 'PenjualanController@penjualan_online_aksi_ubah');
+//     Route::put('/detail/aksi_ubah', 'PenjualanController@penjualan_online_detail_aksi_ubah');
+//     Route::post('/detail/aksi_tambah', 'PenjualanController@penjualan_online_detail_aksi_tambah'); /* Detail */
+//     Route::get('/detail/data/edit/{id}', 'PenjualanController@penjualan_online_detail_edit');
+// });
 
 
-// PENJUALAN OFFLINE
-Route::group(['prefix' => '/penjualan_offline', 'middleware' => 'auth'], function () {
-    Route::get('/data', 'PenjualanController@penjualan_offline_data');    /* Get Data */
-    Route::get('/detail/data/{id}', 'PenjualanController@detail_penjualan_offline_data');
-    Route::get('/', 'PenjualanController@penjualan_offline');  /*Tabel*/
-    Route::post('/aksi_tambah', 'PenjualanController@penjualan_offline_aksi_tambah'); /* Action */
-    Route::put('/aksi_ubah/{id}', 'PenjualanController@penjualan_offline_aksi_ubah');
-    Route::put('/detail/aksi_ubah', 'PenjualanController@penjualan_offline_detail_aksi_ubah');
-    Route::get('/tambah', 'PenjualanController@penjualan_offline_tambah');    /* Tambah */
-    Route::get('/ubah/{id}', 'PenjualanController@penjualan_offline_ubah');   /*Ubah*/
-    Route::get('/detail/data/edit/{id}', 'PenjualanController@penjualan_offline_detail_edit');    /*Detail*/
-});
+// //PENJUALAN ECOM (ONLINE)
+// Route::group(['prefix' => '/penjualan_online_ecom', 'middleware' => 'auth'], function () {
+//     Route::get('/', 'PenjualanController@penjualan_online_ecom');  /*Tabel*/
+//     Route::get('/tambah', 'PenjualanController@penjualan_online_ecom_tambah');
+//     Route::get('/ubah/{id}', 'PenjualanController@penjualan_online_ecom_ubah');
+//     Route::post('/aksi_tambah', 'PenjualanController@penjualan_online_ecom_aksi_tambah'); // Action
+//     Route::put('/aksi_ubah/{id}', 'PenjualanController@penjualan_online_ecom_aksi_ubah');
+//     Route::put('/detail/aksi_ubah/', 'PenjualanController@detail_penjualan_online_ecom_aksi_ubah');
+//     Route::get('/data', 'PenjualanController@penjualan_online_ecom_Data');    /* Get Data */
+//     Route::get('/detail/data/{id}', 'PenjualanController@detail_penjualan_online_ecom_data');
+//     Route::get('/detail/data/edit/{id}', 'PenjualanController@detail_penjualan_online_ecom_data_edit');
+// });
 
 
-//PENAWARAN OFFLINE
-Route::group(['prefix' => '/penawaran_offline', 'middleware' => 'auth'], function () {
-    Route::get('/', 'PenjualanController@penawaran_offline');  /*Table*/
-    Route::get('/data', 'PenjualanController@penawaran_offline_data');    /* Get Data */
-    Route::get('/tambah', 'PenjualanController@penawaran_offline_tambah');    /* Tambah */
-    Route::get('/ubah/{id}', 'PenjualanController@penawaran_offline_ubah');   /* Ubah */
-    Route::get('/cetak_penawaran/{id}', 'PenjualanController@cetak_penawaran_offline');   /*Print*/
-    Route::get('/data/{customer_id}', 'PenjualanController@penjualan_offline_data_select');   /* Get Data */
-    Route::post('/aksi_tambah', 'PenjualanController@penawaran_offline_aksi_tambah'); /* Action */
-    Route::put('/aksi_ubah/{id}', 'PenjualanController@penawaran_offline_aksi_ubah');
-    Route::get('/data/detail/{id}', 'PenjualanController@detail_penjualan_offline_data'); /*Detail*/
-});
+// // PENJUALAN OFFLINE
+// Route::group(['prefix' => '/penjualan_offline', 'middleware' => 'auth'], function () {
+//     Route::get('/data', 'PenjualanController@penjualan_offline_data');    /* Get Data */
+//     Route::get('/detail/data/{id}', 'PenjualanController@detail_penjualan_offline_data');
+//     Route::get('/', 'PenjualanController@penjualan_offline');  /*Tabel*/
+//     Route::post('/aksi_tambah', 'PenjualanController@penjualan_offline_aksi_tambah'); /* Action */
+//     Route::put('/aksi_ubah/{id}', 'PenjualanController@penjualan_offline_aksi_ubah');
+//     Route::put('/detail/aksi_ubah', 'PenjualanController@penjualan_offline_detail_aksi_ubah');
+//     Route::get('/tambah', 'PenjualanController@penjualan_offline_tambah');    /* Tambah */
+//     Route::get('/ubah/{id}', 'PenjualanController@penjualan_offline_ubah');   /*Ubah*/
+//     Route::get('/detail/data/edit/{id}', 'PenjualanController@penjualan_offline_detail_edit');    /*Detail*/
+// });
 
 
-//PENAWARAN ECOM
-Route::group(['prefix' => '/penawaran_ecom', 'middleware' => 'auth'], function () {
-    Route::get('/', 'PenjualanController@penawaran_ecom');    /*Table*/
-    Route::get('/data', 'PenjualanController@penawaran_ecom_data');  /* Get Data */
-    Route::get('/tambah', 'PenjualanController@penawaran_ecom_tambah');  /* Tambah */
-    Route::get('/ubah/{id}', 'PenjualanController@penawaran_ecom_ubah'); /* Ubah */
-    Route::get('/data/{customer_id}', 'PenjualanController@penjualan_ecom_data_select'); /* Get Data */
-    Route::post('/aksi_tambah', 'PenjualanController@penawaran_ecom_aksi_tambah');   /* Action */
-    Route::put('/aksi_ubah/{id}', 'PenjualanController@penawaran_ecom_aksi_ubah');
-    Route::get('/cetak_penawaran/{id}', 'PenjualanController@cetak_penawaran_ecom'); /*Print*/
-    Route::get('/data/detail/{id}', 'PenjualanController@detail_penjualan_ecom_data');   /*Detail*/
-});
+// //PENAWARAN OFFLINE
+// Route::group(['prefix' => '/penawaran_offline', 'middleware' => 'auth'], function () {
+//     Route::get('/', 'PenjualanController@penawaran_offline');  /*Table*/
+//     Route::get('/data', 'PenjualanController@penawaran_offline_data');    /* Get Data */
+//     Route::get('/tambah', 'PenjualanController@penawaran_offline_tambah');    /* Tambah */
+//     Route::get('/ubah/{id}', 'PenjualanController@penawaran_offline_ubah');   /* Ubah */
+//     Route::get('/cetak_penawaran/{id}', 'PenjualanController@cetak_penawaran_offline');   /*Print*/
+//     Route::get('/data/{customer_id}', 'PenjualanController@penjualan_offline_data_select');   /* Get Data */
+//     Route::post('/aksi_tambah', 'PenjualanController@penawaran_offline_aksi_tambah'); /* Action */
+//     Route::put('/aksi_ubah/{id}', 'PenjualanController@penawaran_offline_aksi_ubah');
+//     Route::get('/data/detail/{id}', 'PenjualanController@detail_penjualan_offline_data'); /*Detail*/
+// });
 
 
-//PODO EKATALOG
-Route::group(['prefix' => '/podo_online', 'middleware' => 'auth'], function () {
-    Route::get('/', 'PenjualanController@podo_online');  /*Table*/
-    Route::get('/tambah', 'PenjualanController@podo_online_tambah');    /* Tambah */
-    Route::get('/ubah/{id}', 'PenjualanController@podo_online_ubah');   /* Ubah */
-    Route::get('/data/{ak1}', 'PenjualanController@podo_online_data_select');   /* Get Data */
-    Route::post('/aksi_tambah', 'PenjualanController@podo_online_aksi_tambah'); /* Action */
-    Route::put('/aksi_ubah/{id}', 'PenjualanController@podo_online_aksi_ubah');
-    Route::get('/data', 'PenjualanController@podo_online_data');    /* Get Data */
-    Route::get('/file{nama}', 'PenjualanController@podo_online_file');  /* File View */
-});
+// //PENAWARAN ECOM
+// Route::group(['prefix' => '/penawaran_ecom', 'middleware' => 'auth'], function () {
+//     Route::get('/', 'PenjualanController@penawaran_ecom');    /*Table*/
+//     Route::get('/data', 'PenjualanController@penawaran_ecom_data');  /* Get Data */
+//     Route::get('/tambah', 'PenjualanController@penawaran_ecom_tambah');  /* Tambah */
+//     Route::get('/ubah/{id}', 'PenjualanController@penawaran_ecom_ubah'); /* Ubah */
+//     Route::get('/data/{customer_id}', 'PenjualanController@penjualan_ecom_data_select'); /* Get Data */
+//     Route::post('/aksi_tambah', 'PenjualanController@penawaran_ecom_aksi_tambah');   /* Action */
+//     Route::put('/aksi_ubah/{id}', 'PenjualanController@penawaran_ecom_aksi_ubah');
+//     Route::get('/cetak_penawaran/{id}', 'PenjualanController@cetak_penawaran_ecom'); /*Print*/
+//     Route::get('/data/detail/{id}', 'PenjualanController@detail_penjualan_ecom_data');   /*Detail*/
+// });
 
 
-//PODO OFFLINE
-Route::group(['prefix' => '/podo_offline', 'middleware' => 'auth'], function () {
-    Route::get('/', 'PenjualanController@podo_offline');    /*Table*/
-    Route::get('/data', 'PenjualanController@podo_offline_data');  /*Get Data*/
-    Route::get('/tambah', 'PenjualanController@podo_offline_tambah');  /*Tambah*/
-    Route::get('/ubah/{id}', 'PenjualanController@podo_offline_ubah'); /*Ubah*/
-    Route::get('/data/{customer_id}', 'PenjualanController@penjualan_offline_data_select');    /*Get Data*/
-    Route::post('/aksi_tambah', 'PenjualanController@podo_offline_aksi_tambah');   /*Action*/
-    Route::put('/aksi_ubah/{id}', 'PenjualanController@podo_offline_aksi_ubah');
-    Route::get('/file{nama}', 'PenjualanController@podo_offline_file');    /* File View */
-});
+// //PODO EKATALOG
+// Route::group(['prefix' => '/podo_online', 'middleware' => 'auth'], function () {
+//     Route::get('/', 'PenjualanController@podo_online');  /*Table*/
+//     Route::get('/tambah', 'PenjualanController@podo_online_tambah');    /* Tambah */
+//     Route::get('/ubah/{id}', 'PenjualanController@podo_online_ubah');   /* Ubah */
+//     Route::get('/data/{ak1}', 'PenjualanController@podo_online_data_select');   /* Get Data */
+//     Route::post('/aksi_tambah', 'PenjualanController@podo_online_aksi_tambah'); /* Action */
+//     Route::put('/aksi_ubah/{id}', 'PenjualanController@podo_online_aksi_ubah');
+//     Route::get('/data', 'PenjualanController@podo_online_data');    /* Get Data */
+//     Route::get('/file{nama}', 'PenjualanController@podo_online_file');  /* File View */
+// });
 
 
-//PURCHASE ORDER
-Route::group(['prefix' => '/purchase_order', 'middleware' => 'auth'], function () {
-    Route::get('/', 'GbjController@purchase_order')->name('purchase_order');
-    Route::get('/grid/show/{status}', 'GbjController@purchase_order_grid_show')->name('purchase_order.grid.show');
-    Route::get('/table/show/{status}', 'GbjController@purchase_order_table_show')->name('purchase_order.table.show');
-    Route::get('/create', 'GbjController@purchase_order_create')->name('purchase_order.create');
-    Route::post('/store', 'GbjController@purchase_order_store')->name('purchase_order.store');
-    Route::get('/edit/{id}', 'GbjController@purchase_order_edit')->name('purchase_order.edit');
-    Route::put('/update/{id}', 'GbjController@purchase_order_update')->name('purchase_order.update');
-});
+// //PODO OFFLINE
+// Route::group(['prefix' => '/podo_offline', 'middleware' => 'auth'], function () {
+//     Route::get('/', 'PenjualanController@podo_offline');    /*Table*/
+//     Route::get('/data', 'PenjualanController@podo_offline_data');  /*Get Data*/
+//     Route::get('/tambah', 'PenjualanController@podo_offline_tambah');  /*Tambah*/
+//     Route::get('/ubah/{id}', 'PenjualanController@podo_offline_ubah'); /*Ubah*/
+//     Route::get('/data/{customer_id}', 'PenjualanController@penjualan_offline_data_select');    /*Get Data*/
+//     Route::post('/aksi_tambah', 'PenjualanController@podo_offline_aksi_tambah');   /*Action*/
+//     Route::put('/aksi_ubah/{id}', 'PenjualanController@podo_offline_aksi_ubah');
+//     Route::get('/file{nama}', 'PenjualanController@podo_offline_file');    /* File View */
+// });
+
+
+// //PURCHASE ORDER
+// Route::group(['prefix' => '/purchase_order', 'middleware' => 'auth'], function () {
+//     Route::get('/', 'GbjController@purchase_order')->name('purchase_order');
+//     Route::get('/grid/show/{status}', 'GbjController@purchase_order_grid_show')->name('purchase_order.grid.show');
+//     Route::get('/table/show/{status}', 'GbjController@purchase_order_table_show')->name('purchase_order.table.show');
+//     Route::get('/create', 'GbjController@purchase_order_create')->name('purchase_order.create');
+//     Route::post('/store', 'GbjController@purchase_order_store')->name('purchase_order.store');
+//     Route::get('/edit/{id}', 'GbjController@purchase_order_edit')->name('purchase_order.edit');
+//     Route::put('/update/{id}', 'GbjController@purchase_order_update')->name('purchase_order.update');
+// });
 
 
 //GET DATA SELECT

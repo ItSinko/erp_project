@@ -9,7 +9,7 @@
     <div class="card">
       <div class="card-body">
         <div class='table-responsive'>
-          <h2>Karyawan Sakit Masuk</h2>
+          <h2>Karyawan Masuk</h2>
           <table id="tabel" class="table table-hover styled-table table-striped">
             <thead style="text-align: center;">
               <tr>

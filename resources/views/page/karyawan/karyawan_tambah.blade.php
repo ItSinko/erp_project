@@ -79,6 +79,7 @@
                                                         <option value="staff">Staff</option>
                                                         <option value="operator">Operator</option>
                                                         <option value="harian">Harian</option>
+                                                        <option value="lainnya">Lainnya</option>
                                                     </select>
                                                     @if($errors->has('jabatan'))
                                                     <div class="text-danger">

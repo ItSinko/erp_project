@@ -142,11 +142,7 @@
                                                             <tr>
                                                                 <td>1</td>
                                                                 <td>
-                                                                    <select class="form-control select2 obat_data" name="obat[]" id="0">
-                                                                        <option value="">Pilih produk</option>
-                                                                        @foreach ($obat as $o)
-                                                                        <option value="{{$o->id}}">{{$o->nama}}</option>
-                                                                        @endforeach
+                                                                    <select class="form-control  obat_data select2" name="obat[]" id="0">
                                                                     </select>
                                                                 </td>
                                                                 <td>
@@ -176,7 +172,7 @@
                                                                         <input class="form-check-input dosis_obat" type="radio" name="dosis_obat[]" value="2x1">
                                                                         <label class="form-check-label" for="dosis_obat">
                                                                             <div class="input-group mb-3">
-                                                                                <input type="text" class="form-control dosis_obat_custom" name="dosis_obat_custom" id="dosis_obat_custom" placeholder="Jumlah obat x hari">
+                                                                                <input type="text" class="form-control dosis_obat_custom" name="dosis_obat_custom[]" id="dosis_obat_custom" placeholder="Jumlah obat x hari">
                                                                                 <div class="input-group-append">
                                                                                     <span class="input-group-text">Hari</span>
                                                                                 </div>
@@ -221,18 +217,18 @@
                                                     <span class="invalid-feedback" role="alert" id="kondisi-msg"></span>
                                                 </div>
                                             </div>
-                                            <div class="form-group row">
+                                            <!-- <div class="form-group row">
                                                 <label for="kondisi" class="col-sm-4 col-form-label" style="text-align:right;"></label>
                                                 <div class="col-sm-8" style="margin-top:7px;">
                                                     <div class="form-check">
                                                         <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                                                         <label class="" for=" flexCheckDefault">
-                                                            Surat Keterangan Sakit
+                                                            Surat Keterangan Istirahat
                                                         </label>
                                                     </div>
                                                     <span class="invalid-feedback" role="alert" id="kondisi-msg"></span>
                                                 </div>
-                                            </div>
+                                            </div> -->
                                         </div>
                                     </div>
                                 </div>
@@ -251,7 +247,10 @@
 @endsection
 @section('adminlte_js')
 <script>
+    var where = [''];
     $(document).ready(function() {
+        select_data();
+
         function numberRows($t) {
             var c = 0 - 1;
             $t.find("tr").each(function(ind, el) {
@@ -260,17 +259,23 @@
                 $(el).find('input.aturan_obat:radio').attr('name', 'aturan_obat[' + j + ']');
                 $(el).find('input.dosis_obat:radio').attr('name', 'dosis_obat[' + j + ']');
                 $(el).find('.jumlah').attr('name', 'jumlah[' + j + ']');
+                $(el).find('.dosis_obat_custom').attr('name', 'dosis_obat_custom[' + j + ']');
                 $(el).find('.jumlah').attr('id', 'jumlah' + j + '');
                 $(el).find('.stok').attr('id', 'stok' + j + '');
                 $(el).find('.obat').attr('name', 'obat[' + j + ']');
                 $(el).find('.obat_data').attr('id', j);
-                $('.obat_data').select2();
+                select_data();
             });
         }
         $('#obat').on("change", ".obat_data", function(i) {
             var id = jQuery(this).val();
             var index = $(this).attr('id');
-            console.log(index);
+            //  console.log(where);
+            where.splice(index, index, id);
+            if (index == 0) {
+                where.splice(1, 1);
+            }
+            console.log(where);
             $.ajax({
                 url: '/obat/data/' + id,
                 type: "GET",
@@ -287,13 +292,9 @@
         })
         $('#tambahitem').click(function(e) {
             var data = `     <tr>
-            <td>1</td>
+                                                                <td>1</td>
                                                                 <td>
-                                                                    <select class="form-control select2 obat_data" id="0" name="obat[]">
-                                                                    <option value="">Pilih Produk</option>   
-                                                                    @foreach ($obat as $o)
-                                                                        <option value="{{$o->id}}">{{$o->nama}}</option>
-                                                                        @endforeach
+                                                                    <select class="form-control  obat_data " id="0" name="obat[]">                                     
                                                                     </select>
                                                                 </td>
                                                                 <td>
@@ -347,10 +348,47 @@
             $('#obat tr:last').after(data);
             numberRows($("#obat"));
         });
+
+
         $('#obat').on('click', '#closetable', function(e) {
+            var id = $(this).closest('tr').find('.obat_data').attr('id');
             $(this).closest('tr').remove();
+            where.splice(id, id);
             numberRows($("#obat"));
         });
+
+
+        function select_data() {
+            if (where == '') {
+                where = ['99999999999'];
+            }
+            //console.log(where);
+            $('.obat_data').select2({
+                placeholder: "Pilih Produk",
+                ajax: {
+                    dataType: 'json',
+                    delay: 250,
+                    type: 'GET',
+                    url: '/obat/data/select/' + where,
+                    data: function(params) {
+                        return {
+                            searchTerm: params.term
+                        }
+                    },
+                    processResults: function(data) {
+                        console.log(data);
+                        return {
+                            results: $.map(data, function(obj) {
+                                return {
+                                    id: obj.id,
+                                    text: obj.nama
+                                };
+                            })
+                        };
+                    }
+                }
+            });
+        }
 
         $('input[name=dosis_obat]').on("click", function() {
             check = $("#custom_radio").is(":checked");
@@ -361,8 +399,6 @@
                 $('#dosis_obat_custom').val('');
             }
         });
-
-
         $('input[name=hasil_1]').prop("required", true);
         $('input[name=hasil_2]').prop("required", true);
         $('input[type=radio][name=hasil_1]').on('change', function() {

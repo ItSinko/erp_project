@@ -225,9 +225,6 @@ return [
     */
     'menu' => [
         [
-            'header' => ''
-        ],
-        [
             'text'        => 'Beranda',
             'url'         => 'home',
             'icon'        => 'nav-icon fa fa-home',

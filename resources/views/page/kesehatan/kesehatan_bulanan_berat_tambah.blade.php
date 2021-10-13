@@ -34,19 +34,23 @@
                 <div class="card-body">
                     <div class="table-responsive">
                         {{ csrf_field() }}
-                        <table class="table  table-striped table-hover" id="tabel_berat" style="width:150%">
+                        <table class="table  table-striped table-hover" id="tabel_berat" style="width:200%">
                             <thead>
                                 <tr>
                                     <th>No</th>
                                     <th>Tanggal</th>
                                     <th width="15%">Nama</th>
-                                    <th>Tinggi</th>
                                     <th>Berat</th>
                                     <th>Lemak</th>
                                     <th>Kandungan air</th>
                                     <th>Otot</th>
                                     <th>Tulang</th>
                                     <th>Kalori</th>
+                                    <th>Suhu</th>
+                                    <th>SPO2</th>
+                                    <th>PR</th>
+                                    <th>Systol</th>
+                                    <th>Dyastol</th>
                                     <th>Catatan</th>
                                     <th></th>
                             </thead>
@@ -60,14 +64,6 @@
                                             <option value="{{$k->id}}">{{$k->nama}}</option>
                                             @endforeach
                                         </select>
-                                    </td>
-                                    <td>
-                                        <div class=" input-group mb-3">
-                                            <input type="text" class="form-control" name="tinggi[]" readonly id="tinggi">
-                                            <div class="input-group-append">
-                                                <span class="input-group-text">Cm</span>
-                                            </div>
-                                        </div>
                                     </td>
                                     <td>
                                         <div class="input-group mb-3">
@@ -120,8 +116,48 @@
                                     </td>
                                     <td>
                                         <div class="input-group mb-3">
-                                            <textarea type="text" class="form-control keterangan" name="keterangan[]"></textarea>
+                                            <input type="text" class="form-control suhu" name="suhu[]" id="suhu" value="{{ old('suhu') }}">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">°C</span>
+                                            </div>
+                                        </div>
                                     </td>
+                                    <td>
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control spo2" name="spo2[]" id="spo2" value="{{ old('spo2') }}">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">%</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control pr" name="pr[]" id="pr" value="{{ old('pr') }}">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">bpm</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control sistolik" name="sistolik[]" id="sistolik" value="{{ old('sistolik') }}">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">mmHg</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control diastolik" name="diastolik[]" id="diastolik" value="{{ old('diastolik') }}">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">mmHg</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <textarea type="text" class="form-control keterangan" name="keterangan[]"></textarea>
+                                    </td>
+
                                     <td>
                                         <button name="add" type="button" id="tambahitem" class="btn btn-success"><i class="nav-icon fas fa-plus-circle"></i></button>
                                     </td>
@@ -168,6 +204,11 @@
                 $(el).find('.otot').attr('name', 'otot[' + j + ']');
                 $(el).find('.tulang').attr('name', 'tulang[' + j + ']');
                 $(el).find('.kalori').attr('name', 'kalori[' + j + ']');
+                $(el).find('.suhu').attr('name', 'suhu[' + j + ']');
+                $(el).find('.spo2').attr('name', 'spo2[' + j + ']');
+                $(el).find('.pr').attr('name', 'pr[' + j + ']');
+                $(el).find('.sistolik').attr('name', 'sistolik[' + j + ']');
+                $(el).find('.diastolik').attr('name', 'diastolik[' + j + ']');
                 $(el).find('.keterangan').attr('name', 'keterangan[' + j + ']');
 
                 $('.karyawan_id').select2();
@@ -184,14 +225,6 @@
                                         <option value="{{$k->id}}">{{$k->nama}}</option>
                                         @endforeach
                                     </select>
-                                </td>
-                                <td>
-                                    <div class=" input-group mb-3">
-                                        <input type="text" class="form-control" name="tinggi[]" readonly id="tinggi">
-                                        <div class="input-group-append">
-                                            <span class="input-group-text">Cm</span>
-                                        </div>
-                                    </div>
                                 </td>
                                 <td>
                                     <div class="input-group mb-3">
@@ -242,6 +275,46 @@
                                         </div>
                                     </div>
                                 </td>
+                                <td>
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control suhu" name="suhu[]" id="suhu" value="{{ old('suhu') }}">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">°C</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control spo2" name="spo2[]" id="spo2" value="{{ old('spo2') }}">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">%</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control pr" name="pr[]" id="pr" value="{{ old('pr') }}">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">bpm</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control sistolik" name="sistolik[]" id="sistolik" value="{{ old('sistolik') }}">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">mmHg</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control diastolik" name="diastolik[]" id="diastolik" value="{{ old('diastolik') }}">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">mmHg</span>
+                                            </div>
+                                        </div>
+                                    </td>
                                 <td>
                                     <div class="input-group mb-3">
                                         <textarea type="text" class="form-control keterangan" name="keterangan[]"></textarea>

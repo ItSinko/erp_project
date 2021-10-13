@@ -320,22 +320,22 @@
             searchable: false
           },
           {
-            data: 'tgl_cek'
+            data: 'DT_RowIndex'
+          },
+          {
+            data: 'div'
           },
           {
             data: 'x'
           },
           {
-            data: 'y'
+            data: 'anal'
           },
           {
-            data: 'analisa'
+            data: 'diag'
           },
           {
-            data: 'diagnosa'
-          },
-          {
-            data: 'jumlah'
+            data: 'jum'
           }
         ],
       });

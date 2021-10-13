@@ -42,7 +42,6 @@
                 <th>Umur</th>
                 <th>Berat</th>
                 <th>Tinggi</th>
-                <th>BMI</th>
                 <th>Vaksin</th>
                 <th>Buta warna</th>
                 <th></th>
@@ -379,24 +378,6 @@
         },
         {
           data: 'tinggi_cm'
-        },
-        {
-          data: 'bmi',
-          render: function(data, type, full) {
-            $s = '<br><span class="badge bg-success  ">Sehat</span>';
-            $k = '<br><span class="badge bg-danger  ">Kekurangan Berat Badan</span>';
-            $o = '<br><span class="badge bg-danger  ">Kegemukan (Obesitas)</span>';
-            $g = '<br><span class="badge bg-warning  ">Kelebihan Berat Badan</span>';
-            if (data >= 30) {
-              return parseFloat(data).toFixed(2) + $o;
-            } else if (data >= 25 || data >= 29.9) {
-              return parseFloat(data).toFixed(2) + $g;
-            } else if (data >= 18.5 || data >= 24.9) {
-              return parseFloat(data).toFixed(2) + $s;
-            } else {
-              return parseFloat(data).toFixed(2) + $k;
-            }
-          }
         },
         {
           data: 'vaksin_detail'

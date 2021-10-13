@@ -7,8 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class berat_karyawan extends Model
 {
     protected $table = 'berat_karyawans';
-    protected $primaryKey = 'id';
-    protected $fillable = ['karyawan_id', 'tgl_cek', 'berat', 'lemak', 'kandungan_air', 'otot', 'tulang', 'kalori', 'keterangan'];
+    protected $fillable = ['karyawan_id', 'tgl_cek', 'berat', 'lemak', 'kandungan_air', 'otot', 'tulang', 'kalori', 'suhu', 'spo2', 'pr', 'sistolik', 'diastolik', 'keterangan'];
 
     public function Karyawan()
     {

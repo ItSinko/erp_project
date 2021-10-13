@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use App\Karyawan;
 use App\Divisi;
 use Illuminate\Http\Request;
@@ -13,15 +14,14 @@ use Illuminate\Support\Collection;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Carbon;
 
-
 class KaryawanController extends Controller
 {
+
     public function karyawan()
     {
         $karyawan = Divisi::all();
         return view('page.karyawan.karyawan', ['karyawan' => $karyawan]);
     }
-
     public function karyawan_tambah()
     {
         $divisi = Divisi::all();
@@ -57,7 +57,6 @@ class KaryawanController extends Controller
         $karyawan->kelamin = $request->jenis;
         $karyawan->pemeriksa_rapid = $request->pemeriksa_rapid;
         $karyawan->save();
-
         if ($karyawan) {
             return redirect()->back()->with('success', 'Berhasil menambahkan data');
         } else {
@@ -69,7 +68,7 @@ class KaryawanController extends Controller
         $this->validate(
             $request,
             [
-                'nama' => 'required|unique:ekatjuals',
+                'nama' => 'required|unique:karyawans',
                 'divisi_id' => 'required',
                 'tgllahir' => 'required',
                 'tgl_kerja' => 'required',
@@ -93,8 +92,6 @@ class KaryawanController extends Controller
             'kelamin' => $request->jenis,
             'jabatan' => $request->jabatan,
         ]);
-
-
         if ($karyawan) {
             return redirect()->back()->with('success', "Berhasil menambahkan data");
         } else {
