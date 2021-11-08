@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Collection;
 use Yajra\DataTables\Facades\DataTables;
 use Carbon\Carbon;
-use Romans\Filter\InttoRoman;
+use Romans\Filter\IntToRoman;
 use App\Spaon;
 use App\Distributor;
 use App\Produk;
