@@ -673,16 +673,16 @@ class ProduksiController extends Controller
                 if ($s->status == 'dibuat') {
                     $btn = '<small class="info-text">Draft</small>';
                 } else if ($s->status == 'req_pemeriksaan_terbuka') {
-                    $btn = '<small class="warning-text">Pemeriksaan Terbuka</small>';
+                    $btn = '<small class="warning-text">Pemeriksaan</small>';
                 } else if ($s->status == 'acc_pemeriksaan_terbuka') {
                     $btn = '<a href="/perakitan/hasil/status/' . $s->id . '/req_pemeriksaan_tertutup"><button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-paper-plane"></i></button>
                             <div><small> Permohonan Pemeriksaan Tertutup</small></div></a>
-                            <div><small class="success-text">Pemeriksaan Terbuka OK</small></div>';
+                            <div><small class="success-text">Pemeriksaan OK</small></div>';
                 } else if ($s->status == 'rej_pemeriksaan_terbuka') {
                     if ($s->tindak_lanjut_terbuka == "operator") {
                         $btn = '<a href="/perakitan/hasil/status/' . $s->id . '/perbaikan_pemeriksaan_terbuka"><button type="button" class="btn btn-warning btn-sm m-1" style="border-radius:50%;"><i class="fas fa-wrench"></i></button>
                                 <div><small>Lakukan Perbaikan</small></div></a>
-                                <div><small class="danger-text">Pemeriksaan Terbuka Not OK</small></div>';
+                                <div><small class="danger-text">Pemeriksaan Not OK</small></div>';
                     } else if ($s->tindak_lanjut_terbuka == "produk_spesialis") {
                         $btn = '<small class="danger-text">Analisa Produk Spesialis</small>';
                     }
@@ -691,7 +691,7 @@ class ProduksiController extends Controller
                             <button type="button" class="btn btn-info btn-sm m-1" style="border-radius:50%;"><i class="fas fa-paper-plane"></i></button>
                             <div><small> Permohonan Pemeriksaan Terbuka</small></div></a>';
                 } else if ($s->status == "req_pemeriksaan_tertutup") {
-                    $btn = '<small class="warning-text">Pemeriksaan Tertutup</small>';
+                    $btn = '<small class="warning-text">Pemeriksaan</small>';
                 } else if ($s->status == 'acc_pemeriksaan_tertutup') {
                     $btn = '<small class="success-text">Pengujian</small>';
                 } else if ($s->status == 'rej_pemeriksaan_tertutup') {

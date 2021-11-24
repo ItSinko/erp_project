@@ -2496,7 +2496,7 @@ class QCController extends Controller
                     if ($cl) {
                         for ($j = 0; $j < count($request->penerimaan[$i]); $j++) {
                             $cd = DetailIkPemeriksaan::create([
-                                'list_ik_pemeriksaan_id' => $c->id,
+                                'list_ik_pemeriksaan_id' => $cl->id,
                                 'penerimaan' => $request->penerimaan[$i][$j]
                             ]);
                             if (!$cd) {

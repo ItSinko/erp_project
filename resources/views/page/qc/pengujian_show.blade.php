@@ -295,6 +295,8 @@
             })
         });
 
+        $("#editmodal")
+
     });
 </script>
 @stop

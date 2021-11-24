@@ -77,7 +77,6 @@
                                 <a class="dropdown-item status" href="#" id="status" name="status" value="online">Selesai</a>
                             </div>
                         </span>
-
                     </div>
                 </div>
                 <div class="row tabledisp">

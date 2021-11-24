@@ -30,6 +30,11 @@
                 <div class="card">
                     <div class="card-body">
                         <h3>Info Produk</h3>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item borderless"><b>Tipe Produk</b><a class="float-right">{{$prd->nama}}</a></li>
+                            <li class="list-group-item borderless"><b>Nama Produk</b><a class="float-right">{{$prd->Produk->nama}}</a></li>
+                            <li class="list-group-item borderless"><b>Kategori</b><a class="float-right">{{$prd->Produk->KelompokProduk->nama}}</a></li>
+                        </ul>
                     </div>
                 </div>
             </div>

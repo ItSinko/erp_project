@@ -639,6 +639,7 @@ Route::group(['prefix' => '/pengujian', 'middleware' => 'auth'], function () {
         });
     });
 
+
     Route::group(['prefix' => '/ik_pemeriksaan'], function () {
         Route::get('/', 'QCController@pengujian_ik_pemeriksaan')->name('pengujian.ik_pemeriksaan');
         Route::get('/show', 'QCController@pengujian_ik_pemeriksaan_show')->name('pengujian.ik_pemeriksaan.show');
@@ -802,6 +803,9 @@ Route::get('/show_list/{produk?}/{document?}', 'EngController@show_list');
 Route::post('/eng/fileupload', 'EngController@fileupload')->name('eng.fileupload');
 Route::get('test_spa', 'EngController@index');
 
+
+// Produk
+Route::view('/penjualan/produk', 'page.new.penjualan.produk');
 
 Route::get('/notif', function () {
     event(new SimpleNotifEvent('ari', 'hello there'));

@@ -1,4 +1,4 @@
-.styled-table .styled-table-input {
+/* .styled-table .styled-table-input {
   font-size: 14px;
   align-items: center;
 }
@@ -92,4 +92,13 @@
 
 .styled-table-ss .styled-table-input .subtext {
   font-size: 4px;
+} */
+
+
+#tablecustom th{
+    background-color: #F1F1F1;
+    color: #8b8b8b;
+    font-size: 14px;
+    text-align: center;
 }
+

@@ -7,6 +7,8 @@
 <link rel="stylesheet" href="{{asset('costum/css/calendar.css')}}">
 <link rel="stylesheet" href="{{asset('costum/css/background.css')}}">
 <link rel="stylesheet" href="{{asset('costum/css/button.css')}}">
+<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+
 <style>
     #loader {
         position: fixed;
